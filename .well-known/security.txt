@@ -4,7 +4,7 @@
 Contact: mailto:info@conduction.nl
 
 # Date and time after which this data is considered stale
-Expires: 2024-12-31T23:00:00.000Z
+Expires: 2025-12-31T23:00:00.000Z
 
 # Encryption
 
