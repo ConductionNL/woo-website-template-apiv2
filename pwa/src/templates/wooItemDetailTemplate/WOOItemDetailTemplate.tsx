@@ -132,25 +132,8 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
 
 
   function isDate(str: string) {
-    var regex = /^(\d{4})-(\d{2})-(\d{2})(?:T.*)?$/;
-    var match = str.match(regex);
-    if (!match) {
-      return false;
-    }
-    var year = parseInt(match[1], 10);
-    var month = parseInt(match[2], 10);
-    var day = parseInt(match[3], 10);
-    if (month < 1 || month > 12) {
-      return false;
-    }
-    var daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-    if ((year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0)) {
-      daysInMonth[1] = 29;
-    }
-    if (day < 1 || day > daysInMonth[month - 1]) {
-      return false;
-    }
-    return true;
+    const date = new Date(str);
+    return !isNaN(date);
   }
   
   const getExtension = (attachment: any) => {
