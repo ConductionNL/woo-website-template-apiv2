@@ -104,7 +104,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const getName = (name: string) => {
     
     const formattedName = name.replace(/_/g, ' ')
-    console.log(formattedName);
     
     const upperFirstName = _.upperFirst(formattedName)
 
@@ -133,7 +132,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
 
   function isDate(str: string) {
     const date = new Date(str);
-    return !isNaN(date);
+    return !isNaN(date.getTime());
   }
   
   const getExtension = (attachment: any) => {
@@ -253,8 +252,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                 {
                   getItems.data.data &&
                   Object.entries(getItems.data.data).map(([key, value]: [string, any]) => {
-                    console.log("key", key);
-                    console.log("value", value);
                     
                     if (!!value) {
                       let formattedValue: string;
@@ -270,7 +267,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                       }
   
                       return (
-                        !!value && (
                           <TableRow
                           key={key}
                           className={styles.tableRow}
@@ -280,7 +276,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           <TableCell>{getName(key)}</TableCell>
                           <TableCell>{formattedValue}</TableCell>
                         </TableRow>
-                        )
                       );
                     }
                   })
