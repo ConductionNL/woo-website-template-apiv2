@@ -24,6 +24,7 @@ import { useOpenWoo } from "../../hooks/openWoo";
 import { getPDFName } from "../../services/getPDFName";
 import { HorizontalOverflowWrapper } from "@conduction/components";
 import { removeHTMLFromString } from "../../services/removeHTMLFromString";
+import { log } from "console";
 
 interface WOOItemDetailTemplateProps {
   wooItemId: string;
@@ -100,6 +101,40 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     }
   };
 
+  const getName = (name: string) => {
+    
+    const formattedName = name.replace(/_/g, ' ')
+    
+    const upperFirstName = _.upperFirst(formattedName)
+
+    switch (upperFirstName) {
+      case "Bevindingen":
+        return t("Findings");
+      case "Conclusies":
+        return t("Conclusions");
+      case "Functiebenaming":
+        return t("Job title");
+      case "Gedraging":
+        return t("Behavior");
+      case "Onderdeel taak":
+        return t("Part of task");
+      case "Oordeel":
+        return t("Judgement");
+      case "Opdrachtgever":
+        return t("Client");
+      case "Organisatieonderdeel":
+        return t("Organizational unit");
+      default:
+        return t(upperFirstName);
+    }
+  };
+
+
+  function isDate(str: string) {
+    const date = new Date(str);
+    return !isNaN(date.getTime());
+  }
+  
   const getExtension = (attachment: any) => {
     if (attachment.extension) {
       return attachment.extension;
@@ -213,31 +248,38 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                       </TableCell>
                     </TableRow>
                   )}
-
-                  {getItems.data.metadata?.verzoek?.ontvangstdatum && (
-                    <TableRow
-                      className={styles.tableRow}
-                      tabIndex={0}
-                      aria-label={`${t("Registration date")}, ${translateDate(i18n.language, getItems.data.metadata?.verzoek?.ontvangstdatum) ?? "-"}`}
-                    >
-                      <TableCell>{t("Registration date")}</TableCell>
-
-                      <TableCell>
-                        {translateDate(i18n.language, getItems.data.metadata?.verzoek?.ontvangstdatum) ?? "-"}
-                      </TableCell>
-                    </TableRow>
-                  )}
-
-                  {getItems.data.metadata?.besluitdatum && (
-                    <TableRow
-                      className={styles.tableRow}
-                      tabIndex={0}
-                      aria-label={`${t("Decision date")}, ${translateDate(i18n.language, getItems.data.metadata?.besluitdatum) ?? "-"}`}
-                    >
-                      <TableCell>{t("Decision date")} </TableCell>
-                      <TableCell>{translateDate(i18n.language, getItems.data.metadata?.besluitdatum) ?? "-"}</TableCell>
-                    </TableRow>
-                  )}
+ 
+                {
+                  getItems.data.data &&
+                  Object.entries(getItems.data.data).map(([key, value]: [string, any]) => {
+                    
+                    if (!!value) {
+                      let formattedValue: string;
+                      if (typeof value === "string") {
+                        const isValidDate = isDate(value);
+                        formattedValue = isValidDate
+                          ? translateDate(i18n.language, new Date(value)) ?? "-"
+                          : value;
+                      } else if (value instanceof Date) {
+                        formattedValue = translateDate(i18n.language, value) ?? "-";
+                      } else {
+                        formattedValue = String(value);
+                      }
+  
+                      return (
+                          <TableRow
+                          key={key}
+                          className={styles.tableRow}
+                          tabIndex={0}
+                          aria-label={`${getName(key)}, ${formattedValue}`}
+                        >
+                          <TableCell>{getName(key)}</TableCell>
+                          <TableCell>{formattedValue}</TableCell>
+                        </TableRow>
+                      );
+                    }
+                  })
+                }
 
                   {!_.isEmpty(getItems.data.themes) && (
                     <TableRow className={styles.tableRow} tabIndex={0} aria-labelledby={"themesName themesData"}>
