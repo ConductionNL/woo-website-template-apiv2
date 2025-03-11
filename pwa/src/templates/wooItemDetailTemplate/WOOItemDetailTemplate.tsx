@@ -106,7 +106,9 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     const formattedName = name.replace(/_/g, ' ')
     console.log(formattedName);
     
-    switch (_.upperFirst(formattedName)) {
+    const upperFirstName = _.upperFirst(formattedName)
+
+    switch (upperFirstName) {
       case "Bevindingen":
         return t("Findings");
       case "Conclusies":
@@ -124,9 +126,10 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
       case "Organisatieonderdeel":
         return t("Organizational unit");
       default:
-        return t(_.upperFirst(formattedName));
+        return t(upperFirstName);
     }
   };
+
 
   function isDate(str: string) {
     var regex = /^(\d{4})-(\d{2})-(\d{2})(?:T.*)?$/;
