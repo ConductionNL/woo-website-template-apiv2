@@ -141,9 +141,12 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.gooisemeren.nl":
     case "gooisemeren.openwoo.app":
     case "gooisemeren.koophulpje.nl":
+    case "gooisemeren.prod.openwoo.app":
+    case "gooisemeren.prod.commonground.nu":
       return GooiseMeren;
     case "acceptatie-open.gooisemeren.nl":
     case "gooisemeren.accept.openwoo.app":
+    case "gooisemeren.accept.commonground.nu":
       return GooiseMerenAccept;
 
     case "gouda-theme":
@@ -199,9 +202,12 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.moerdijk.nl":
     case "moerdijk.openwoo.app":
     case "moerdijk.koophulpje.nl":
+    case "moerdijk.prod.openwoo.app":
+    case "moerdijk.prod.commonground.nu":
       return Moerdijk;
     case "acceptatie-open.moerdijk.nl":
     case "moerdijk.accept.openwoo.app":
+    case "moerdijk.accept.commonground.nu":
       return MoerdijkAccept;
 
     case "noordwijk-theme":

@@ -24,8 +24,13 @@ https://ede.accept.openwoo.app
 https://epe.openwoo.app
 https://epe.accept.openwoo.app
 https://epe.prod.openwoo.app
+https://epe.prod.commonground.nu
+https://epe.accept.commonground.nu
 https://gooisemeren.openwoo.app
 https://gooisemeren.accept.openwoo.app
+https://gooisemeren.prod.openwoo.app
+https://gooisemeren.prod.commonground.nu
+https://gooisemeren.accept.commonground.nu
 https://gouda.openwoo.app
 https://gouda.accept.openwoo.app
 https://gemeentehw.openwoo.app
@@ -42,6 +47,9 @@ https://leiden.openwoo.app
 https://leiden.accept.openwoo.app
 https://moerdijk.openwoo.app
 https://moerdijk.accept.openwoo.app
+https://moerdijk.prod.openwoo.app
+https://moerdijk.prod.commonground.nu
+https://moerdijk.accept.commonground.nu
 https://noordwijk.openwoo.app
 https://noordwijk.accept.openwoo.app
 https://ridderkerk.openwoo.app
