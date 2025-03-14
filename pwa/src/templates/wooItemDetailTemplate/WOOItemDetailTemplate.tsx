@@ -24,7 +24,6 @@ import { useOpenWoo } from "../../hooks/openWoo";
 import { getPDFName } from "../../services/getPDFName";
 import { HorizontalOverflowWrapper } from "@conduction/components";
 import { removeHTMLFromString } from "../../services/removeHTMLFromString";
-import { log } from "console";
 
 interface WOOItemDetailTemplateProps {
   wooItemId: string;
