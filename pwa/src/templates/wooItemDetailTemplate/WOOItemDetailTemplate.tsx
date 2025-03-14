@@ -101,10 +101,9 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   };
 
   const getName = (name: string) => {
-    
-    const formattedName = name.replace(/_/g, ' ')
-    
-    const upperFirstName = _.upperFirst(formattedName)
+    const formattedName = name.replace(/_/g, " ");
+
+    const upperFirstName = _.upperFirst(formattedName);
 
     switch (upperFirstName) {
       case "Bevindingen":
@@ -128,12 +127,11 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     }
   };
 
-
   function isDate(str: string) {
     const date = new Date(str);
     return !isNaN(date.getTime());
   }
-  
+
   const getExtension = (attachment: any) => {
     if (attachment.extension) {
       return attachment.extension;
@@ -247,38 +245,31 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                       </TableCell>
                     </TableRow>
                   )}
- 
-                {
-                  getItems.data.data &&
-                  Object.entries(getItems.data.data).map(([key, value]: [string, any]) => {
-                    
-                    if (!!value) {
-                      let formattedValue: string;
-                      if (typeof value === "string") {
-                        const isValidDate = isDate(value);
-                        formattedValue = isValidDate
-                          ? translateDate(i18n.language, new Date(value)) ?? "-"
-                          : value;
-                      } else if (value instanceof Date) {
-                        formattedValue = translateDate(i18n.language, value) ?? "-";
-                      } else {
-                        formattedValue = String(value);
-                      }
-  
-                      return (
+
+                  {getItems.data.data &&
+                    Object.entries(getItems.data.data).map(([key, value]: [string, any]) => {
+                      if (!!value) {
+                        let formattedValue: string;
+                        if (typeof value === "string") {
+                          const isValidDate = isDate(value);
+                          formattedValue = isValidDate ? translateDate(i18n.language, value) ?? "-" : value;
+                        } else {
+                          formattedValue = String(value);
+                        }
+
+                        return (
                           <TableRow
-                          key={key}
-                          className={styles.tableRow}
-                          tabIndex={0}
-                          aria-label={`${getName(key)}, ${formattedValue}`}
-                        >
-                          <TableCell>{getName(key)}</TableCell>
-                          <TableCell>{formattedValue}</TableCell>
-                        </TableRow>
-                      );
-                    }
-                  })
-                }
+                            key={key}
+                            className={styles.tableRow}
+                            tabIndex={0}
+                            aria-label={`${getName(key)}, ${formattedValue}`}
+                          >
+                            <TableCell>{getName(key)}</TableCell>
+                            <TableCell>{formattedValue}</TableCell>
+                          </TableRow>
+                        );
+                      }
+                    })}
 
                   {!_.isEmpty(getItems.data.themes) && (
                     <TableRow className={styles.tableRow} tabIndex={0} aria-labelledby={"themesName themesData"}>
