@@ -12,6 +12,20 @@ export const Head: React.FC = () => {
   const { gatsbyContext } = useGatsbyContext();
   const { t, i18n } = useTranslation();
 
+  const [connectSrc, setConnectSrc] = React.useState<string>(
+    `${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${
+      window.location.hostname === "localhost" ? connectSrcLocal : ""
+    }`,
+  );
+
+  const processUrls = (urlString: string): string => {
+    if (!urlString) return "";
+
+    return Array.from(urlString.split(/[\s\n]+/).filter(Boolean))
+      .map((url) => url.replace(/^(http|https):\/\//, "wss://") + ",")
+      .join(" ");
+  };
+
   const translatedCrumbs = gatsbyContext.pageContext?.breadcrumb.crumbs.map((crumb: any) => ({
     ...crumb,
     crumbLabel: t(_.upperFirst(crumb.crumbLabel)),
@@ -20,6 +34,23 @@ export const Head: React.FC = () => {
   const currentLanguage = languageOptions.find(
     (language) => language.label === (i18n.language.toUpperCase() === "EN" ? "US" : i18n.language.toUpperCase()),
   )?.value;
+
+  const isSafari =
+    navigator.vendor &&
+    navigator.vendor.indexOf("Apple") > -1 &&
+    navigator.userAgent &&
+    navigator.userAgent.indexOf("CriOS") == -1 &&
+    navigator.userAgent.indexOf("FxiOS") == -1;
+
+  React.useEffect(() => {
+    if (isSafari) {
+      setConnectSrc(
+        `${processUrls(connectSrcStandard)} ${processUrls(connectSrcMunicipalities)} ${processUrls(connectSrcOther)} ${processUrls(
+          window.location.hostname === "localhost" ? connectSrcLocal : "",
+        )}`,
+      );
+    }
+  }, [isSafari]);
 
   return (
     <Helmet
@@ -38,9 +69,7 @@ export const Head: React.FC = () => {
         frame-src 'self';
         img-src 'self' data: https://raw.githubusercontent.com/ConductionNL/;
         form-action 'self';
-        connect-src 'self' ${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${
-          window.location.hostname === "localhost" ? connectSrcLocal : ""
-        };
+        connect-src 'self' ${connectSrc};
         style-src 'self' 'unsafe-inline';
         font-src * data:;
         ${location.hostname === "localhost" && "script-src 'self' 'unsafe-eval';"}

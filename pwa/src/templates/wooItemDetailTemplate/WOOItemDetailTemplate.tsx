@@ -47,11 +47,15 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     let multipleLabels: any[] = [];
     let singleLabels: any[] = [];
 
+    let allLabels: any[] = [];
+
     filterdAttachments.map((attachment: any) => {
       if (attachment.labels.length > 1) {
         multipleLabels.push(attachment);
+        allLabels.push(...attachment.labels);
       } else {
         singleLabels.push(attachment);
+        allLabels.push(attachment.labels[0]);
       }
     });
 
@@ -65,9 +69,20 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
       });
     });
 
-    const attachments = [...newAttachments, ...singleLabels];
+    const attachmentsAll = [...newAttachments, ...singleLabels];
 
-    return attachments;
+    const uniqueLabels = [...new Set(allLabels)];
+
+    const sortedAttachments = uniqueLabels.map((label: any) => {
+      const attachmentsWithLabel = attachmentsAll.filter((attachment: any) => attachment.labels.includes(label));
+
+      return {
+        attachments: [...attachmentsWithLabel],
+        label,
+      };
+    });
+
+    return withLabels ? sortedAttachments : attachmentsAll;
   };
 
   const getLabel = (label: string) => {
@@ -85,6 +100,40 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     }
   };
 
+  const getName = (name: string) => {
+    
+    const formattedName = name.replace(/_/g, ' ')
+    
+    const upperFirstName = _.upperFirst(formattedName)
+
+    switch (upperFirstName) {
+      case "Bevindingen":
+        return t("Findings");
+      case "Conclusies":
+        return t("Conclusions");
+      case "Functiebenaming":
+        return t("Job title");
+      case "Gedraging":
+        return t("Behavior");
+      case "Onderdeel taak":
+        return t("Part of task");
+      case "Oordeel":
+        return t("Judgement");
+      case "Opdrachtgever":
+        return t("Client");
+      case "Organisatieonderdeel":
+        return t("Organizational unit");
+      default:
+        return t(upperFirstName);
+    }
+  };
+
+
+  function isDate(str: string) {
+    const date = new Date(str);
+    return !isNaN(date.getTime());
+  }
+  
   const getExtension = (attachment: any) => {
     if (attachment.extension) {
       return attachment.extension;
@@ -198,31 +247,38 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                       </TableCell>
                     </TableRow>
                   )}
-
-                  {getItems.data.metadata?.verzoek?.ontvangstdatum && (
-                    <TableRow
-                      className={styles.tableRow}
-                      tabIndex={0}
-                      aria-label={`${t("Registration date")}, ${translateDate(i18n.language, getItems.data.metadata?.verzoek?.ontvangstdatum) ?? "-"}`}
-                    >
-                      <TableCell>{t("Registration date")}</TableCell>
-
-                      <TableCell>
-                        {translateDate(i18n.language, getItems.data.metadata?.verzoek?.ontvangstdatum) ?? "-"}
-                      </TableCell>
-                    </TableRow>
-                  )}
-
-                  {getItems.data.metadata?.besluitdatum && (
-                    <TableRow
-                      className={styles.tableRow}
-                      tabIndex={0}
-                      aria-label={`${t("Decision date")}, ${translateDate(i18n.language, getItems.data.metadata?.besluitdatum) ?? "-"}`}
-                    >
-                      <TableCell>{t("Decision date")} </TableCell>
-                      <TableCell>{translateDate(i18n.language, getItems.data.metadata?.besluitdatum) ?? "-"}</TableCell>
-                    </TableRow>
-                  )}
+ 
+                {
+                  getItems.data.data &&
+                  Object.entries(getItems.data.data).map(([key, value]: [string, any]) => {
+                    
+                    if (!!value) {
+                      let formattedValue: string;
+                      if (typeof value === "string") {
+                        const isValidDate = isDate(value);
+                        formattedValue = isValidDate
+                          ? translateDate(i18n.language, new Date(value)) ?? "-"
+                          : value;
+                      } else if (value instanceof Date) {
+                        formattedValue = translateDate(i18n.language, value) ?? "-";
+                      } else {
+                        formattedValue = String(value);
+                      }
+  
+                      return (
+                          <TableRow
+                          key={key}
+                          className={styles.tableRow}
+                          tabIndex={0}
+                          aria-label={`${getName(key)}, ${formattedValue}`}
+                        >
+                          <TableCell>{getName(key)}</TableCell>
+                          <TableCell>{formattedValue}</TableCell>
+                        </TableRow>
+                      );
+                    }
+                  })
+                }
 
                   {!_.isEmpty(getItems.data.themes) && (
                     <TableRow className={styles.tableRow} tabIndex={0} aria-labelledby={"themesName themesData"}>
@@ -239,21 +295,48 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
 
                   {getAttachments.isSuccess &&
                     sortAttachments(true).length > 0 &&
-                    sortAttachments(true).map((attachment: any, idx: number) => (
+                    sortAttachments(true).map((sortedAttachments: any, idx: number) => (
                       <TableRow
                         className={styles.tableRow}
                         key={idx}
                         tabIndex={0}
-                        aria-label={`${getLabel(attachment.labels)}, ${
-                          attachment.title ?? getPDFName(attachment.accessUrl)
-                        }`}
+                        aria-label={
+                          sortedAttachments.attachments.length === 1
+                            ? `${getLabel(sortedAttachments.label)}, ${
+                                sortedAttachments.attachments[0].title ??
+                                getPDFName(sortedAttachments.attachments[0].accessUrl)
+                              }`
+                            : `${getLabel(sortedAttachments.label)}, ${t("There are")} ${
+                                sortedAttachments.attachments.length
+                              } ${t("Attachments")} ${t("With the label")} ${getLabel(
+                                sortedAttachments.label,
+                              )}, ${t("These are")} ${sortedAttachments.attachments
+                                .map((attachment: any) => attachment.title ?? getPDFName(attachment.accessUrl))
+                                .join(", ")}`
+                        }
                       >
-                        <TableCell>{getLabel(attachment.labels[0])}</TableCell>
-                        <TableCell>
-                          <Link href={attachment.accessUrl} target="blank">
-                            {`${attachment.title ?? getPDFName(attachment.accessUrl)}`}
-                          </Link>
-                        </TableCell>
+                        <TableCell>{getLabel(sortedAttachments.label)}</TableCell>
+
+                        {sortedAttachments.attachments.length > 1 && (
+                          <TableCell>
+                            <UnorderedList id="labelAttachmentsData">
+                              {sortedAttachments.attachments.map((attachment: any, idx: number) => (
+                                <UnorderedListItem key={idx}>
+                                  <Link href={attachment.accessUrl} target="blank">
+                                    {`${attachment.title ?? getPDFName(attachment.accessUrl)}`}
+                                  </Link>
+                                </UnorderedListItem>
+                              ))}
+                            </UnorderedList>
+                          </TableCell>
+                        )}
+                        {sortedAttachments.attachments.length === 1 && (
+                          <TableCell>
+                            <Link href={sortedAttachments.attachments[0].accessUrl} target="blank">
+                              {`${sortedAttachments.attachments[0].title ?? getPDFName(sortedAttachments.attachments[0].accessUrl)}`}
+                            </Link>
+                          </TableCell>
+                        )}
                       </TableRow>
                     ))}
 
