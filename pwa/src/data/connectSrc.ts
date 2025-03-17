@@ -70,6 +70,9 @@ https://waddinxveen.openwoo.app
 https://waddinxveen.accept.openwoo.app
 https://zutphen.openwoo.app
 https://zutphen.accept.openwoo.app
+https://zutphen.prod.openwoo.app
+https://zutphen.prod.commonground.nu
+https://zutphen.accept.commonground.nu
 https://noordwijk.accept.commonground.nu
 https://ede.accept.commonground.nu
 https://documenten.open.ede.nl

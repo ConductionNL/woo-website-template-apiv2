@@ -295,9 +295,11 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.zutphen.nl":
     case "zutphen.openwoo.app":
     case "zutphen.koophulpje.nl":
+    case "zutphen.prod.commonground.nu":
       return Zutphen;
     case "acceptatie-open.zutphen.nl":
     case "zutphen.accept.openwoo.app":
+    case "zutphen.accept.commonground.nu":
       return ZutphenAccept;
 
     // Other
