@@ -241,9 +241,11 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.roosendaal.nl":
     case "roosendaal.openwoo.app":
     case "roosendaal.koophulpje.nl":
+    case "roosendaal.prod.commonground.nu":
       return Roosendaal;
     case "acceptatie-open.roosendaal.nl":
     case "roosendaal.accept.openwoo.app":
+    case "roosendaal.accept.commonground.nu":
       return RoosendaalAccept;
 
     case "rotterdam-theme":
