@@ -58,6 +58,8 @@ https://rijssen-holten.openwoo.app
 https://rijssen-holten.accept.openwoo.app
 https://roosendaal.openwoo.app
 https://roosendaal.accept.openwoo.app
+https://roosendaal.prod.commonground.nu
+https://roosendaal.accept.commonground.nu
 https://rotterdam.openwoo.app
 https://rotterdam.accept.openwoo.app
 https://stedebroec.openwoo.app
