@@ -410,7 +410,6 @@ export const availableThemes: TGroupedSelectOption[] = [
       { label: "Rijssen-Holten", value: "rijssen-holten" },
       { label: "Roosendaal", value: "roosendaal-theme" },
       { label: "Rotterdam", value: "rotterdam-theme" },
-      { label: "Soest", value: "open-webconcept-theme" },
       { label: "Stede Broec", value: "stedebroec" },
       { label: "Texel", value: "texel" },
       { label: "Tubbergen", value: "tubbergen-theme" },
