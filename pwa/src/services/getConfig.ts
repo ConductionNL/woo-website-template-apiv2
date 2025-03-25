@@ -29,6 +29,8 @@ import Moerdijk from "./../../static/configFiles/municipalities/moerdijk/moerdij
 import MoerdijkAccept from "./../../static/configFiles/municipalities/moerdijk/moerdijk-accept.json";
 import Noordwijk from "./../../static/configFiles/municipalities/noordwijk/noordwijk.json";
 import NoordwijkAccept from "./../../static/configFiles/municipalities/noordwijk/noordwijk-accept.json";
+import OudeIjsselstreek from "./../../static/configFiles/municipalities/oude-ijsselstreek/oudeijsselstreek.json";
+import OudeIjsselstreekAccept from "./../../static/configFiles/municipalities/oude-ijsselstreek/oudeijsselstreek-accept.json";
 import Ridderkerk from "./../../static/configFiles/municipalities/ridderkerk/ridderkerk.json";
 import RidderkerkAccept from "./../../static/configFiles/municipalities/ridderkerk/ridderkerk-accept.json";
 import RijssenHolten from "./../../static/configFiles/municipalities/rijssen-holten/rijssen-holten.json";
@@ -125,9 +127,11 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "epe.openwoo.app":
     case "epe.prod.openwoo.app":
     case "epe.koophulpje.nl":
+    case "epe.prod.commonground.nu":
       return Epe;
     case "acceptatie-open.epe.nl":
     case "epe.accept.openwoo.app":
+    case "epe.accept.commonground.nu":
       return EpeAccept;
 
     case "ede-theme":
@@ -220,6 +224,15 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "acceptatie-open.noordwijk.nl":
     case "noordwijk.accept.openwoo.app":
       return NoordwijkAccept;
+
+    case "oude-ijsselstreek-theme":
+    case "open.oude-ijsselstreek.nl":
+    case "oude-ijsselstreek.openwoo.app":
+    case "oude-ijsselstreek.koophulpje.nl":
+      return OudeIjsselstreek;
+    case "acceptatie-open.oude-ijsselstreek.nl":
+    case "oude-ijsselstreek.accept.openwoo.app":
+      return OudeIjsselstreekAccept;
 
     case "ridderkerk":
     case "open.ridderkerk.nl":
