@@ -62,6 +62,10 @@ https://roosendaal.prod.commonground.nu
 https://roosendaal.accept.commonground.nu
 https://rotterdam.openwoo.app
 https://rotterdam.accept.openwoo.app
+https://soest.openwoo.app
+https://soest.accept.openwoo.app
+https://soest.prod.commonground.nu
+https://soest.accept.commonground.nu
 https://stedebroec.openwoo.app
 https://stedebroec.accept.openwoo.app
 https://texel.openwoo.app

@@ -37,6 +37,8 @@ import Roosendaal from "./../../static/configFiles/municipalities/roosendaal/roo
 import RoosendaalAccept from "./../../static/configFiles/municipalities/roosendaal/roosendaal-accept.json";
 import Rotterdam from "./../../static/configFiles/municipalities/rotterdam/rotterdam.json";
 import RotterdamAccept from "./../../static/configFiles/municipalities/rotterdam/rotterdam-accept.json";
+import Soest from "./../../static/configFiles/municipalities/soest/soest.json";
+import SoestAccept from "./../../static/configFiles/municipalities/soest/soest-accept.json";
 import StedeBroec from "./../../static/configFiles/municipalities/stede-broec/stede-broec.json";
 import StedeBroecAccept from "./../../static/configFiles/municipalities/stede-broec/stede-broec-accept.json";
 import Texel from "./../../static/configFiles/municipalities/texel/texel.json";
@@ -257,6 +259,19 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "rotterdam.accept.openwoo.app":
       return RotterdamAccept;
 
+    case "soest-theme":
+      case "open.soest.nl":
+      case "soest.openwoo.app":
+      case "soest.koophulpje.nl":
+      case "soest.prod.openwoo.app":
+      case "soest.prod.commonground.nu":
+        return Soest;
+      case "acceptatie-open.soest.nl":
+      case "soest.accept.openwoo.app":
+      case "soest-v2.accept.openwoo.app":
+      case "soest.accept.commonground.nu":
+        return SoestAccept;  
+
     case "stedebroec":
     case "open.stedebroec.nl":
     case "stedebroec.openwoo.app":
@@ -395,6 +410,7 @@ export const availableThemes: TGroupedSelectOption[] = [
       { label: "Rijssen-Holten", value: "rijssen-holten" },
       { label: "Roosendaal", value: "roosendaal-theme" },
       { label: "Rotterdam", value: "rotterdam-theme" },
+      { label: "Soest", value: "openwebconcept-theme" },
       { label: "Stede Broec", value: "stedebroec" },
       { label: "Texel", value: "texel" },
       { label: "Tubbergen", value: "tubbergen-theme" },
