@@ -387,10 +387,10 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.odmh.nl":
     case "odmh.openwoo.app":
     case "odmh.koophulpje.nl":
-      return Odmh;
+      return OpenWebconcept;
     case "acceptatie-open.odmh.nl":
     case "odmh.accept.openwoo.app":
-      return OdmhAccept;
+      return OpenWebconcept;
 
     case "sloterburg-theme":
     case "open.sloterburg.nl":
