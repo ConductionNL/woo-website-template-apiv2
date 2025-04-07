@@ -61,6 +61,8 @@ import Localhost from "./../../static/configFiles/other/localhost/localhost.json
 import LocalhostNextcloud from "./../../static/configFiles/other/localhost/localhostNextcloud.json";
 import Noaberkracht from "./../../static/configFiles/other/noaberkracht/noaberkracht.json";
 import NoaberkrachtAccept from "./../../static/configFiles/other/noaberkracht/noaberkracht-accept.json";
+import Odmh from "./../../static/configFiles/other/odmh/odmh.json";
+import OdmhAccept from "./../../static/configFiles/other/odmh/odmh-accept.json";
 import OpenWebconcept from "./../../static/configFiles/other/open-webconcept/open-webconcept.json";
 import OpenWebconceptAccept from "./../../static/configFiles/other/open-webconcept/open-webconcept-accept.json";
 import Sloterburg from "./../../static/configFiles/other/sloterburg/sloterburg.json";
@@ -380,6 +382,15 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "acceptatie-open.open-webconcept.nl":
     case "open-webconcept.accept.openwoo.app":
       return OpenWebconceptAccept;
+
+    case "odmh-theme":  
+    case "open.odmh.nl":
+    case "odmh.openwoo.app":
+    case "odmh.koophulpje.nl":
+      return Odmh;
+    case "acceptatie-open.odmh.nl":
+    case "odmh.accept.openwoo.app":
+      return OdmhAccept;
 
     case "sloterburg-theme":
     case "open.sloterburg.nl":
