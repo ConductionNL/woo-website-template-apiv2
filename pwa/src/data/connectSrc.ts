@@ -57,6 +57,10 @@ https://moerdijk.accept.openwoo.app
 https://moerdijk.prod.openwoo.app
 https://moerdijk.prod.commonground.nu
 https://moerdijk.accept.commonground.nu
+https://noaberkracht.prod.commonground.nu
+https://noaberkracht.accept.commonground.nu
+https://noaberkracht.openwoo.app
+https://noaberkracht.accept.openwoo.app
 https://noordwijk.openwoo.app
 https://noordwijk.accept.openwoo.app
 https://oudeijsselstreek.accept.openwoo.app
