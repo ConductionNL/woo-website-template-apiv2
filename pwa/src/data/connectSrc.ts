@@ -19,6 +19,8 @@ https://buren.openwoo.app
 https://buren.accept.openwoo.app
 https://dinkelland.openwoo.app
 https://dinkelland.accept.openwoo.app
+https://dinkelland.prod.commonground.nu
+https://dinkelland.accept.commonground.nu
 https://ede.openwoo.app
 https://ede.accept.openwoo.app
 https://epe.openwoo.app
@@ -35,6 +37,11 @@ https://gouda.openwoo.app
 https://gouda.accept.openwoo.app
 https://gemeentehw.openwoo.app
 https://gemeentehw.accept.openwoo.app
+https://helmond.openwoo.app
+https://helmond.accept.openwoo.app
+https://helmond.prod.openwoo.app
+https://helmond.prod.commonground.nu
+https://helmond.accept.commonground.nu
 https://hofvantwente.openwoo.app
 https://hofvantwente-v2.accept.openwoo.app/  
 https://hofvantwente.accept.openwoo.app
@@ -76,6 +83,8 @@ https://texel.openwoo.app
 https://texel.accept.openwoo.app
 https://tubbergen.openwoo.app
 https://tubbergen.accept.openwoo.app
+https://tubbergen.prod.commonground.nu
+https://tubbergen.accept.commonground.nu
 https://waddinxveen.openwoo.app
 https://waddinxveen.accept.openwoo.app
 https://zutphen.openwoo.app

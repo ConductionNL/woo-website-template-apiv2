@@ -17,6 +17,8 @@ import GooiseMeren from "./../../static/configFiles/municipalities/gooise-meren/
 import GooiseMerenAccept from "./../../static/configFiles/municipalities/gooise-meren/gooise-meren-accept.json";
 import Gouda from "./../../static/configFiles/municipalities/gouda/gouda.json";
 import GoudaAccept from "./../../static/configFiles/municipalities/gouda/gouda-accept.json";
+import Helmond from "./../../static/configFiles/municipalities/helmond/helmond.json";
+import HelmondAccept from "./../../static/configFiles/municipalities/helmond/helmond-accept.json";
 import HoekscheWaard from "./../../static/configFiles/municipalities/hoeksche-waard/hoeksche-waard.json";
 import HoekscheWaardAccept from "./../../static/configFiles/municipalities/hoeksche-waard/hoeksche-waard-accept.json";
 import HofvanTwente from "./../../static/configFiles/municipalities/hof-van-twente/hof-van-twente.json";
@@ -117,9 +119,11 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.dinkelland.nl":
     case "dinkelland.openwoo.app":
     case "dinkelland.koophulpje.nl":
+    case "dinkelland.prod.commonground.nu":
       return Dinkelland;
     case "acceptatie-open.dinkelland.nl":
     case "dinkelland.accept.openwoo.app":
+    case "dinkelland.accept.commonground.nu":  
       return DinkellandAccept;
 
     case "epe-theme":
@@ -163,6 +167,15 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "acceptatie-open.gouda.nl":
     case "gouda.accept.openwoo.app":
       return GoudaAccept;
+
+    case "helmond-theme":
+    case "open.helmond.nl":
+    case "helmond.openwoo.app":
+    case "helmond.koophulpje.nl":
+      return Helmond;
+    case "acceptatie-open.helmond.nl":
+    case "helmond.accept.openwoo.app":
+      return HelmondAccept;
 
     case "hoeksche-waard":
     case "open.gemeentehw.nl":
@@ -307,9 +320,12 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.tubbergen.nl":
     case "tubbergen.openwoo.app":
     case "tubbergen.koophulpje.nl":
+    case "tubbergen.prod.openwoo.app":
+    case "tubbergen.prod.commonground.nu":
       return Tubbergen;
     case "acceptatie-open.tubbergen.nl":
     case "tubbergen.accept.openwoo.app":
+    case "tubbergen.accept.commonground.nu":
       return TubbergenAccept;
 
     case "waddinxveen":
