@@ -24,8 +24,8 @@
     "prepare": "cd .. && husky install"
   },
   "dependencies": {
-    "@conduction/components": "2.2.50",
-    "@conduction/theme": "1.1.41",
+    "@conduction/components": "2.2.52",
+    "@conduction/theme": "1.1.43",
     "@fortawesome/fontawesome-svg-core": "^6.5.2",
     "@fortawesome/free-brands-svg-icons": "6.5.2",
     "@fortawesome/free-regular-svg-icons": "6.5.2",

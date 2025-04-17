@@ -67,7 +67,7 @@ export const Head: React.FC = () => {
         default-src 'self';
         base-uri 'self';
         frame-src 'self';
-        img-src 'self' data: https://raw.githubusercontent.com/ConductionNL/;
+        img-src 'self' data: https://raw.githubusercontent.com/ConductionNL/ https://conduction.nl *.commonground.nu;
         form-action 'self';
         connect-src 'self' ${connectSrc};
         style-src 'self' 'unsafe-inline';

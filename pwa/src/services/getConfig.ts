@@ -446,6 +446,7 @@ export const availableThemes: TGroupedSelectOption[] = [
       { label: "Leiden", value: "leiden-theme" },
       { label: "Moerdijk", value: "moerdijk-theme" },
       { label: "Noordwijk", value: "noordwijk-theme" },
+      { label: "Oude IJsselstreek", value: "oude-ijsselstreek-theme" },
       { label: "Ridderkerk", value: "ridderkerk" },
       { label: "Rijssen-Holten", value: "rijssen-holten" },
       { label: "Roosendaal", value: "roosendaal-theme" },
