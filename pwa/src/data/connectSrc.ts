@@ -116,7 +116,9 @@ https://xxllnc.openwoo.app
 https://xxllnc.accept.openwoo.app
 https://zuiddrecht.openwoo.app
 https://zuiddrecht.accept.openwoo.app
+https://zuiddrecht-twee.accept.openwoo.app
 https://zuiddrecht.accept.commonground.nu
+https://zuiddrecht-twee.accept.commonground.nu
 https://tilburg.accept.commonground.nu
 https://bct.accept.commonground.nu
 `;
