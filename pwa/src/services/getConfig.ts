@@ -416,7 +416,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "zuiddrecht.koophulpje.nl":
       return Zuiddrecht;
     case "acceptatie-open.zuiddrecht.nl":
-    case "zuiddrecht.accept.openwoo.app":
+    case "zuiddrecht-twee.accept.openwoo.app":
       return ZuiddrechtAccept;
 
     default:
