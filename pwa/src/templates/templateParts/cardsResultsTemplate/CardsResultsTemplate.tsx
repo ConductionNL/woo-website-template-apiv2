@@ -26,7 +26,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
             onClick={() => navigate(request.id.toString())}
             tabIndex={0}
             aria-label={`${
-              request.published ? translateDate(i18n.language, request.published) : t("N/A")
+              request["@self"].published ? translateDate(i18n.language, request["@self"].published) : t("N/A")
             }, ${removeHTMLFromString(removeHTMLFromString(request.title))}, ${removeHTMLFromString(removeHTMLFromString(request.summary))} ${
               window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true"
                 ? `,${request.catalog?.organization?.title ?? request.organization?.title}`
@@ -37,11 +37,11 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
           >
             <CardHeader className={styles.cardHeader}>
               <CardHeaderDate>
-                {request.published ? translateDate(i18n.language, request.published) : t("N/A")}
+                {request["@self"].published ? translateDate(i18n.language, request["@self"].published) : t("N/A")}
               </CardHeaderDate>
               <CardHeaderTitle className={styles.title}>
                 <Heading2>
-                  {removeHTMLFromString(removeHTMLFromString(request.title)) ?? t("No title available")}
+                  {removeHTMLFromString(removeHTMLFromString(request.title ?? request.name)) ?? t("No title available")}
                 </Heading2>
               </CardHeaderTitle>
             </CardHeader>
