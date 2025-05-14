@@ -17,6 +17,8 @@ import GooiseMeren from "./../../static/configFiles/municipalities/gooise-meren/
 import GooiseMerenAccept from "./../../static/configFiles/municipalities/gooise-meren/gooise-meren-accept.json";
 import Gouda from "./../../static/configFiles/municipalities/gouda/gouda.json";
 import GoudaAccept from "./../../static/configFiles/municipalities/gouda/gouda-accept.json";
+import Helmond from "./../../static/configFiles/municipalities/helmond/helmond.json";
+import HelmondAccept from "./../../static/configFiles/municipalities/helmond/helmond-accept.json";
 import HoekscheWaard from "./../../static/configFiles/municipalities/hoeksche-waard/hoeksche-waard.json";
 import HoekscheWaardAccept from "./../../static/configFiles/municipalities/hoeksche-waard/hoeksche-waard-accept.json";
 import HofvanTwente from "./../../static/configFiles/municipalities/hof-van-twente/hof-van-twente.json";
@@ -29,6 +31,8 @@ import Moerdijk from "./../../static/configFiles/municipalities/moerdijk/moerdij
 import MoerdijkAccept from "./../../static/configFiles/municipalities/moerdijk/moerdijk-accept.json";
 import Noordwijk from "./../../static/configFiles/municipalities/noordwijk/noordwijk.json";
 import NoordwijkAccept from "./../../static/configFiles/municipalities/noordwijk/noordwijk-accept.json";
+import OudeIjsselstreek from "./../../static/configFiles/municipalities/oude-ijsselstreek/oudeijsselstreek.json";
+import OudeIjsselstreekAccept from "./../../static/configFiles/municipalities/oude-ijsselstreek/oudeijsselstreek-accept.json";
 import Ridderkerk from "./../../static/configFiles/municipalities/ridderkerk/ridderkerk.json";
 import RidderkerkAccept from "./../../static/configFiles/municipalities/ridderkerk/ridderkerk-accept.json";
 import RijssenHolten from "./../../static/configFiles/municipalities/rijssen-holten/rijssen-holten.json";
@@ -37,6 +41,8 @@ import Roosendaal from "./../../static/configFiles/municipalities/roosendaal/roo
 import RoosendaalAccept from "./../../static/configFiles/municipalities/roosendaal/roosendaal-accept.json";
 import Rotterdam from "./../../static/configFiles/municipalities/rotterdam/rotterdam.json";
 import RotterdamAccept from "./../../static/configFiles/municipalities/rotterdam/rotterdam-accept.json";
+import Soest from "./../../static/configFiles/municipalities/soest/soest.json";
+import SoestAccept from "./../../static/configFiles/municipalities/soest/soest-accept.json";
 import StedeBroec from "./../../static/configFiles/municipalities/stede-broec/stede-broec.json";
 import StedeBroecAccept from "./../../static/configFiles/municipalities/stede-broec/stede-broec-accept.json";
 import Texel from "./../../static/configFiles/municipalities/texel/texel.json";
@@ -55,6 +61,8 @@ import Localhost from "./../../static/configFiles/other/localhost/localhost.json
 import LocalhostNextcloud from "./../../static/configFiles/other/localhost/localhostNextcloud.json";
 import Noaberkracht from "./../../static/configFiles/other/noaberkracht/noaberkracht.json";
 import NoaberkrachtAccept from "./../../static/configFiles/other/noaberkracht/noaberkracht-accept.json";
+import Odmh from "./../../static/configFiles/other/odmh/odmh.json";
+import OdmhAccept from "./../../static/configFiles/other/odmh/odmh-accept.json";
 import OpenWebconcept from "./../../static/configFiles/other/open-webconcept/open-webconcept.json";
 import OpenWebconceptAccept from "./../../static/configFiles/other/open-webconcept/open-webconcept-accept.json";
 import Sloterburg from "./../../static/configFiles/other/sloterburg/sloterburg.json";
@@ -113,9 +121,11 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.dinkelland.nl":
     case "dinkelland.openwoo.app":
     case "dinkelland.koophulpje.nl":
+    case "dinkelland.prod.commonground.nu":
       return Dinkelland;
     case "acceptatie-open.dinkelland.nl":
     case "dinkelland.accept.openwoo.app":
+    case "dinkelland.accept.commonground.nu":  
       return DinkellandAccept;
 
     case "epe-theme":
@@ -123,9 +133,11 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "epe.openwoo.app":
     case "epe.prod.openwoo.app":
     case "epe.koophulpje.nl":
+    case "epe.prod.commonground.nu":
       return Epe;
     case "acceptatie-open.epe.nl":
     case "epe.accept.openwoo.app":
+    case "epe.accept.commonground.nu":
       return EpeAccept;
 
     case "ede-theme":
@@ -141,9 +153,12 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.gooisemeren.nl":
     case "gooisemeren.openwoo.app":
     case "gooisemeren.koophulpje.nl":
+    case "gooisemeren.prod.openwoo.app":
+    case "gooisemeren.prod.commonground.nu":
       return GooiseMeren;
     case "acceptatie-open.gooisemeren.nl":
     case "gooisemeren.accept.openwoo.app":
+    case "gooisemeren.accept.commonground.nu":
       return GooiseMerenAccept;
 
     case "gouda-theme":
@@ -154,6 +169,15 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "acceptatie-open.gouda.nl":
     case "gouda.accept.openwoo.app":
       return GoudaAccept;
+
+    case "helmond-theme":
+    case "open.helmond.nl":
+    case "helmond.openwoo.app":
+    case "helmond.koophulpje.nl":
+      return Helmond;
+    case "acceptatie-open.helmond.nl":
+    case "helmond.accept.openwoo.app":
+      return HelmondAccept;
 
     case "hoeksche-waard":
     case "open.gemeentehw.nl":
@@ -199,9 +223,12 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.moerdijk.nl":
     case "moerdijk.openwoo.app":
     case "moerdijk.koophulpje.nl":
+    case "moerdijk.prod.openwoo.app":
+    case "moerdijk.prod.commonground.nu":
       return Moerdijk;
     case "acceptatie-open.moerdijk.nl":
     case "moerdijk.accept.openwoo.app":
+    case "moerdijk.accept.commonground.nu":
       return MoerdijkAccept;
 
     case "noordwijk-theme":
@@ -212,6 +239,15 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "acceptatie-open.noordwijk.nl":
     case "noordwijk.accept.openwoo.app":
       return NoordwijkAccept;
+
+    case "oude-ijsselstreek-theme":
+    case "open.oude-ijsselstreek.nl":
+    case "oude-ijsselstreek.openwoo.app":
+    case "oude-ijsselstreek.koophulpje.nl":
+      return OudeIjsselstreek;
+    case "acceptatie-open.oude-ijsselstreek.nl":
+    case "oude-ijsselstreek.accept.openwoo.app":
+      return OudeIjsselstreekAccept;
 
     case "ridderkerk":
     case "open.ridderkerk.nl":
@@ -235,9 +271,11 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.roosendaal.nl":
     case "roosendaal.openwoo.app":
     case "roosendaal.koophulpje.nl":
+    case "roosendaal.prod.commonground.nu":
       return Roosendaal;
     case "acceptatie-open.roosendaal.nl":
     case "roosendaal.accept.openwoo.app":
+    case "roosendaal.accept.commonground.nu":
       return RoosendaalAccept;
 
     case "rotterdam-theme":
@@ -248,6 +286,19 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "acceptatie-open.rotterdam.nl":
     case "rotterdam.accept.openwoo.app":
       return RotterdamAccept;
+
+    case "soest-theme":
+      case "open.soest.nl":
+      case "soest.openwoo.app":
+      case "soest.koophulpje.nl":
+      case "soest.prod.openwoo.app":
+      case "soest.prod.commonground.nu":
+        return Soest;
+      case "acceptatie-open.soest.nl":
+      case "soest.accept.openwoo.app":
+      case "soest-v2.accept.openwoo.app":
+      case "soest.accept.commonground.nu":
+        return SoestAccept;  
 
     case "stedebroec":
     case "open.stedebroec.nl":
@@ -271,9 +322,12 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.tubbergen.nl":
     case "tubbergen.openwoo.app":
     case "tubbergen.koophulpje.nl":
+    case "tubbergen.prod.openwoo.app":
+    case "tubbergen.prod.commonground.nu":
       return Tubbergen;
     case "acceptatie-open.tubbergen.nl":
     case "tubbergen.accept.openwoo.app":
+    case "tubbergen.accept.commonground.nu":
       return TubbergenAccept;
 
     case "waddinxveen":
@@ -289,9 +343,11 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.zutphen.nl":
     case "zutphen.openwoo.app":
     case "zutphen.koophulpje.nl":
+    case "zutphen.prod.commonground.nu":
       return Zutphen;
     case "acceptatie-open.zutphen.nl":
     case "zutphen.accept.openwoo.app":
+    case "zutphen.accept.commonground.nu":
       return ZutphenAccept;
 
     // Other
@@ -327,6 +383,15 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open-webconcept.accept.openwoo.app":
       return OpenWebconceptAccept;
 
+    case "odmh-theme":  
+    case "open.odmh.nl":
+    case "odmh.openwoo.app":
+    case "odmh.koophulpje.nl":
+      return Odmh;
+    case "acceptatie-open.odmh.nl":
+    case "odmh.accept.openwoo.app":
+      return OdmhAccept;
+
     case "sloterburg-theme":
     case "open.sloterburg.nl":
     case "sloterburg.openwoo.app":
@@ -351,7 +416,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "zuiddrecht.koophulpje.nl":
       return Zuiddrecht;
     case "acceptatie-open.zuiddrecht.nl":
-    case "zuiddrecht.accept.openwoo.app":
+    case "zuiddrecht-twee.accept.openwoo.app":
       return ZuiddrechtAccept;
 
     default:
@@ -381,6 +446,7 @@ export const availableThemes: TGroupedSelectOption[] = [
       { label: "Leiden", value: "leiden-theme" },
       { label: "Moerdijk", value: "moerdijk-theme" },
       { label: "Noordwijk", value: "noordwijk-theme" },
+      { label: "Oude IJsselstreek", value: "oude-ijsselstreek-theme" },
       { label: "Ridderkerk", value: "ridderkerk" },
       { label: "Rijssen-Holten", value: "rijssen-holten" },
       { label: "Roosendaal", value: "roosendaal-theme" },

@@ -2,7 +2,7 @@ import dateFormat, { i18n } from "dateformat";
 import { en as enM, nl as nlM } from "../translations/months";
 import { en as enD, nl as nlD } from "../translations/days";
 
-export const translateDate = (language: string, date: Date): string => {
+export const translateDate = (language: string, date: string): string => {
   switch (language) {
     case "nl":
       i18n.dayNames = nlD;
