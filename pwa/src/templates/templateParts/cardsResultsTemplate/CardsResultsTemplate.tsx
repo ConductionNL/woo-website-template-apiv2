@@ -37,17 +37,21 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
           >
             <CardHeader className={styles.cardHeader}>
               <CardHeaderDate>
-                {request["@self"].published ? translateDate(i18n.language, request["@self"].published) : t("N/A")}
+                {request.publicatiedatum || request["@self"].created
+                  ? translateDate(i18n.language, request.publicatiedatum || request["@self"].created)
+                  : t("N/A")}
               </CardHeaderDate>
               <CardHeaderTitle className={styles.title}>
                 <Heading2>
-                  {removeHTMLFromString(removeHTMLFromString(request.title ?? request.name)) ?? t("No title available")}
+                  {removeHTMLFromString(
+                    removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id),
+                  ) ?? t("No title available")}
                 </Heading2>
               </CardHeaderTitle>
             </CardHeader>
 
             <Paragraph className={styles.description}>
-              {removeHTMLFromString(removeHTMLFromString(request.summary))}
+              {removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? ""))}
             </Paragraph>
 
             {(window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ||

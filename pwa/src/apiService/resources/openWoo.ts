@@ -17,7 +17,7 @@ export default class OpenWoo {
   public getAll = async (filters: IFiltersContext, currentPage: number, limit: number): Promise<any> => {
     let endpoint = `/publications?extend[]=catalog&extend[]=@self.schema&${filtersToQueryParams(
       filters,
-    )}&_order[published]=desc&_limit=${limit}&_page=${currentPage}`;
+    )}&_order[publicatiedatum]=desc&_limit=${limit}&_page=${currentPage}`;
 
     // TODO: Uncomment this when filtering on oin is available in the API
     // if (window.sessionStorage.getItem("OIDN_NUMBER")) {
@@ -30,7 +30,7 @@ export default class OpenWoo {
   };
 
   public getOne = async (id: string): Promise<any> => {
-    const { data } = await this._send(this._instance, "GET", `/publications/${id}?extend[]=themes`);
+    const { data } = await this._send(this._instance, "GET", `/publications/${id}?extend[]=themes&extend[]=@self.schema`);
 
     return data;
   };
