@@ -35,55 +35,55 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const queryClient = new QueryClient();
   const getItems = useOpenWoo(queryClient).getOne(wooItemId);
 
-  const getAttachments = useOpenWoo(queryClient).getAttachments(wooItemId);
+  // const getAttachments = useOpenWoo(queryClient).getAttachments(wooItemId);
 
   const sortAlphaNum = (a: any, b: any) => a.title.localeCompare(b.title, i18n.language, { numeric: true });
 
-  const sortAttachments = (withLabels: boolean) => {
-    const filterdAttachments = getAttachments.data.results.filter((attachment: any) =>
-      withLabels ? attachment?.labels?.length > 0 : !attachment?.labels || attachment?.labels?.length === 0,
-    );
+  // const sortAttachments = (withLabels: boolean) => {
+  //   const filterdAttachments = getAttachments.data.results.filter((attachment: any) =>
+  //     withLabels ? attachment?.labels?.length > 0 : !attachment?.labels || attachment?.labels?.length === 0,
+  //   );
 
-    let multipleLabels: any[] = [];
-    let singleLabels: any[] = [];
+  //   let multipleLabels: any[] = [];
+  //   let singleLabels: any[] = [];
 
-    let allLabels: any[] = [];
+  //   let allLabels: any[] = [];
 
-    filterdAttachments.map((attachment: any) => {
-      if (attachment.labels.length > 1) {
-        multipleLabels.push(attachment);
-        allLabels.push(...attachment.labels);
-      } else {
-        singleLabels.push(attachment);
-        allLabels.push(attachment.labels[0]);
-      }
-    });
+  //   filterdAttachments.map((attachment: any) => {
+  //     if (attachment.labels.length > 1) {
+  //       multipleLabels.push(attachment);
+  //       allLabels.push(...attachment.labels);
+  //     } else {
+  //       singleLabels.push(attachment);
+  //       allLabels.push(attachment.labels[0]);
+  //     }
+  //   });
 
-    const newAttachments: any[] = [];
-    multipleLabels.map((attachment: any) => {
-      attachment.labels.map((label: any, idx: number) => {
-        newAttachments.push({
-          ...attachment,
-          labels: [attachment.labels[idx]],
-        });
-      });
-    });
+  //   const newAttachments: any[] = [];
+  //   multipleLabels.map((attachment: any) => {
+  //     attachment.labels.map((label: any, idx: number) => {
+  //       newAttachments.push({
+  //         ...attachment,
+  //         labels: [attachment.labels[idx]],
+  //       });
+  //     });
+  //   });
 
-    const attachmentsAll = [...newAttachments, ...singleLabels];
+  //   const attachmentsAll = [...newAttachments, ...singleLabels];
 
-    const uniqueLabels = [...new Set(allLabels)];
+  //   const uniqueLabels = [...new Set(allLabels)];
 
-    const sortedAttachments = uniqueLabels.map((label: any) => {
-      const attachmentsWithLabel = attachmentsAll.filter((attachment: any) => attachment.labels.includes(label));
+  //   const sortedAttachments = uniqueLabels.map((label: any) => {
+  //     const attachmentsWithLabel = attachmentsAll.filter((attachment: any) => attachment.labels.includes(label));
 
-      return {
-        attachments: [...attachmentsWithLabel],
-        label,
-      };
-    });
+  //     return {
+  //       attachments: [...attachmentsWithLabel],
+  //       label,
+  //     };
+  //   });
 
-    return withLabels ? sortedAttachments : attachmentsAll;
-  };
+  //   return withLabels ? sortedAttachments : attachmentsAll;
+  // };
 
   const getLabel = (label: string) => {
     switch (_.upperFirst(label)) {
@@ -246,8 +246,10 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                     </TableRow>
                   )}
 
-                  {getItems.data.data &&
-                    Object.entries(getItems.data.data).map(([key, value]: [string, any]) => {
+                  {console.log({ getItems })}
+
+                  {getItems.data &&
+                    Object.entries(getItems.data).map(([key, value]: [string, any]) => {
                       if (!!value) {
                         let formattedValue: string;
                         if (typeof value === "string") {
@@ -284,7 +286,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                     </TableRow>
                   )}
 
-                  {getAttachments.isSuccess &&
+                  {/* {getAttachments.isSuccess &&
                     sortAttachments(true).length > 0 &&
                     sortAttachments(true).map((sortedAttachments: any, idx: number) => (
                       <TableRow
@@ -358,7 +360,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         </UnorderedList>
                       </TableCell>
                     </TableRow>
-                  )}
+                  )} */}
                 </TableBody>
               </Table>
             </HorizontalOverflowWrapper>

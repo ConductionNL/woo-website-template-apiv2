@@ -76,8 +76,8 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   const onSubmit = (data: any) => {
     setFilters({
       _search: data._search,
-      "published[after]": data.year?.after,
-      "published[before]": data.year?.before,
+      "publicatiedatum[after]": data.year?.after,
+      "publicatiedatum[before]": data.year?.before,
       categorie: data.category?.value,
     });
   };
@@ -140,7 +140,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
           isClearable
           defaultValue={generateYearsArray(currentYear - 2021).find((year: any) => {
             return (
-              year.after === filters["published[after]"] && year.before === filters["published[before]"]
+              year.after === filters["publicatiedatum[after]"] && year.before === filters["publicatiedatum[before]"]
             );
           })}
           {...{ register, errors, control }}

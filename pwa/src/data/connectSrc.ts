@@ -99,6 +99,7 @@ https://zutphen.accept.commonground.nu
 https://noordwijk.accept.commonground.nu
 https://ede.accept.commonground.nu
 https://documenten.open.ede.nl
+https://horstadmaas.accept.commonground.nu
 `;
 
 export const connectSrcOther = `
