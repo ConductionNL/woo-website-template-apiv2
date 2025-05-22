@@ -247,33 +247,33 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           return;
                         }
 
-                        if (key === "themes" || key === "themas") {
-                          return (
-                            !_.isEmpty(value) && (
-                              <TableRow
-                                key={key}
-                                className={styles.tableRow}
-                                tabIndex={0}
-                                aria-labelledby={"themesName themesData"}
-                              >
-                                <TableCell id="themesName">{t("Themes")}</TableCell>
-                                <TableCell id="themesData">
-                                  {value.map((theme: any, idx: number) => (
-                                    <span key={idx}>
-                                      {theme.title ? theme.title + (idx !== value?.length - 1 ? ", " : "") : theme}
-                                    </span>
-                                  ))}
-                                </TableCell>
-                              </TableRow>
-                            )
-                          );
-                        }
-
                         if (typeof value === "string") {
                           const isValidDate = isDate(value);
                           formattedValue = isValidDate ? translateDate(i18n.language, value) ?? "-" : value;
                         } else if (Array.isArray(value)) {
-                          formattedValue = value.map((item: any) => item.title).join(", ");
+                          if (key === "themes" || key === "themas") {
+                            return (
+                              !_.isEmpty(value) && (
+                                <TableRow
+                                  key={key}
+                                  className={styles.tableRow}
+                                  tabIndex={0}
+                                  aria-labelledby={"themesName themesData"}
+                                >
+                                  <TableCell id="themesName">{t("Themes")}</TableCell>
+                                  <TableCell id="themesData">
+                                    {value.map((theme: any, idx: number) => (
+                                      <span key={idx}>
+                                        {theme.title ? theme.title + (idx !== value?.length - 1 ? ", " : "") : theme}
+                                      </span>
+                                    ))}
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            );
+                          } else {
+                            formattedValue = value.map((item: any) => item.title).join(", ");
+                          }
                         } else if (typeof value === "object") {
                           formattedValue = JSON.stringify(value);
                         } else {
