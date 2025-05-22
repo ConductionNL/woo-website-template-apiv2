@@ -26,13 +26,17 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
             onClick={() => navigate(request.id.toString())}
             tabIndex={0}
             aria-label={`${
-              request["@self"].published ? translateDate(i18n.language, request["@self"].published) : t("N/A")
-            }, ${removeHTMLFromString(removeHTMLFromString(request.title))}, ${removeHTMLFromString(removeHTMLFromString(request.summary))} ${
+              request["@self"].published
+                ? translateDate(i18n.language, request["@self"].published ?? request.publicatiedatum ?? request.created)
+                : t("N/A")
+            }, ${removeHTMLFromString(removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id))}, ${removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? t("No summary available")))} ${
               window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true"
-                ? `,${request.catalog?.organization?.title ?? request.organization?.title}`
+                ? `,${request.catalog?.organization?.title ?? request.organization?.title ?? t("No municipality available")}`
                 : ""
             } ${
-              window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ? `, ${t("Category")}, ${request.category}` : ""
+              window.sessionStorage.getItem("SHOW_CATEGORY") === "true"
+                ? `, ${t("Category")}, ${request["@self"].schema.title || t("No category available")}`
+                : ""
             }`}
           >
             <CardHeader className={styles.cardHeader}>
@@ -51,7 +55,9 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
             </CardHeader>
 
             <Paragraph className={styles.description}>
-              {removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? ""))}
+              {removeHTMLFromString(
+                removeHTMLFromString(request.summary ?? request.samenvatting ?? t("No summary available")),
+              )}
             </Paragraph>
 
             {(window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ||
@@ -67,7 +73,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
                 {window.sessionStorage.getItem("SHOW_CATEGORY") === "true" && (
                   <CardHeaderDate>
                     <span data-tooltip-id={TOOLTIP_ID} data-tooltip-content={t("Category")}>
-                      {request.category}
+                      {request["@self"].schema.title || t("No category available")}
                     </span>
                   </CardHeaderDate>
                 )}

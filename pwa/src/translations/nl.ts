@@ -5,6 +5,7 @@ export const nl = {
   Cards: "Tegels",
   Table: "Tabel",
   Feature: "Kenmerk",
+  Reference: "Referentie",
   Summary: "Samenvatting",
   Description: "Beschrijving",
   Themes: "Thema's",

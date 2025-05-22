@@ -62,12 +62,11 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                     : t("N/A")
                 } ${
                   window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true"
-                    ? `,${request.catalog?.organization?.title ?? request.organization?.title}`
+                    ? `,${request["@self"]?.organization?.title ?? request.organization?.title ?? t("No municipality available")}`
                     : ""
-                } ${window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ? `, ${request.category}` : ""}, ${
-                  removeHTMLFromString(
-                    removeHTMLFromString(request.summary ?? request.samenvatting ?? ""),
-                  ) ?? t("No summary available")
+                } ${window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ? `, ${request["@self"].schema.title || t("No category available")}` : ""}, ${
+                  removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? "")) ??
+                  t("No summary available")
                 }`}
               >
                 <TableCell>
@@ -85,7 +84,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                   <>
                     {window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true" && (
                       <TableCell className={styles.categoryAndMunicipality}>
-                        {request.catalog?.organization?.title ??
+                        {request["@self"]?.organization?.title ??
                           request.organization?.title ??
                           t("No municipality available")}
                       </TableCell>
@@ -97,16 +96,15 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                             styles.categoryAndMunicipality,
                         )}
                       >
-                        {request.category ?? t("No category available")}
+                        {request["@self"].schema.title || t("No category available")}
                       </TableCell>
                     )}
                   </>
                 )}
                 <TableCell>
                   <div className={styles.description}>
-                    {removeHTMLFromString(
-                      removeHTMLFromString(request.summary ?? request.samenvatting ?? ""),
-                    ) ?? t("No summary available")}
+                    {removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? "")) ??
+                      t("No summary available")}
                   </div>
                 </TableCell>
               </TableRow>

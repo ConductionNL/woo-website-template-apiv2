@@ -15,7 +15,7 @@ export default class OpenWoo {
   }
 
   public getAll = async (filters: IFiltersContext, currentPage: number, limit: number): Promise<any> => {
-    let endpoint = `/publications?extend[]=catalog&extend[]=@self.schema&${filtersToQueryParams(
+    let endpoint = `/publications?extend[]=catalog&extend[]=@self.schema&extend[]=@self.organization&${filtersToQueryParams(
       filters,
     )}&_order[publicatiedatum]=desc&_limit=${limit}&_page=${currentPage}`;
 
@@ -30,7 +30,11 @@ export default class OpenWoo {
   };
 
   public getOne = async (id: string): Promise<any> => {
-    const { data } = await this._send(this._instance, "GET", `/publications/${id}?extend[]=themes&extend[]=@self.schema`);
+    const { data } = await this._send(
+      this._instance,
+      "GET",
+      `/publications/${id}?extend[]=themes&extend[]=@self.schema`,
+    );
 
     return data;
   };

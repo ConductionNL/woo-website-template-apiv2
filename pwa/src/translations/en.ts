@@ -5,6 +5,7 @@ export const en = {
   Cards: "Cards",
   Table: "Table",
   Feature: "Feature",
+  Reference: "Reference",
   Summary: "Summary",
   Description: "Description",
   Themes: "Themes",
