@@ -9,9 +9,9 @@ export default class AvailableFilters {
     this._instance = _instance;
     this._send = send;
   }
-
+ 
   public getCategories = async (): Promise<any> => {
-    let endpoint = "/search/publications?_queries[]=category";
+    let endpoint = "/publications?extend[]=@self.schema&_queries[]=category&_queries[]=categorie";
 
     const { data } = await this._send(this._instance, "GET", endpoint);
 

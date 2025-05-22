@@ -127,9 +127,13 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     }
   };
 
-  function isDate(str: string) {
+  function isDate(str: string): boolean {
+    // Check for ISO date format (YYYY-MM-DD) or common date formats
+    const dateRegex = /^\d{4}-\d{2}-\d{2}|^\d{4}\/\d{2}\/\d{2}/;
+    if (!dateRegex.test(str)) return false;
+
     const date = new Date(str);
-    return !isNaN(date.getTime());
+    return !isNaN(date.getTime()) && date.toISOString().slice(0, 10) === str.slice(0, 10);
   }
 
   const getExtension = (attachment: any) => {
@@ -138,6 +142,53 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     } else {
       return attachment.type.split("/").pop();
     }
+  };
+
+  const checkIfVisible = (property: any) => {
+    return getItems.data["@self"].schema.properties[property].visible !== false;
+  };
+
+  const orderProperties = (data: any) => {
+    const excludeKeys = [
+      "@self",
+      "title",
+      "titel",
+      "name",
+      "naam",
+      "id",
+      ...Object.keys(getItems.data["@self"].schema.properties).filter((key) => !checkIfVisible(key)),
+    ];
+
+    const enrichedData = {
+      ...data,
+      category: data["@self"]?.schema?.title,
+    };
+
+    return Object.entries(enrichedData)
+      .filter(([key]) => !excludeKeys.includes(key))
+      .sort((a, b) => {
+        const orderA = data["@self"]?.schema?.properties?.[a[0]]?.order;
+        const orderB = data["@self"]?.schema?.properties?.[b[0]]?.order;
+
+        // If both have valid non-zero orders, sort normally
+        if (orderA && orderB && orderA !== 0 && orderB !== 0) {
+          return orderA - orderB;
+        }
+
+        // If orderA is valid and non-zero, it comes first
+        if (orderA && orderA !== 0) return -1;
+        // If orderB is valid and non-zero, it comes first
+        if (orderB && orderB !== 0) return 1;
+
+        // If orderA is 0 and orderB is null/undefined, orderA comes first
+        if (orderA === 0 && !orderB) return -1;
+        // If orderB is 0 and orderA is null/undefined, orderB comes first
+        if (orderB === 0 && !orderA) return 1;
+
+        // If both are 0 or both are null/undefined, maintain original order
+        return 0;
+      })
+      .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
   };
 
   return (
@@ -162,11 +213,17 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
             <Heading1
               id="mainContent"
               tabIndex={0}
-              aria-label={`${t("Title of woo request")}, ${getItems.data.title !== "" ? getItems.data.title : t("No title available")}`}
+              aria-label={`${t("Title of woo request")}, ${getItems.data.title ?? getItems.data.titel ?? getItems.data.name ?? getItems.data.naam ?? getItems.data.id}`}
             >
-              {getItems.data.title !== ""
-                ? removeHTMLFromString(removeHTMLFromString(getItems.data.title))
-                : t("No title available")}
+              {removeHTMLFromString(
+                removeHTMLFromString(
+                  getItems.data.title ??
+                    getItems.data.titel ??
+                    getItems.data.name ??
+                    getItems.data.naam ??
+                    getItems.data.id,
+                ),
+              )}
             </Heading1>
 
             <HorizontalOverflowWrapper
@@ -177,82 +234,48 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
             >
               <Table className={styles.table}>
                 <TableBody className={styles.tableBody}>
-                  {getItems.data.id && (
-                    <TableRow
-                      className={styles.tableRow}
-                      tabIndex={0}
-                      aria-label={`${t("Feature")}, ${getItems.data.reference ?? getItems.data.id}`}
-                    >
-                      <TableCell>{t("Feature")}</TableCell>
-                      <TableCell>{getItems.data.reference ?? getItems.data.id}</TableCell>
-                    </TableRow>
-                  )}
-
-                  {getItems.data.category && (
-                    <TableRow
-                      className={styles.tableRow}
-                      tabIndex={0}
-                      aria-label={`${t("Category")}, ${getItems.data.category ?? "-"}`}
-                    >
-                      <TableCell>{t("Category")}</TableCell>
-                      <TableCell>{getItems.data.category ?? "-"}</TableCell>
-                    </TableRow>
-                  )}
-
-                  {getItems.data.summary && (
-                    <TableRow
-                      className={styles.tableRow}
-                      tabIndex={0}
-                      aria-label={`${t("Summary")}, ${getItems.data.summary}`}
-                    >
-                      <TableCell>{t("Summary")}</TableCell>
-                      <TableCell>{removeHTMLFromString(removeHTMLFromString(getItems.data.summary))}</TableCell>
-                    </TableRow>
-                  )}
-                  {getItems.data.description && (
-                    <TableRow
-                      className={styles.tableRow}
-                      tabIndex={0}
-                      aria-label={`${t("Description")}, ${getItems.data.description}`}
-                    >
-                      <TableCell>{t("Description")}</TableCell>
-                      <TableCell>{removeHTMLFromString(removeHTMLFromString(getItems.data.description))}</TableCell>
-                    </TableRow>
-                  )}
-
-                  {getItems.data.metadata?.verzoek?.termijnoverschrijding && (
-                    <TableRow
-                      className={styles.tableRow}
-                      tabIndex={0}
-                      aria-label={`${t("Exceeding the term")}, ${getItems.data.metadata?.verzoek?.termijnoverschrijding}`}
-                    >
-                      <TableCell>{t("Exceeding the term")}</TableCell>
-                      <TableCell>{getItems.data.metadata?.verzoek?.termijnoverschrijding}</TableCell>
-                    </TableRow>
-                  )}
-
-                  {getItems.data.published && (
-                    <TableRow
-                      className={styles.tableRow}
-                      tabIndex={0}
-                      aria-label={`${t("Publication date")}, ${
-                        getItems.data.published ? translateDate(i18n.language, getItems.data.published) : "-"
-                      }`}
-                    >
-                      <TableCell>{t("Publication date")}</TableCell>
-                      <TableCell>
-                        {getItems.data.published ? translateDate(i18n.language, getItems.data.published) : "-"}
-                      </TableCell>
-                    </TableRow>
-                  )}
-
-                  {getItems.data.data &&
-                    Object.entries(getItems.data.data).map(([key, value]: [string, any]) => {
+                  {getItems.data &&
+                    Object.entries(orderProperties(getItems.data)).map(([key, value]: [string, any]) => {
                       if (!!value) {
                         let formattedValue: string;
+                        if (
+                          !value ||
+                          (typeof value === "string" && value.trim() === "") ||
+                          (Array.isArray(value) && value.length === 0) ||
+                          (typeof value === "object" && value !== null && Object.keys(value).length === 0)
+                        ) {
+                          return;
+                        }
+
                         if (typeof value === "string") {
                           const isValidDate = isDate(value);
                           formattedValue = isValidDate ? translateDate(i18n.language, value) ?? "-" : value;
+                        } else if (Array.isArray(value)) {
+                          if (key === "themes" || key === "themas") {
+                            return (
+                              !_.isEmpty(value) && (
+                                <TableRow
+                                  key={key}
+                                  className={styles.tableRow}
+                                  tabIndex={0}
+                                  aria-labelledby={"themesName themesData"}
+                                >
+                                  <TableCell id="themesName">{t("Themes")}</TableCell>
+                                  <TableCell id="themesData">
+                                    {value.map((theme: any, idx: number) => (
+                                      <span key={idx}>
+                                        {theme.title ? theme.title + (idx !== value?.length - 1 ? ", " : "") : theme}
+                                      </span>
+                                    ))}
+                                  </TableCell>
+                                </TableRow>
+                              )
+                            );
+                          } else {
+                            formattedValue = value.map((item: any) => item.title).join(", ");
+                          }
+                        } else if (typeof value === "object") {
+                          formattedValue = JSON.stringify(value);
                         } else {
                           formattedValue = String(value);
                         }
@@ -270,19 +293,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         );
                       }
                     })}
-
-                  {!_.isEmpty(getItems.data.themes) && (
-                    <TableRow className={styles.tableRow} tabIndex={0} aria-labelledby={"themesName themesData"}>
-                      <TableCell id="themesName">{t("Themes")}</TableCell>
-                      <TableCell id="themesData">
-                        {getItems.data.themes.map((theme: any, idx: number) => (
-                          <span key={idx}>
-                            {theme.title ? theme.title + (idx !== getItems.data.themes?.length - 1 ? ", " : "") : theme}
-                          </span>
-                        ))}
-                      </TableCell>
-                    </TableRow>
-                  )}
 
                   {getAttachments.isSuccess &&
                     sortAttachments(true).length > 0 &&
