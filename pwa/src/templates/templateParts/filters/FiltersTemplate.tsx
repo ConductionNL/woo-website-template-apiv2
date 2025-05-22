@@ -113,10 +113,20 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   React.useEffect(() => {
     if (!getCategories.isSuccess) return;
 
-    const categoriesWithData = getCategories.data.facets.category.map((category: any) => ({
-      label: _.upperFirst(category._id.toLowerCase()),
-      value: _.upperFirst(category._id.toLowerCase()),
-    }));
+    const categoriesWithData = Object.values(getCategories.data.facets)
+      .map((facet: any) =>
+        facet
+          .map((category: any) =>
+            category._id
+              ? {
+                  label: _.upperFirst(category._id.toLowerCase()),
+                  value: _.upperFirst(category._id.toLowerCase()),
+                }
+              : null,
+          )
+          .filter(Boolean),
+      )
+      .flat();
 
     const uniqueOptions: any[] = _.orderBy(_.uniqBy(categoriesWithData, "value"), "label", "asc");
     setCategoryOptions({ options: uniqueOptions });
