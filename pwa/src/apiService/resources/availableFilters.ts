@@ -11,7 +11,7 @@ export default class AvailableFilters {
   }
  
   public getCategories = async (): Promise<any> => {
-    let endpoint = "/publications?extend[]=@self.schema&_queries[]=category&_queries[]=categorie";
+    let endpoint = "/search/publications?extend[]=@self.schema&_queries[]=category&_queries[]=categorie";
 
     const { data } = await this._send(this._instance, "GET", endpoint);
 
