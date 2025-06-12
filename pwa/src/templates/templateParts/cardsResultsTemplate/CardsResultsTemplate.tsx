@@ -17,7 +17,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
 
   return (
     <>
-      <div className={styles.componentsGrid} role="region" aria-label={t("Woo Request")}>
+      <div className={styles.componentsGrid} role="status" aria-live="polite" aria-atomic="true" aria-label={t("Woo Request")}>
         {requests.map((request) => (
           <CardWrapper
             role="region"

@@ -29,7 +29,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
         scrollRightButton: t("Scroll table to the right"),
       }}
     >
-      <div role="region" aria-label={t("Woo Request")}>
+      <div role="status" aria-label={t("Woo Request")}>
         <Table className={styles.table}>
           <TableHeader className={styles.tableHeader}>
             <TableRow>
