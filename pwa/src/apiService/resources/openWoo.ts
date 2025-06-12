@@ -40,7 +40,7 @@ export default class OpenWoo {
   };
 
   public getAttachments = async (id: string): Promise<any> => {
-    const { data } = await this._send(this._instance, "GET", `/publications/${id}/attachments`);
+    const { data } = await this._send(this._instance, "GET", `/publications/${id}/attachments?_limit=500`);
 
     return data;
   };
