@@ -36,6 +36,11 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
             <span
               className={clsx(styles.languageSelect, i18n.language === "nl" && styles.languageSelectDisabled)}
               onClick={() => i18n.changeLanguage("nl")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  i18n.changeLanguage("nl");
+                }
+              }}
               tabIndex={0}
               aria-label="Vertaal pagina naar het Nederlands"
               role="button"
@@ -51,6 +56,11 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
             <span
               className={clsx(styles.languageSelect, i18n.language === "en" && styles.languageSelectDisabled)}
               onClick={() => i18n.changeLanguage("en")}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  i18n.changeLanguage("en");
+                }
+              }}
               tabIndex={0}
               aria-label="Translate page to English"
               role="button"
