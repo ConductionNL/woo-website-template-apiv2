@@ -181,7 +181,7 @@ const ExternalLink: React.FC<LinkComponentProps> = ({ item }) => {
       href={item.link}
       target="_blank"
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${t("Opens a new window")}`}
+      aria-label={`${t(item.ariaLabel)}, ${item.value}, ${t("Opens a new window")}`}
     >
       {item.customIcon && item.customIcon.placement === "left" && (
         <Icon className={styles.iconLeft}>{parse(item.customIcon.icon)}</Icon>
