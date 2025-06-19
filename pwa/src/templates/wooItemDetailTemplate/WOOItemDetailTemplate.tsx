@@ -24,6 +24,7 @@ import { useOpenWoo } from "../../hooks/openWoo";
 import { getPDFName } from "../../services/getPDFName";
 import { HorizontalOverflowWrapper } from "@conduction/components";
 import { removeHTMLFromString } from "../../services/removeHTMLFromString";
+import { Helmet } from "react-helmet";
 
 interface WOOItemDetailTemplateProps {
   wooItemId: string;
@@ -193,190 +194,191 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   };
 
   return (
-    <Page>
-      <PageContent className={styles.container}>
-        <div role="navigation">
-          <Link
-            className={styles.backLink}
-            href="/"
-            onClick={(e: any) => {
-              e.preventDefault(), navigate("/");
-            }}
-            tabIndex={0}
-            aria-label={t("Back to homepage")}
-          >
-            <FontAwesomeIcon icon={faArrowLeft} /> <span>{t("Back to homepage")}</span>
-          </Link>
-        </div>
-
-        {getItems.isSuccess && getItems.data && (
-          <div className={styles.content} role="region" aria-label={t("Details")}>
-            <Heading1
-              id="mainContent"
-              tabIndex={0}
-              aria-label={`${t("Title of woo request")}, ${getItems.data.title ?? getItems.data.titel ?? getItems.data.name ?? getItems.data.naam ?? getItems.data.id}`}
-            >
-              {removeHTMLFromString(
-                removeHTMLFromString(
-                  getItems.data.title ??
-                    getItems.data.titel ??
-                    getItems.data.name ??
-                    getItems.data.naam ??
-                    getItems.data.id,
-                ),
-              )}
-            </Heading1>
-
-            <HorizontalOverflowWrapper
-              ariaLabels={{
-                scrollLeftButton: t("Scroll table to the left"),
-                scrollRightButton: t("Scroll table to the right"),
+    <>
+      {getItems.isSuccess && (
+        <Helmet>
+          <title>{`Woo | ${window.sessionStorage.getItem("ORGANISATION_NAME")} | ${removeHTMLFromString(
+            getItems.data.titel,
+          )}`}</title>
+        </Helmet>
+      )}
+      <Page>
+        <PageContent className={styles.container}>
+          <div role="navigation">
+            <Link
+              className={styles.backLink}
+              href="/"
+              onClick={(e: any) => {
+                e.preventDefault(), navigate("/");
               }}
+              tabIndex={0}
+              aria-label={t("Back to homepage")}
             >
-              <Table className={styles.table}>
-                <TableBody className={styles.tableBody}>
-                  {getItems.data &&
-                    Object.entries(orderProperties(getItems.data)).map(([key, value]: [string, any]) => {
-                      if (!!value) {
-                        let formattedValue: string;
-                        if (
-                          !value ||
-                          (typeof value === "string" && value.trim() === "") ||
-                          (Array.isArray(value) && value.length === 0) ||
-                          (typeof value === "object" && value !== null && Object.keys(value).length === 0)
-                        ) {
-                          return;
-                        }
+              <FontAwesomeIcon icon={faArrowLeft} /> <span>{t("Back to homepage")}</span>
+            </Link>
+          </div>
 
-                        if (typeof value === "string") {
-                          const isValidDate = isDate(value);
-                          formattedValue = isValidDate ? translateDate(i18n.language, value) ?? "-" : value;
-                        } else if (Array.isArray(value)) {
-                          if (key === "themes" || key === "themas") {
-                            return (
-                              !_.isEmpty(value) && (
-                                <TableRow
-                                  key={key}
-                                  className={styles.tableRow}
-                                  tabIndex={0}
-                                  aria-labelledby={"themesName themesData"}
-                                >
-                                  <TableCell id="themesName">{t("Themes")}</TableCell>
-                                  <TableCell id="themesData">
-                                    {value.map((theme: any, idx: number) => (
-                                      <span key={idx}>
-                                        {theme.title ? theme.title + (idx !== value?.length - 1 ? ", " : "") : theme}
-                                      </span>
-                                    ))}
-                                  </TableCell>
-                                </TableRow>
-                              )
-                            );
-                          } else {
-                            formattedValue = value.map((item: any) => item.title).join(", ");
+          {getItems.isSuccess && getItems.data && (
+            <div className={styles.content} role="region" aria-label={t("Details")}>
+              <Heading1
+                id="mainContent"
+                tabIndex={0}
+                aria-label={`${t("Title of woo request")}, ${getItems.data.title ?? getItems.data.titel ?? getItems.data.name ?? getItems.data.naam ?? getItems.data.id}`}
+              >
+                {removeHTMLFromString(removeHTMLFromString(getItems.data.titel ?? getItems.data.title))}
+              </Heading1>
+
+              <HorizontalOverflowWrapper
+                ariaLabels={{
+                  scrollLeftButton: t("Scroll table to the left"),
+                  scrollRightButton: t("Scroll table to the right"),
+                }}
+              >
+                <Table className={styles.table}>
+                  <TableBody className={styles.tableBody}>
+                    {getItems.data &&
+                      Object.entries(orderProperties(getItems.data)).map(([key, value]: [string, any]) => {
+                        if (!!value) {
+                          let formattedValue: string;
+                          if (
+                            !value ||
+                            (typeof value === "string" && value.trim() === "") ||
+                            (Array.isArray(value) && value.length === 0) ||
+                            (typeof value === "object" && value !== null && Object.keys(value).length === 0)
+                          ) {
+                            return;
                           }
-                        } else if (typeof value === "object") {
-                          formattedValue = JSON.stringify(value);
-                        } else {
-                          formattedValue = String(value);
+
+                          if (typeof value === "string") {
+                            const isValidDate = isDate(value);
+                            formattedValue = isValidDate ? translateDate(i18n.language, value) ?? "-" : value;
+                          } else if (Array.isArray(value)) {
+                            if (key === "themes" || key === "themas") {
+                              return (
+                                !_.isEmpty(value) && (
+                                  <TableRow
+                                    key={key}
+                                    className={styles.tableRow}
+                                    tabIndex={0}
+                                    aria-labelledby={"themesName themesData"}
+                                  >
+                                    <TableCell id="themesName">{t("Themes")}</TableCell>
+                                    <TableCell id="themesData">
+                                      {value.map((theme: any, idx: number) => (
+                                        <span key={idx}>
+                                          {theme.title ? theme.title + (idx !== value?.length - 1 ? ", " : "") : theme}
+                                        </span>
+                                      ))}
+                                    </TableCell>
+                                  </TableRow>
+                                )
+                              );
+                            } else {
+                              formattedValue = value.map((item: any) => item.title).join(", ");
+                            }
+                          } else if (typeof value === "object") {
+                            formattedValue = JSON.stringify(value);
+                          } else {
+                            formattedValue = String(value);
+                          }
+
+                          return (
+                            <TableRow
+                              key={key}
+                              className={styles.tableRow}
+                              tabIndex={0}
+                              aria-label={`${getName(key)}, ${formattedValue}`}
+                            >
+                              <TableCell>{getName(key)}</TableCell>
+                              <TableCell>{formattedValue}</TableCell>
+                            </TableRow>
+                          );
                         }
+                      })}
 
-                        return (
-                          <TableRow
-                            key={key}
-                            className={styles.tableRow}
-                            tabIndex={0}
-                            aria-label={`${getName(key)}, ${formattedValue}`}
-                          >
-                            <TableCell>{getName(key)}</TableCell>
-                            <TableCell>{formattedValue}</TableCell>
-                          </TableRow>
-                        );
-                      }
-                    })}
+                    {getAttachments.isSuccess &&
+                      sortAttachments(true).length > 0 &&
+                      sortAttachments(true).map((sortedAttachments: any, idx: number) => (
+                        <TableRow
+                          className={styles.tableRow}
+                          key={idx}
+                          tabIndex={0}
+                          aria-label={
+                            sortedAttachments.attachments.length === 1
+                              ? `${getLabel(sortedAttachments.label)}, ${
+                                  sortedAttachments.attachments[0].title ??
+                                  getPDFName(sortedAttachments.attachments[0].accessUrl)
+                                }`
+                              : `${getLabel(sortedAttachments.label)}, ${t("There are")} ${
+                                  sortedAttachments.attachments.length
+                                } ${t("Attachments")} ${t("With the label")} ${getLabel(
+                                  sortedAttachments.label,
+                                )}, ${t("These are")} ${sortedAttachments.attachments
+                                  .map((attachment: any) => attachment.title ?? getPDFName(attachment.accessUrl))
+                                  .join(", ")}`
+                          }
+                        >
+                          <TableCell>{getLabel(sortedAttachments.label)}</TableCell>
 
-                  {getAttachments.isSuccess &&
-                    sortAttachments(true).length > 0 &&
-                    sortAttachments(true).map((sortedAttachments: any, idx: number) => (
-                      <TableRow
-                        className={styles.tableRow}
-                        key={idx}
-                        tabIndex={0}
-                        aria-label={
-                          sortedAttachments.attachments.length === 1
-                            ? `${getLabel(sortedAttachments.label)}, ${
-                                sortedAttachments.attachments[0].title ??
-                                getPDFName(sortedAttachments.attachments[0].accessUrl)
-                              }`
-                            : `${getLabel(sortedAttachments.label)}, ${t("There are")} ${
-                                sortedAttachments.attachments.length
-                              } ${t("Attachments")} ${t("With the label")} ${getLabel(
-                                sortedAttachments.label,
-                              )}, ${t("These are")} ${sortedAttachments.attachments
-                                .map((attachment: any) => attachment.title ?? getPDFName(attachment.accessUrl))
-                                .join(", ")}`
-                        }
-                      >
-                        <TableCell>{getLabel(sortedAttachments.label)}</TableCell>
-
-                        {sortedAttachments.attachments.length > 1 && (
-                          <TableCell>
-                            <UnorderedList id="labelAttachmentsData">
-                              {sortedAttachments.attachments.map((attachment: any, idx: number) => (
-                                <UnorderedListItem key={idx}>
-                                  <Link href={attachment.accessUrl} target="blank">
-                                    {`${attachment.title ?? getPDFName(attachment.accessUrl)}`}
-                                  </Link>
-                                </UnorderedListItem>
-                              ))}
-                            </UnorderedList>
-                          </TableCell>
-                        )}
-                        {sortedAttachments.attachments.length === 1 && (
-                          <TableCell>
-                            <Link href={sortedAttachments.attachments[0].accessUrl} target="blank">
-                              {`${sortedAttachments.attachments[0].title ?? getPDFName(sortedAttachments.attachments[0].accessUrl)}`}
-                            </Link>
-                          </TableCell>
-                        )}
-                      </TableRow>
-                    ))}
-
-                  {getAttachments.isSuccess && !_.isEmpty(sortAttachments(false)) && (
-                    <TableRow
-                      className={styles.tableRow}
-                      tabIndex={0}
-                      aria-labelledby="attachmentsName attachmentsData"
-                    >
-                      <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
-                      <TableCell>
-                        <UnorderedList id="attachmentsData">
-                          {sortAttachments(false)
-                            .sort(sortAlphaNum)
-                            .map(
-                              (bijlage: any, idx: number) =>
-                                bijlage.title && (
+                          {sortedAttachments.attachments.length > 1 && (
+                            <TableCell>
+                              <UnorderedList id="labelAttachmentsData">
+                                {sortedAttachments.attachments.map((attachment: any, idx: number) => (
                                   <UnorderedListItem key={idx}>
-                                    <Link
-                                      href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
-                                      target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
-                                    >
-                                      {bijlage.title}
+                                    <Link href={attachment.accessUrl} target="blank">
+                                      {`${attachment.title ?? getPDFName(attachment.accessUrl)}`}
                                     </Link>
                                   </UnorderedListItem>
-                                ),
-                            )}
-                        </UnorderedList>
-                      </TableCell>
-                    </TableRow>
-                  )}
-                </TableBody>
-              </Table>
-            </HorizontalOverflowWrapper>
-          </div>
-        )}
-        {getItems.isLoading && <Skeleton height={"200px"} />}
-      </PageContent>
-    </Page>
+                                ))}
+                              </UnorderedList>
+                            </TableCell>
+                          )}
+                          {sortedAttachments.attachments.length === 1 && (
+                            <TableCell>
+                              <Link href={sortedAttachments.attachments[0].accessUrl} target="blank">
+                                {`${sortedAttachments.attachments[0].title ?? getPDFName(sortedAttachments.attachments[0].accessUrl)}`}
+                              </Link>
+                            </TableCell>
+                          )}
+                        </TableRow>
+                      ))}
+
+                    {getAttachments.isSuccess && !_.isEmpty(sortAttachments(false)) && (
+                      <TableRow
+                        className={styles.tableRow}
+                        tabIndex={0}
+                        aria-labelledby="attachmentsName attachmentsData"
+                      >
+                        <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
+                        <TableCell>
+                          <UnorderedList id="attachmentsData">
+                            {sortAttachments(false)
+                              .sort(sortAlphaNum)
+                              .map(
+                                (bijlage: any, idx: number) =>
+                                  bijlage.title && (
+                                    <UnorderedListItem key={idx}>
+                                      <Link
+                                        href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
+                                        target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
+                                      >
+                                        {bijlage.title}
+                                      </Link>
+                                    </UnorderedListItem>
+                                  ),
+                              )}
+                          </UnorderedList>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </HorizontalOverflowWrapper>
+            </div>
+          )}
+          {getItems.isLoading && <Skeleton height={"200px"} />}
+        </PageContent>
+      </Page>
+    </>
   );
 };

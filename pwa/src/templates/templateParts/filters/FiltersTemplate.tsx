@@ -139,7 +139,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
           name="_search"
           placeholder={`${t("Search")}..`}
           defaultValue={filters._search}
-          ariaLabel={t("Enter search query")}
+          ariaLabel={t("Search")}
           {...{ register, errors }}
         />
 

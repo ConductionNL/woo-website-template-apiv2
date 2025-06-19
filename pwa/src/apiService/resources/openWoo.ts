@@ -15,7 +15,7 @@ export default class OpenWoo {
   }
 
   public getAll = async (filters: IFiltersContext, currentPage: number, limit: number): Promise<any> => {
-    let endpoint = `/publications?extend[]=catalog&extend[]=@self.schema&extend[]=@self.organization&${filtersToQueryParams(
+    let endpoint = `/publications?_extend[]=catalog&_extend[]=@self.schema&_extend[]=@self.organization${filtersToQueryParams(
       filters,
     )}&_order[publicatiedatum]=desc&_limit=${limit}&_page=${currentPage}`;
 

@@ -17,7 +17,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
 
   return (
     <>
-      <div className={styles.componentsGrid} role="region" aria-label={t("Woo Request")}>
+      <div className={styles.componentsGrid} role="status" aria-live="polite" aria-atomic="true" aria-label={t("Woo Request")}>
         {requests.map((request) => (
           <CardWrapper
             role="region"
@@ -40,14 +40,6 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
             }`}
           >
             <CardHeader className={styles.cardHeader}>
-              <CardHeaderDate>
-                {request["@self"].published
-                  ? translateDate(
-                      i18n.language,
-                      request["@self"].published ?? request.publicatiedatum ?? request.created,
-                    )
-                  : t("N/A")}
-              </CardHeaderDate>
               <CardHeaderTitle className={styles.title}>
                 <Heading2>
                   {removeHTMLFromString(
@@ -55,6 +47,11 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
                   ) ?? t("No title available")}
                 </Heading2>
               </CardHeaderTitle>
+              <CardHeaderDate>
+                {request.publicatiedatum || request["@self"].created
+                  ? translateDate(i18n.language, request.publicatiedatum || request["@self"].created)
+                  : t("N/A")}
+              </CardHeaderDate>
             </CardHeader>
 
             <Paragraph className={styles.description}>
