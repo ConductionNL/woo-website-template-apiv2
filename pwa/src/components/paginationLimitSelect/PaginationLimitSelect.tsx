@@ -51,7 +51,7 @@ export const PaginationLimitSelectComponent: React.FC<PaginationLimitSelectProps
     <div className={clsx(styles.container, layoutClassName && layoutClassName)}>
       <span>{t("Results per page")}:</span>
       <SelectSingle
-        ariaLabel={t("Select result limit")}
+        ariaLabel={t("Results per page")}
         {...{ register, errors, control }}
         defaultValue={QUERY_LIMIT_DEFAULT}
         name="limit"
