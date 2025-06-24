@@ -22,9 +22,10 @@ import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { QueryClient } from "react-query";
 import { useOpenWoo } from "../../hooks/openWoo";
 import { getPDFName } from "../../services/getPDFName";
-import { HorizontalOverflowWrapper } from "@conduction/components";
+import { HorizontalOverflowWrapper, Pagination } from "@conduction/components";
 import { removeHTMLFromString } from "../../services/removeHTMLFromString";
 import { Helmet } from "react-helmet";
+import { usePaginationContext } from "../../context/pagination";
 
 interface WOOItemDetailTemplateProps {
   wooItemId: string;
@@ -193,6 +194,31 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
   };
 
+  const { pagination, setPagination } = usePaginationContext();
+  const attachmentsPerPage = 10;
+
+  const unsortedAttachments = React.useMemo(() => {
+    if (getAttachments.isSuccess && !_.isEmpty(getAttachments.data?.results)) {
+      return sortAttachments(false).sort(sortAlphaNum);
+    }
+    return [];
+  }, [getAttachments.data]);
+  const totalAttachmentPages = Math.max(1, Math.ceil(unsortedAttachments.length / attachmentsPerPage));
+  const paginatedUnsortedAttachments = React.useMemo(
+    () =>
+      unsortedAttachments.slice(
+        (pagination.currentPage - 1) * attachmentsPerPage,
+        pagination.currentPage * attachmentsPerPage,
+      ),
+    [unsortedAttachments, pagination.currentPage, attachmentsPerPage],
+  );
+
+  React.useEffect(() => {
+    if (pagination.currentPage > totalAttachmentPages) {
+      setPagination({ currentPage: totalAttachmentPages });
+    }
+  }, [totalAttachmentPages]);
+
   return (
     <>
       {getItems.isSuccess && (
@@ -305,17 +331,15 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           tabIndex={0}
                           aria-label={
                             sortedAttachments.attachments.length === 1
-                              ? `${getLabel(sortedAttachments.label)}, ${
-                                  sortedAttachments.attachments[0].title ??
-                                  getPDFName(sortedAttachments.attachments[0].accessUrl)
-                                }`
-                              : `${getLabel(sortedAttachments.label)}, ${t("There are")} ${
-                                  sortedAttachments.attachments.length
-                                } ${t("Attachments")} ${t("With the label")} ${getLabel(
-                                  sortedAttachments.label,
-                                )}, ${t("These are")} ${sortedAttachments.attachments
-                                  .map((attachment: any) => attachment.title ?? getPDFName(attachment.accessUrl))
-                                  .join(", ")}`
+                              ? `${getLabel(sortedAttachments.label)}, ${sortedAttachments.attachments[0].title ??
+                              getPDFName(sortedAttachments.attachments[0].accessUrl)
+                              }`
+                              : `${getLabel(sortedAttachments.label)}, ${t("There are")} ${sortedAttachments.attachments.length
+                              } ${t("Attachments")} ${t("With the label")} ${getLabel(
+                                sortedAttachments.label,
+                              )}, ${t("These are")} ${sortedAttachments.attachments
+                                .map((attachment: any) => attachment.title ?? getPDFName(attachment.accessUrl))
+                                .join(", ")}`
                           }
                         >
                           <TableCell>{getLabel(sortedAttachments.label)}</TableCell>
@@ -343,7 +367,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         </TableRow>
                       ))}
 
-                    {getAttachments.isSuccess && !_.isEmpty(sortAttachments(false)) && (
+                    {getAttachments.isSuccess && unsortedAttachments.length > 0 && (
                       <TableRow
                         className={styles.tableRow}
                         tabIndex={0}
@@ -352,22 +376,37 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
                         <TableCell>
                           <UnorderedList id="attachmentsData">
-                            {sortAttachments(false)
-                              .sort(sortAlphaNum)
-                              .map(
-                                (bijlage: any, idx: number) =>
-                                  bijlage.title && (
-                                    <UnorderedListItem key={idx}>
-                                      <Link
-                                        href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
-                                        target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
-                                      >
-                                        {bijlage.title}
-                                      </Link>
-                                    </UnorderedListItem>
-                                  ),
-                              )}
+                            {paginatedUnsortedAttachments.map(
+                              (bijlage: any, idx: number) =>
+                                bijlage.title && (
+                                  <UnorderedListItem key={idx}>
+                                    <Link
+                                      href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
+                                      target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
+                                    >
+                                      {bijlage.title}
+                                    </Link>
+                                  </UnorderedListItem>
+                                ),
+                            )}
                           </UnorderedList>
+                          <div role="region" aria-label={t("Pagination")}
+                            className={styles.pagination}
+                          >
+                            {totalAttachmentPages > 1 && (
+                              <Pagination
+                                ariaLabels={{
+                                  pagination: t("Pagination"),
+                                  previousPage: t("Previous page"),
+                                  nextPage: t("Next page"),
+                                  page: t("Page"),
+                                }}
+                                totalPages={totalAttachmentPages}
+                                currentPage={pagination.currentPage}
+                                setCurrentPage={(page: any) => setPagination({ currentPage: page })}
+                              />
+                            )}
+                          </div>
                         </TableCell>
                       </TableRow>
                     )}
