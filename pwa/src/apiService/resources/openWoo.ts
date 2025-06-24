@@ -57,13 +57,13 @@ export default class OpenWoo {
 
   public getAttachmentsNoLabels = async (
     id: string,
-    limit: number = 10,
-    page: number = 1,
+    limit: number,
+    currentPage: number,
   ): Promise<any> => {
     const { data } = await this._send(
       this._instance,
       "GET",
-      `/publications/${id}/attachments?_noLabels=true&_limit=${limit}&_page=${page}`,
+      `/publications/${id}/attachments?_noLabels=true&_limit=${limit}&_page=${currentPage}`,
     );
 
     return data;

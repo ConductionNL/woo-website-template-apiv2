@@ -38,13 +38,10 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const getItems = useOpenWoo(queryClient).getOne(wooItemId);
 
   const { pagination, setPagination } = usePaginationContext();
+  const [requestedPage, setRequestedPage] = React.useState<number>(pagination.currentPage);
 
   const attachmentsWithLabelsQuery = useOpenWoo(queryClient).getAttachmentsWithLabels(wooItemId);
-  const attachmentsNoLabelsQuery = useOpenWoo(queryClient).getAttachmentsNoLabels(
-    wooItemId,
-    10,
-    pagination.currentPage,
-  );
+  const attachmentsNoLabelsQuery = useOpenWoo(queryClient).getAttachmentsNoLabels(wooItemId, 10, requestedPage);
 
   const sortAlphaNum = (a: any, b: any) => a.title.localeCompare(b.title, i18n.language, { numeric: true });
 
@@ -195,13 +192,16 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     return [...attachmentsNoLabelsQuery.data.results].sort(sortAlphaNum);
   }, [attachmentsNoLabelsQuery.data]);
 
-  const totalAttachmentPages = attachmentsNoLabelsQuery.isSuccess ? attachmentsNoLabelsQuery.data.pages : 1;
+  const totalAttachmentPages =
+    attachmentsNoLabelsQuery.isSuccess && attachmentsNoLabelsQuery.data?.pages
+      ? attachmentsNoLabelsQuery.data.pages
+      : pagination.currentPage;
 
   React.useEffect(() => {
-    if (pagination.currentPage > totalAttachmentPages) {
-      setPagination({ currentPage: totalAttachmentPages });
+    if (attachmentsNoLabelsQuery.isSuccess && pagination.currentPage !== requestedPage) {
+      setPagination({ currentPage: requestedPage });
     }
-  }, [totalAttachmentPages]);
+  }, [attachmentsNoLabelsQuery.isSuccess]);
 
   return (
     <>
@@ -386,8 +386,8 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                   page: t("Page"),
                                 }}
                                 totalPages={totalAttachmentPages}
-                                currentPage={pagination.currentPage}
-                                setCurrentPage={(page: any) => setPagination({ currentPage: page })}
+                                currentPage={requestedPage}
+                                setCurrentPage={(page: any) => setRequestedPage(page)}
                               />
                             )}
                           </div>

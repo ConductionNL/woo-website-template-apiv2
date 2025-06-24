@@ -56,15 +56,16 @@ export const useOpenWoo = (queryClient: QueryClient) => {
       },
     );
 
-  const getAttachmentsNoLabels = (requestId: string, limit: number, page: number) =>
+  const getAttachmentsNoLabels = (requestId: string, limit: number, currentPage: number) =>
     useQuery<any, Error>(
-      ["OpenWoo-Attachments-NoLabels", requestId, limit, page, window.sessionStorage.getItem("OIDN_NUMBER")],
-      () => API?.OpenWoo.getAttachmentsNoLabels(requestId, limit, page),
+      ["OpenWoo-Attachments-NoLabels", requestId, limit, currentPage, window.sessionStorage.getItem("OIDN_NUMBER")],
+      () => API?.OpenWoo.getAttachmentsNoLabels(requestId, limit, currentPage),
       {
         onError: (error) => {
           throw new Error(error.message);
         },
         enabled: !!requestId,
+        keepPreviousData: true,
       },
     );
 
