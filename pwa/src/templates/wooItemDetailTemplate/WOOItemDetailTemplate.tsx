@@ -37,55 +37,16 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const queryClient = new QueryClient();
   const getItems = useOpenWoo(queryClient).getOne(wooItemId);
 
-  const getAttachments = useOpenWoo(queryClient).getAttachments(wooItemId);
+  const { pagination, setPagination } = usePaginationContext();
+
+  const attachmentsWithLabelsQuery = useOpenWoo(queryClient).getAttachmentsWithLabels(wooItemId);
+  const attachmentsNoLabelsQuery = useOpenWoo(queryClient).getAttachmentsNoLabels(
+    wooItemId,
+    10,
+    pagination.currentPage,
+  );
 
   const sortAlphaNum = (a: any, b: any) => a.title.localeCompare(b.title, i18n.language, { numeric: true });
-
-  const sortAttachments = (withLabels: boolean) => {
-    const filterdAttachments = getAttachments.data.results.filter((attachment: any) =>
-      withLabels ? attachment?.labels?.length > 0 : !attachment?.labels || attachment?.labels?.length === 0,
-    );
-
-    let multipleLabels: any[] = [];
-    let singleLabels: any[] = [];
-
-    let allLabels: any[] = [];
-
-    filterdAttachments.map((attachment: any) => {
-      if (attachment.labels.length > 1) {
-        multipleLabels.push(attachment);
-        allLabels.push(...attachment.labels);
-      } else {
-        singleLabels.push(attachment);
-        allLabels.push(attachment.labels[0]);
-      }
-    });
-
-    const newAttachments: any[] = [];
-    multipleLabels.map((attachment: any) => {
-      attachment.labels.map((label: any, idx: number) => {
-        newAttachments.push({
-          ...attachment,
-          labels: [attachment.labels[idx]],
-        });
-      });
-    });
-
-    const attachmentsAll = [...newAttachments, ...singleLabels];
-
-    const uniqueLabels = [...new Set(allLabels)];
-
-    const sortedAttachments = uniqueLabels.map((label: any) => {
-      const attachmentsWithLabel = attachmentsAll.filter((attachment: any) => attachment.labels.includes(label));
-
-      return {
-        attachments: [...attachmentsWithLabel],
-        label,
-      };
-    });
-
-    return withLabels ? sortedAttachments : attachmentsAll;
-  };
 
   const getLabel = (label: string) => {
     switch (_.upperFirst(label)) {
@@ -194,24 +155,47 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
       .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
   };
 
-  const { pagination, setPagination } = usePaginationContext();
-  const attachmentsPerPage = 10;
+  const groupedAttachmentsWithLabels = React.useMemo(() => {
+    if (!attachmentsWithLabelsQuery.isSuccess || !attachmentsWithLabelsQuery.data?.results) return [];
+
+    const attachments = attachmentsWithLabelsQuery.data.results;
+
+    let multipleLabels: any[] = [];
+    let singleLabels: any[] = [];
+    let allLabels: any[] = [];
+
+    attachments.forEach((attachment: any) => {
+      if (attachment.labels?.length > 1) {
+        multipleLabels.push(attachment);
+        allLabels.push(...attachment.labels);
+      } else {
+        singleLabels.push(attachment);
+        allLabels.push(attachment.labels[0]);
+      }
+    });
+
+    const newAttachments: any[] = [];
+    multipleLabels.forEach((attachment: any) => {
+      attachment.labels.forEach((label: any, idx: number) => {
+        newAttachments.push({ ...attachment, labels: [attachment.labels[idx]] });
+      });
+    });
+
+    const attachmentsAll = [...newAttachments, ...singleLabels];
+    const uniqueLabels = [...new Set(allLabels)];
+
+    return uniqueLabels.map((label: any) => ({
+      attachments: attachmentsAll.filter((att: any) => att.labels.includes(label)),
+      label,
+    }));
+  }, [attachmentsWithLabelsQuery.data]);
 
   const unsortedAttachments = React.useMemo(() => {
-    if (getAttachments.isSuccess && !_.isEmpty(getAttachments.data?.results)) {
-      return sortAttachments(false).sort(sortAlphaNum);
-    }
-    return [];
-  }, [getAttachments.data]);
-  const totalAttachmentPages = Math.max(1, Math.ceil(unsortedAttachments.length / attachmentsPerPage));
-  const paginatedUnsortedAttachments = React.useMemo(
-    () =>
-      unsortedAttachments.slice(
-        (pagination.currentPage - 1) * attachmentsPerPage,
-        pagination.currentPage * attachmentsPerPage,
-      ),
-    [unsortedAttachments, pagination.currentPage, attachmentsPerPage],
-  );
+    if (!attachmentsNoLabelsQuery.isSuccess || !attachmentsNoLabelsQuery.data?.results) return [];
+    return [...attachmentsNoLabelsQuery.data.results].sort(sortAlphaNum);
+  }, [attachmentsNoLabelsQuery.data]);
+
+  const totalAttachmentPages = attachmentsNoLabelsQuery.isSuccess ? attachmentsNoLabelsQuery.data.pages : 1;
 
   React.useEffect(() => {
     if (pagination.currentPage > totalAttachmentPages) {
@@ -322,9 +306,9 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         }
                       })}
 
-                    {getAttachments.isSuccess &&
-                      sortAttachments(true).length > 0 &&
-                      sortAttachments(true).map((sortedAttachments: any, idx: number) => (
+                    {attachmentsWithLabelsQuery.isSuccess &&
+                      groupedAttachmentsWithLabels.length > 0 &&
+                      groupedAttachmentsWithLabels.map((sortedAttachments: any, idx: number) => (
                         <TableRow
                           className={styles.tableRow}
                           key={idx}
@@ -367,7 +351,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         </TableRow>
                       ))}
 
-                    {getAttachments.isSuccess && unsortedAttachments.length > 0 && (
+                    {attachmentsNoLabelsQuery.isSuccess && unsortedAttachments.length > 0 && (
                       <TableRow
                         className={styles.tableRow}
                         tabIndex={0}
@@ -376,7 +360,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
                         <TableCell>
                           <UnorderedList id="attachmentsData">
-                            {paginatedUnsortedAttachments.map(
+                            {unsortedAttachments.map(
                               (bijlage: any, idx: number) =>
                                 bijlage.title && (
                                   <UnorderedListItem key={idx}>
