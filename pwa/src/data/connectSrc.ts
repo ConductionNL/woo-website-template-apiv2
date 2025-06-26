@@ -88,6 +88,7 @@ https://texel.accept.openwoo.app
 https://tubbergen.openwoo.app
 https://tubbergen.accept.openwoo.app
 https://tubbergen.prod.commonground.nu
+https://tubbergen.commonground.nu
 https://tubbergen.accept.commonground.nu
 https://waddinxveen.openwoo.app
 https://waddinxveen.accept.openwoo.app
