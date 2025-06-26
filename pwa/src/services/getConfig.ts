@@ -322,7 +322,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.tubbergen.nl":
     case "tubbergen.openwoo.app":
     case "tubbergen.koophulpje.nl":
-    case "tubbergen.prod.openwoo.app":
+
     case "tubbergen.prod.commonground.nu":
       return Tubbergen;
     case "acceptatie-open.tubbergen.nl":
