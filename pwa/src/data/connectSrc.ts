@@ -19,6 +19,7 @@ https://buren.openwoo.app
 https://buren.accept.openwoo.app
 https://dinkelland.openwoo.app
 https://dinkelland.accept.openwoo.app
+https://dinkelland.commonground.nu
 https://dinkelland.prod.commonground.nu
 https://dinkelland.accept.commonground.nu
 https://ede.openwoo.app
@@ -96,6 +97,7 @@ https://zutphen.openwoo.app
 https://zutphen.accept.openwoo.app
 https://zutphen.prod.openwoo.app
 https://zutphen.prod.commonground.nu
+https://zutphen.commonground.nu
 https://zutphen.accept.commonground.nu
 https://noordwijk.accept.commonground.nu
 https://ede.accept.commonground.nu
@@ -108,6 +110,7 @@ https://conduction.openwoo.app
 https://conduction.accept.openwoo.app
 https://noaberkracht.openwoo.app
 https://noaberkracht.accept.openwoo.app
+https://noaberkracht.commonground.nu
 https://openwoo.app
 https://odmh.accept.openwoo.app
 https://odmh.accept.commonground.nu
