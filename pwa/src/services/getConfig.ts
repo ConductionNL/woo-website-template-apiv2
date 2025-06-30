@@ -59,6 +59,8 @@ import Conduction from "./../../static/configFiles/other/conduction/conduction.j
 import ConductionAccept from "./../../static/configFiles/other/conduction/conduction-accept.json";
 import Localhost from "./../../static/configFiles/other/localhost/localhost.json";
 import LocalhostNextcloud from "./../../static/configFiles/other/localhost/localhostNextcloud.json";
+import Koophulpje from "./../../static/configFiles/other/koophulpje/koophulpje.json";
+import KoophulpjeAccept from "./../../static/configFiles/other/koophulpje/koophulpje-accept.json";
 import Noaberkracht from "./../../static/configFiles/other/noaberkracht/noaberkracht.json";
 import NoaberkrachtAccept from "./../../static/configFiles/other/noaberkracht/noaberkracht-accept.json";
 import Odmh from "./../../static/configFiles/other/odmh/odmh.json";
@@ -364,6 +366,15 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
         return LocalhostNextcloud;
       }
       return Localhost;
+    
+    case "koophulpje-theme":
+    case "open.koophulpje.nl":
+    case "koophulpje.openwoo.app":
+    case "koophulpje.koophulpje.nl":
+      return Koophulpje;
+    case "acceptatie-open.koophulpje.nl":
+    case "koophulpje.accept.openwoo.app":
+      return KoophulpjeAccept;
 
     case "noaberkracht-theme":
     case "open.noaberkracht.nl":

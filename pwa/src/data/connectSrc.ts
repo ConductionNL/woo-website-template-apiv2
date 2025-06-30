@@ -108,6 +108,10 @@ https://horstadmaas.accept.commonground.nu
 export const connectSrcOther = `
 https://conduction.openwoo.app
 https://conduction.accept.openwoo.app
+https://koophulpje.openwoo.app
+https://koophulpje.accept.openwoo.app
+https://koophulpje.commonground.nu
+https://koophulpje.accept.commonground.nu
 https://noaberkracht.openwoo.app
 https://noaberkracht.accept.openwoo.app
 https://noaberkracht.commonground.nu
