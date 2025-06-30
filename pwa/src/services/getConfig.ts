@@ -370,7 +370,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "koophulpje-theme":
     case "open.koophulpje.nl":
     case "koophulpje.openwoo.app":
-    case "koophulpje.koophulpje.nl":
+    case "koophulpje.opencatalogi.nl": 
       return Koophulpje;
     case "acceptatie-open.koophulpje.nl":
     case "koophulpje.accept.openwoo.app":
