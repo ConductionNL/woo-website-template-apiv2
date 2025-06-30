@@ -57,8 +57,8 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                 onClick={() => navigate(request.id.toString())}
                 tabIndex={0}
                 aria-label={`${removeHTMLFromString(removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id))},  ${
-                  request.publicatiedatum || request["@self"].created
-                    ? translateDate(i18n.language, request.publicatiedatum || request["@self"].created)
+                  request.publicatiedatum || request["@self"].published
+                    ? translateDate(i18n.language, request.publicatiedatum || request["@self"].published)
                     : t("N/A")
                 } ${
                   window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true"
@@ -75,8 +75,8 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                   ) ?? t("No subject available")}
                 </TableCell>
                 <TableCell>
-                  {request.publicatiedatum || request["@self"].created
-                    ? translateDate(i18n.language, request.publicatiedatum || request["@self"].created)
+                  {request.publicatiedatum || request["@self"].published
+                    ? translateDate(i18n.language, request.publicatiedatum || request["@self"].published)
                     : t("No publication date available")}
                 </TableCell>
                 {(window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ||

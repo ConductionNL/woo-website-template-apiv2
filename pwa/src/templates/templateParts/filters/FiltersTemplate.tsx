@@ -29,6 +29,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   const { gatsbyContext } = useGatsbyContext();
   const { filters, setFilters } = useFiltersContext();
   const { categoryOptions, setCategoryOptions } = useCategoriesContext();
+  const [yearOptions, setYearOptions] = React.useState<any[]>(generateYearsArray(new Date().getFullYear() - 2021));
   const [queryParams, setQueryParams] = React.useState<IFiltersContext>(defaultFiltersContext);
   const [categoryParams, setCategoryParams] = React.useState<any>();
   const filterTimeout = React.useRef<NodeJS.Timeout | null>(null);
@@ -59,7 +60,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
     setValue(
       "year",
-      generateYearsArray(currentYear - 2021).find((year: any) => {
+      yearOptions.find((year: any) => {
         return year.value === params.year;
       }),
     );
@@ -76,9 +77,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   const onSubmit = (data: any) => {
     setFilters({
       _search: data._search,
-      "publicatiedatum[after]": data.year?.after,
-      "publicatiedatum[before]": data.year?.before,
-      categorie: data.category?.value,
+      "@self[published][gte]": data.year?.after,
+      "@self[published][lte]": data.year?.before,
+      "@self[schema]": data.category?.value,
     });
   };
 
@@ -111,26 +112,53 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   }, [filters]);
 
   React.useEffect(() => {
-    if (!getCategories.isSuccess) return;
+    if (!getCategories.isSuccess || !getCategories.data || !getCategories.data.facets) return;
 
-    const categoriesWithData = Object.values(getCategories.data.facets)
+    let facets: any = getCategories.data.facets;
+
+    if (facets["@self"]?.schema?.buckets) {
+      facets = { categorie: facets["@self"].schema.buckets };
+    }
+
+    const categoriesWithData = Object.values(facets as Record<string, any>)
       .map((facet: any) =>
         facet
           .map((category: any) =>
-            category._id
-              ? {
-                  label: _.upperFirst(category._id.toLowerCase()),
-                  value: _.upperFirst(category._id.toLowerCase()),
-                }
-              : null,
+            (() => {
+              const id = category.key;
+              const name = category.label ?? id;
+              if (!name) return null;
+
+              return {
+                label: _.upperFirst(String(name).toLowerCase()),
+                value: String(id),
+              };
+            })(),
           )
           .filter(Boolean),
       )
       .flat();
 
     const uniqueOptions: any[] = _.orderBy(_.uniqBy(categoriesWithData, "value"), "label", "asc");
+
+    if (_.isEqual(uniqueOptions, categoryOptions.options)) return;
+
     setCategoryOptions({ options: uniqueOptions });
-  }, [getCategories.isSuccess]);
+
+    if (getCategories.data?.facets?.["@self"]?.published?.buckets) {
+      const availableYears: number[] = (getCategories.data.facets["@self"].published.buckets as any[])
+        .map((b: any) => Number(b.key))
+        .filter(Boolean);
+
+      const dynamicYears = generateYearsArray(today.getFullYear() - 2021).filter((y: any) =>
+        availableYears.includes(Number(y.value)),
+      );
+
+      if (!_.isEqual(dynamicYears, yearOptions)) {
+        setYearOptions(dynamicYears);
+      }
+    }
+  }, [getCategories.isSuccess, getCategories.data]);
 
   return (
     <div id="filters" className={styles.container}>
@@ -144,13 +172,13 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
         />
 
         <SelectSingle
-          options={generateYearsArray(currentYear - 2021)}
+          options={yearOptions}
           name="year"
           placeholder={t("Year")}
           isClearable
-          defaultValue={generateYearsArray(currentYear - 2021).find((year: any) => {
+          defaultValue={yearOptions.find((year: any) => {
             return (
-              year.after === filters["publicatiedatum[after]"] && year.before === filters["publicatiedatum[before]"]
+              year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"]
             );
           })}
           {...{ register, errors, control }}
@@ -165,7 +193,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
             placeholder={t("Category")}
             defaultValue={
               categoryOptions.options &&
-              categoryOptions.options.find((option: any) => option.value === filters.categorie)
+              categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])
             }
             isClearable
             disabled={getCategories.isLoading}

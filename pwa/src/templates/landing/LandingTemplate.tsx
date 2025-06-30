@@ -16,12 +16,22 @@ import { PaginationLimitSelectComponent } from "../../components/paginationLimit
 
 export const LandingTemplate: React.FC = () => {
   const { t } = useTranslation();
-  const { filters } = useFiltersContext(); 
+  const { filters } = useFiltersContext();
   const { pagination, setPagination } = usePaginationContext();
   const { queryLimit, setQueryLimit } = useQueryLimitContext();
 
   const queryClient = new QueryClient();
   const getItems = useOpenWoo(queryClient).getAll(filters, pagination.currentPage, queryLimit.openWooObjectsQueryLimit);
+
+  const sortedResults = React.useMemo(() => {
+    if (!getItems.data?.results) return [];
+
+    return [...getItems.data.results].sort((a: any, b: any) => {
+      const dateB = Date.parse(b["@self"]?.published ?? "0");
+      const dateA = Date.parse(a["@self"]?.published ?? "0");
+      return dateB - dateA;
+    });
+  }, [getItems.data?.results]);
 
   React.useEffect(() => {
     if (queryLimit.openWooObjectsQueryLimit === queryLimit.previousOpenWooObjectsQueryLimit) return;
@@ -41,7 +51,7 @@ export const LandingTemplate: React.FC = () => {
 
           {getItems.data?.results && getItems.data?.results?.length > 0 && (
             <div id="mainContent">
-              <ResultsDisplayTemplate displayKey="landing-results" requests={getItems.data.results} />
+              <ResultsDisplayTemplate displayKey="landing-results" requests={sortedResults} />
               <div role="region" aria-label={t("Pagination")} className={styles.pagination}>
                 <Pagination
                   ariaLabels={{
