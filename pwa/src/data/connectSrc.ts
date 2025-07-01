@@ -51,6 +51,8 @@ https://hofvantwente.prod.commonground.nu
 https://hofvantwente.accept.commonground.nu 
 https://lansingerland.openwoo.app
 https://lansingerland.accept.openwoo.app
+https://lansingerland.accept.commonground.nu
+https://lansingerland.commonground.nu
 https://leiden.openwoo.app
 https://leiden.accept.openwoo.app
 https://moerdijk.openwoo.app
