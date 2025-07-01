@@ -32,6 +32,7 @@ https://epe.accept.commonground.nu
 https://gooisemeren.openwoo.app
 https://gooisemeren.accept.openwoo.app
 https://gooisemeren.prod.openwoo.app
+https://gooisemeren.commonground.nu
 https://gooisemeren.prod.commonground.nu
 https://gooisemeren.accept.commonground.nu
 https://gouda.openwoo.app
@@ -58,8 +59,8 @@ https://leiden.accept.openwoo.app
 https://moerdijk.openwoo.app
 https://moerdijk.accept.openwoo.app
 https://moerdijk.prod.openwoo.app
+https://moerdijk.commonground.nu
 https://moerdijk.prod.commonground.nu
-https://moerdijk.accept.commonground.nu
 https://noaberkracht.prod.commonground.nu
 https://noaberkracht.commonground.nu
 https://noaberkracht.accept.commonground.nu
