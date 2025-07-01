@@ -60,6 +60,7 @@ https://moerdijk.openwoo.app
 https://moerdijk.accept.openwoo.app
 https://moerdijk.prod.openwoo.app
 https://moerdijk.commonground.nu
+https://moerdijk.accept.commonground.nu
 https://moerdijk.prod.commonground.nu
 https://noaberkracht.prod.commonground.nu
 https://noaberkracht.commonground.nu
