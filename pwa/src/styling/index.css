@@ -28,6 +28,10 @@
 @import "../../node_modules/@conduction/theme/municipalities/ede-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/oude-ijsselstreek-design-tokens/dist/index.css";
 
+/* TEMPORARY THEMES */
+@import "./TEMP_THEMES/helmond-design-tokens.css";
+
+
 /* Design Tokens maintained by Frameless */
 @import "../../node_modules/@utrecht/design-tokens/dist/theme.css";
 @import "../../node_modules/@nl-design-system-unstable/bodegraven-reeuwijk-design-tokens/dist/index.css";
