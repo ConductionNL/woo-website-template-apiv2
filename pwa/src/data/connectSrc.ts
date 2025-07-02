@@ -48,6 +48,7 @@ https://hofvantwente.openwoo.app
 https://hofvantwente-v2.accept.openwoo.app/  
 https://hofvantwente.accept.openwoo.app
 https://hofvantwente.prod.openwoo.app
+https://hofvantwente.commonground.nu
 https://hofvantwente.prod.commonground.nu 
 https://hofvantwente.accept.commonground.nu 
 https://lansingerland.openwoo.app

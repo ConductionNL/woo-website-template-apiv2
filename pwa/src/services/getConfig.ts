@@ -196,6 +196,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "hofvantwente.koophulpje.nl":
     case "hofvantwente.prod.openwoo.app":
     case "hofvantwente.prod.commonground.nu":
+    case "hofvantwente.commonground.nu":
       return HofvanTwente;
     case "acceptatie-open.hofvantwente.nl":
     case "hofvantwente.accept.openwoo.app":
