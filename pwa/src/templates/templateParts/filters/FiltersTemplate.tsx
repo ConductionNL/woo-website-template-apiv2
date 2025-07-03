@@ -107,7 +107,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
     if (_.isEqual(filters, queryParams)) return;
 
     setQueryParams(filters);
-    navigate(`/${filtersToUrlQueryParams(filters)}`);
+    const categoryLabel = categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])?.label.replace(/\s+/g, "_");
+
+    navigate(`/${filtersToUrlQueryParams({ ...filters, "@self[schema]": categoryLabel })}`);
     setPagination({ currentPage: 1 });
   }, [filters]);
 
