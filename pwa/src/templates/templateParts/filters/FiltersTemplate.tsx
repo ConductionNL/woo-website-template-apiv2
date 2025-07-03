@@ -10,7 +10,6 @@ import { IFiltersContext, defaultFiltersContext, useFiltersContext } from "../..
 import { Button } from "@utrecht/component-library-react/dist/css-module";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { generateYearsArray } from "../../../data/years";
 import { useTranslation } from "react-i18next";
 import { filtersToUrlQueryParams } from "../../../services/filtersToQueryParams";
 import { navigate } from "gatsby";
@@ -29,6 +28,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   const { gatsbyContext } = useGatsbyContext();
   const { filters, setFilters } = useFiltersContext();
   const { categoryOptions, setCategoryOptions } = useCategoriesContext();
+  const [yearOptions, setYearOptions] = React.useState<any[]>([]);
   const [queryParams, setQueryParams] = React.useState<IFiltersContext>(defaultFiltersContext);
   const [categoryParams, setCategoryParams] = React.useState<any>();
   const filterTimeout = React.useRef<NodeJS.Timeout | null>(null);
@@ -44,9 +44,6 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
   const watcher = watch();
 
-  const today = new Date();
-  const currentYear = today.getFullYear();
-
   const url = gatsbyContext.location.search;
   const [, params] = url.split("?");
   const parsedParams = qs.parse(params);
@@ -59,7 +56,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
     setValue(
       "year",
-      generateYearsArray(currentYear - 2021).find((year: any) => {
+      yearOptions.find((year: any) => {
         return year.value === params.year;
       }),
     );
@@ -76,9 +73,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   const onSubmit = (data: any) => {
     setFilters({
       _search: data._search,
-      "publicatiedatum[after]": data.year?.after,
-      "publicatiedatum[before]": data.year?.before,
-      categorie: data.category?.value,
+      "@self[published][gte]": data.year?.after,
+      "@self[published][lte]": data.year?.before,
+      "@self[schema]": data.category?.value,
     });
   };
 
@@ -106,31 +103,72 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
     if (_.isEqual(filters, queryParams)) return;
 
     setQueryParams(filters);
-    navigate(`/${filtersToUrlQueryParams(filters)}`);
+    const categoryLabel = categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])?.label.replace(/\s+/g, "_");
+
+    navigate(`/${filtersToUrlQueryParams({ ...filters, "@self[schema]": categoryLabel })}`);
     setPagination({ currentPage: 1 });
   }, [filters]);
 
   React.useEffect(() => {
-    if (!getCategories.isSuccess) return;
+    if (!getCategories.isSuccess || !getCategories.data || !getCategories.data.facets) return;
 
-    const categoriesWithData = Object.values(getCategories.data.facets)
+    let facets: any = getCategories.data.facets;
+
+    if (facets["@self"]?.schema?.buckets) {
+      facets = { categorie: facets["@self"].schema.buckets };
+    }
+
+    const categoriesWithData = Object.values(facets as Record<string, any>)
       .map((facet: any) =>
         facet
           .map((category: any) =>
-            category._id
-              ? {
-                  label: _.upperFirst(category._id.toLowerCase()),
-                  value: _.upperFirst(category._id.toLowerCase()),
-                }
-              : null,
+            (() => {
+              const id = category.key;
+              const name = category.label ?? id;
+              if (!name) return null;
+
+              return {
+                label: _.upperFirst(String(name).toLowerCase()),
+                value: String(id),
+              };
+            })(),
           )
           .filter(Boolean),
       )
       .flat();
 
     const uniqueOptions: any[] = _.orderBy(_.uniqBy(categoriesWithData, "value"), "label", "asc");
+
+    if (_.isEqual(uniqueOptions, categoryOptions.options)) return;
+
     setCategoryOptions({ options: uniqueOptions });
-  }, [getCategories.isSuccess]);
+
+    if (getCategories.data?.facets?.["@self"]?.published?.buckets) {
+      const availableYears: number[] = (getCategories.data.facets["@self"].published.buckets as any[])
+        .map((b: any) => Number(b.key))
+        .filter(Boolean);
+
+      const dynamicYears = availableYears
+        .map((year) => ({
+          label: `${year}`,
+          value: `${year}`,
+          before: `${year + 1}-01-01T00:00:00Z`,
+          after: `${year - 1}-12-31T23:59:59Z`,
+        }))
+        .sort((a, b) => Number(b.value) - Number(a.value));
+
+      if (!_.isEqual(dynamicYears, yearOptions)) {
+        setYearOptions(dynamicYears);
+
+        if (categoryParams?.year) {
+          setValue(
+            "year",
+            dynamicYears.find((y: any) => y.value === categoryParams.year),
+          );
+        }
+      }
+    }
+  }, [getCategories.isSuccess, getCategories.data]);
 
   return (
     <div id="filters" className={styles.container}>
@@ -144,13 +182,13 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
         />
 
         <SelectSingle
-          options={generateYearsArray(currentYear - 2021)}
+          options={yearOptions}
           name="year"
           placeholder={t("Year")}
           isClearable
-          defaultValue={generateYearsArray(currentYear - 2021).find((year: any) => {
+          defaultValue={yearOptions.find((year: any) => {
             return (
-              year.after === filters["publicatiedatum[after]"] && year.before === filters["publicatiedatum[before]"]
+              year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"]
             );
           })}
           {...{ register, errors, control }}
@@ -165,7 +203,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
             placeholder={t("Category")}
             defaultValue={
               categoryOptions.options &&
-              categoryOptions.options.find((option: any) => option.value === filters.categorie)
+              categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])
             }
             isClearable
             disabled={getCategories.isLoading}
