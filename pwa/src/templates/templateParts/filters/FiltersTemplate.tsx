@@ -10,7 +10,6 @@ import { IFiltersContext, defaultFiltersContext, useFiltersContext } from "../..
 import { Button } from "@utrecht/component-library-react/dist/css-module";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faSpinner } from "@fortawesome/free-solid-svg-icons";
-import { generateYearsArray } from "../../../data/years";
 import { useTranslation } from "react-i18next";
 import { filtersToUrlQueryParams } from "../../../services/filtersToQueryParams";
 import { navigate } from "gatsby";
@@ -29,7 +28,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   const { gatsbyContext } = useGatsbyContext();
   const { filters, setFilters } = useFiltersContext();
   const { categoryOptions, setCategoryOptions } = useCategoriesContext();
-  const [yearOptions, setYearOptions] = React.useState<any[]>(generateYearsArray(new Date().getFullYear() - 2021));
+  const [yearOptions, setYearOptions] = React.useState<any[]>([]);
   const [queryParams, setQueryParams] = React.useState<IFiltersContext>(defaultFiltersContext);
   const [categoryParams, setCategoryParams] = React.useState<any>();
   const filterTimeout = React.useRef<NodeJS.Timeout | null>(null);
@@ -44,9 +43,6 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   } = useForm();
 
   const watcher = watch();
-
-  const today = new Date();
-  const currentYear = today.getFullYear();
 
   const url = gatsbyContext.location.search;
   const [, params] = url.split("?");
@@ -152,12 +148,24 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
         .map((b: any) => Number(b.key))
         .filter(Boolean);
 
-      const dynamicYears = generateYearsArray(today.getFullYear() - 2021).filter((y: any) =>
-        availableYears.includes(Number(y.value)),
-      );
+      const dynamicYears = availableYears
+        .map((year) => ({
+          label: `${year}`,
+          value: `${year}`,
+          before: `${year + 1}-01-01T00:00:00Z`,
+          after: `${year - 1}-12-31T23:59:59Z`,
+        }))
+        .sort((a, b) => Number(b.value) - Number(a.value));
 
       if (!_.isEqual(dynamicYears, yearOptions)) {
         setYearOptions(dynamicYears);
+
+        if (categoryParams?.year) {
+          setValue(
+            "year",
+            dynamicYears.find((y: any) => y.value === categoryParams.year),
+          );
+        }
       }
     }
   }, [getCategories.isSuccess, getCategories.data]);
