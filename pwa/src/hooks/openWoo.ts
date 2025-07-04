@@ -44,5 +44,30 @@ export const useOpenWoo = (queryClient: QueryClient) => {
       },
     );
 
-  return { getAll, getOne, getAttachments };
+  const getAttachmentsWithLabels = (requestId: string) =>
+    useQuery<any, Error>(
+      ["OpenWoo-Attachments-WithLabels", requestId, window.sessionStorage.getItem("OIDN_NUMBER")],
+      () => API?.OpenWoo.getAttachmentsWithLabels(requestId),
+      {
+        onError: (error) => {
+          throw new Error(error.message);
+        },
+        enabled: !!requestId,
+      },
+    );
+
+  const getAttachmentsNoLabels = (requestId: string, limit: number, currentPage: number) =>
+    useQuery<any, Error>(
+      ["OpenWoo-Attachments-NoLabels", requestId, limit, currentPage, window.sessionStorage.getItem("OIDN_NUMBER")],
+      () => API?.OpenWoo.getAttachmentsNoLabels(requestId, limit, currentPage),
+      {
+        onError: (error) => {
+          throw new Error(error.message);
+        },
+        enabled: !!requestId,
+        keepPreviousData: true,
+      },
+    );
+
+  return { getAll, getOne, getAttachments, getAttachmentsWithLabels, getAttachmentsNoLabels };
 };

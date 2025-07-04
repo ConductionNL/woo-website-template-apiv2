@@ -15,9 +15,7 @@ export default class OpenWoo {
   }
 
   public getAll = async (filters: IFiltersContext, currentPage: number, limit: number): Promise<any> => {
-    let endpoint = `/publications?_extend[]=catalog&_extend[]=@self.schema&_extend[]=@self.organization${filtersToQueryParams(
-      filters,
-    )}&_order[publicatiedatum]=desc&_limit=${limit}&_page=${currentPage}`;
+    let endpoint = `/publications?_limit=${limit}&_page=${currentPage}&_order[@self.published]=desc${filtersToQueryParams(filters)}`;
 
     // TODO: Uncomment this when filtering on oin is available in the API
     // if (window.sessionStorage.getItem("OIDN_NUMBER")) {
@@ -41,6 +39,30 @@ export default class OpenWoo {
 
   public getAttachments = async (id: string): Promise<any> => {
     const { data } = await this._send(this._instance, "GET", `/publications/${id}/attachments?_limit=500`);
+
+    return data;
+  };
+
+  public getAttachmentsWithLabels = async (id: string, limit: number = 500): Promise<any> => {
+    const { data } = await this._send(
+      this._instance,
+      "GET",
+      `/publications/${id}/attachments?_hasLabels=true&_limit=${limit}`,
+    );
+
+    return data;
+  };
+
+  public getAttachmentsNoLabels = async (
+    id: string,
+    limit: number,
+    currentPage: number,
+  ): Promise<any> => {
+    const { data } = await this._send(
+      this._instance,
+      "GET",
+      `/publications/${id}/attachments?_noLabels=true&_limit=${limit}&_page=${currentPage}`,
+    );
 
     return data;
   };
