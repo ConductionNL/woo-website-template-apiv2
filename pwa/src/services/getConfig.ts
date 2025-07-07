@@ -55,6 +55,8 @@ import Zutphen from "./../../static/configFiles/municipalities/zutphen/zutphen.j
 import ZutphenAccept from "./../../static/configFiles/municipalities/zutphen/zutphen-accept.json";
 
 // Other
+import BCT from "./../../static/configFiles/other/bct/bct.json";
+import BCTAccept from "./../../static/configFiles/other/bct/bct-accept.json";
 import Conduction from "./../../static/configFiles/other/conduction/conduction.json";
 import ConductionAccept from "./../../static/configFiles/other/conduction/conduction-accept.json";
 import Localhost from "./../../static/configFiles/other/localhost/localhost.json";
@@ -354,6 +356,17 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
       return ZutphenAccept;
 
     // Other
+
+    case "bct-theme":
+    case "open.bct.nl":
+    case "conduction.koophulpje.nl":
+      return BCT;
+    case "acceptatie-open.bct.nl":
+    case "bct.openwoo.app":
+    case "bct.accept.openwoo.app":
+      return BCTAccept;
+
+
     case "conduction-theme":
     case "open.conduction.nl":
     case "conduction.koophulpje.nl":
