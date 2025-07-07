@@ -73,3 +73,17 @@
   background-color: var(--utrecht-table-row-hover-background-color);
   color: var(--utrecht-table-row-hover-color);
 }
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+}
+
+@media only screen and (max-width: 576px) {
+  .pagination {
+    display: grid;
+    justify-content: unset;
+    justify-items: center;
+    margin-block-start: var(--utrecht-space-block-lg);
+  }
+}

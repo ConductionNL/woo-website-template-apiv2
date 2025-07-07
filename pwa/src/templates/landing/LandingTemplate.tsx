@@ -16,7 +16,7 @@ import { PaginationLimitSelectComponent } from "../../components/paginationLimit
 
 export const LandingTemplate: React.FC = () => {
   const { t } = useTranslation();
-  const { filters } = useFiltersContext(); 
+  const { filters } = useFiltersContext();
   const { pagination, setPagination } = usePaginationContext();
   const { queryLimit, setQueryLimit } = useQueryLimitContext();
 

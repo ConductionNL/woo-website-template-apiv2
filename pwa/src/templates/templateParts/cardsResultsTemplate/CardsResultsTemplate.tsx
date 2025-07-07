@@ -48,8 +48,8 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
                 </Heading2>
               </CardHeaderTitle>
               <CardHeaderDate>
-                {request.publicatiedatum || request["@self"].created
-                  ? translateDate(i18n.language, request.publicatiedatum || request["@self"].created)
+                {request.publicatiedatum || request["@self"].published
+                  ? translateDate(i18n.language, request.publicatiedatum || request["@self"].published)
                   : t("N/A")}
               </CardHeaderDate>
             </CardHeader>
