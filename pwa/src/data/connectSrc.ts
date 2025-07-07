@@ -138,6 +138,8 @@ https://zuiddrecht-twee.accept.commonground.nu
 https://zuiddrecht-drie.accept.commonground.nu
 https://tilburg.accept.commonground.nu
 https://bct.accept.commonground.nu
+https://bct.commonground.nu
+https://bct.openwoo.app
 `;
 
 export const connectSrcLocal = `
