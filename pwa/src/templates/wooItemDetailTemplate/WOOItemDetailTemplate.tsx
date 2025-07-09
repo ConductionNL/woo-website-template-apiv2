@@ -116,6 +116,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
       "name",
       "naam",
       "id",
+      "attachments",
       ...Object.keys(getItems.data["@self"].schema.properties).filter((key) => !checkIfVisible(key)),
     ];
 
@@ -181,7 +182,30 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     const attachmentsAll = [...newAttachments, ...singleLabels];
     const uniqueLabels = [...new Set(allLabels)];
 
-    return uniqueLabels.map((label: any) => ({
+    // Define the specific order for labels
+    const labelOrder = ["informatieverzoek", "convenant", "besluit", "inventarisatielijst", "bijlage"];
+
+    // Sort labels according to the specified order, with any unknown labels at the end
+    const sortedLabels = uniqueLabels.sort((a: any, b: any) => {
+      const aLower = a.toLowerCase();
+      const bLower = b.toLowerCase();
+      const indexA = labelOrder.indexOf(aLower);
+      const indexB = labelOrder.indexOf(bLower);
+
+      // If both labels are in the order array, sort by their position
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB;
+      }
+
+      // If only one is in the order array, prioritize it
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+
+      // If neither is in the order array, sort alphanumerically
+      return aLower.localeCompare(bLower, i18n.language, { numeric: true });
+    });
+
+    return sortedLabels.map((label: any) => ({
       attachments: attachmentsAll.filter((att: any) => att.labels.includes(label)),
       label,
     }));
@@ -315,15 +339,17 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           tabIndex={0}
                           aria-label={
                             sortedAttachments.attachments.length === 1
-                              ? `${getLabel(sortedAttachments.label)}, ${sortedAttachments.attachments[0].title ??
-                              getPDFName(sortedAttachments.attachments[0].accessUrl)
-                              }`
-                              : `${getLabel(sortedAttachments.label)}, ${t("There are")} ${sortedAttachments.attachments.length
-                              } ${t("Attachments")} ${t("With the label")} ${getLabel(
-                                sortedAttachments.label,
-                              )}, ${t("These are")} ${sortedAttachments.attachments
-                                .map((attachment: any) => attachment.title ?? getPDFName(attachment.accessUrl))
-                                .join(", ")}`
+                              ? `${getLabel(sortedAttachments.label)}, ${
+                                  sortedAttachments.attachments[0].title ??
+                                  getPDFName(sortedAttachments.attachments[0].accessUrl)
+                                }`
+                              : `${getLabel(sortedAttachments.label)}, ${t("There are")} ${
+                                  sortedAttachments.attachments.length
+                                } ${t("Attachments")} ${t("With the label")} ${getLabel(
+                                  sortedAttachments.label,
+                                )}, ${t("These are")} ${sortedAttachments.attachments
+                                  .map((attachment: any) => attachment.title ?? getPDFName(attachment.accessUrl))
+                                  .join(", ")}`
                           }
                         >
                           <TableCell>{getLabel(sortedAttachments.label)}</TableCell>
@@ -374,9 +400,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                 ),
                             )}
                           </UnorderedList>
-                          <div role="region" aria-label={t("Pagination")}
-                            className={styles.pagination}
-                          >
+                          <div role="region" aria-label={t("Pagination")} className={styles.pagination}>
                             {totalAttachmentPages > 1 && (
                               <Pagination
                                 ariaLabels={{
