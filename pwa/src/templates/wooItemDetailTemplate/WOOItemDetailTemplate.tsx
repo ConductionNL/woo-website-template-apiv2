@@ -121,7 +121,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     ];
 
     const enrichedData = {
-      publicatieDatum: data["@self"]?.published,
+      "publicatie datum": data["@self"]?.published,
       categorie: data["@self"]?.schema?.title,
       ...data,
     };
@@ -356,15 +356,15 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
 
                           {sortedAttachments.attachments.length > 1 && (
                             <TableCell>
-                              <UnorderedList id="labelAttachmentsData">
+                              <div id="labelAttachmentsData">
                                 {sortedAttachments.attachments.map((attachment: any, idx: number) => (
-                                  <UnorderedListItem key={idx}>
+                                  <div key={idx}>
                                     <Link href={attachment.accessUrl} target="blank">
                                       {`${attachment.title ?? getPDFName(attachment.accessUrl)}`}
                                     </Link>
-                                  </UnorderedListItem>
+                                  </div>
                                 ))}
-                              </UnorderedList>
+                              </div>
                             </TableCell>
                           )}
                           {sortedAttachments.attachments.length === 1 && (
@@ -385,21 +385,21 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                       >
                         <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
                         <TableCell>
-                          <UnorderedList id="attachmentsData">
+                          <div id="attachmentsData">
                             {unsortedAttachments.map(
                               (bijlage: any, idx: number) =>
                                 bijlage.title && (
-                                  <UnorderedListItem key={idx}>
+                                  <div key={idx}>
                                     <Link
                                       href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
                                       target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
                                     >
                                       {bijlage.title}
                                     </Link>
-                                  </UnorderedListItem>
+                                  </div>
                                 ),
                             )}
-                          </UnorderedList>
+                          </div>
                           <div role="region" aria-label={t("Pagination")} className={styles.pagination}>
                             {totalAttachmentPages > 1 && (
                               <Pagination
