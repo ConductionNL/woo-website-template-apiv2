@@ -182,7 +182,30 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     const attachmentsAll = [...newAttachments, ...singleLabels];
     const uniqueLabels = [...new Set(allLabels)];
 
-    return uniqueLabels.map((label: any) => ({
+    // Define the specific order for labels
+    const labelOrder = ["informatieverzoek", "convenant", "besluit", "inventarisatielijst", "bijlage"];
+
+    // Sort labels according to the specified order, with any unknown labels at the end
+    const sortedLabels = uniqueLabels.sort((a: any, b: any) => {
+      const aLower = a.toLowerCase();
+      const bLower = b.toLowerCase();
+      const indexA = labelOrder.indexOf(aLower);
+      const indexB = labelOrder.indexOf(bLower);
+
+      // If both labels are in the order array, sort by their position
+      if (indexA !== -1 && indexB !== -1) {
+        return indexA - indexB;
+      }
+
+      // If only one is in the order array, prioritize it
+      if (indexA !== -1) return -1;
+      if (indexB !== -1) return 1;
+
+      // If neither is in the order array, sort alphanumerically
+      return aLower.localeCompare(bLower, i18n.language, { numeric: true });
+    });
+
+    return sortedLabels.map((label: any) => ({
       attachments: attachmentsAll.filter((att: any) => att.labels.includes(label)),
       label,
     }));
