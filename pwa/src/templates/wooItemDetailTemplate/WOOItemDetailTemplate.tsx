@@ -116,6 +116,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
       "name",
       "naam",
       "id",
+      "attachments",
       ...Object.keys(getItems.data["@self"].schema.properties).filter((key) => !checkIfVisible(key)),
     ];
 
@@ -315,15 +316,17 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           tabIndex={0}
                           aria-label={
                             sortedAttachments.attachments.length === 1
-                              ? `${getLabel(sortedAttachments.label)}, ${sortedAttachments.attachments[0].title ??
-                              getPDFName(sortedAttachments.attachments[0].accessUrl)
-                              }`
-                              : `${getLabel(sortedAttachments.label)}, ${t("There are")} ${sortedAttachments.attachments.length
-                              } ${t("Attachments")} ${t("With the label")} ${getLabel(
-                                sortedAttachments.label,
-                              )}, ${t("These are")} ${sortedAttachments.attachments
-                                .map((attachment: any) => attachment.title ?? getPDFName(attachment.accessUrl))
-                                .join(", ")}`
+                              ? `${getLabel(sortedAttachments.label)}, ${
+                                  sortedAttachments.attachments[0].title ??
+                                  getPDFName(sortedAttachments.attachments[0].accessUrl)
+                                }`
+                              : `${getLabel(sortedAttachments.label)}, ${t("There are")} ${
+                                  sortedAttachments.attachments.length
+                                } ${t("Attachments")} ${t("With the label")} ${getLabel(
+                                  sortedAttachments.label,
+                                )}, ${t("These are")} ${sortedAttachments.attachments
+                                  .map((attachment: any) => attachment.title ?? getPDFName(attachment.accessUrl))
+                                  .join(", ")}`
                           }
                         >
                           <TableCell>{getLabel(sortedAttachments.label)}</TableCell>
@@ -374,9 +377,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                 ),
                             )}
                           </UnorderedList>
-                          <div role="region" aria-label={t("Pagination")}
-                            className={styles.pagination}
-                          >
+                          <div role="region" aria-label={t("Pagination")} className={styles.pagination}>
                             {totalAttachmentPages > 1 && (
                               <Pagination
                                 ariaLabels={{
