@@ -55,10 +55,14 @@ import Zutphen from "./../../static/configFiles/municipalities/zutphen/zutphen.j
 import ZutphenAccept from "./../../static/configFiles/municipalities/zutphen/zutphen-accept.json";
 
 // Other
+import BCT from "./../../static/configFiles/other/bct/bct.json";
+import BCTAccept from "./../../static/configFiles/other/bct/bct-accept.json";
 import Conduction from "./../../static/configFiles/other/conduction/conduction.json";
 import ConductionAccept from "./../../static/configFiles/other/conduction/conduction-accept.json";
 import Localhost from "./../../static/configFiles/other/localhost/localhost.json";
 import LocalhostNextcloud from "./../../static/configFiles/other/localhost/localhostNextcloud.json";
+import Koophulpje from "./../../static/configFiles/other/koophulpje/koophulpje.json";
+import KoophulpjeAccept from "./../../static/configFiles/other/koophulpje/koophulpje-accept.json";
 import Noaberkracht from "./../../static/configFiles/other/noaberkracht/noaberkracht.json";
 import NoaberkrachtAccept from "./../../static/configFiles/other/noaberkracht/noaberkracht-accept.json";
 import Odmh from "./../../static/configFiles/other/odmh/odmh.json";
@@ -194,6 +198,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "hofvantwente.koophulpje.nl":
     case "hofvantwente.prod.openwoo.app":
     case "hofvantwente.prod.commonground.nu":
+    case "hofvantwente.commonground.nu":
       return HofvanTwente;
     case "acceptatie-open.hofvantwente.nl":
     case "hofvantwente.accept.openwoo.app":
@@ -322,7 +327,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.tubbergen.nl":
     case "tubbergen.openwoo.app":
     case "tubbergen.koophulpje.nl":
-    case "tubbergen.prod.openwoo.app":
+
     case "tubbergen.prod.commonground.nu":
       return Tubbergen;
     case "acceptatie-open.tubbergen.nl":
@@ -351,6 +356,17 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
       return ZutphenAccept;
 
     // Other
+
+    case "bct-theme":
+    case "open.bct.nl":
+    case "conduction.koophulpje.nl":
+      return BCT;
+    case "acceptatie-open.bct.nl":
+    case "bct.openwoo.app":
+    case "bct.accept.openwoo.app":
+      return BCTAccept;
+
+
     case "conduction-theme":
     case "open.conduction.nl":
     case "conduction.koophulpje.nl":
@@ -364,6 +380,15 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
         return LocalhostNextcloud;
       }
       return Localhost;
+    
+    case "koophulpje-theme":
+    case "open.koophulpje.nl":
+    case "koophulpje.openwoo.app":
+    case "koophulpje.opencatalogi.nl": 
+      return Koophulpje;
+    case "acceptatie-open.koophulpje.nl":
+    case "koophulpje.accept.openwoo.app":
+      return KoophulpjeAccept;
 
     case "noaberkracht-theme":
     case "open.noaberkracht.nl":
@@ -416,7 +441,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "zuiddrecht.koophulpje.nl":
       return Zuiddrecht;
     case "acceptatie-open.zuiddrecht.nl":
-    case "zuiddrecht-twee.accept.openwoo.app":
+    case "zuiddrecht-drie.accept.openwoo.app":
       return ZuiddrechtAccept;
 
     default:

@@ -19,6 +19,7 @@ https://buren.openwoo.app
 https://buren.accept.openwoo.app
 https://dinkelland.openwoo.app
 https://dinkelland.accept.openwoo.app
+https://dinkelland.commonground.nu
 https://dinkelland.prod.commonground.nu
 https://dinkelland.accept.commonground.nu
 https://ede.openwoo.app
@@ -31,6 +32,7 @@ https://epe.accept.commonground.nu
 https://gooisemeren.openwoo.app
 https://gooisemeren.accept.openwoo.app
 https://gooisemeren.prod.openwoo.app
+https://gooisemeren.commonground.nu
 https://gooisemeren.prod.commonground.nu
 https://gooisemeren.accept.commonground.nu
 https://gouda.openwoo.app
@@ -46,18 +48,23 @@ https://hofvantwente.openwoo.app
 https://hofvantwente-v2.accept.openwoo.app/  
 https://hofvantwente.accept.openwoo.app
 https://hofvantwente.prod.openwoo.app
+https://hofvantwente.commonground.nu
 https://hofvantwente.prod.commonground.nu 
 https://hofvantwente.accept.commonground.nu 
 https://lansingerland.openwoo.app
 https://lansingerland.accept.openwoo.app
+https://lansingerland.accept.commonground.nu
+https://lansingerland.commonground.nu
 https://leiden.openwoo.app
 https://leiden.accept.openwoo.app
 https://moerdijk.openwoo.app
 https://moerdijk.accept.openwoo.app
 https://moerdijk.prod.openwoo.app
-https://moerdijk.prod.commonground.nu
+https://moerdijk.commonground.nu
 https://moerdijk.accept.commonground.nu
+https://moerdijk.prod.commonground.nu
 https://noaberkracht.prod.commonground.nu
+https://noaberkracht.commonground.nu
 https://noaberkracht.accept.commonground.nu
 https://noaberkracht.openwoo.app
 https://noaberkracht.accept.openwoo.app
@@ -66,6 +73,7 @@ https://noordwijk.accept.openwoo.app
 https://oudeijsselstreek.accept.openwoo.app
 https://oudeijsselstreek.prod.openwoo.app
 https://oudeijsselstreek.prod.commonground.nu
+https://oudeijsselstreek.commonground.nu
 https://oudeijsselstreek.accept.commonground.nu
 https://ridderkerk.openwoo.app
 https://ridderkerk.accept.openwoo.app
@@ -88,6 +96,7 @@ https://texel.accept.openwoo.app
 https://tubbergen.openwoo.app
 https://tubbergen.accept.openwoo.app
 https://tubbergen.prod.commonground.nu
+https://tubbergen.commonground.nu
 https://tubbergen.accept.commonground.nu
 https://waddinxveen.openwoo.app
 https://waddinxveen.accept.openwoo.app
@@ -95,6 +104,7 @@ https://zutphen.openwoo.app
 https://zutphen.accept.openwoo.app
 https://zutphen.prod.openwoo.app
 https://zutphen.prod.commonground.nu
+https://zutphen.commonground.nu
 https://zutphen.accept.commonground.nu
 https://noordwijk.accept.commonground.nu
 https://ede.accept.commonground.nu
@@ -105,8 +115,13 @@ https://horstadmaas.accept.commonground.nu
 export const connectSrcOther = `
 https://conduction.openwoo.app
 https://conduction.accept.openwoo.app
+https://koophulpje.openwoo.app
+https://koophulpje.accept.openwoo.app
+https://koophulpje.commonground.nu
+https://koophulpje.accept.commonground.nu
 https://noaberkracht.openwoo.app
 https://noaberkracht.accept.openwoo.app
+https://noaberkracht.commonground.nu
 https://openwoo.app
 https://odmh.accept.openwoo.app
 https://odmh.accept.commonground.nu
@@ -123,6 +138,8 @@ https://zuiddrecht-twee.accept.commonground.nu
 https://zuiddrecht-drie.accept.commonground.nu
 https://tilburg.accept.commonground.nu
 https://bct.accept.commonground.nu
+https://bct.commonground.nu
+https://bct.openwoo.app
 `;
 
 export const connectSrcLocal = `
