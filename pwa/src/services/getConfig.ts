@@ -153,7 +153,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "ede.accept.openwoo.app":
       return EdeAccept;
 
-    case "gooisemeren-theme":
+    case "gooise-meren-theme":
     case "open.gooisemeren.nl":
     case "gooisemeren.openwoo.app":
     case "gooisemeren.koophulpje.nl":
