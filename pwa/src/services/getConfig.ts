@@ -5,6 +5,8 @@ import Barendrecht from "./../../static/configFiles/municipalities/barendrecht/b
 import BarendrechtAccept from "./../../static/configFiles/municipalities/barendrecht/barendrecht-accept.json";
 import Barneveld from "./../../static/configFiles/municipalities/barneveld/barneveld.json";
 import BarneveldAccept from "./../../static/configFiles/municipalities/barneveld/barneveld-accept.json";
+import Beek from "./../../static/configFiles/municipalities/beek/beek.json";
+import BeekAccept from "./../../static/configFiles/municipalities/beek/beek-accept.json";
 import Buren from "./../../static/configFiles/municipalities/buren/buren.json";
 import BurenAccept from "./../../static/configFiles/municipalities/buren/buren-accept.json";
 import Dinkelland from "./../../static/configFiles/municipalities/dinkelland/dinkelland.json";
@@ -112,6 +114,19 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "barneveld.accept.commonground.nu":
       return BarneveldAccept;
 
+    case "beek":
+    case "beek-theme":
+    case "open.beek.nl":
+    case "beek.openwoo.app":
+    case "beek.prod.openwoo.app":
+    case "beek.koophulpje.nl":
+    case "beek.prod.commonground.nu":
+      return Beek;
+    case "acceptatie-open.beek.nl":
+    case "beek.accept.openwoo.app":
+    case "beek.accept.commonground.nu":
+      return BeekAccept;
+
     case "buren":
     case "open.buren.nl":
     case "buren.openwoo.app":
@@ -153,7 +168,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "ede.accept.openwoo.app":
       return EdeAccept;
 
-    case "gooisemeren-theme":
+    case "gooise-meren-theme":
     case "open.gooisemeren.nl":
     case "gooisemeren.openwoo.app":
     case "gooisemeren.koophulpje.nl":
@@ -459,12 +474,15 @@ export const availableThemes: TGroupedSelectOption[] = [
     options: [
       { label: "Albrandswaard", value: "albrandswaard" },
       { label: "Barendrecht", value: "barendrecht" },
+      { label: "Barenveld", value: "barneveld" },
+      { label: "Beek", value: "beek" },
       { label: "Buren", value: "buren" },
       { label: "Dinkelland", value: "dinkelland-theme" },
       { label: "Ede", value: "ede-theme" },
       { label: "Epe", value: "epe-theme" },
       { label: "Gooise Meren", value: "gooise-meren-theme" },
       { label: "Gouda", value: "gouda-theme" },
+      { label: "Helmond", value: "helmond-theme" },
       { label: "Hoeksche Waard", value: "hoeksche-waard" },
       { label: "Hof van Twente", value: "hof-van-twente-theme" },
       { label: "Lansingerland", value: "lansingerland" },
@@ -476,6 +494,7 @@ export const availableThemes: TGroupedSelectOption[] = [
       { label: "Rijssen-Holten", value: "rijssen-holten" },
       { label: "Roosendaal", value: "roosendaal-theme" },
       { label: "Rotterdam", value: "rotterdam-theme" },
+      { label: "Soest", value: "soest-theme" },
       { label: "Stede Broec", value: "stedebroec" },
       { label: "Texel", value: "texel" },
       { label: "Tubbergen", value: "tubbergen-theme" },
