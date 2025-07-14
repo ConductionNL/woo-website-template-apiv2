@@ -21,8 +21,8 @@ import Gouda from "./../../static/configFiles/municipalities/gouda/gouda.json";
 import GoudaAccept from "./../../static/configFiles/municipalities/gouda/gouda-accept.json";
 import Helmond from "./../../static/configFiles/municipalities/helmond/helmond.json";
 import HelmondAccept from "./../../static/configFiles/municipalities/helmond/helmond-accept.json";
-import HoekscheWaard from "./../../static/configFiles/municipalities/hoeksche-waard/hoeksche-waard.json";
-import HoekscheWaardAccept from "./../../static/configFiles/municipalities/hoeksche-waard/hoeksche-waard-accept.json";
+import HoekscheWaard from "./../../static/configFiles/municipalities/hoekschewaard/hoekschewaard.json";
+import HoekscheWaardAccept from "./../../static/configFiles/municipalities/hoekschewaard/hoekschewaard-accept.json";
 import HofvanTwente from "./../../static/configFiles/municipalities/hof-van-twente/hof-van-twente.json";
 import HofvanTwenteAccept from "./../../static/configFiles/municipalities/hof-van-twente/hof-van-twente-accept.json";
 import Lansingerland from "./../../static/configFiles/municipalities/lansingerland/lansingerland.json";
@@ -199,12 +199,12 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
       return HelmondAccept;
 
     case "hoeksche-waard":
-    case "open.gemeentehw.nl":
-    case "gemeentehw.openwoo.app":
-    case "gemeentehw.koophulpje.nl":
+    case "open.hoekschewaard.nl":
+    case "hoekschewaard.openwoo.app":
+    case "hoekschewaard.koophulpje.nl":
       return HoekscheWaard;
-    case "acceptatie-open.gemeentehw.nl":
-    case "gemeentehw.accept.openwoo.app":
+    case "acceptatie-open.hoekschewaard.nl":
+    case "hoekschewaard.accept.openwoo.app":
       return HoekscheWaardAccept;
 
     case "hof-van-twente-theme":
