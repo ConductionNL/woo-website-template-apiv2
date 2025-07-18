@@ -53,6 +53,10 @@ export const FooterTemplate: React.FC = () => {
 
   const hostname = typeof window !== "undefined" && window.location.hostname;
 
+  const checkIfThemePage = () => {
+    return window.location.pathname === "/theme" || window.location.pathname === "/theme/";
+  };
+
   const tilburgFooterContent = require("./TilburgFooterContent.json");
   const footerItems = tilburgFooterContent.filter((item: any) =>
     hostname === "horstadmaas.accept.opencatalogi.nl" ? item.position > 1 : item.position > 2,
@@ -67,9 +71,11 @@ export const FooterTemplate: React.FC = () => {
 
   return utrechtFooter ? (
     <div>
-      <button className={styles.changeButton} onClick={() => setUtrechtFooter(false)}>
-        Change footer to Tilburg
-      </button>
+      {checkIfThemePage() && (
+        <button className={styles.changeButton} onClick={() => setUtrechtFooter(false)}>
+          Change footer to Tilburg
+        </button>
+      )}
       <PageFooter className={styles.footer}>
         <div className={styles.container}>
           <div className={styles.contentGrid}>

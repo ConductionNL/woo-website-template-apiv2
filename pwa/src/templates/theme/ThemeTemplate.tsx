@@ -1085,7 +1085,7 @@ export const ThemeTemplate: React.FC = () => {
                 name="select single"
                 placeholder={t("Select Single")}
                 isClearable
-                {...{ register, errors, control }}
+                {...{ register, errors, control: control as any }}
                 ariaLabel={t("Select Single")}
               />
             </div>
@@ -1097,7 +1097,7 @@ export const ThemeTemplate: React.FC = () => {
                 name="select multiple"
                 placeholder={t("Select Mulitple")}
                 isClearable
-                {...{ register, errors, control }}
+                {...{ register, errors, control: control as any }}
                 ariaLabel={t("Select Multiple")}
               />
             </div>
@@ -1109,7 +1109,7 @@ export const ThemeTemplate: React.FC = () => {
                 name="select create"
                 placeholder={t("Select Create")}
                 isClearable
-                {...{ register, errors, control }}
+                {...{ register, errors, control: control as any }}
                 ariaLabel={t("Select Create")}
               />
             </div>

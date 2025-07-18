@@ -29,6 +29,10 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
     { crumbLabel: "Component" },
   ];
 
+  const checkIfThemePage = () => {
+    return gatsbyContext.location.pathname === "/theme" || gatsbyContext.location.pathname === "/theme/";
+  };
+
   const navItemsData = require("../../theme/NavItems.json");
   const { headerTopNavItems } = useHeaderTopNavItems(navItemsData);
 
@@ -48,7 +52,12 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
               className={styles.skipLink}
               href="#mainContent"
               tabIndex={
-                gatsbyContext.location.pathname !== "/theme" && gatsbyContext.location.pathname !== "/theme/" ? 0 : -1
+                (gatsbyContext.location.pathname !== "/theme" && gatsbyContext.location.pathname !== "/theme/"
+                  ? 0
+                  : -1) ||
+                (gatsbyContext.location.pathname !== "/woo-theme" && gatsbyContext.location.pathname !== "/woo-theme/"
+                  ? 0
+                  : -1)
               }
             >
               {t("Skip to main content")}
@@ -58,6 +67,17 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
               href="#currentwork"
               tabIndex={
                 gatsbyContext.location.pathname === "/theme" || gatsbyContext.location.pathname === "/theme/" ? 0 : -1
+              }
+              className={styles.skipLink}
+            >
+              {t("Skip to current work")}
+            </SkipLink>
+            <SkipLink
+              href="#currentwork"
+              tabIndex={
+                gatsbyContext.location.pathname === "/woo-theme" || gatsbyContext.location.pathname === "/woo-theme/"
+                  ? 0
+                  : -1
               }
               className={styles.skipLink}
             >
@@ -107,9 +127,11 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
           </div>
         </div>
       </PageHeader>
-      <button className={styles.changeButton} onClick={() => setUtrechtHeader(false)}>
-        Change header to Tilburg
-      </button>
+      {checkIfThemePage() && (
+        <button className={styles.changeButton} onClick={() => setUtrechtHeader(false)}>
+          Change header to Tilburg
+        </button>
+      )}
     </div>
   ) : (
     <div>
