@@ -58,7 +58,7 @@ export const Head: React.FC = () => {
         lang: currentLanguage,
       }}
       bodyAttributes={{
-        class: window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME"),
+        class: "helmond-theme",
       }}
     >
       <meta

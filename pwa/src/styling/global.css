@@ -14,6 +14,562 @@ body {
   margin-inline-end: var(--utrecht-icon-gap);
 }
 
+.utrecht-select--html-select:not([multiple]) {
+  padding-inline-end: 32px;
+  background-position: 95% !important;
+  background-size: 1em !important;
+}
+
+.urecht-select--html-select:hover {
+  border-width: var(
+    --utrecht-select-hover-border-width,
+    var(--utrecht-select-border-width)
+  ) !important;
+}
+
+.utrecht-accordion__button {
+  padding-block-end: var(
+    --utrecht-accordion-button-padding-block-end
+  ) !important;
+  padding-block-start: var(
+    --utrecht-accordion-button-padding-block-start
+  ) !important;
+  padding-inline-end: var(
+    --utrecht-accordion-button-padding-inline-end
+  ) !important;
+  padding-inline-start: var(
+    --utrecht-accordion-button-padding-inline-start
+  ) !important;
+
+  border-radius: var(--utrecht-accordion-button-border-radius) !important;
+  border-top-left-radius: var(
+    --utrecht-accordion-button-border-top-left-radius,
+    var(--utrecht-accordion-button-border-radius)
+  ) !important;
+  border-top-right-radius: var(
+    --utrecht-accordion-button-border-top-right-radius,
+    var(--utrecht-accordion-button-border-radius)
+  ) !important;
+  border-bottom-left-radius: var(
+    --utrecht-accordion-button-border-bottom-left-radius,
+    var(--utrecht-accordion-button-border-radius)
+  ) !important;
+  border-bottom-right-radius: var(
+    --utrecht-accordion-button-border-bottom-right-radius,
+    var(--utrecht-accordion-button-border-radius)
+  ) !important;
+
+  line-height: var(--utrecht-accordion-button-line-height) !important;
+}
+
+.utrecht-accordion__panel {
+  background-color: var(--utrecht-accordion-panel-background-color) !important;
+  border-top-left-radius: var(
+    --utrecht-accordion-panel-border-top-left-radius,
+    var(--utrecht-accordion-panel-border-radius)
+  ) !important;
+  border-top-right-radius: var(
+    --utrecht-accordion-panel-border-top-right-radius,
+    var(--utrecht-accordion-panel-border-radius)
+  ) !important;
+  border-bottom-left-radius: var(
+    --utrecht-accordion-panel-border-bottom-left-radius,
+    var(--utrecht-accordion-panel-border-radius)
+  ) !important;
+  border-bottom-right-radius: var(
+    --utrecht-accordion-panel-border-bottom-right-radius,
+    var(--utrecht-accordion-panel-border-radius)
+  ) !important;
+  border-top-color: var(
+    --utrecht-accordion-panel-border-top-color,
+    var(--utrecht-accordion-panel-border-color)
+  ) !important;
+  border-top-style: var(
+    --utrecht-accordion-panel-border-top-style,
+    var(--utrecht-accordion-panel-border-style)
+  ) !important;
+  border-top-width: var(
+    --utrecht-accordion-panel-border-top-width,
+    var(--utrecht-accordion-panel-border-width)
+  ) !important;
+  line-height: var(--utrecht-accordion-panel-line-height) !important;
+}
+
+.utrecht-accordion__button[aria-expanded="true"] {
+  background-color: var(
+    --utrecht-accordion-button-active-background-color
+  ) !important;
+  border-bottom-color: var(
+    --utrecht-accordion-button-active-border-bottom-color,
+    var(--utrecht-accordion-button-border-color)
+  ) !important;
+  border-bottom-style: var(
+    --utrecht-accordion-button-active-border-bottom-style,
+    var(--utrecht-accordion-button-border-style)
+  ) !important;
+  border-bottom-width: var(
+    --utrecht-accordion-button-active-border-bottom-width,
+    var(--utrecht-accordion-button-border-width)
+  ) !important;
+  border-bottom-left-radius: var(
+    --utrecht-accordion-button-active-border-bottom-left-radius,
+    var(--utrecht-accordion-button-border-radius)
+  ) !important;
+  border-bottom-right-radius: var(
+    --utrecht-accordion-button-active-border-bottom-right-radius,
+    var(--utrecht-accordion-button-border-radius)
+  ) !important;
+}
+
+.utrecht-accordion__button-icon {
+  margin-block-start: var(--utrecht-accordion-button-icon-margin-block-start);
+  margin-block-end: var(--utrecht-accordion-button-icon-margin-block-end);
+  margin-inline-start: var(--utrecht-accordion-button-icon-margin-inline-start);
+  margin-inline-end: var(--utrecht-accordion-button-icon-margin-inline-end);
+  fill: var(--utrecht-accordion-button-icon-fill, inherit);
+}
+
+.utrecht-accordion__button-label {
+  font-family: var(--utrecht-accordion-button-font-family);
+  font-size: var(--utrecht-accordion-button-font-size);
+  font-weight: var(--utrecht-accordion-button-font-weight);
+}
+
+.ams-date-input {
+  background-color: var(--ams-date-input-background-color);
+  box-shadow: var(--ams-date-input-box-shadow);
+  color: var(--ams-date-input-color);
+  font-family: var(--ams-date-input-font-family);
+  font-size: var(--ams-date-input-font-size);
+  font-weight: var(--ams-date-input-font-weight);
+  line-height: var(--ams-date-input-line-height);
+  min-block-size: calc(
+    var(--ams-date-input-font-size) * var(--ams-date-input-line-height) + 2 *
+      var(--ams-date-input-padding-block)
+  );
+  min-inline-size: calc(8ch + 2 * var(--ams-date-input-padding-inline));
+  outline-offset: var(--ams-date-input-outline-offset);
+  padding-block: var(--ams-date-input-padding-block);
+  padding-inline: var(--ams-date-input-padding-inline);
+  touch-action: manipulation;
+  text-rendering: optimizeLegibility;
+  text-size-adjust: none;
+  appearance: none;
+  border-color: var(--ams-date-input-border-color);
+  border-style: var(--ams-date-input-border-style);
+  border-width: var(--ams-date-input-border-width);
+  border-radius: var(--ams-date-input-border-radius);
+  box-sizing: var(--ams-date-input-box-sizing);
+  margin-block: var(--ams-date-input-margin-block);
+}
+
+.ams-pagination {
+  background-color: var(--ams-pagination-background-color);
+  padding-block-start: var(--ams-pagination-padding-block-start);
+  padding-block-end: var(--ams-pagination-padding-block-end);
+  padding-inline-start: var(--ams-pagination-padding-inline-start);
+  padding-inline-end: var(--ams-pagination-padding-inline-end);
+}
+
+.ams-pagination__button {
+  background-color: var(--ams-pagination-button-background-color);
+  border-color: var(--ams-pagination-button-border-color);
+  border-radius: var(--ams-pagination-button-border-radius);
+  border-width: var(--ams-pagination-button-border-width);
+  color: var(--ams-pagination-button-color);
+  font-weight: var(--ams-pagination-button-font-weight);
+  min-block-size: var(--ams-pagination-button-min-block-size);
+  min-inline-size: var(--ams-pagination-button-min-inline-size);
+  padding-inline-start: var(--ams-pagination-button-padding-inline-start);
+  padding-inline-end: var(--ams-pagination-button-padding-inline-end);
+  padding-inline: var(--ams-pagination-button-padding-inline);
+  padding-block-start: var(--ams-pagination-button-padding-block-start);
+  padding-block-end: var(--ams-pagination-button-padding-block-end);
+  text-decoration: var(--ams-pagination-button-text-decoration);
+  text-decoration-thickness: var(
+    --ams-pagination-button-text-decoration-thickness
+  );
+}
+
+.ams-pagination__button:hover {
+  background-color: var(--ams-pagination-button-hover-background-color);
+  border-color: var(--ams-pagination-button-hover-border-color);
+  color: var(--ams-pagination-button-hover-color);
+  text-decoration: var(--ams-pagination-button-hover-text-decoration);
+  text-decoration-thickness: var(
+    --ams-pagination-button-hover-text-decoration-thickness
+  );
+}
+
+.ams-pagination__button:active {
+  background-color: var(--ams-pagination-button-active-background-color);
+  border-color: var(--ams-pagination-button-active-border-color);
+  color: var(--ams-pagination-button-active-color);
+  text-decoration: var(--ams-pagination-button-active-text-decoration);
+  text-decoration-thickness: var(
+    --ams-pagination-button-active-text-decoration-thickness
+  );
+}
+
+.ams-pagination__button:focus {
+  background-color: var(--ams-pagination-button-focus-background-color);
+  color: var(--ams-pagination-button-focus-color);
+  text-decoration: var(--ams-pagination-button-focus-text-decoration);
+  text-decoration-thickness: var(
+    --ams-pagination-button-focus-text-decoration-thickness
+  );
+}
+
+.ams-pagination__button--current {
+  background-color: var(--ams-pagination-button-current-background-color);
+  border-color: var(--ams-pagination-button-current-border-color);
+  color: var(--ams-pagination-button-current-color);
+  font-weight: var(--ams-pagination-button-current-font-weight);
+  text-decoration: var(--ams-pagination-button-current-text-decoration);
+  text-decoration-thickness: var(
+    --ams-pagination-button-current-text-decoration-thickness
+  );
+}
+
+:root {
+  --open-catalogi-rating-font-family: Arial, sans-serif;
+  --open-catalogi-rating-font-size: var(--skeleton-size-md);
+  --open-catalogi-rating-rating-bar-color: green;
+  --open-catalogi-rating-rating-bar-background-color: #bfbfbf;
+  --utrecht-select-background-image: url("data:image/svg+xml,%3Csvg width='14' height='8' viewBox='0 0 14 8' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath fill-rule='evenodd' clip-rule='evenodd' d='M0.292893 0.292893C0.683417 -0.0976311 1.31658 -0.0976311 1.70711 0.292893L7 5.58579L12.2929 0.292893C12.6834 -0.0976311 13.3166 -0.0976311 13.7071 0.292893C14.0976 0.683417 14.0976 1.31658 13.7071 1.70711L7.70711 7.70711C7.31658 8.09763 6.68342 8.09763 6.29289 7.70711L0.292893 1.70711C-0.0976311 1.31658 -0.0976311 0.683417 0.292893 0.292893Z' fill='%23001737'/%3E%3C/svg%3E");
+}
+
+/**
+  * @license EUPL-1.2
+  * Copyright (c) 2021-2022 Gemeente Utrecht
+  * Copyright (c) 2021-2022 Frameless B.V.
+  */
+.utrecht-calendar {
+  background-color: var(--utrecht-calendar-background-color);
+  inline-size: fit-content;
+}
+
+.utrecht-calendar__table {
+  margin-inline: auto;
+  padding-block-end: var(--utrecht-calendar-table-padding-block-end);
+  padding-block-start: var(--utrecht-calendar-table-padding-block-start);
+}
+
+.utrecht-calendar__table-weeks-item {
+  inline-size: var(--utrecht-calendar-table-weeks-item-width);
+  line-height: var(--utrecht-calendar-table-weeks-item-line-height, inherit);
+  padding-block-end: var(--utrecht-calendar-table-weeks-item-padding-block-end);
+  padding-block-start: var(
+    --utrecht-calendar-table-weeks-item-padding-block-start
+  );
+}
+
+.utrecht-calendar__table-days-item-day {
+  --utrecht-calendar-button-border-color: var(
+    --utrecht-calendar-table-days-item-day-border-color
+  );
+  --utrecht-calendar-button-border-width: var(
+    --utrecht-calendar-table-days-item-day-border-width
+  );
+  --utrecht-calendar-button-color: var(
+    --utrecht-calendar-table-days-item-day-color
+  );
+  block-size: var(--utrecht-calendar-table-days-item-day-size);
+  inline-size: var(--utrecht-calendar-table-days-item-day-size);
+}
+
+.utrecht-calendar__table-days-item-day:hover {
+  --utrecht-calendar-button-hover-background-color: var(
+    --utrecht-calendar-table-days-item-day-hover-background-color
+  );
+  --utrecht-calendar-button-hover-border-color: var(
+    --utrecht-calendar-table-days-item-day-hover-border-color
+  );
+  --utrecht-calendar-button-hover-color: var(
+    --utrecht-calendar-table-days-item-day-hover-color
+  );
+}
+
+.utrecht-calendar__table-days-item-day:focus {
+  --utrecht-calendar-button-focus-background-color: var(
+    --utrecht-calendar-table-days-item-day-focus-background-color
+  );
+  --utrecht-calendar-button-focus-border-color: var(
+    --utrecht-calendar-table-days-item-day-focus-border-color
+  );
+  --utrecht-calendar-button-focus-color: var(
+    --utrecht-calendar-table-days-item-day-focus-color
+  );
+}
+
+.utrecht-calendar__table-days-item-day:active {
+  --utrecht-calendar-button-active-background-color: var(
+    --utrecht-calendar-table-days-item-day-active-background-color
+  );
+  --utrecht-calendar-button-active-border-color: var(
+    --utrecht-calendar-table-days-item-day-active-border-color
+  );
+  --utrecht-calendar-button-active-color: var(
+    --utrecht-calendar-table-days-item-day-active-color
+  );
+}
+
+.utrecht-calendar__table-days-item-day:disabled {
+  --utrecht-calendar-button-disabled-background-color: var(
+    --utrecht-calendar-table-days-item-day-disabled-background-color
+  );
+  --utrecht-calendar-button-disabled-border-color: var(
+    --utrecht-calendar-table-days-item-day-disabled-border-color
+  );
+  --utrecht-calendar-button-disabled-color: var(
+    --utrecht-calendar-table-days-item-day-disabled-color
+  );
+}
+
+.utrecht-calendar__table-days-item-day--out-of-the-month {
+  --utrecht-calendar-button-background-color: var(
+    --utrecht-calendar-table-days-item-day-out-of-the-month-background-color
+  );
+  --utrecht-calendar-button-border-color: var(
+    --utrecht-calendar-table-days-item-day-out-of-the-month-border-color
+  );
+  --utrecht-calendar-button-color: var(
+    --utrecht-calendar-table-days-item-day-out-of-the-month-color
+  );
+}
+
+.utrecht-calendar__table-days-item-day--is-today {
+  --utrecht-calendar-button-font-weight: var(
+    --utrecht-calendar-table-days-item-day-is-today-font-weight
+  );
+  --utrecht-calendar-button-background-color: var(
+    --utrecht-calendar-table-days-item-day-is-today-background-color
+  );
+  --utrecht-calendar-button-border-color: var(
+    --utrecht-calendar-table-days-item-day-is-today-border-color
+  );
+  --utrecht-calendar-button-color: var(
+    --utrecht-calendar-table-days-item-day-is-today-color
+  );
+}
+
+.utrecht-calendar__table-days-item-day--emphasis {
+  --utrecht-calendar-button-font-weight: var(
+    --utrecht-calendar-table-days-item-day-emphasis-font-weight
+  );
+  --utrecht-calendar-button-background-color: var(
+    --utrecht-calendar-table-days-item-day-emphasis-background-color
+  );
+  --utrecht-calendar-button-border-color: var(
+    --utrecht-calendar-table-days-item-day-emphasis-border-color
+  );
+  --utrecht-calendar-button-color: var(
+    --utrecht-calendar-table-days-item-day-emphasis-color
+  );
+}
+
+.utrecht-calendar__table-days-item-day--selected {
+  --utrecht-calendar-button-font-weight: var(
+    --utrecht-calendar-table-days-item-day-selected-font-weight
+  );
+  --utrecht-calendar-button-background-color: var(
+    --utrecht-calendar-table-days-item-day-selected-background-color
+  );
+  --utrecht-calendar-button-border-color: var(
+    --utrecht-calendar-table-days-item-day-selected-border-color
+  );
+  --utrecht-calendar-button-color: var(
+    --utrecht-calendar-table-days-item-day-selected-color
+  );
+}
+
+.utrecht-calendar__navigation {
+  background-color: var(--utrecht-calendar-navigation-background-color);
+  color: var(--utrecht-calendar-navigation-color);
+  padding-block-end: var(--utrecht-calendar-navigation-padding-block-end);
+  padding-block-start: var(--utrecht-calendar-navigation-padding-block-start);
+}
+
+.utrecht-calendar__navigation-label {
+  color: var(--utrecht-calendar-navigation-label-color);
+  font-size: var(--utrecht-calendar-navigation-label-font-size);
+  text-align: center;
+}
+
+.utrecht-calendar__navigation-buttons {
+  align-items: center;
+  display: flex;
+  flex-grow: 1;
+  justify-content: space-between;
+}
+
+.utrecht-calendar__button {
+  --utrecht-button-subtle-color: var(
+    --utrecht-calendar-button-color,
+    currentColor
+  );
+  --utrecht-button-subtle-background-color: var(
+    --utrecht-calendar-button-background-color,
+    transparent
+  );
+  --utrecht-button-subtle-border-color: var(
+    --utrecht-calendar-button-border-color,
+    transparent
+  );
+  --utrecht-button-subtle-border-width: var(
+    --utrecht-calendar-button-border-width
+  );
+  --utrecht-button-font-weight: var(--utrecht-calendar-button-font-weight);
+  --utrecht-button-subtle-focus-background-color: var(
+    --utrecht-calendar-button-focus-background-color
+  );
+  --utrecht-button-subtle-focus-border-color: var(
+    --utrecht-calendar-button-focus-border-color
+  );
+  --utrecht-button-subtle-focus-color: var(
+    --utrecht-calendar-button-focus-color
+  );
+  --utrecht-button-subtle-active-background-color: var(
+    --utrecht-calendar-button-active-background-color
+  );
+  --utrecht-button-subtle-active-border-color: var(
+    --utrecht-calendar-button-active-border-color
+  );
+  --utrecht-button-subtle-active-color: var(
+    --utrecht-calendar-button-active-color
+  );
+  --utrecht-button-subtle-hover-background-color: var(
+    --utrecht-calendar-button-hover-background-color
+  );
+  --utrecht-button-subtle-hover-border-color: var(
+    --utrecht-calendar-button-hover-border-color,
+    transparent
+  );
+  --utrecht-button-subtle-hover-color: var(
+    --utrecht-calendar-button-hover-color
+  );
+  --utrecht-button-subtle-disabled-background-color: var(
+    --utrecht-calendar-button-disabled-background-color
+  );
+  --utrecht-button-subtle-disabled-border-color: var(
+    --utrecht-calendar-button-disabled-border-color
+  );
+  --utrecht-button-subtle-disabled-color: var(
+    --utrecht-calendar-button-disabled-color
+  );
+  --utrecht-button-padding-block-end: var(
+    --utrecht-calendar-button-padding-block-end,
+    0
+  );
+  --utrecht-button-padding-block-start: var(
+    --utrecht-calendar-button-padding-block-start,
+    0
+  );
+  --utrecht-button-padding-inline-end: var(
+    --utrecht-calendar-button-padding-inline-end,
+    0
+  );
+  --utrecht-button-padding-inline-start: var(
+    --utrecht-calendar-button-padding-inline-start,
+    0
+  );
+  cursor: pointer;
+}
+
+.utrecht-calendar__icon {
+  block-size: var(--utrecht-calendar-icon-size);
+  inline-size: var(--utrecht-calendar-icon-size);
+}
+
 .utrecht-link--html-a:any-link:hover {
   font-weight: var(--utrecht-link-hover-font-weight);
+  text-decoration-color: var(--utrecht-link-hover-text-decoration-color);
+}
+
+.ams-pagination__list {
+  justify-content: start;
+  gap: var(--ams-pagination-gap);
+}
+
+.ams-pagination__button:has(.ams-icon) {
+  background-color: var(--ams-pagination-navigation-button-background-color);
+  border-color: var(--ams-pagination-navigation-button-border-color);
+  border-radius: var(--ams-pagination-navigation-button-border-radius);
+  border-width: var(--ams-pagination-navigation-button-border-width);
+  color: var(--ams-pagination-navigation-button-color);
+  font-weight: var(--ams-pagination-navigation-button-font-weight);
+  text-decoration: var(--ams-pagination-navigation-button-text-decoration);
+}
+.ams-pagination__button:has(.ams-icon):hover {
+  background-color: var(
+    --ams-pagination-navigation-button-hover-background-color,
+    var(--ams-pagination-navigation-button-background-color)
+  );
+  border-color: var(
+    --ams-pagination-navigation-button-hover-border-color,
+    var(--ams-pagination-navigation-button-border-color)
+  );
+  border-radius: var(
+    --ams-pagination-navigation-button-hover-border-radius,
+    var(--ams-pagination-navigation-button-border-radius)
+  );
+  border-width: var(
+    --ams-pagination-navigation-button-hover-border-width,
+    var(--ams-pagination-navigation-button-border-width)
+  );
+  color: var(
+    --ams-pagination-navigation-button-hover-color,
+    var(--ams-pagination-navigation-button-color)
+  );
+  font-weight: var(
+    --ams-pagination-navigation-button-hover-font-weight,
+    var(--ams-pagination-navigation-button-font-weight)
+  );
+  text-decoration: var(
+    --ams-pagination-navigation-button-hover-text-decoration,
+    var(--ams-pagination-navigation-button-text-decoration)
+  );
+}
+
+.ams-pagination__list li {
+  display: flex;
+}
+
+.ams-pagination__list li[aria-hidden="true"] {
+  padding-block-start: var(
+    --ams-pagination-ellipses-padding-block-start,
+    var(--tilburg-space-text-snail)
+  );
+  padding-block-end: var(
+    --ams-pagination-ellipses-padding-block-end,
+    var(--tilburg-space-text-snail)
+  );
+  padding-inline-start: var(--ams-pagination-ellipses-padding-inline-start);
+  padding-inline-end: var(--ams-pagination-ellipses-padding-inline-end);
+}
+.ams-pagination__list li .ams-pagination__button {
+  align-self: center;
+  border-radius: var(
+    --ams-pagination-button-border-radius,
+    var(--tilburg-border-radius-md)
+  );
+  padding-block: var(
+    --ams-pagination-button-padding-block,
+    var(--tilburg-space-text-snail)
+  );
+}
+
+.ams-pagination__button:hover {
+  background-color: var(--ams-pagination-button-hover-background-color);
+}
+
+.ams-pagination__list li .ams-pagination__button--current {
+  background: var(
+    --ams-pagination-button-current-background-color,
+    var(--tilburg-color-blue-100)
+  );
+  color: var(--ams-pagination-button-current-color, var(--tilburg-color-white));
+}
+.ams-pagination .ams-icon {
+  fill: var(--ams-pagination-icon-color, var(--tilburg-interaction-color));
 }
