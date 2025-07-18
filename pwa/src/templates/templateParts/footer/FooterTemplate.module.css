@@ -55,6 +55,14 @@
     --utrecht-page-footer-link-hover-text-decoration-thickness,
     inherit
   ) !important;
+  text-decoration-skip-ink: var(
+    --utrecht-page-footer-link-hover-text-decoration-skip-ink,
+    none
+  ) !important;
+  text-decoration-color: var(
+    --utrecht-page-footer-link-hover-text-decoration-color,
+    inherit
+  ) !important;
 }
 
 .link {
@@ -76,6 +84,9 @@
     inherit
   ) !important;
   font-weight: var(--utrecht-page-footer-link-hover-font-weight) !important;
+  text-decoration-skip-ink: var(
+    --utrecht-page-footer-link-text-decoration-skip-ink
+  ) !important;
 }
 
 .withLoveConductionLink {
@@ -110,6 +121,10 @@
   color: var(--utrecht-page-footer-heading-color, inherit) !important;
   font-family: var(
     --utrecht-page-footer-heading-font-family,
+    inherit
+  ) !important;
+  font-weight: var(
+    --utrecht-page-footer-heading-font-weight,
     inherit
   ) !important;
 }
