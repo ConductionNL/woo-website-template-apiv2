@@ -51,13 +51,7 @@ import {
 } from "@utrecht/component-library-react/dist/css-module";
 import { useTranslation } from "react-i18next";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faArrowLeft,
-  faChevronRight,
-  faCircleCheck,
-  faCircleInfo,
-  faWarning,
-} from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faChevronRight, faCircleCheck, faCircleInfo, faWarning } from "@fortawesome/free-solid-svg-icons";
 import { TOOLTIP_ID } from "../../layout/Layout";
 import { useForm } from "react-hook-form";
 import { translateDate } from "../../services/dateFormat";
@@ -70,7 +64,6 @@ export const WooThemeTemplate: React.FC = () => {
   const [buttonsDisabled, setButtonsDisabled] = React.useState<boolean>(false);
   const [selectMaxWith, setSelectMaxWith] = React.useState<boolean>(true);
   const [utrechtSelectMaxWith, setUtrechtSelectMaxWith] = React.useState<boolean>(true);
-
 
   const { filters } = useFiltersContext();
   const { t, i18n } = useTranslation();
@@ -86,10 +79,50 @@ export const WooThemeTemplate: React.FC = () => {
     formState: { errors },
   } = useForm();
 
-
   return (
     <Page>
       <PageContent className={styles.container}>
+        <h1>Base Tokens / Base components:</h1>
+        <div>
+          <ul>
+            <li>
+              <h4>Colors</h4>
+            </li>
+            <li>
+              <h4>Font-size</h4>
+            </li>
+            <li>
+              <h4>Size</h4>
+            </li>
+            <li>
+              <h4>Typography</h4>
+            </li>
+            <li>
+              <h4>Space</h4>
+            </li>
+          </ul>
+        </div>
+        <h2>Utrecht Components:</h2>
+        <div>
+          <h3 className={styles.header}>Page:</h3>
+          <span>Spacing between the sides and content</span>
+        </div>
+
+        <div>
+          <h3 className={styles.header}>Surface:</h3>
+          <span>Background of this page</span>
+        </div>
+
+        <div>
+          <h3 className={styles.header}>Document:</h3>
+          <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+          <p>abcdefghijklmnopqrstuvwxyz</p>
+          <p>0123456789</p>
+          <p>The lazy dog jumped over the quick brown fox</p>
+        </div>
+
+        <h1>All other components:</h1>
+
         <h2>Utrecht Components:</h2>
         <div>
           <h3 className={styles.header}>Alerts:</h3>
@@ -163,28 +196,6 @@ export const WooThemeTemplate: React.FC = () => {
         </div>
 
         <div>
-          <h3 className={styles.header}>DataList:</h3>
-          <DataList>
-            <DataListItem>
-              <DataListKey>Data list Item 1</DataListKey>
-              <DataListValue value="data of dataList Item 1">data of dataList Item 1</DataListValue>
-            </DataListItem>
-            <DataListItem>
-              <DataListKey>Data list Item 2</DataListKey>
-              <DataListValue value="data of dataList Item 2">data of dataList Item 2</DataListValue>
-            </DataListItem>
-          </DataList>
-        </div>
-
-        <div>
-          <h3 className={styles.header}>Document:</h3>
-          <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
-          <p>abcdefghijklmnopqrstuvwxyz</p>
-          <p>0123456789</p>
-          <p>The lazy dog jumped over the quick brown fox</p>
-        </div>
-
-        <div>
           <h3 className={styles.header}>Focus:</h3>
           <span>
             Press <Code>tab</Code> to see the Focus of the elements
@@ -253,11 +264,6 @@ export const WooThemeTemplate: React.FC = () => {
         </div>
 
         <div>
-          <h3 className={styles.header}>Page:</h3>
-          <span>Spacing between the sides and content</span>
-        </div>
-
-        <div>
           <h3 className={styles.header}>Paragraph:</h3>
           <Paragraph>
             This is a Lorem ipsum paragraph: Lorem ipsum dolor sit amet, consectetur adipisicing elit. Optio pariatur
@@ -317,11 +323,6 @@ export const WooThemeTemplate: React.FC = () => {
           <span>
             Press <Code>tab</Code> to see the Skip-Link
           </span>
-        </div>
-
-        <div>
-          <h3 className={styles.header}>Surface:</h3>
-          <span>Background of this page</span>
         </div>
 
         <div>

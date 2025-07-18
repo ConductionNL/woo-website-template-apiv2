@@ -17,7 +17,15 @@
 .cardContainer:hover .title > * {
   color: var(
     --conduction-card-header-title-hover-color,
-    var(--conduction-card-header-title-color)
+    var(--conduction-card-wrapper-title-color)
+  ) !important;
+  text-decoration: var(
+    --conduction-card-header-title-hover-text-decoration,
+    var(--conduction-card-wrapper-title-text-decoration)
+  ) !important;
+  text-underline-offset: var(
+    --conduction-card-header-title-hover-text-underline-offset,
+    var(--conduction-card-wrapper-title-text-underline-offset)
   ) !important;
 }
 
@@ -32,6 +40,11 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  text-decoration: var(--conduction-card-wrapper-text-decoration, inherit);
+  text-decoration-color: var(
+    --conduction-card-wrapper-text-decoration-color,
+    inherit
+  );
 }
 
 .cardContainer:hover .description {
@@ -39,6 +52,15 @@
     --conduction-card-wrapper-hover-color,
     var(--conduction-card-wrapper-color)
   ) !important;
+
+  text-decoration: var(
+    --conduction-card-wrapper-hover-text-decoration,
+    var(--conduction-card-wrapper-text-decoration, inherit)
+  );
+  text-decoration-color: var(
+    --conduction-card-wrapper-hover-text-decoration-color,
+    var(--conduction-card-wrapper-text-decoration-color, inherit)
+  );
 }
 
 .cardFooter {

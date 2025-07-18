@@ -264,6 +264,11 @@
 
 .description {
   color: var(--conduction-card-wrapper-color) !important;
+  text-decoration: var(--conduction-card-wrapper-text-decoration, inherit);
+  text-decoration-color: var(
+    --conduction-card-wrapper-text-decoration-color,
+    inherit
+  );
 }
 
 .cardContainer:hover .description {
@@ -271,6 +276,15 @@
     --conduction-card-wrapper-hover-color,
     var(--conduction-card-wrapper-color)
   ) !important;
+
+  text-decoration: var(
+    --conduction-card-wrapper-hover-text-decoration,
+    var(--conduction-card-wrapper-text-decoration, inherit)
+  );
+  text-decoration-color: var(
+    --conduction-card-wrapper-hover-text-decoration-color,
+    var(--conduction-card-wrapper-text-decoration-color, inherit)
+  );
 }
 
 .cardContainer:hover .title > * {

@@ -75,6 +75,11 @@
     var(--utrecht-focus-outline-color, revert)
   ) !important;
 
+  outline-offset: var(
+    --utrecht-skip-link-outline-offset,
+    var(--utrecht-focus-outline-offset, revert)
+  ) !important;
+
   inset-block-start: var(
     --utrecht-skip-link-inset-block-start,
     var(--_utrecht-skip-link-inset, 0)

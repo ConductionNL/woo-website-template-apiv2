@@ -169,6 +169,46 @@ export const ThemeTemplate: React.FC = () => {
   return (
     <Page>
       <PageContent className={styles.container}>
+        <h1>Base Tokens / Base components:</h1>
+        <div>
+          <ul>
+            <li>
+              <h4>Color</h4>
+            </li>
+            <li>
+              <h4>Font-size</h4>
+            </li>
+            <li>
+              <h4>Size</h4>
+            </li>
+            <li>
+              <h4>Typography</h4>
+            </li>
+            <li>
+              <h4>Space</h4>
+            </li>
+          </ul>
+        </div>
+        <h2>Utrecht Components:</h2>
+        <div>
+          <h3 className={styles.header}>Page:</h3>
+          <span>Spacing between the sides and content</span>
+        </div>
+
+        <div>
+          <h3 className={styles.header}>Surface:</h3>
+          <span>Background of this page</span>
+        </div>
+
+        <div>
+          <h3 className={styles.header}>Document:</h3>
+          <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
+          <p>abcdefghijklmnopqrstuvwxyz</p>
+          <p>0123456789</p>
+          <p>The lazy dog jumped over the quick brown fox</p>
+        </div>
+
+        <h1>All other components:</h1>
         <h2>Utrecht Components:</h2>
         <div>
           <h3 className={styles.header}>Accordion:</h3>
@@ -402,14 +442,6 @@ export const ThemeTemplate: React.FC = () => {
         </div>
 
         <div>
-          <h3 className={styles.header}>Document:</h3>
-          <p>ABCDEFGHIJKLMNOPQRSTUVWXYZ</p>
-          <p>abcdefghijklmnopqrstuvwxyz</p>
-          <p>0123456789</p>
-          <p>The lazy dog jumped over the quick brown fox</p>
-        </div>
-
-        <div>
           <h3 className={styles.header}>Focus:</h3>
           <span>
             Press <Code>tab</Code> to see the Focus of the elements
@@ -500,11 +532,6 @@ export const ThemeTemplate: React.FC = () => {
         <div>
           <h3 className={styles.header}>Page-Header:</h3>
           <span>Check the header at the top of the page</span>
-        </div>
-
-        <div>
-          <h3 className={styles.header}>Page:</h3>
-          <span>Spacing between the sides and content</span>
         </div>
 
         <div>
@@ -637,11 +664,6 @@ export const ThemeTemplate: React.FC = () => {
               </Paragraph>
             </SpotlightSection>
           </section>
-        </div>
-
-        <div>
-          <h3 className={styles.header}>Surface:</h3>
-          <span>Background of this page</span>
         </div>
 
         <div>
