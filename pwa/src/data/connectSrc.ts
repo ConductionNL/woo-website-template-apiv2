@@ -108,6 +108,10 @@ https://soest.commonground.nu
 https://soest.accept.commonground.nu
 https://stedebroec.openwoo.app
 https://stedebroec.accept.openwoo.app
+https://stichtsevecht.openwoo.app
+https://stichtsevecht.accept.openwoo.app
+https://stichtsevecht.commonground.nu
+https://stichtsevecht.accept.commonground.nu
 https://texel.openwoo.app
 https://texel.accept.openwoo.app
 https://tubbergen.openwoo.app
