@@ -61,7 +61,7 @@
     "@types/qs": "^6.9.14",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.23",
-    "@utrecht/component-library-react": "9.0.3",
+    "@utrecht/component-library-react": "^3.0.1-alpha.27",
     "@utrecht/design-tokens": "^1.0.0-alpha.640",
     "axios": "^1.6.8",
     "clsx": "^2.1.0",
