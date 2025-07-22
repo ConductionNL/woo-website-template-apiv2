@@ -9,12 +9,22 @@ https://opencatalogi.accept.commonground.nu
 export const connectSrcMunicipalities = `
 https://albrandswaard.openwoo.app
 https://albrandswaard.accept.openwoo.app
-https://barendrecht.openwoo.app
+https://baarn.prod.openwoo.app
+https://baarn.accept.openwoo.app
+https://baarn.commonground.nu
+https://baarn.accept.commonground.nu
+https://barendrecht.prod.openwoo.app
 https://barendrecht.accept.openwoo.app
+https://barendrecht.commonground.nu
+https://barendrecht.accept.commonground.nu
 https://barneveld.prod.openwoo.app
 https://barneveld.accept.openwoo.app
 https://barneveld.prod.commonground.nu
 https://barneveld.accept.commonground.nu
+https://beek.prod.openwoo.app
+https://beek.accept.openwoo.app
+https://beek.commonground.nu
+https://beek.accept.commonground.nu
 https://buren.openwoo.app
 https://buren.accept.openwoo.app
 https://dinkelland.openwoo.app
@@ -27,7 +37,7 @@ https://ede.accept.openwoo.app
 https://epe.openwoo.app
 https://epe.accept.openwoo.app
 https://epe.prod.openwoo.app
-https://epe.prod.commonground.nu
+https://epe.commonground.nu
 https://epe.accept.commonground.nu
 https://gooisemeren.openwoo.app
 https://gooisemeren.accept.openwoo.app
@@ -72,11 +82,14 @@ https://noaberkracht.commonground.nu
 https://noaberkracht.accept.commonground.nu
 https://noaberkracht.openwoo.app
 https://noaberkracht.accept.openwoo.app
-https://noordwijk.openwoo.app
 https://noordwijk.accept.openwoo.app
+https://noordwijk.commonground.nu
+https://noordwijk.accept.commonground.nu
 https://oudeijsselstreek.accept.openwoo.app
 https://oudeijsselstreek.prod.openwoo.app
 https://oudeijsselstreek.prod.commonground.nu
+
+https://oudeijsselstreek.commonground.nu
 https://oudeijsselstreek.commonground.nu
 https://oudeijsselstreek.accept.commonground.nu
 https://ridderkerk.openwoo.app
@@ -91,7 +104,7 @@ https://rotterdam.openwoo.app
 https://rotterdam.accept.openwoo.app
 https://soest.openwoo.app
 https://soest.accept.openwoo.app
-https://soest.prod.commonground.nu
+https://soest.commonground.nu
 https://soest.accept.commonground.nu
 https://stedebroec.openwoo.app
 https://stedebroec.accept.openwoo.app
@@ -144,6 +157,10 @@ https://tilburg.accept.commonground.nu
 https://bct.accept.commonground.nu
 https://bct.commonground.nu
 https://bct.openwoo.app
+https://bct-zgw.accept.commonground.nu
+https://bct-zgw.commonground.nu
+https://bct-zgw.openwoo.app
+https://bct-zgw.accept.openwoo.app
 `;
 
 export const connectSrcLocal = `
