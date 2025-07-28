@@ -1,6 +1,8 @@
 // Municipalities
 import Albrandswaard from "./../../static/configFiles/municipalities/albrandswaard/albrandswaard.json";
 import AlbrandswaardAccept from "./../../static/configFiles/municipalities/albrandswaard/albrandswaard-accept.json";
+import Baarn from "./../../static/configFiles/municipalities/baarn/baarn.json";
+import BaarnAccept from "./../../static/configFiles/municipalities/baarn/baarn-accept.json";
 import Barendrecht from "./../../static/configFiles/municipalities/barendrecht/barendrecht.json";
 import BarendrechtAccept from "./../../static/configFiles/municipalities/barendrecht/barendrecht-accept.json";
 import Barneveld from "./../../static/configFiles/municipalities/barneveld/barneveld.json";
@@ -93,6 +95,19 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "acceptatie-open.albrandswaard.nl":
     case "albrandswaard.accept.openwoo.app":
       return AlbrandswaardAccept;
+
+    case "baarn":
+    case "open.baarn.nl":
+    case "baarn.openwoo.app":
+    case "baarn.koophulpje.nl":
+    case "baarn.prod.openwoo.app":
+    case "baarn.commonground.nu":
+      return Baarn;
+    case "acceptatie-open.baarn.nl":
+    case "baarn.accept.openwoo.app":
+      return BaarnAccept;
+
+
 
     case "barendrecht":
     case "open.barendrecht.nl":
