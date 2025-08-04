@@ -30,6 +30,8 @@
 @import "../../node_modules/@conduction/theme/municipalities/helmond-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/beek-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/baarn-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/stichtse-vecht-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/soest-design-tokens/dist/index.css";
 
 /* Design Tokens maintained by Frameless */
 @import "../../node_modules/@utrecht/design-tokens/dist/theme.css";
