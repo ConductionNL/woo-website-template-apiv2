@@ -102,10 +102,12 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                   </>
                 )}
                 <TableCell>
+                  {request.summary || request.samenvatting ? (
                   <div className={styles.description}>
-                    {removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? "")) ??
-                      t("No summary available")}
-                  </div>
+                      {removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? "")) ??
+                        t("No summary available")}
+                    </div>
+                  ) : null}
                 </TableCell>
               </TableRow>
             ))}
