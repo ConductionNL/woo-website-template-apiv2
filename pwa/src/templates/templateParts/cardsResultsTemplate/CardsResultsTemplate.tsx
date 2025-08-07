@@ -54,11 +54,12 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
               </CardHeaderDate>
             </CardHeader>
 
+
             <Paragraph className={styles.description}>
               {removeHTMLFromString(
-                removeHTMLFromString(request.summary ?? request.samenvatting ?? t("No summary available")),
-              )}
-            </Paragraph>
+                  removeHTMLFromString(request.summary ?? request.samenvatting ?? ""),
+                )}
+              </Paragraph>
 
             {(window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ||
               window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true") && (
