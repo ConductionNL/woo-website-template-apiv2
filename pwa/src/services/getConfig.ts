@@ -1,10 +1,14 @@
 // Municipalities
 import Albrandswaard from "./../../static/configFiles/municipalities/albrandswaard/albrandswaard.json";
 import AlbrandswaardAccept from "./../../static/configFiles/municipalities/albrandswaard/albrandswaard-accept.json";
+import Baarn from "./../../static/configFiles/municipalities/baarn/baarn.json";
+import BaarnAccept from "./../../static/configFiles/municipalities/baarn/baarn-accept.json";
 import Barendrecht from "./../../static/configFiles/municipalities/barendrecht/barendrecht.json";
 import BarendrechtAccept from "./../../static/configFiles/municipalities/barendrecht/barendrecht-accept.json";
 import Barneveld from "./../../static/configFiles/municipalities/barneveld/barneveld.json";
 import BarneveldAccept from "./../../static/configFiles/municipalities/barneveld/barneveld-accept.json";
+import Beek from "./../../static/configFiles/municipalities/beek/beek.json";
+import BeekAccept from "./../../static/configFiles/municipalities/beek/beek-accept.json";
 import Buren from "./../../static/configFiles/municipalities/buren/buren.json";
 import BurenAccept from "./../../static/configFiles/municipalities/buren/buren-accept.json";
 import Dinkelland from "./../../static/configFiles/municipalities/dinkelland/dinkelland.json";
@@ -19,8 +23,8 @@ import Gouda from "./../../static/configFiles/municipalities/gouda/gouda.json";
 import GoudaAccept from "./../../static/configFiles/municipalities/gouda/gouda-accept.json";
 import Helmond from "./../../static/configFiles/municipalities/helmond/helmond.json";
 import HelmondAccept from "./../../static/configFiles/municipalities/helmond/helmond-accept.json";
-import HoekscheWaard from "./../../static/configFiles/municipalities/hoeksche-waard/hoeksche-waard.json";
-import HoekscheWaardAccept from "./../../static/configFiles/municipalities/hoeksche-waard/hoeksche-waard-accept.json";
+import HoekscheWaard from "./../../static/configFiles/municipalities/hoekschewaard/hoekschewaard.json";
+import HoekscheWaardAccept from "./../../static/configFiles/municipalities/hoekschewaard/hoekschewaard-accept.json";
 import HofvanTwente from "./../../static/configFiles/municipalities/hof-van-twente/hof-van-twente.json";
 import HofvanTwenteAccept from "./../../static/configFiles/municipalities/hof-van-twente/hof-van-twente-accept.json";
 import Lansingerland from "./../../static/configFiles/municipalities/lansingerland/lansingerland.json";
@@ -45,6 +49,8 @@ import Soest from "./../../static/configFiles/municipalities/soest/soest.json";
 import SoestAccept from "./../../static/configFiles/municipalities/soest/soest-accept.json";
 import StedeBroec from "./../../static/configFiles/municipalities/stede-broec/stede-broec.json";
 import StedeBroecAccept from "./../../static/configFiles/municipalities/stede-broec/stede-broec-accept.json";
+import StichtseVecht from "./../../static/configFiles/municipalities/stichtse-vecht/stichtse-vecht.json";
+import StichtseVechtAccept from "./../../static/configFiles/municipalities/stichtse-vecht/stichtse-vecht-accept.json";
 import Texel from "./../../static/configFiles/municipalities/texel/texel.json";
 import TexelAccept from "./../../static/configFiles/municipalities/texel/texel-accept.json";
 import Tubbergen from "./../../static/configFiles/municipalities/tubbergen/tubbergen.json";
@@ -90,6 +96,19 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "albrandswaard.accept.openwoo.app":
       return AlbrandswaardAccept;
 
+    case "baarn":
+    case "open.baarn.nl":
+    case "baarn.openwoo.app":
+    case "baarn.koophulpje.nl":
+    case "baarn.prod.openwoo.app":
+    case "baarn.commonground.nu":
+      return Baarn;
+    case "acceptatie-open.baarn.nl":
+    case "baarn.accept.openwoo.app":
+      return BaarnAccept;
+
+
+
     case "barendrecht":
     case "open.barendrecht.nl":
     case "barendrecht.openwoo.app":
@@ -111,6 +130,19 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "barneveld.accept.openwoo.app":
     case "barneveld.accept.commonground.nu":
       return BarneveldAccept;
+
+    case "beek":
+    case "beek-theme":
+    case "open.beek.nl":
+    case "beek.openwoo.app":
+    case "beek.prod.openwoo.app":
+    case "beek.koophulpje.nl":
+    case "beek.prod.commonground.nu":
+      return Beek;
+    case "acceptatie-open.beek.nl":
+    case "beek.accept.openwoo.app":
+    case "beek.accept.commonground.nu":
+      return BeekAccept;
 
     case "buren":
     case "open.buren.nl":
@@ -153,7 +185,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "ede.accept.openwoo.app":
       return EdeAccept;
 
-    case "gooisemeren-theme":
+    case "gooise-meren-theme":
     case "open.gooisemeren.nl":
     case "gooisemeren.openwoo.app":
     case "gooisemeren.koophulpje.nl":
@@ -184,12 +216,12 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
       return HelmondAccept;
 
     case "hoeksche-waard":
-    case "open.gemeentehw.nl":
-    case "gemeentehw.openwoo.app":
-    case "gemeentehw.koophulpje.nl":
+    case "open.hoekschewaard.nl":
+    case "hoekschewaard.openwoo.app":
+    case "hoekschewaard.koophulpje.nl":
       return HoekscheWaard;
-    case "acceptatie-open.gemeentehw.nl":
-    case "gemeentehw.accept.openwoo.app":
+    case "acceptatie-open.hoekschewaard.nl":
+    case "hoekschewaard.accept.openwoo.app":
       return HoekscheWaardAccept;
 
     case "hof-van-twente-theme":
@@ -313,6 +345,18 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "acceptatie-open.stedebroec.nl":
     case "stedebroec.accept.openwoo.app":
       return StedeBroecAccept;
+
+    case "stichtse-vecht-theme":
+       case "open.stichtsevecht.nl":
+       case "stichtsevecht.openwoo.app":
+       case "stichtsevecht.koophulpje.nl":
+       case "stichtsevecht.prod.openwoo.app":
+       case "stichtsevecht.commonground.nu":
+        return StichtseVecht;
+      case "acceptatie-open.stichtsevecht.nl":
+      case "stichtsevecht.accept.openwoo.app":
+      case "stichtsevecht.accept.commonground.nu":
+        return StichtseVechtAccept;  
 
     case "texel":
     case "open.texel.nl":
@@ -459,12 +503,15 @@ export const availableThemes: TGroupedSelectOption[] = [
     options: [
       { label: "Albrandswaard", value: "albrandswaard" },
       { label: "Barendrecht", value: "barendrecht" },
+      { label: "Barenveld", value: "barneveld" },
+      { label: "Beek", value: "beek" },
       { label: "Buren", value: "buren" },
       { label: "Dinkelland", value: "dinkelland-theme" },
       { label: "Ede", value: "ede-theme" },
       { label: "Epe", value: "epe-theme" },
       { label: "Gooise Meren", value: "gooise-meren-theme" },
       { label: "Gouda", value: "gouda-theme" },
+      { label: "Helmond", value: "helmond-theme" },
       { label: "Hoeksche Waard", value: "hoeksche-waard" },
       { label: "Hof van Twente", value: "hof-van-twente-theme" },
       { label: "Lansingerland", value: "lansingerland" },
@@ -476,6 +523,7 @@ export const availableThemes: TGroupedSelectOption[] = [
       { label: "Rijssen-Holten", value: "rijssen-holten" },
       { label: "Roosendaal", value: "roosendaal-theme" },
       { label: "Rotterdam", value: "rotterdam-theme" },
+      { label: "Soest", value: "soest-theme" },
       { label: "Stede Broec", value: "stedebroec" },
       { label: "Texel", value: "texel" },
       { label: "Tubbergen", value: "tubbergen-theme" },
