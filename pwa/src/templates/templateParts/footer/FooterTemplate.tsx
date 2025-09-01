@@ -44,6 +44,66 @@ type TDynamicContentItem = {
   }[];
 };
 
+// Helpers to process menus coming from API
+const isEntityVisibleForUser = (entity: any, userIsAuthenticated: boolean, userGroups: string[]): boolean => {
+  if (!entity) return false;
+
+  const requiresAuth: boolean = Boolean(entity?.authRequired ?? entity?.requiresAuth ?? entity?.protected);
+  if (requiresAuth && !userIsAuthenticated) return false;
+
+  const allowedGroups: string[] =
+    (Array.isArray(entity?.groups) && entity.groups) ||
+    (Array.isArray(entity?.roles) && entity.roles) ||
+    (Array.isArray(entity?.allowedGroups) && entity.allowedGroups) || [];
+
+  if (allowedGroups.length > 0) {
+    const hasIntersection = userGroups.some((g) => allowedGroups.includes(g));
+    if (!hasIntersection) return false;
+  }
+
+  return true;
+};
+
+const processMenuTemplate = (text: string): string => {
+  if (typeof text !== "string") return "";
+  const organisation = window.sessionStorage.getItem("ORGANISATION_NAME") ?? "";
+  const year = String(new Date().getFullYear());
+
+  return text
+    .replace(/\{\s*ORGANISATION_NAME\s*\}/gi, organisation)
+    .replace(/\{\s*YEAR\s*\}/gi, year)
+    .replace(/\$\{\s*ORGANISATION_NAME\s*\}/gi, organisation)
+    .replace(/\$\{\s*YEAR\s*\}/gi, year);
+};
+
+const filterMenuItemsByVisibility = (
+  items: any[] = [],
+  userIsAuthenticated: boolean,
+  userGroups: string[],
+): any[] =>
+  items
+    .filter((item: any) => isEntityVisibleForUser(item, userIsAuthenticated, userGroups))
+    .map((item: any) => ({ ...item, name: processMenuTemplate(item?.name ?? item?.title ?? "") }));
+
+const getMenusFromPositions = (
+  items: any[],
+  positions: number[],
+  userIsAuthenticated: boolean = false,
+  userGroups: string[] = [],
+) => {
+  if (!Array.isArray(items) || items.length === 0) return [];
+
+  const menusAtPositions = items.filter((m: any) => m && positions.includes(Number(m?.position ?? m?.pos)));
+
+  return menusAtPositions
+    .filter((menu: any) => isEntityVisibleForUser(menu, userIsAuthenticated, userGroups))
+    .map((menu: any) => ({
+      ...menu,
+      name: processMenuTemplate(menu?.name ?? menu?.title ?? ""),
+      items: filterMenuItemsByVisibility(menu?.items ?? menu?.links ?? menu?.children ?? [], userIsAuthenticated, userGroups),
+    }));
+};
+
 export const FooterTemplate: React.FC = () => {
   const menusQuery = useMenus().getAll();
   const footerSections: TDynamicContentItem[] | undefined = React.useMemo(() => {
@@ -53,14 +113,10 @@ export const FooterTemplate: React.FC = () => {
 
     const list: any[] = Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
 
-    const pick = (obj: any, keys: string[]): string | undefined => keys.map((k) => obj?.[k]).find((v) => typeof v === "string" && v.length > 0);
+    const pick = (obj: any, keys: string[]): string | undefined =>
+      keys.map((k) => obj?.[k]).find((v) => typeof v === "string" && v.length > 0);
 
-    const allowedPositions = new Set([3, 4, 5]);
-    const filteredList = list.filter((m: any) => {
-      const raw = (m && (m.position ?? m.pos ?? m?.attributes?.position ?? m?.meta?.position)) as any;
-      const pos = Number(raw);
-      return allowedPositions.has(pos);
-    });
+    const menus = getMenusFromPositions(list, [3, 4, 5]);
 
     const toItems = (itemsRaw: any[]): TDynamicContentItem["items"] =>
       itemsRaw
@@ -82,7 +138,7 @@ export const FooterTemplate: React.FC = () => {
       return [];
     };
 
-    const sections: TDynamicContentItem[] = filteredList.map((m: any) => {
+    const sections: TDynamicContentItem[] = menus.map((m: any) => {
       const title = pick(m, ["title", "name", "label"]) ?? "";
       const children = guessChildren(m);
       return {
