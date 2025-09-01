@@ -17,7 +17,7 @@ import { faCode, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import { Logo } from "@conduction/components";
 import { IconPrefix, IconName } from "@fortawesome/fontawesome-svg-core";
-import { useFooterContent } from "../../../hooks/footerContent";
+import { useMenus } from "../../../hooks/menus";
 
 export const DEFAULT_FOOTER_CONTENT_URL =
   "https://raw.githubusercontent.com/ConductionNL/woo-website-template/main/pwa/src/templates/templateParts/footer/FooterContent.json";
@@ -45,8 +45,54 @@ type TDynamicContentItem = {
 };
 
 export const FooterTemplate: React.FC = () => {
-  const _useFooterContent = useFooterContent();
-  const getFooterContent = _useFooterContent.getContent();
+  const menusQuery = useMenus().getAll();
+  const footerSections: TDynamicContentItem[] | undefined = React.useMemo(() => {
+    const data: any = (menusQuery as any)?.data;
+
+    if (!data) return undefined;
+
+    const list: any[] = Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
+
+    const pick = (obj: any, keys: string[]): string | undefined => keys.map((k) => obj?.[k]).find((v) => typeof v === "string" && v.length > 0);
+
+    const allowedPositions = new Set([3, 4, 5]);
+    const filteredList = list.filter((m: any) => {
+      const raw = (m && (m.position ?? m.pos ?? m?.attributes?.position ?? m?.meta?.position)) as any;
+      const pos = Number(raw);
+      return allowedPositions.has(pos);
+    });
+
+    const toItems = (itemsRaw: any[]): TDynamicContentItem["items"] =>
+      itemsRaw
+        .filter(Boolean)
+        .map((i: any) => {
+          const text = pick(i, ["title", "name", "label", "text", "value"]) ?? "";
+          const href = pick(i, ["href", "url", "link", "path"]);
+          return {
+            value: text,
+            ariaLabel: text,
+            link: href,
+          } as any;
+        });
+
+    const guessChildren = (m: any): any[] => {
+      if (Array.isArray(m?.items)) return m.items;
+      if (Array.isArray(m?.links)) return m.links;
+      if (Array.isArray(m?.children)) return m.children;
+      return [];
+    };
+
+    const sections: TDynamicContentItem[] = filteredList.map((m: any) => {
+      const title = pick(m, ["title", "name", "label"]) ?? "";
+      const children = guessChildren(m);
+      return {
+        title,
+        items: toItems(children),
+      } as TDynamicContentItem;
+    });
+
+    return sections.length > 0 ? sections : undefined;
+  }, [menusQuery?.data]);
 
   // For development
   // const [footerContent, setFooterContent] = React.useState<TDynamicContentItem[]>([]);
@@ -58,10 +104,7 @@ export const FooterTemplate: React.FC = () => {
   return (
     <PageFooter className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.contentGrid}>
-          {getFooterContent.data?.map((content: any, idx: string) => <DynamicSection key={idx} {...{ content }} />)}
-        </div>
-
+        <div className={styles.contentGrid}>{footerSections?.map((content: TDynamicContentItem, idx: number) => <DynamicSection key={idx} {...{ content }} />)}</div>
         <div className={styles.logoAndConduction}>
           {window.sessionStorage.getItem("FOOTER_LOGO_URL") !== "false" && (
             <Logo
