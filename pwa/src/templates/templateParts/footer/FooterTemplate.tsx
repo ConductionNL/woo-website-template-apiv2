@@ -17,7 +17,7 @@ import { faCode, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
 import { Logo } from "@conduction/components";
 import { IconPrefix, IconName } from "@fortawesome/fontawesome-svg-core";
-import { useFooterContent } from "../../../hooks/footerContent";
+import { useMenus } from "../../../hooks/menus";
 
 export const DEFAULT_FOOTER_CONTENT_URL =
   "https://raw.githubusercontent.com/ConductionNL/woo-website-template/main/pwa/src/templates/templateParts/footer/FooterContent.json";
@@ -44,9 +44,111 @@ type TDynamicContentItem = {
   }[];
 };
 
+// Helpers to process menus coming from API
+const isEntityVisibleForUser = (entity: any, userIsAuthenticated: boolean, userGroups: string[]): boolean => {
+  if (!entity) return false;
+
+  const requiresAuth: boolean = Boolean(entity?.authRequired ?? entity?.requiresAuth ?? entity?.protected);
+  if (requiresAuth && !userIsAuthenticated) return false;
+
+  const allowedGroups: string[] =
+    (Array.isArray(entity?.groups) && entity.groups) ||
+    (Array.isArray(entity?.roles) && entity.roles) ||
+    (Array.isArray(entity?.allowedGroups) && entity.allowedGroups) || [];
+
+  if (allowedGroups.length > 0) {
+    const hasIntersection = userGroups.some((g) => allowedGroups.includes(g));
+    if (!hasIntersection) return false;
+  }
+
+  return true;
+};
+
+const processMenuTemplate = (text: string): string => {
+  if (typeof text !== "string") return "";
+  const organisation = window.sessionStorage.getItem("ORGANISATION_NAME") ?? "";
+  const year = String(new Date().getFullYear());
+
+  return text
+    .replace(/\{\s*ORGANISATION_NAME\s*\}/gi, organisation)
+    .replace(/\{\s*YEAR\s*\}/gi, year)
+    .replace(/\$\{\s*ORGANISATION_NAME\s*\}/gi, organisation)
+    .replace(/\$\{\s*YEAR\s*\}/gi, year);
+};
+
+const filterMenuItemsByVisibility = (
+  items: any[] = [],
+  userIsAuthenticated: boolean,
+  userGroups: string[],
+): any[] =>
+  items
+    .filter((item: any) => isEntityVisibleForUser(item, userIsAuthenticated, userGroups))
+    .map((item: any) => ({ ...item, name: processMenuTemplate(item?.name ?? item?.title ?? "") }));
+
+const getMenusFromPositions = (
+  items: any[],
+  positions: number[],
+  userIsAuthenticated: boolean = false,
+  userGroups: string[] = [],
+) => {
+  if (!Array.isArray(items) || items.length === 0) return [];
+
+  const menusAtPositions = items.filter((m: any) => m && positions.includes(Number(m?.position ?? m?.pos)));
+
+  return menusAtPositions
+    .filter((menu: any) => isEntityVisibleForUser(menu, userIsAuthenticated, userGroups))
+    .map((menu: any) => ({
+      ...menu,
+      name: processMenuTemplate(menu?.name ?? menu?.title ?? ""),
+      items: filterMenuItemsByVisibility(menu?.items ?? menu?.links ?? menu?.children ?? [], userIsAuthenticated, userGroups),
+    }));
+};
+
 export const FooterTemplate: React.FC = () => {
-  const _useFooterContent = useFooterContent();
-  const getFooterContent = _useFooterContent.getContent();
+  const menusQuery = useMenus().getAll();
+  const footerSections: TDynamicContentItem[] | undefined = React.useMemo(() => {
+    const data: any = (menusQuery as any)?.data;
+
+    if (!data) return undefined;
+
+    const list: any[] = Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
+
+    const pick = (obj: any, keys: string[]): string | undefined =>
+      keys.map((k) => obj?.[k]).find((v) => typeof v === "string" && v.length > 0);
+
+    const menus = getMenusFromPositions(list, [3, 4, 5]);
+
+    const toItems = (itemsRaw: any[]): TDynamicContentItem["items"] =>
+      itemsRaw
+        .filter(Boolean)
+        .map((i: any) => {
+          const text = pick(i, ["title", "name", "label", "text", "value"]) ?? "";
+          const href = pick(i, ["href", "url", "link", "path"]);
+          return {
+            value: text,
+            ariaLabel: text,
+            link: href,
+          } as any;
+        });
+
+    const guessChildren = (m: any): any[] => {
+      if (Array.isArray(m?.items)) return m.items;
+      if (Array.isArray(m?.links)) return m.links;
+      if (Array.isArray(m?.children)) return m.children;
+      return [];
+    };
+
+    const sections: TDynamicContentItem[] = menus.map((m: any) => {
+      const title = pick(m, ["title", "name", "label"]) ?? "";
+      const children = guessChildren(m);
+      return {
+        title,
+        items: toItems(children),
+      } as TDynamicContentItem;
+    });
+
+    return sections.length > 0 ? sections : undefined;
+  }, [menusQuery?.data]);
 
   // For development
   // const [footerContent, setFooterContent] = React.useState<TDynamicContentItem[]>([]);
@@ -58,10 +160,7 @@ export const FooterTemplate: React.FC = () => {
   return (
     <PageFooter className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.contentGrid}>
-          {getFooterContent.data?.map((content: any, idx: string) => <DynamicSection key={idx} {...{ content }} />)}
-        </div>
-
+        <div className={styles.contentGrid}>{footerSections?.map((content: TDynamicContentItem, idx: number) => <DynamicSection key={idx} {...{ content }} />)}</div>
         <div className={styles.logoAndConduction}>
           {window.sessionStorage.getItem("FOOTER_LOGO_URL") !== "false" && (
             <Logo

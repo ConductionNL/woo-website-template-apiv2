@@ -8,6 +8,7 @@ import OpenWoo from "./resources/openWoo";
 import FooterContent from "./resources/footerContent";
 import Markdown from "./resources/markdown";
 import AvailableFilters from "./resources/availableFilters";
+import MenusApi from "./resources/menus";
 
 interface PromiseMessage {
   loading?: string;
@@ -72,6 +73,10 @@ export default class APIService {
 
   public get Markdown(): Markdown {
     return new Markdown(this.MarkdownClient, this.Send);
+  }
+
+  public get Menus(): MenusApi {
+    return new MenusApi(this.BaseClient, this.Send);
   }
 
   // Send method
