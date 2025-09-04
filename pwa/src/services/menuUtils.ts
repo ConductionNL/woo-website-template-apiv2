@@ -40,7 +40,18 @@ export const filterMenuItemsByVisibility = (
 ): any[] =>
     items
         .filter((item: any) => isEntityVisibleForUser(item, userIsAuthenticated, userGroups))
-        .map((item: any) => ({ ...item, name: processMenuTemplate(item?.name ?? item?.title ?? "") }));
+        .map((item: any) => {
+            const name = processMenuTemplate(item?.name ?? item?.title ?? "");
+            const hasLink = Boolean(item?.link ?? item?.href ?? item?.url ?? item?.path);
+            const slug: string | undefined = item?.slug;
+            const fallbackLink = !hasLink && typeof slug === "string" && slug.length > 0 ? `/page/${slug}` : undefined;
+
+            return {
+                ...item,
+                name,
+                link: item?.link ?? fallbackLink,
+            };
+        });
 
 export const getMenusFromPositions = (
     items: any[],

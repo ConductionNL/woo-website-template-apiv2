@@ -9,6 +9,7 @@ import FooterContent from "./resources/footerContent";
 import Markdown from "./resources/markdown";
 import AvailableFilters from "./resources/availableFilters";
 import MenusApi from "./resources/menus";
+import PagesApi from "./resources/pages";
 
 interface PromiseMessage {
   loading?: string;
@@ -77,6 +78,10 @@ export default class APIService {
 
   public get Menus(): MenusApi {
     return new MenusApi(this.BaseClient, this.Send);
+  }
+
+  public get Pages(): PagesApi {
+    return new PagesApi(this.BaseClient, this.Send);
   }
 
   // Send method
