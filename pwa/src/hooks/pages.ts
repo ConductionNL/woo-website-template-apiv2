@@ -7,11 +7,19 @@ export const usePages = () => {
     const API: APIService | null = React.useContext(APIContext);
 
     const getAll = () =>
-        useQuery<any, Error>(["Pages", window.sessionStorage.getItem("OIDN_NUMBER")], () => API?.Pages.getAll(), {
-            onError: (error) => {
-                console.warn(error.message);
+        useQuery<any, Error>(
+            [
+                "Pages",
+                typeof window !== "undefined" ? window.sessionStorage.getItem("OIDN_NUMBER") : undefined,
+            ],
+            () => API?.Pages.getAll(),
+            {
+                onError: (error) => {
+                    console.warn(error.message);
+                },
+                enabled: typeof window !== "undefined",
             },
-        });
+        );
 
     return { getAll };
 };

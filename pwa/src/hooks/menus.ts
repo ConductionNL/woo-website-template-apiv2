@@ -7,11 +7,19 @@ export const useMenus = () => {
     const API: APIService | null = React.useContext(APIContext);
 
     const getAll = () =>
-        useQuery<any, Error>(["Menus", window.sessionStorage.getItem("OIDN_NUMBER")], () => API?.Menus.getAll(), {
-            onError: (error) => {
-                console.warn(error.message);
+        useQuery<any, Error>(
+            [
+                "Menus",
+                typeof window !== "undefined" ? window.sessionStorage.getItem("OIDN_NUMBER") : undefined,
+            ],
+            () => API?.Menus.getAll(),
+            {
+                onError: (error) => {
+                    console.warn(error.message);
+                },
+                enabled: typeof window !== "undefined",
             },
-        });
+        );
 
     return { getAll };
 };
