@@ -13,7 +13,7 @@ export default class MenusApi {
     public getAll = async (): Promise<any> => {
         const { data } = await this._send(this._instance, "GET", "/menus?_limit=50");
 
-        return data;
+        return (data as any)?.results ?? data;
     };
 }
 
