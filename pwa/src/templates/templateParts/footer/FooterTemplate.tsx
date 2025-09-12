@@ -32,6 +32,7 @@ type TDynamicContentItem = {
     multiRow?: string;
     label?: string;
     title?: string;
+    iconMode?: "standard" | "custom";
     icon?: {
       icon: IconName;
       prefix: IconPrefix;
@@ -316,6 +317,31 @@ interface LinkComponentProps {
   item: any;
 }
 
+const renderIcon = (item: any, side: "left" | "right") => {
+  try {
+    const mode: string | undefined = typeof item?.iconMode === "string" ? item.iconMode : undefined;
+    const className = side === "left" ? styles.iconLeft : styles.iconRight;
+
+    if (mode === "custom") {
+      if (item?.customIcon && item.customIconPlacement === side && typeof item.customIcon.icon === "string") {
+        return <Icon className={className}>{parse(item.customIcon)}</Icon>;
+      }
+      return null;
+    }
+
+    if (mode === "standard") {
+      if (item?.icon && item.iconPlacement === side && item.icon.icon) {
+        return <FontAwesomeIcon className={className} icon={[item.iconPrefix, item.icon]} />;
+      }
+      return null;
+    }
+
+    return null;
+  } catch (e) {
+    return null;
+  }
+};
+
 const ExternalLink: React.FC<LinkComponentProps> = ({ item }) => {
   const { t } = useTranslation();
 
@@ -327,23 +353,9 @@ const ExternalLink: React.FC<LinkComponentProps> = ({ item }) => {
       tabIndex={0}
       aria-label={`${t(item.ariaLabel)}, ${item.value}, ${t("Opens a new window")}`}
     >
-      {item.customIcon && item.customIcon.placement === "left" && (
-        <Icon className={styles.iconLeft}>{parse(item.customIcon.icon)}</Icon>
-      )}
-
-      {item.icon && item.icon.placement === "left" && (
-        <FontAwesomeIcon className={styles.iconLeft} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
+      {renderIcon(item, "left")}
       {t(item.value)}
-
-      {item.icon && item.icon.placement === "right" && (
-        <FontAwesomeIcon className={styles.iconRight} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "right" && (
-        <Icon className={styles.iconRight}>{parse(item.customIcon.icon)}</Icon>
-      )}
+      {renderIcon(item, "right")}
     </Link>
   );
 };
@@ -362,23 +374,9 @@ const InternalLink: React.FC<LinkComponentProps> = ({ item }) => {
       role="button"
       href={item.link}
     >
-      {item.icon && item.icon.placement === "left" && (
-        <FontAwesomeIcon className={styles.iconLeft} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "left" && (
-        <Icon className={styles.iconLeft}>{parse(item.customIcon.icon)}</Icon>
-      )}
-
+      {renderIcon(item, "left")}
       {t(item.value)}
-
-      {item.icon && item.icon.placement === "right" && (
-        <FontAwesomeIcon className={styles.iconRight} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "right" && (
-        <Icon className={styles.iconRight}>{parse(item.customIcon.icon)}</Icon>
-      )}
+      {renderIcon(item, "right")}
     </Link>
   );
 };
@@ -397,23 +395,9 @@ const MarkdownLink: React.FC<LinkComponentProps> = ({ item }) => {
       role="button"
       href={item.markdownLink}
     >
-      {item.icon && item.icon.placement === "left" && (
-        <FontAwesomeIcon className={styles.iconLeft} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "left" && (
-        <Icon className={styles.iconLeft}>{parse(item.customIcon.icon)}</Icon>
-      )}
-
+      {renderIcon(item, "left")}
       {t(item.value)}
-
-      {item.icon && item.icon.placement === "right" && (
-        <FontAwesomeIcon className={styles.iconRight} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "right" && (
-        <Icon className={styles.iconRight}>{parse(item.customIcon.icon)}</Icon>
-      )}
+      {renderIcon(item, "right")}
     </Link>
   );
 };
@@ -421,23 +405,9 @@ const MarkdownLink: React.FC<LinkComponentProps> = ({ item }) => {
 const MultiRow: React.FC<LinkComponentProps> = ({ item }) => {
   return (
     <span className={styles.multiRow}>
-      {item.customIcon && item.customIcon.placement === "left" && (
-        <Icon className={styles.iconLeft}>{parse(item.customIcon.icon)}</Icon>
-      )}
-
-      {item.icon && item.icon.placement === "left" && (
-        <FontAwesomeIcon className={styles.iconLeft} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
+      {renderIcon(item, "left")}
       <div>{item.multiRow}</div>
-
-      {item.icon && item.icon.placement === "right" && (
-        <FontAwesomeIcon className={styles.iconRight} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "right" && (
-        <Icon className={styles.iconRight}>{parse(item.customIcon.icon)}</Icon>
-      )}
+      {renderIcon(item, "right")}
     </span>
   );
 };
@@ -447,23 +417,9 @@ const NoLink: React.FC<LinkComponentProps> = ({ item }) => {
 
   return (
     <span>
-      {item.customIcon && item.customIcon.placement === "left" && (
-        <Icon className={styles.iconLeft}>{parse(item.customIcon.icon)}</Icon>
-      )}
-
-      {item.icon && item.icon.placement === "left" && (
-        <FontAwesomeIcon className={styles.iconLeft} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
+      {renderIcon(item, "left")}
       {t(item.value)}
-
-      {item.icon && item.icon.placement === "right" && (
-        <FontAwesomeIcon className={styles.iconRight} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "right" && (
-        <Icon className={styles.iconRight}>{parse(item.customIcon.icon)}</Icon>
-      )}
+      {renderIcon(item, "right")}
     </span>
   );
 };
