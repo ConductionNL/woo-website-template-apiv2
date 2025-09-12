@@ -83,7 +83,15 @@ const filterMenuItemsByVisibility = (
 ): any[] =>
   items
     .filter((item: any) => isEntityVisibleForUser(item, userIsAuthenticated, userGroups))
-    .map((item: any) => ({ ...item, name: processMenuTemplate(item?.name ?? item?.title ?? "") }));
+    .map((item: any) => ({
+      ...item,
+      name:
+        typeof item?.name === "string" && item.name.length > 0
+          ? item.name
+          : typeof item?.title === "string" && item.title.length > 0
+            ? item.title
+            : "",
+    }));
 
 const getMenusFromPositions = (
   items: any[],
@@ -99,7 +107,12 @@ const getMenusFromPositions = (
     .filter((menu: any) => isEntityVisibleForUser(menu, userIsAuthenticated, userGroups))
     .map((menu: any) => ({
       ...menu,
-      name: processMenuTemplate(menu?.name ?? menu?.title ?? ""),
+      name:
+        typeof menu?.name === "string" && menu.name.length > 0
+          ? menu.name
+          : typeof menu?.title === "string" && menu.title.length > 0
+            ? menu.title
+            : "",
       items: filterMenuItemsByVisibility(menu?.items ?? menu?.links ?? menu?.children ?? [], userIsAuthenticated, userGroups),
     }));
 };
