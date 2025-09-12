@@ -55,7 +55,8 @@ const isEntityVisibleForUser = (entity: any, userIsAuthenticated: boolean, userG
   const allowedGroups: string[] =
     (Array.isArray(entity?.groups) && entity.groups) ||
     (Array.isArray(entity?.roles) && entity.roles) ||
-    (Array.isArray(entity?.allowedGroups) && entity.allowedGroups) || [];
+    (Array.isArray(entity?.allowedGroups) && entity.allowedGroups) ||
+    [];
 
   if (allowedGroups.length > 0) {
     const hasIntersection = userGroups.some((g) => allowedGroups.includes(g));
@@ -65,23 +66,7 @@ const isEntityVisibleForUser = (entity: any, userIsAuthenticated: boolean, userG
   return true;
 };
 
-const processMenuTemplate = (text: string): string => {
-  if (typeof text !== "string") return "";
-  const organisation = window.sessionStorage.getItem("ORGANISATION_NAME") ?? "";
-  const year = String(new Date().getFullYear());
-
-  return text
-    .replace(/\{\s*ORGANISATION_NAME\s*\}/gi, organisation)
-    .replace(/\{\s*YEAR\s*\}/gi, year)
-    .replace(/\$\{\s*ORGANISATION_NAME\s*\}/gi, organisation)
-    .replace(/\$\{\s*YEAR\s*\}/gi, year);
-};
-
-const filterMenuItemsByVisibility = (
-  items: any[] = [],
-  userIsAuthenticated: boolean,
-  userGroups: string[],
-): any[] =>
+const filterMenuItemsByVisibility = (items: any[] = [], userIsAuthenticated: boolean, userGroups: string[]): any[] =>
   items
     .filter((item: any) => isEntityVisibleForUser(item, userIsAuthenticated, userGroups))
     .map((item: any) => ({
@@ -108,13 +93,8 @@ const getMenusFromPositions = (
     .filter((menu: any) => isEntityVisibleForUser(menu, userIsAuthenticated, userGroups))
     .map((menu: any) => ({
       ...menu,
-      name:
-        typeof menu?.name === "string" && menu.name.length > 0
-          ? menu.name
-          : typeof menu?.title === "string" && menu.title.length > 0
-            ? menu.title
-            : "",
-      items: filterMenuItemsByVisibility(menu?.items ?? menu?.links ?? menu?.children ?? [], userIsAuthenticated, userGroups),
+
+      items: filterMenuItemsByVisibility(menu?.items, userIsAuthenticated, userGroups),
     }));
 };
 
@@ -133,23 +113,11 @@ export const FooterTemplate: React.FC = () => {
     const menus = getMenusFromPositions(list, [3, 4, 5]);
 
     const toItems = (itemsRaw: any[]): TDynamicContentItem["items"] =>
-      itemsRaw
-        .filter(Boolean)
-        .map((i: any) => {
-          const text = pick(i, ["title", "name", "label", "text", "value"]) ?? "";
-          const href = pick(i, ["href", "url", "link", "path"]);
-          const aria = (typeof i?.ariaLabel === "string" && i.ariaLabel.length > 0)
-            ? i.ariaLabel
-            : (typeof i?.name === "string" && i.name.length > 0)
-              ? i.name
-              : text;
-          return {
-            ...i,
-            value: i?.value ?? text,
-            ariaLabel: aria,
-            link: i?.link ?? href,
-          } as any;
-        });
+      itemsRaw.filter(Boolean).map((item: any) => {
+        return {
+          ...item,
+        } as any;
+      });
 
     const guessChildren = (m: any): any[] => {
       if (Array.isArray(m?.items)) return m.items;
@@ -180,7 +148,11 @@ export const FooterTemplate: React.FC = () => {
   return (
     <PageFooter className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.contentGrid}>{footerSections?.map((content: TDynamicContentItem, idx: number) => <DynamicSection key={idx} {...{ content }} />)}</div>
+        <div className={styles.contentGrid}>
+          {footerSections?.map((content: TDynamicContentItem, idx: number) => (
+            <DynamicSection key={idx} {...{ content }} />
+          ))}
+        </div>
         <div className={styles.logoAndConduction}>
           {window.sessionStorage.getItem("FOOTER_LOGO_URL") !== "false" && (
             <Logo
@@ -217,10 +189,14 @@ const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content })
           )}
           {item.label && <strong>{t(item.label)}</strong>}
           {/* External Link */}
-          {item.link && (/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && <ExternalLink {...{ item }} />}
+          {item.link && (/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && (
+            <ExternalLink {...{ item }} />
+          )}
 
           {/* Internal Link */}
-          {item.link && !(/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && <InternalLink {...{ item }} />}
+          {item.link && !(/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && (
+            <InternalLink {...{ item }} />
+          )}
 
           {/* Internal Link Github/Markdown link */}
           {item.markdownLink && <MarkdownLink {...{ item }} />}
@@ -323,14 +299,14 @@ const renderIcon = (item: any, side: "left" | "right") => {
     const className = side === "left" ? styles.iconLeft : styles.iconRight;
 
     if (mode === "custom") {
-      if (item?.customIcon && item.customIconPlacement === side && typeof item.customIcon.icon === "string") {
+      if (item?.customIcon && item.iconPlacement === side && typeof item.customIcon === "string") {
         return <Icon className={className}>{parse(item.customIcon)}</Icon>;
       }
       return null;
     }
 
     if (mode === "standard") {
-      if (item?.icon && item.iconPlacement === side && item.icon.icon) {
+      if (item?.icon && item.iconPlacement === side && item.icon) {
         return <FontAwesomeIcon className={className} icon={[item.iconPrefix, item.icon]} />;
       }
       return null;
@@ -351,10 +327,10 @@ const ExternalLink: React.FC<LinkComponentProps> = ({ item }) => {
       href={item.link}
       target="_blank"
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${item.value}, ${t("Opens a new window")}`}
+      aria-label={`${t(item.ariaLabel)}, ${item.name}, ${t("Opens a new window")}`}
     >
       {renderIcon(item, "left")}
-      {t(item.value)}
+      {t(item.name)}
       {renderIcon(item, "right")}
     </Link>
   );
@@ -370,12 +346,12 @@ const InternalLink: React.FC<LinkComponentProps> = ({ item }) => {
         e.preventDefault(), navigate(item.link ?? "");
       }}
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${t(item.value)}`}
+      aria-label={`${t(item.ariaLabel)}, ${t(item.name)}`}
       role="button"
       href={item.link}
     >
       {renderIcon(item, "left")}
-      {t(item.value)}
+      {t(item.name)}
       {renderIcon(item, "right")}
     </Link>
   );
@@ -388,7 +364,7 @@ const MarkdownLink: React.FC<LinkComponentProps> = ({ item }) => {
     <Link
       className={styles.link}
       onClick={(e: any) => {
-        e.preventDefault(), navigate(`/markdown/${item.value.replaceAll(" ", "_")}/?link=${item.markdownLink}`);
+        e.preventDefault(), navigate(`/markdown/${item.name.replaceAll(" ", "_")}/?link=${item.markdownLink}`);
       }}
       tabIndex={0}
       aria-label={`${t(item.ariaLabel)}, ${t(item.markdownLink)}`}
@@ -396,7 +372,7 @@ const MarkdownLink: React.FC<LinkComponentProps> = ({ item }) => {
       href={item.markdownLink}
     >
       {renderIcon(item, "left")}
-      {t(item.value)}
+      {t(item.name)}
       {renderIcon(item, "right")}
     </Link>
   );
@@ -418,7 +394,7 @@ const NoLink: React.FC<LinkComponentProps> = ({ item }) => {
   return (
     <span>
       {renderIcon(item, "left")}
-      {t(item.value)}
+      {t(item.name)}
       {renderIcon(item, "right")}
     </span>
   );
