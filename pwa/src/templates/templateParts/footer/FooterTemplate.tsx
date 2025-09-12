@@ -124,10 +124,16 @@ export const FooterTemplate: React.FC = () => {
         .map((i: any) => {
           const text = pick(i, ["title", "name", "label", "text", "value"]) ?? "";
           const href = pick(i, ["href", "url", "link", "path"]);
+          const aria = (typeof i?.ariaLabel === "string" && i.ariaLabel.length > 0)
+            ? i.ariaLabel
+            : (typeof i?.name === "string" && i.name.length > 0)
+              ? i.name
+              : text;
           return {
-            value: text,
-            ariaLabel: text,
-            link: href,
+            ...i,
+            value: i?.value ?? text,
+            ariaLabel: aria,
+            link: i?.link ?? href,
           } as any;
         });
 
@@ -197,10 +203,10 @@ const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content })
           )}
           {item.label && <strong>{t(item.label)}</strong>}
           {/* External Link */}
-          {item.link && item.link.includes("http") && <ExternalLink {...{ item }} />}
+          {item.link && (/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && <ExternalLink {...{ item }} />}
 
           {/* Internal Link */}
-          {item.link && !item.link.includes("http") && <InternalLink {...{ item }} />}
+          {item.link && !(/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && <InternalLink {...{ item }} />}
 
           {/* Internal Link Github/Markdown link */}
           {item.markdownLink && <MarkdownLink {...{ item }} />}
