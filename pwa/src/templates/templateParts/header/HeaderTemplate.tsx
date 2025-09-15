@@ -5,7 +5,10 @@ import { PageHeader, SkipLink } from "@utrecht/component-library-react/dist/css-
 import { useTranslation } from "react-i18next";
 import { useGatsbyContext } from "../../../context/gatsby";
 import { navigate } from "gatsby";
-import { Logo } from "@conduction/components";
+import { Logo, PrimaryTopNav, SecondaryTopNav } from "@conduction/components";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useMenus } from "../../../hooks/menus";
+import { getMenuFromPosition, getTopRightMenu } from "../../../services/menuUtils";
 
 interface HeaderTemplateProps {
   layoutClassName: string;
@@ -14,9 +17,17 @@ interface HeaderTemplateProps {
 export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName }) => {
   const { t, i18n } = useTranslation();
   const { gatsbyContext } = useGatsbyContext();
+  const menusQuery = useMenus().getAll();
+
+  const allMenus: any[] = React.useMemo(() => {
+    const data: any = (menusQuery as any)?.data;
+    return Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
+  }, [menusQuery?.data]);
+
+  const menuNavigation = React.useMemo(() => getMenuFromPosition(allMenus, 2), [allMenus]);
 
   return (
-    <PageHeader className={clsx(layoutClassName && layoutClassName)}>
+    <PageHeader className={clsx(layoutClassName && layoutClassName, "ac-header")}>
       <div role="navigation" aria-label="skip" className={styles.container}>
         <div>
           <SkipLink
@@ -71,6 +82,9 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
             </span>
           </nav>
         </div>
+        {menuNavigation?.items?.length > 0 && (
+          <PrimaryTopNav items={menuNavigation.items as any} />
+        )}
       </div>
     </PageHeader>
   );
