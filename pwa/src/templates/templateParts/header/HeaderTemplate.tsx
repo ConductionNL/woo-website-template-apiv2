@@ -24,31 +24,7 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
     return Array.isArray(data?.results) ? data.results : Array.isArray(data) ? data : [];
   }, [menusQuery?.data]);
 
-  const menuTopRight = React.useMemo(() => getTopRightMenu(allMenus), [allMenus]);
   const menuNavigation = React.useMemo(() => getMenuFromPosition(allMenus, 2), [allMenus]);
-
-  const secondaryTopNavItems = React.useMemo(() => {
-    if (!menuTopRight?.items || !Array.isArray(menuTopRight.items)) return [] as any[];
-
-    return menuTopRight.items.map((item: any) => {
-      const label: string = item?.name ?? item?.title ?? item?.value ?? "";
-      const href: string = item?.link ?? item?.href ?? item?.url ?? item?.path ?? "#";
-      const isExternal = href.includes("http");
-      const current = !isExternal && gatsbyContext?.location?.pathname === href;
-
-      const iconNode = item?.icon?.icon ? (
-        <FontAwesomeIcon icon={[item.icon.prefix, item.icon.icon]} />
-      ) : undefined;
-
-      return {
-        label,
-        type: isExternal ? "external" : "internal",
-        current,
-        handleClick: () => (isExternal ? open(href) : navigate(href)),
-        icon: iconNode,
-      };
-    });
-  }, [menuTopRight?.items, gatsbyContext?.location?.pathname]);
 
   return (
     <PageHeader className={clsx(layoutClassName && layoutClassName, "ac-header")}>
@@ -108,9 +84,6 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
         </div>
         {menuNavigation?.items?.length > 0 && (
           <PrimaryTopNav items={menuNavigation.items as any} />
-        )}
-        {secondaryTopNavItems.length > 0 && (
-          <SecondaryTopNav items={secondaryTopNavItems as any} />
         )}
       </div>
     </PageHeader>

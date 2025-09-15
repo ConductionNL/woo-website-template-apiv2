@@ -18,6 +18,7 @@ import { useTranslation } from "react-i18next";
 import { Logo } from "@conduction/components";
 import { IconPrefix, IconName } from "@fortawesome/fontawesome-svg-core";
 import { useMenus } from "../../../hooks/menus";
+import { getMenusFromPositions } from "../../../services/menuUtils";
 
 export const DEFAULT_FOOTER_CONTENT_URL =
   "https://raw.githubusercontent.com/ConductionNL/woo-website-template/main/pwa/src/templates/templateParts/footer/FooterContent.json";
@@ -45,59 +46,6 @@ type TDynamicContentItem = {
   }[];
 };
 
-// Helpers to process menus coming from API
-const isEntityVisibleForUser = (entity: any, userIsAuthenticated: boolean, userGroups: string[]): boolean => {
-  if (!entity) return false;
-
-  const requiresAuth: boolean = Boolean(entity?.authRequired ?? entity?.requiresAuth ?? entity?.protected);
-  if (requiresAuth && !userIsAuthenticated) return false;
-
-  const allowedGroups: string[] =
-    (Array.isArray(entity?.groups) && entity.groups) ||
-    (Array.isArray(entity?.roles) && entity.roles) ||
-    (Array.isArray(entity?.allowedGroups) && entity.allowedGroups) ||
-    [];
-
-  if (allowedGroups.length > 0) {
-    const hasIntersection = userGroups.some((g) => allowedGroups.includes(g));
-    if (!hasIntersection) return false;
-  }
-
-  return true;
-};
-
-const filterMenuItemsByVisibility = (items: any[] = [], userIsAuthenticated: boolean, userGroups: string[]): any[] =>
-  items
-    .filter((item: any) => isEntityVisibleForUser(item, userIsAuthenticated, userGroups))
-    .map((item: any) => ({
-      ...item,
-      name:
-        typeof item?.name === "string" && item.name.length > 0
-          ? item.name
-          : typeof item?.title === "string" && item.title.length > 0
-            ? item.title
-            : "",
-    }));
-
-const getMenusFromPositions = (
-  items: any[],
-  positions: number[],
-  userIsAuthenticated: boolean = false,
-  userGroups: string[] = [],
-) => {
-  if (!Array.isArray(items) || items.length === 0) return [];
-
-  const menusAtPositions = items.filter((m: any) => m && positions.includes(Number(m?.position ?? m?.pos)));
-
-  return menusAtPositions
-    .filter((menu: any) => isEntityVisibleForUser(menu, userIsAuthenticated, userGroups))
-    .map((menu: any) => ({
-      ...menu,
-
-      items: filterMenuItemsByVisibility(menu?.items, userIsAuthenticated, userGroups),
-    }));
-};
-
 export const FooterTemplate: React.FC = () => {
   const menusQuery = useMenus().getAll();
   const footerSections: TDynamicContentItem[] | undefined = React.useMemo(() => {
@@ -112,26 +60,12 @@ export const FooterTemplate: React.FC = () => {
 
     const menus = getMenusFromPositions(list, [3, 4, 5]);
 
-    const toItems = (itemsRaw: any[]): TDynamicContentItem["items"] =>
-      itemsRaw.filter(Boolean).map((item: any) => {
-        return {
-          ...item,
-        } as any;
-      });
-
-    const guessChildren = (m: any): any[] => {
-      if (Array.isArray(m?.items)) return m.items;
-      if (Array.isArray(m?.links)) return m.links;
-      if (Array.isArray(m?.children)) return m.children;
-      return [];
-    };
-
-    const sections: TDynamicContentItem[] = menus.map((m: any) => {
-      const title = pick(m, ["title", "name", "label"]) ?? "";
-      const children = guessChildren(m);
+    const sections: TDynamicContentItem[] = (menus ?? []).map((m: any) => {
+      const title = pick(m, ["name", "title", "label"]) ?? "";
+      const items = Array.isArray(m?.items) ? m.items : [];
       return {
         title,
-        items: toItems(children),
+        items: items as any,
       } as TDynamicContentItem;
     });
 
