@@ -47,7 +47,7 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({ slug }) => {
 
     const hasContent = typeof htmlContent === "string" && htmlContent.trim().length > 0;
 
-    const location = `/page/${slug}`;
+    const location = `/${slug}`;
 
     return (
         <Page>
