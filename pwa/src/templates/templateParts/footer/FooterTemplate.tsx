@@ -32,6 +32,7 @@ type TDynamicContentItem = {
     multiRow?: string;
     label?: string;
     title?: string;
+    iconMode?: "standard" | "custom";
     icon?: {
       icon: IconName;
       prefix: IconPrefix;
@@ -54,7 +55,8 @@ const isEntityVisibleForUser = (entity: any, userIsAuthenticated: boolean, userG
   const allowedGroups: string[] =
     (Array.isArray(entity?.groups) && entity.groups) ||
     (Array.isArray(entity?.roles) && entity.roles) ||
-    (Array.isArray(entity?.allowedGroups) && entity.allowedGroups) || [];
+    (Array.isArray(entity?.allowedGroups) && entity.allowedGroups) ||
+    [];
 
   if (allowedGroups.length > 0) {
     const hasIntersection = userGroups.some((g) => allowedGroups.includes(g));
@@ -64,26 +66,18 @@ const isEntityVisibleForUser = (entity: any, userIsAuthenticated: boolean, userG
   return true;
 };
 
-const processMenuTemplate = (text: string): string => {
-  if (typeof text !== "string") return "";
-  const organisation = window.sessionStorage.getItem("ORGANISATION_NAME") ?? "";
-  const year = String(new Date().getFullYear());
-
-  return text
-    .replace(/\{\s*ORGANISATION_NAME\s*\}/gi, organisation)
-    .replace(/\{\s*YEAR\s*\}/gi, year)
-    .replace(/\$\{\s*ORGANISATION_NAME\s*\}/gi, organisation)
-    .replace(/\$\{\s*YEAR\s*\}/gi, year);
-};
-
-const filterMenuItemsByVisibility = (
-  items: any[] = [],
-  userIsAuthenticated: boolean,
-  userGroups: string[],
-): any[] =>
+const filterMenuItemsByVisibility = (items: any[] = [], userIsAuthenticated: boolean, userGroups: string[]): any[] =>
   items
     .filter((item: any) => isEntityVisibleForUser(item, userIsAuthenticated, userGroups))
-    .map((item: any) => ({ ...item, name: processMenuTemplate(item?.name ?? item?.title ?? "") }));
+    .map((item: any) => ({
+      ...item,
+      name:
+        typeof item?.name === "string" && item.name.length > 0
+          ? item.name
+          : typeof item?.title === "string" && item.title.length > 0
+            ? item.title
+            : "",
+    }));
 
 const getMenusFromPositions = (
   items: any[],
@@ -99,8 +93,8 @@ const getMenusFromPositions = (
     .filter((menu: any) => isEntityVisibleForUser(menu, userIsAuthenticated, userGroups))
     .map((menu: any) => ({
       ...menu,
-      name: processMenuTemplate(menu?.name ?? menu?.title ?? ""),
-      items: filterMenuItemsByVisibility(menu?.items ?? menu?.links ?? menu?.children ?? [], userIsAuthenticated, userGroups),
+
+      items: filterMenuItemsByVisibility(menu?.items, userIsAuthenticated, userGroups),
     }));
 };
 
@@ -119,17 +113,11 @@ export const FooterTemplate: React.FC = () => {
     const menus = getMenusFromPositions(list, [3, 4, 5]);
 
     const toItems = (itemsRaw: any[]): TDynamicContentItem["items"] =>
-      itemsRaw
-        .filter(Boolean)
-        .map((i: any) => {
-          const text = pick(i, ["title", "name", "label", "text", "value"]) ?? "";
-          const href = pick(i, ["href", "url", "link", "path"]);
-          return {
-            value: text,
-            ariaLabel: text,
-            link: href,
-          } as any;
-        });
+      itemsRaw.filter(Boolean).map((item: any) => {
+        return {
+          ...item,
+        } as any;
+      });
 
     const guessChildren = (m: any): any[] => {
       if (Array.isArray(m?.items)) return m.items;
@@ -160,7 +148,11 @@ export const FooterTemplate: React.FC = () => {
   return (
     <PageFooter className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.contentGrid}>{footerSections?.map((content: TDynamicContentItem, idx: number) => <DynamicSection key={idx} {...{ content }} />)}</div>
+        <div className={styles.contentGrid}>
+          {footerSections?.map((content: TDynamicContentItem, idx: number) => (
+            <DynamicSection key={idx} {...{ content }} />
+          ))}
+        </div>
         <div className={styles.logoAndConduction}>
           {window.sessionStorage.getItem("FOOTER_LOGO_URL") !== "false" && (
             <Logo
@@ -197,10 +189,14 @@ const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content })
           )}
           {item.label && <strong>{t(item.label)}</strong>}
           {/* External Link */}
-          {item.link && item.link.includes("http") && <ExternalLink {...{ item }} />}
+          {item.link && (/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && (
+            <ExternalLink {...{ item }} />
+          )}
 
           {/* Internal Link */}
-          {item.link && !item.link.includes("http") && <InternalLink {...{ item }} />}
+          {item.link && !(/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && (
+            <InternalLink {...{ item }} />
+          )}
 
           {/* Internal Link Github/Markdown link */}
           {item.markdownLink && <MarkdownLink {...{ item }} />}
@@ -297,6 +293,31 @@ interface LinkComponentProps {
   item: any;
 }
 
+const renderIcon = (item: any, side: "left" | "right") => {
+  try {
+    const mode: string | undefined = typeof item?.iconMode === "string" ? item.iconMode : undefined;
+    const className = side === "left" ? styles.iconLeft : styles.iconRight;
+
+    if (mode === "custom") {
+      if (item?.customIcon && item.iconPlacement === side && typeof item.customIcon === "string") {
+        return <Icon className={className}>{parse(item.customIcon)}</Icon>;
+      }
+      return null;
+    }
+
+    if (mode === "standard") {
+      if (item?.icon && item.iconPlacement === side && item.icon) {
+        return <FontAwesomeIcon className={className} icon={[item.iconPrefix, item.icon]} />;
+      }
+      return null;
+    }
+
+    return null;
+  } catch (e) {
+    return null;
+  }
+};
+
 const ExternalLink: React.FC<LinkComponentProps> = ({ item }) => {
   const { t } = useTranslation();
 
@@ -306,25 +327,11 @@ const ExternalLink: React.FC<LinkComponentProps> = ({ item }) => {
       href={item.link}
       target="_blank"
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${item.value}, ${t("Opens a new window")}`}
+      aria-label={`${t(item.ariaLabel)}, ${item.name}, ${t("Opens a new window")}`}
     >
-      {item.customIcon && item.customIcon.placement === "left" && (
-        <Icon className={styles.iconLeft}>{parse(item.customIcon.icon)}</Icon>
-      )}
-
-      {item.icon && item.icon.placement === "left" && (
-        <FontAwesomeIcon className={styles.iconLeft} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {t(item.value)}
-
-      {item.icon && item.icon.placement === "right" && (
-        <FontAwesomeIcon className={styles.iconRight} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "right" && (
-        <Icon className={styles.iconRight}>{parse(item.customIcon.icon)}</Icon>
-      )}
+      {renderIcon(item, "left")}
+      {t(item.name)}
+      {renderIcon(item, "right")}
     </Link>
   );
 };
@@ -339,27 +346,13 @@ const InternalLink: React.FC<LinkComponentProps> = ({ item }) => {
         e.preventDefault(), navigate(item.link ?? "");
       }}
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${t(item.value)}`}
+      aria-label={`${t(item.ariaLabel)}, ${t(item.name)}`}
       role="button"
       href={item.link}
     >
-      {item.icon && item.icon.placement === "left" && (
-        <FontAwesomeIcon className={styles.iconLeft} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "left" && (
-        <Icon className={styles.iconLeft}>{parse(item.customIcon.icon)}</Icon>
-      )}
-
-      {t(item.value)}
-
-      {item.icon && item.icon.placement === "right" && (
-        <FontAwesomeIcon className={styles.iconRight} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "right" && (
-        <Icon className={styles.iconRight}>{parse(item.customIcon.icon)}</Icon>
-      )}
+      {renderIcon(item, "left")}
+      {t(item.name)}
+      {renderIcon(item, "right")}
     </Link>
   );
 };
@@ -371,30 +364,16 @@ const MarkdownLink: React.FC<LinkComponentProps> = ({ item }) => {
     <Link
       className={styles.link}
       onClick={(e: any) => {
-        e.preventDefault(), navigate(`/markdown/${item.value.replaceAll(" ", "_")}/?link=${item.markdownLink}`);
+        e.preventDefault(), navigate(`/markdown/${item.name.replaceAll(" ", "_")}/?link=${item.markdownLink}`);
       }}
       tabIndex={0}
       aria-label={`${t(item.ariaLabel)}, ${t(item.markdownLink)}`}
       role="button"
       href={item.markdownLink}
     >
-      {item.icon && item.icon.placement === "left" && (
-        <FontAwesomeIcon className={styles.iconLeft} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "left" && (
-        <Icon className={styles.iconLeft}>{parse(item.customIcon.icon)}</Icon>
-      )}
-
-      {t(item.value)}
-
-      {item.icon && item.icon.placement === "right" && (
-        <FontAwesomeIcon className={styles.iconRight} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "right" && (
-        <Icon className={styles.iconRight}>{parse(item.customIcon.icon)}</Icon>
-      )}
+      {renderIcon(item, "left")}
+      {t(item.name)}
+      {renderIcon(item, "right")}
     </Link>
   );
 };
@@ -402,23 +381,9 @@ const MarkdownLink: React.FC<LinkComponentProps> = ({ item }) => {
 const MultiRow: React.FC<LinkComponentProps> = ({ item }) => {
   return (
     <span className={styles.multiRow}>
-      {item.customIcon && item.customIcon.placement === "left" && (
-        <Icon className={styles.iconLeft}>{parse(item.customIcon.icon)}</Icon>
-      )}
-
-      {item.icon && item.icon.placement === "left" && (
-        <FontAwesomeIcon className={styles.iconLeft} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
+      {renderIcon(item, "left")}
       <div>{item.multiRow}</div>
-
-      {item.icon && item.icon.placement === "right" && (
-        <FontAwesomeIcon className={styles.iconRight} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "right" && (
-        <Icon className={styles.iconRight}>{parse(item.customIcon.icon)}</Icon>
-      )}
+      {renderIcon(item, "right")}
     </span>
   );
 };
@@ -428,23 +393,9 @@ const NoLink: React.FC<LinkComponentProps> = ({ item }) => {
 
   return (
     <span>
-      {item.customIcon && item.customIcon.placement === "left" && (
-        <Icon className={styles.iconLeft}>{parse(item.customIcon.icon)}</Icon>
-      )}
-
-      {item.icon && item.icon.placement === "left" && (
-        <FontAwesomeIcon className={styles.iconLeft} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {t(item.value)}
-
-      {item.icon && item.icon.placement === "right" && (
-        <FontAwesomeIcon className={styles.iconRight} icon={[item.icon.prefix, item.icon.icon]} />
-      )}
-
-      {item.customIcon && item.customIcon.placement === "right" && (
-        <Icon className={styles.iconRight}>{parse(item.customIcon.icon)}</Icon>
-      )}
+      {renderIcon(item, "left")}
+      {t(item.name)}
+      {renderIcon(item, "right")}
     </span>
   );
 };
