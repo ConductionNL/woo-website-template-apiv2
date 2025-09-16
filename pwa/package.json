@@ -5,6 +5,9 @@
   "description": "Product Website Template",
   "author": "Conduction",
   "keywords": ["gatsby"],
+  "overrides": {
+    "vega": "^6.1.2"
+  },
   "scripts": {
     "dev": "gatsby develop",
     "develop": "gatsby develop",
