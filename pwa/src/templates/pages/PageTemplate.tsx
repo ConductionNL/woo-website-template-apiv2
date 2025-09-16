@@ -2,7 +2,7 @@ import * as React from "react";
 import { Page, PageContent, AccordionProvider } from "@utrecht/component-library-react/dist/css-module";
 import { useTranslation } from "react-i18next";
 import { usePages } from "../../hooks/pages";
-import { ParsedHTML } from "../../components/ParsedHTML/ParsedHTML";
+import { sanitizeHtml } from "../../services/sanitizeHtml";
 import { getPagesList, getPageBySlug, getPageHtmlFromContents } from "../../services/pageUtils";
 
 interface PageTemplateProps {
@@ -19,47 +19,31 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({ slug }) => {
         return getPageBySlug(list, slug);
     }, [pagesQuery?.data, slug]);
 
-    const htmlContent = React.useMemo(() => getPageHtmlFromContents(page), [page]);
-
-    const faqSections = React.useMemo(() => {
-        if (!page) return [] as { label: string; body: string }[];
-        const blocks: any[] = Array.isArray(page?.contents) ? page.contents : [];
-        const faqs: { label: string; body: string }[] = [];
-        blocks
-            .filter((b: any) => (b?.type ?? "") === "Faq")
-            .sort((a: any, b: any) => Number(a?.order ?? 0) - Number(b?.order ?? 0))
-            .forEach((b: any) => {
-                const items: any[] = Array.isArray(b?.data?.faqs) ? b.data.faqs : [];
-                items.forEach((it: any) => {
-                    const question: string = it?.question ?? "";
-                    const answer: string = it?.answer ?? "";
-                    if (question || answer) faqs.push({ label: question, body: answer });
-                });
-            });
-        return faqs;
-    }, [page]);
-
-    const fakeQuery = {
-        data: htmlContent,
-        isLoading: pagesQuery.isLoading,
-        isError: pagesQuery.isError,
-    } as any;
-
-    const hasContent = typeof htmlContent === "string" && htmlContent.trim().length > 0;
-
-    const location = `/${slug}`;
+    const blocks: any[] = React.useMemo(
+        () => (Array.isArray(page?.contents) ? [...page.contents] : []).sort(
+            (a: any, b: any) => Number(a?.order ?? 0) - Number(b?.order ?? 0),
+        ),
+        [page],
+    );
 
     return (
         <Page>
             <PageContent>
-                {faqSections.length > 0 ? (
-                    <>
-                        <ParsedHTML contentQuery={fakeQuery} location={location} />
-                        <AccordionProvider sections={faqSections as any} />
-                    </>
-                ) : (
-                    <ParsedHTML contentQuery={fakeQuery} location={location} />
-                )}
+                {blocks.map((block: any, index: number) => {
+                    const type: string = block?.type ?? "";
+                    if (type === "RichText") {
+                        const html: string = sanitizeHtml(block?.data?.content ?? "");
+                        return <div key={`rt-${index}`} dangerouslySetInnerHTML={{ __html: html }} />;
+                    }
+                    if (type === "Faq") {
+                        const items: any[] = Array.isArray(block?.data?.faqs) ? block.data.faqs : [];
+                        const sections = items
+                            .filter((it: any) => (it?.question ?? it?.answer ?? "").length > 0)
+                            .map((it: any) => ({ label: it?.question ?? "", body: it?.answer ?? "" }));
+                        return <AccordionProvider key={`faq-${index}`} sections={sections as any} />;
+                    }
+                    return null;
+                })}
             </PageContent>
         </Page>
     );

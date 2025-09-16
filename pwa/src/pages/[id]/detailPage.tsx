@@ -10,6 +10,9 @@ const DetailPage: React.FC<PageProps> = (props: PageProps) => {
   const id = props.params.id as string;
 
   const pagesQuery = usePages().getAll();
+  if (pagesQuery.isLoading || pagesQuery.isIdle) {
+    return <></>;
+  }
 
   const data: any = (pagesQuery as any)?.data;
   const list = getPagesList(data);
