@@ -3,16 +3,16 @@ import { useQuery } from "react-query";
 import APIService from "../apiService/apiService";
 import APIContext from "../apiService/apiContext";
 
-export const useMenus = () => {
+export const usePages = () => {
     const API: APIService | null = React.useContext(APIContext);
 
     const getAll = () =>
         useQuery<any, Error>(
             [
-                "Menus",
+                "Pages",
                 typeof window !== "undefined" ? window.sessionStorage.getItem("OIDN_NUMBER") : undefined,
             ],
-            () => API?.Menus.getAll(),
+            () => API?.Pages.getAll(),
             {
                 onError: (error) => {
                     console.warn(error.message);
