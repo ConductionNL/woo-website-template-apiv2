@@ -44,7 +44,7 @@ export const filterMenuItemsByVisibility = (
             const name = processMenuTemplate(item?.name ?? item?.title ?? "");
             const hasLink = Boolean(item?.link ?? item?.href ?? item?.url ?? item?.path);
             const slug: string | undefined = item?.slug;
-            const fallbackLink = !hasLink && typeof slug === "string" && slug.length > 0 ? `/page/${slug}` : undefined;
+            const fallbackLink = !hasLink && typeof slug === "string" && slug.length > 0 ? `/${slug}` : undefined;
 
             return {
                 ...item,
