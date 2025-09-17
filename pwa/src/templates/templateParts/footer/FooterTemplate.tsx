@@ -33,7 +33,10 @@ type TDynamicContentItem = {
     multiRow?: string;
     label?: string;
     title?: string;
+    name?: string;
+    valueMode?: "value" | "title" | "multiRow";
     iconMode?: "standard" | "custom";
+    linkMode?: "link" | "markdown";
     icon?: {
       icon: IconName;
       prefix: IconPrefix;
@@ -115,31 +118,34 @@ const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content })
 
       {content.items.map((item, idx) => (
         <div key={idx} className={styles.dynamicSectionContent}>
-          {item.title && (
+          {item.valueMode === "title" && (
             <DynamicItemHeading
               heading={window.sessionStorage.getItem("FOOTER_CONTENT_HEADER") ?? ""}
-              title={item.title}
+              title={item.value ?? item.name}
             />
           )}
           {item.label && <strong>{t(item.label)}</strong>}
+
           {/* External Link */}
-          {item.link && (/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && (
+          {item.linkMode === "link" && item.link && (/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && (
             <ExternalLink {...{ item }} />
           )}
 
           {/* Internal Link */}
-          {item.link && !(/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && (
-            <InternalLink {...{ item }} />
-          )}
+          {item.linkMode === "link" &&
+            item.valueMode !== "multiRow" &&
+            item.valueMode !== "title" &&
+            item.link &&
+            !(/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && <InternalLink {...{ item }} />}
 
           {/* Internal Link Github/Markdown link */}
-          {item.markdownLink && <MarkdownLink {...{ item }} />}
+          {item.linkMode === "markdown" && item.link && <MarkdownLink {...{ item }} />}
 
           {/* MultiRow */}
-          {item.multiRow && <MultiRow {...{ item }} />}
+          {item.valueMode === "multiRow" && <MultiRow {...{ item }} />}
 
           {/* No Link */}
-          {!item.link && !item.markdownLink && !item.multiRow && <NoLink {...{ item }} />}
+          {!item.link && item.valueMode !== "multiRow" && <NoLink {...{ item }} />}
         </div>
       ))}
     </section>
@@ -255,16 +261,24 @@ const renderIcon = (item: any, side: "left" | "right") => {
 const ExternalLink: React.FC<LinkComponentProps> = ({ item }) => {
   const { t } = useTranslation();
 
+  // Ensure www. links have https:// protocol
+  const getFullUrl = (link: string) => {
+    if (/^www\./i.test(link)) {
+      return `https://${link}`;
+    }
+    return link;
+  };
+
   return (
     <Link
       className={styles.link}
-      href={item.link}
+      href={getFullUrl(item.link)}
       target="_blank"
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${item.name}, ${t("Opens a new window")}`}
+      aria-label={`${t(item.ariaLabel)}, ${item.value || item.name}, ${t("Opens a new window")}`}
     >
       {renderIcon(item, "left")}
-      {t(item.name)}
+      {t(item.value || item.name)}
       {renderIcon(item, "right")}
     </Link>
   );
@@ -277,15 +291,15 @@ const InternalLink: React.FC<LinkComponentProps> = ({ item }) => {
     <Link
       className={styles.link}
       onClick={(e: any) => {
-        e.preventDefault(), navigate(item.link ?? "");
+        (e.preventDefault(), navigate(item.link ?? ""));
       }}
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${t(item.name)}`}
+      aria-label={`${t(item.ariaLabel)}, ${t(item.value ?? item.name)}`}
       role="button"
       href={item.link}
     >
       {renderIcon(item, "left")}
-      {t(item.name)}
+      {t(item.value ?? item.name)}
       {renderIcon(item, "right")}
     </Link>
   );
@@ -298,25 +312,27 @@ const MarkdownLink: React.FC<LinkComponentProps> = ({ item }) => {
     <Link
       className={styles.link}
       onClick={(e: any) => {
-        e.preventDefault(), navigate(`/markdown/${item.name.replaceAll(" ", "_")}/?link=${item.markdownLink}`);
+        (e.preventDefault(), navigate(`/markdown/${item.name.replaceAll(" ", "_")}/?link=${item.link}`));
       }}
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${t(item.markdownLink)}`}
+      aria-label={`${t(item.ariaLabel)}, ${t(item.link)}`}
       role="button"
-      href={item.markdownLink}
+      href={item.link}
     >
       {renderIcon(item, "left")}
-      {t(item.name)}
+      {t(item.value ?? item.name)}
       {renderIcon(item, "right")}
     </Link>
   );
 };
 
 const MultiRow: React.FC<LinkComponentProps> = ({ item }) => {
+  console.log("multirow", item.value);
+
   return (
     <span className={styles.multiRow}>
       {renderIcon(item, "left")}
-      <div>{item.multiRow}</div>
+      <div>{item.value ?? item.name}</div>
       {renderIcon(item, "right")}
     </span>
   );
@@ -328,7 +344,7 @@ const NoLink: React.FC<LinkComponentProps> = ({ item }) => {
   return (
     <span>
       {renderIcon(item, "left")}
-      {t(item.name)}
+      {t(item.value ?? item.name)}
       {renderIcon(item, "right")}
     </span>
   );
