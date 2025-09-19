@@ -5,9 +5,15 @@ import { WOOItemDetailTemplate } from "../../templates/wooItemDetailTemplate/WOO
 import { usePages } from "../../hooks/pages";
 import { getPagesList } from "../../services/pageUtils";
 import { PageTemplate } from "../../templates/pages/PageTemplate";
+import { ChatTemplate } from "../../templates/chat/ChatTemplate";
 
 const DetailPage: React.FC<PageProps> = (props: PageProps) => {
   const id = props.params.id as string;
+
+  if (id === "chat" || id === "chat/") {
+    console.log("ChatTemplate");
+    return <ChatTemplate />;
+  }
 
   const pagesQuery = usePages().getAll();
   if (pagesQuery.isLoading || pagesQuery.isIdle) {
