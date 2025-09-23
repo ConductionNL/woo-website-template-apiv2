@@ -12,17 +12,16 @@ export const Head: React.FC = () => {
   const { gatsbyContext } = useGatsbyContext();
   const { t, i18n } = useTranslation();
 
-  const [connectSrc, setConnectSrc] = React.useState<string>(
-    `${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${
-      window.location.hostname === "localhost" ? connectSrcLocal : ""
-    }`,
-  );
+  const baseConnectSrc = `${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${window.location.hostname === "localhost" ? connectSrcLocal : ""
+    }`;
+
+  const [connectSrc, setConnectSrc] = React.useState<string>(baseConnectSrc);
 
   const processUrls = (urlString: string): string => {
     if (!urlString) return "";
 
     return Array.from(urlString.split(/[\s\n]+/).filter(Boolean))
-      .map((url) => url.replace(/^(http|https):\/\//, "wss://") + ",")
+      .map((url) => url.replace(/^(http|https):\/\//, "wss://"))
       .join(" ");
   };
 
@@ -44,11 +43,10 @@ export const Head: React.FC = () => {
 
   React.useEffect(() => {
     if (isSafari) {
-      setConnectSrc(
-        `${processUrls(connectSrcStandard)} ${processUrls(connectSrcMunicipalities)} ${processUrls(connectSrcOther)} ${processUrls(
-          window.location.hostname === "localhost" ? connectSrcLocal : "",
-        )}`,
-      );
+      const wssSources = `${processUrls(connectSrcStandard)} ${processUrls(connectSrcMunicipalities)} ${processUrls(connectSrcOther)} ${processUrls(
+        window.location.hostname === "localhost" ? connectSrcLocal : "",
+      )}`;
+      setConnectSrc(`${baseConnectSrc} ${wssSources}`);
     }
   }, [isSafari]);
 
@@ -56,9 +54,10 @@ export const Head: React.FC = () => {
     <Helmet
       htmlAttributes={{
         lang: currentLanguage,
+        class: window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "conduction-theme",
       }}
       bodyAttributes={{
-        class: window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME"),
+        class: window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "conduction-theme",
       }}
     >
       <meta
@@ -75,9 +74,8 @@ export const Head: React.FC = () => {
         ${location.hostname === "localhost" && "script-src 'self' 'unsafe-eval';"}
         `}
       ></meta>
-      <title>{`Woo | ${window.sessionStorage.getItem("ORGANISATION_NAME")} | ${
-        getPageTitle(translatedCrumbs, gatsbyContext.location) ?? "Error"
-      }`}</title>
+      <title>{`Woo | ${window.sessionStorage.getItem("ORGANISATION_NAME")} | ${getPageTitle(translatedCrumbs, gatsbyContext.location) ?? "Error"
+        }`}</title>
       <link rel="icon" type="svg" href={window.sessionStorage.getItem("FAVICON_URL") ?? ""} />
     </Helmet>
   );

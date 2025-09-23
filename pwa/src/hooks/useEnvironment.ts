@@ -15,6 +15,13 @@ export const useEnvironment = () => {
     const analyticsElement = document.getElementById("analytics");
     window.sessionStorage.getItem("ANALYTICS_URL") &&
       analyticsElement?.setAttribute("src", window.sessionStorage.getItem("ANALYTICS_URL") ?? "");
+
+    // Apply theme class to <html> and <body>
+    const themeClass = window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "conduction-theme";
+    if (typeof document !== "undefined") {
+      document.documentElement.className = themeClass;
+      document.body.className = themeClass;
+    }
   };
 
   React.useEffect(() => {
