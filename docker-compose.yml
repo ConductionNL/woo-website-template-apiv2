@@ -11,7 +11,12 @@ services:
         GATSBY_DEV_ENVIRONMENT: "false"
         GATSBY_NL_DESIGN_THEME_CLASSNAME: ${GATSBY_NL_DESIGN_THEME_CLASSNAME}
     ports:
-      - "81:8080"
+      - "8000:8080"
+    environment:
+      - UPSTREAM_HOST=softwarecatalogus.test.commonground.nu
+      - UPSTREAM_BASE=https://softwarecatalogus.test.commonground.nu/apps/opencatalogi/api
+    volumes:
+      - ./pwa/docker/default.conf:/etc/nginx/conf.d/default.conf:ro
 volumes:
   db-data: {}
   uc-data: {}
