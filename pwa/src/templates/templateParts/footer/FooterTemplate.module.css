@@ -89,17 +89,6 @@
   ) !important;
 }
 
-.link > svg {
-  width: var(
-    --utrecht-page-footer-link-icon-width,
-    var(--utrecht-link-icon-size)
-  );
-  height: var(
-    --utrecht-page-footer-link-icon-height,
-    var(--utrecht-link-icon-size)
-  );
-}
-
 .withLoveConductionLink {
   display: inline-block;
 }
