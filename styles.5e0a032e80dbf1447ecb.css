@@ -38,11 +38,7 @@
     --utrecht-page-footer-link-text-decoration-thickness,inherit
   )!important;text-underline-offset:var(
     --utrecht-page-footer-link-text-underline-offset,inherit
-  )!important}.FooterTemplate-module--link--0ded0>svg{height:var(
-    --utrecht-page-footer-link-icon-height,var(--utrecht-link-icon-size)
-  );width:var(
-    --utrecht-page-footer-link-icon-width,var(--utrecht-link-icon-size)
-  )}.FooterTemplate-module--withLoveConductionLink--272fd{display:inline-block}.FooterTemplate-module--withLoveConductionLink--272fd:hover{-webkit-margin-start:10px;margin-inline-start:10px}.FooterTemplate-module--withLoveLink--c6f55:hover>:first-child{color:var(--utrecht-page-footer-link-hover-color);font-weight:var(--utrecht-page-footer-link-hover-font-weight)!important;transform:scale(1.2)}.FooterTemplate-module--withLoveLink--c6f55>:first-child{-webkit-margin-end:unset;margin-inline-end:unset;transform-origin:50% 50%;transition:all 1s}.FooterTemplate-module--contentGrid--e389e{display:grid;gap:28px;grid-template-columns:repeat(3,minmax(0,1fr))}.FooterTemplate-module--dynamicItemHeading--9eae3,.FooterTemplate-module--dynamicSectionTitle--4031c{-webkit-margin-after:18px!important;color:var(--utrecht-page-footer-heading-color,inherit)!important;font-family:var(
+  )!important}.FooterTemplate-module--withLoveConductionLink--272fd{display:inline-block}.FooterTemplate-module--withLoveConductionLink--272fd:hover{-webkit-margin-start:10px;margin-inline-start:10px}.FooterTemplate-module--withLoveLink--c6f55:hover>:first-child{color:var(--utrecht-page-footer-link-hover-color);font-weight:var(--utrecht-page-footer-link-hover-font-weight)!important;transform:scale(1.2)}.FooterTemplate-module--withLoveLink--c6f55>:first-child{-webkit-margin-end:unset;margin-inline-end:unset;transform-origin:50% 50%;transition:all 1s}.FooterTemplate-module--contentGrid--e389e{display:grid;gap:28px;grid-template-columns:repeat(3,minmax(0,1fr))}.FooterTemplate-module--dynamicItemHeading--9eae3,.FooterTemplate-module--dynamicSectionTitle--4031c{-webkit-margin-after:18px!important;color:var(--utrecht-page-footer-heading-color,inherit)!important;font-family:var(
     --utrecht-page-footer-heading-font-family,inherit
   )!important;font-weight:var(
     --utrecht-page-footer-heading-font-weight,inherit
