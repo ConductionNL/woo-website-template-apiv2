@@ -83,7 +83,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
       case "Organisatieonderdeel":
         return t("Organizational unit");
       default:
-        return t(getItems.data["@self"].schema.properties[name]?.title ?? upperFirstName);
+        return _.upperFirst(t(getItems.data["@self"].schema.properties[name]?.title ?? upperFirstName));
     }
   };
 
