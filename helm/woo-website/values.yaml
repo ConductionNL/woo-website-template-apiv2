@@ -7,8 +7,8 @@ pwa:
     pullPolicy: Always
     tag: "helm"
   upstream:
-    host: "softwarecatalogus.test.commonground.nu"
-    base: "https://softwarecatalogus.test.commonground.nu/apps/opencatalogi/api"
+    host: ""
+    base: ""
 
 replicaCount: 2
 
