@@ -50,6 +50,11 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+          env:
+            - name: UPSTREAM_HOST
+              value: {{ .Values.pwa.upstream.host | quote }}
+            - name: UPSTREAM_BASE
+              value: {{ .Values.pwa.upstream.base | quote }}
           livenessProbe:
             httpGet:
               path: /

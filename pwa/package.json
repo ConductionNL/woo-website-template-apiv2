@@ -100,6 +100,7 @@
     "style-dictionary": "^3.9.2"
   },
   "devDependencies": {
+    "http-proxy-middleware": "^3.0.2",
     "@parcel/watcher": "^2.5.1",
     "@types/dateformat": "^5.0.2",
     "@types/dedent": "^0.7.2",

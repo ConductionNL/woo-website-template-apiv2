@@ -12,10 +12,15 @@ export const Head: React.FC = () => {
   const { gatsbyContext } = useGatsbyContext();
   const { t, i18n } = useTranslation();
 
-  const baseConnectSrc = `${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${window.location.hostname === "localhost" ? connectSrcLocal : ""
-    }`;
+  // Build connect-src from env/JSON overrides (via sessionStorage) or fall back to hardcoded sets
+  const fullOverride = window.sessionStorage.getItem("CSP_CONNECT_SRC_FULL")?.trim();
+  const extraOverride = window.sessionStorage.getItem("CSP_CONNECT_SRC_EXTRA")?.trim();
 
-  const [connectSrc, setConnectSrc] = React.useState<string>(baseConnectSrc);
+  const baseConnectSrc = fullOverride && fullOverride.length > 0
+    ? fullOverride
+    : `${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${window.location.hostname === "localhost" ? connectSrcLocal : ""}`;
+
+  const [connectSrc, setConnectSrc] = React.useState<string>(`${baseConnectSrc} ${extraOverride ?? ""}`.trim());
 
   const processUrls = (urlString: string): string => {
     if (!urlString) return "";
@@ -43,10 +48,12 @@ export const Head: React.FC = () => {
 
   React.useEffect(() => {
     if (isSafari) {
-      const wssSources = `${processUrls(connectSrcStandard)} ${processUrls(connectSrcMunicipalities)} ${processUrls(connectSrcOther)} ${processUrls(
-        window.location.hostname === "localhost" ? connectSrcLocal : "",
-      )}`;
-      setConnectSrc(`${baseConnectSrc} ${wssSources}`);
+      const wssSources = fullOverride && fullOverride.length > 0
+        ? processUrls(fullOverride)
+        : `${processUrls(connectSrcStandard)} ${processUrls(connectSrcMunicipalities)} ${processUrls(connectSrcOther)} ${processUrls(
+            window.location.hostname === "localhost" ? connectSrcLocal : "",
+          )}`;
+      setConnectSrc(`${baseConnectSrc} ${extraOverride ?? ""} ${wssSources}`.trim());
     }
   }, [isSafari]);
 

@@ -17,10 +17,14 @@ ARG GATSBY_ENV_VARS_SET=true
 ARG GATSBY_API_BASE_URL
 ARG GATSBY_DEV_ENVIRONMENT=false
 ARG GATSBY_NL_DESIGN_THEME_CLASSNAME
+ARG GATSBY_CSP_CONNECT_SRC_FULL
+ARG GATSBY_CSP_CONNECT_SRC_EXTRA
 ENV GATSBY_ENV_VARS_SET=$GATSBY_ENV_VARS_SET
 ENV GATSBY_API_BASE_URL=$GATSBY_API_BASE_URL
 ENV GATSBY_DEV_ENVIRONMENT=$GATSBY_DEV_ENVIRONMENT
 ENV GATSBY_NL_DESIGN_THEME_CLASSNAME=$GATSBY_NL_DESIGN_THEME_CLASSNAME
+ENV GATSBY_CSP_CONNECT_SRC_FULL=$GATSBY_CSP_CONNECT_SRC_FULL
+ENV GATSBY_CSP_CONNECT_SRC_EXTRA=$GATSBY_CSP_CONNECT_SRC_EXTRA
 ENV NODE_ENV=production
 
 RUN npm run build
@@ -36,6 +40,10 @@ RUN touch /var/run/nginx.pid && \
         chown -R nginx:nginx /var/run/nginx.pid
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
-COPY docker/default.conf /etc/nginx/conf.d/default.conf
+COPY docker/default.conf.template /etc/nginx/templates/default.conf.template
+ENV NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/conf.d
+ENV NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
 USER nginx
 EXPOSE 8080
