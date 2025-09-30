@@ -58,6 +58,35 @@ helm uninstall woo-pwa -n woo
 ### Notes
 - The image is a static build of Gatsby. Any `GATSBY_*` variables must be set at image build-time. For most cases, you only need to adjust the runtime proxy via `pwa.upstream.*`.
 - If you need a custom theme or other `GATSBY_*` overrides, build your own image from `pwa/Dockerfile` with the appropriate build args, push it, and set `pwa.image.*` to your image and tag.
+
+### Deploy with Argo CD (UI)
+- Repository URL: `https://github.com/ConductionNL/woo-website-template-apiv2.git`
+- Revision: `container-setup-v1` (or `main` after merge)
+- Path: `helm/woo-website`
+
+Values (paste in the UI as Helm parameters or a values block):
+```yaml
+pwa:
+  image:
+    image: ghcr.io/conductionnl/woo-website-v2
+    tag: helm
+  upstream:
+    host: softwarecatalogus.test.commonground.nu
+    base: https://softwarecatalogus.test.commonground.nu/apps/opencatalogi/api
+
+global:
+  domain: woo.example.org
+  tls: true
+
+ingress:
+  enabled: true
+  className: nginx
+  path: /
+  tls:
+    - secretName: woo-pwa-tls
+      hosts:
+        - woo.example.org
+```
 # Deploying to a Kubernetes Cluster
 
 In order to install the application in your own cloud environment we support installation in [Kubernetes](https://kubernetes.io) using the supplied [helm](https://helm.sh) chart. Kubernetes is a Container Orchestration Engine that has been standardised for Dutch municipalities under the [Haven](https://haven.commonground.nl) standard, and for which Helm is the default installation method of components.
