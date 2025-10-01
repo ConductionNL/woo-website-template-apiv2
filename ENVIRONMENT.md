@@ -1,5 +1,51 @@
 ## Environment variables index
 
+### Quick tables
+
+Build-time (Gatsby) – baked into the site at build
+
+| Name | Where set | Consumed by | When | Effect/Notes |
+|---|---|---|---|---|
+| GATSBY_ENV_VARS_SET | Compose build args, CI | Gatsby code | build | true = use env-only, false = use JSON configs by hostname |
+| GATSBY_API_BASE_URL | Compose build args, CI | Gatsby code | build | If non-empty, frontend calls this URL directly (no proxy). Leave empty to force `/api` proxy |
+| GATSBY_DEV_ENVIRONMENT | Compose build args | Gatsby code | build | Local dev helper; keep false in prod images |
+| GATSBY_NL_DESIGN_THEME_CLASSNAME | Compose build args | UI | build | Theme class (e.g. `conduction-theme`) |
+| GATSBY_SHOW_THEME_SWITCHER | Compose build args | UI | build | If true, shows theme switcher |
+| GATSBY_CSP_CONNECT_SRC_FULL | Compose build args | Head.tsx | build | Replace connect-src CSP (space-separated hosts) |
+| GATSBY_CSP_CONNECT_SRC_EXTRA | Compose build args | Head.tsx | build | Append hosts to connect-src CSP |
+
+Runtime (NGINX proxy) – can change without rebuild
+
+| Name | Where set | Consumed by | When | Effect/Notes |
+|---|---|---|---|---|
+| UPSTREAM_HOST | Compose env, Helm values | NGINX template | runtime | Sets Host header for upstream |
+| UPSTREAM_BASE | Compose env, Helm values | NGINX template | runtime | Target base for proxy_pass of `/api/*` |
+
+Helm values mapping
+
+| Helm value | Becomes env | Used by |
+|---|---|---|
+| pwa.image.image / pwa.image.tag | container image | cluster deploy |
+| pwa.upstream.host | UPSTREAM_HOST | NGINX proxy |
+| pwa.upstream.base | UPSTREAM_BASE | NGINX proxy |
+| global.domain, ingress.* | ingress routing | cluster ingress |
+
+Compose root `.env` mapping
+
+| Root .env key | Role |
+|---|---|
+| GATSBY_* | Build args → baked into site |
+| UPSTREAM_HOST / UPSTREAM_BASE | Runtime env for proxy |
+| CONTAINER_REGISTRY_BASE / CONTAINER_PROJECT_NAME / APP_BUILD | Local image naming (optional) |
+
+Browser sessionStorage keys (debug/testing)
+
+| Key | Effect |
+|---|---|
+| API_BASE_URL | If non-empty, bypasses proxy and calls backend directly |
+| SHOW_THEME_SWITCHER | Toggle theme switcher visibility |
+| NL_DESIGN_THEME_CLASSNAME | Active theme class on document/body |
+
 One place to find all variables and where they apply. This project has two kinds of configuration:
 
 - Build-time (Gatsby) variables: baked into the static site at build time. All Gatsby runtime code reads only these.

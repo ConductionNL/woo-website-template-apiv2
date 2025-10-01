@@ -7,10 +7,8 @@ exports.onCreateBabelConfig = ({ actions }) => {
   });
 };
 
-// Load dotenv so we can use variables from pwa/static/.env.development during gatsby develop
-try {
-  require("dotenv").config({ path: `static/.env.${process.env.NODE_ENV}` });
-} catch (_) {}
+// Always load root .env as the single source of truth
+try { require("dotenv").config({ path: `${__dirname}/../.env`, override: true }); } catch (_) {}
 
 // In local development, proxy /api → remote API to avoid CORS
 exports.onCreateDevServer = ({ app }) => {
