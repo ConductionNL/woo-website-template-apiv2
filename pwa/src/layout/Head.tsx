@@ -1,5 +1,4 @@
 import * as React from "react";
-import _ from "lodash";
 import "../styling/index.css";
 import { Helmet } from "react-helmet";
 import { getPageTitle } from "../services/getPageTitle";
@@ -12,21 +11,17 @@ export const Head: React.FC = () => {
   const { gatsbyContext } = useGatsbyContext();
   const { t, i18n } = useTranslation();
 
-  // Build connect-src from env/JSON overrides (via sessionStorage) or fall back to hardcoded sets
-  const fullOverride = window.sessionStorage.getItem("CSP_CONNECT_SRC_FULL")?.trim();
-  const extraOverride = window.sessionStorage.getItem("CSP_CONNECT_SRC_EXTRA")?.trim();
-
-  const baseConnectSrc = fullOverride && fullOverride.length > 0
-    ? fullOverride
-    : `${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${window.location.hostname === "localhost" ? connectSrcLocal : ""}`;
-
-  const [connectSrc, setConnectSrc] = React.useState<string>(`${baseConnectSrc} ${extraOverride ?? ""}`.trim());
+  const [connectSrc, setConnectSrc] = React.useState<string>(
+    `${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${
+      window.location.hostname === "localhost" ? connectSrcLocal : ""
+    }`,
+  );
 
   const processUrls = (urlString: string): string => {
     if (!urlString) return "";
 
     return Array.from(urlString.split(/[\s\n]+/).filter(Boolean))
-      .map((url) => url.replace(/^(http|https):\/\//, "wss://"))
+      .map((url) => url.replace(/^(http|https):\/\//, "wss://") + ",")
       .join(" ");
   };
 
@@ -48,12 +43,11 @@ export const Head: React.FC = () => {
 
   React.useEffect(() => {
     if (isSafari) {
-      const wssSources = fullOverride && fullOverride.length > 0
-        ? processUrls(fullOverride)
-        : `${processUrls(connectSrcStandard)} ${processUrls(connectSrcMunicipalities)} ${processUrls(connectSrcOther)} ${processUrls(
-            window.location.hostname === "localhost" ? connectSrcLocal : "",
-          )}`;
-      setConnectSrc(`${baseConnectSrc} ${extraOverride ?? ""} ${wssSources}`.trim());
+      setConnectSrc(
+        `${processUrls(connectSrcStandard)} ${processUrls(connectSrcMunicipalities)} ${processUrls(connectSrcOther)} ${processUrls(
+          window.location.hostname === "localhost" ? connectSrcLocal : "",
+        )}`,
+      );
     }
   }, [isSafari]);
 
@@ -61,10 +55,9 @@ export const Head: React.FC = () => {
     <Helmet
       htmlAttributes={{
         lang: currentLanguage,
-        class: window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "conduction-theme",
       }}
       bodyAttributes={{
-        class: window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "conduction-theme",
+        class: window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME"),
       }}
     >
       <meta
@@ -81,8 +74,9 @@ export const Head: React.FC = () => {
         ${location.hostname === "localhost" && "script-src 'self' 'unsafe-eval';"}
         `}
       ></meta>
-      <title>{`Woo | ${window.sessionStorage.getItem("ORGANISATION_NAME")} | ${getPageTitle(translatedCrumbs, gatsbyContext.location) ?? "Error"
-        }`}</title>
+      <title>{`Woo | ${window.sessionStorage.getItem("ORGANISATION_NAME")} | ${
+        getPageTitle(translatedCrumbs, gatsbyContext.location) ?? "Error"
+      }`}</title>
       <link rel="icon" type="svg" href={window.sessionStorage.getItem("FAVICON_URL") ?? ""} />
     </Helmet>
   );
