@@ -9,6 +9,8 @@ pwa:
   upstream:
     host: ""
     base: ""
+  runtime: {}
+  env: {}
 
 replicaCount: 2
 

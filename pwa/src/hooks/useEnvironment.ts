@@ -25,7 +25,39 @@ export const useEnvironment = () => {
     };
   }, []);
 
-  const initiateFromEnv = () => {
+  const overlayFromRuntimeJson = async () => {
+    try {
+      const res = await fetch("/config/runtime.json", { cache: "no-store" });
+      if (!res.ok) return;
+      const cfg = await res.json();
+      const set = (k: string, envKey?: string) => {
+        const v = cfg[k] ?? (envKey ? cfg[envKey] : undefined);
+        if (typeof v === "string") window.sessionStorage.setItem(k, v);
+      };
+      set("NL_DESIGN_THEME_CLASSNAME", "GATSBY_NL_DESIGN_THEME_CLASSNAME");
+      set("FAVICON_URL", "GATSBY_FAVICON_URL");
+      set("ORGANISATION_NAME", "GATSBY_ORGANISATION_NAME");
+      set("JUMBOTRON_IMAGE_URL", "GATSBY_JUMBOTRON_IMAGE_URL");
+      set("FOOTER_LOGO_URL", "GATSBY_FOOTER_LOGO_URL");
+      set("FOOTER_LOGO_HREF", "GATSBY_FOOTER_LOGO_HREF");
+      set("FOOTER_CONTENT", "GATSBY_FOOTER_CONTENT");
+      set("FOOTER_CONTENT_HEADER", "GATSBY_FOOTER_CONTENT_HEADER");
+      set("OIDN_NUMBER", "GATSBY_OIDN_NUMBER");
+      set("SHOW_CATEGORY", "GATSBY_SHOW_CATEGORY");
+      set("SHOW_ORGANIZATION", "GATSBY_SHOW_ORGANIZATION");
+      set("ANALYTICS_URL", "GATSBY_ANALYTICS_URL");
+      set("DATE_FULL_MONTH", "GATSBY_DATE_FULL_MONTH");
+      // Apply theme class immediately if provided
+      const themeClass = window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "conduction-theme";
+      if (typeof document !== "undefined") {
+        document.documentElement.className = themeClass;
+        document.body.className = themeClass;
+      }
+      updateSessionStorage();
+    } catch (_) {}
+  };
+
+  const initiateFromEnv = async () => {
     window.sessionStorage.setItem("SHOW_THEME_SWITCHER", process.env.GATSBY_SHOW_THEME_SWITCHER ?? "");
     window.sessionStorage.setItem(
       "API_BASE_URL",
@@ -51,6 +83,7 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", process.env.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");
 
     updateSessionStorage();
+    await overlayFromRuntimeJson();
   };
 
   const initiateFromJSON = (themeOrDomainName: string, host: string) => {
