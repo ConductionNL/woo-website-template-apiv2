@@ -27,8 +27,13 @@ export const useEnvironment = () => {
 
   const overlayFromRuntimeJson = async () => {
     try {
-      const res = await fetch("/config/runtime.json", { cache: "no-store" });
-      if (!res.ok) return;
+      let res = await fetch("/config/runtime.json", { cache: "no-store" });
+      if (!res.ok) {
+        try {
+          res = await fetch("/runtime.json", { cache: "no-store" });
+        } catch (_) {}
+        if (!res.ok) return;
+      }
       const cfg = await res.json();
       const set = (k: string, envKey?: string) => {
         const v = cfg[k] ?? (envKey ? cfg[envKey] : undefined);

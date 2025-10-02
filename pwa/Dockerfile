@@ -69,6 +69,7 @@ COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/default.conf.template /etc/nginx/templates/default.conf.template
 COPY docker/entrypoint.d/30-generate-runtime.sh /docker-entrypoint.d/30-generate-runtime.sh
 COPY docker/runtime.json.template /docker-runtime-templates/runtime.json.template
+RUN chmod +x /docker-entrypoint.d/30-generate-runtime.sh
 ENV NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/conf.d
 ENV NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates
 ENTRYPOINT ["/docker-entrypoint.sh"]
