@@ -137,7 +137,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "beek.openwoo.app":
     case "beek.prod.openwoo.app":
     case "beek.koophulpje.nl":
-    case "beek.prod.commonground.nu":
+    case "beek.commonground.nu":
       return Beek;
     case "acceptatie-open.beek.nl":
     case "beek.accept.openwoo.app":
