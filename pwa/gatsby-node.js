@@ -80,4 +80,30 @@ exports.onCreateWebpackConfig = ({ stage, actions, getConfig, plugins }) => {
 
     actions.replaceWebpackConfig(config);
   }
+
+  // Configure CSS optimization to preserve SVGs
+  if (stage === "build-css") {
+    const config = getConfig();
+
+    // Find and configure the CSS minimizer to disable SVGO
+    const minimizer = config.optimization.minimizer.find(
+      (plugin) => plugin.constructor.name === "CssMinimizerPlugin",
+    );
+
+    if (minimizer) {
+      minimizer.options = {
+        ...minimizer.options,
+        minimizerOptions: {
+          preset: [
+            "default",
+            {
+              svgo: false, // Disable SVGO in CSS to preserve SVG data URIs
+            },
+          ],
+        },
+      };
+    }
+
+    actions.replaceWebpackConfig(config);
+  }
 };
