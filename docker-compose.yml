@@ -3,7 +3,13 @@ version: "3.4"
 services:
   pwa: &pwa
     image: ${CONTAINER_REGISTRY_BASE}/${CONTAINER_PROJECT_NAME}:${APP_BUILD}
-    build: pwa
+    build:
+      context: pwa
+      args:
+        GATSBY_ENV_VARS_SET: "true"
+        GATSBY_API_BASE_URL: ${GATSBY_API_BASE_URL}
+        GATSBY_DEV_ENVIRONMENT: "false"
+        GATSBY_NL_DESIGN_THEME_CLASSNAME: ${GATSBY_NL_DESIGN_THEME_CLASSNAME}
     ports:
       - "81:8080"
 volumes:

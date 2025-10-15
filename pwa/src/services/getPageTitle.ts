@@ -3,6 +3,11 @@ import _ from "lodash";
 export const getPageTitle = (crumbs: any, location: any) => {
   const _pathname = location.pathname.replace(/\/$/, "");
 
+  // Special-case routes that should not follow breadcrumb logic
+  if (_pathname === "/chat") {
+    return "AI Chat";
+  }
+
   const finalSlashIndex = _pathname.lastIndexOf("/");
   const pathnameTitle = _pathname.substring(finalSlashIndex + 1);
   const headTitle = pathnameTitle.replace("_", " ").replace("-", " ");

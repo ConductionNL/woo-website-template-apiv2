@@ -40,7 +40,7 @@ export default class OpenWoo {
   public getAttachments = async (id: string): Promise<any> => {
     const { data } = await this._send(this._instance, "GET", `/publications/${id}/attachments?_limit=500`);
 
-    return data;
+    return (data as any)?.results ?? data;
   };
 
   public getAttachmentsWithLabels = async (id: string, limit: number = 500): Promise<any> => {
@@ -50,7 +50,7 @@ export default class OpenWoo {
       `/publications/${id}/attachments?_hasLabels=true&_limit=${limit}`,
     );
 
-    return data;
+    return (data as any)?.results ?? data;
   };
 
   public getAttachmentsNoLabels = async (
@@ -64,6 +64,6 @@ export default class OpenWoo {
       `/publications/${id}/attachments?_noLabels=true&_limit=${limit}&_page=${currentPage}`,
     );
 
-    return data;
+    return (data as any)?.results ?? data;
   };
 }
