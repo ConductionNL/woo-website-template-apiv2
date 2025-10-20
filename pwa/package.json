@@ -4,9 +4,7 @@
   "private": true,
   "description": "Product Website Template",
   "author": "Conduction",
-  "keywords": [
-    "gatsby"
-  ],
+  "keywords": ["gatsby"],
   "overrides": {
     "vega": "^6.1.2"
   },
@@ -32,7 +30,7 @@
     "@amsterdam/design-system-css": "^0.9.0",
     "@amsterdam/design-system-react": "^0.9.0",
     "@conduction/components": "2.2.54",
-    "@conduction/theme": "1.1.54",
+    "@conduction/theme": "1.1.56",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "6.6.0",
     "@fortawesome/free-regular-svg-icons": "6.6.0",
@@ -41,7 +39,6 @@
     "@nl-design-system-unstable/amsterdam-design-tokens": "^1.0.0-alpha.161",
     "@nl-design-system-unstable/bodegraven-reeuwijk-design-tokens": "^1.0.0-alpha.154",
     "@nl-design-system-unstable/borne-design-tokens": "^1.0.0-alpha.154",
-    "@nl-design-system-unstable/buren-design-tokens": "^1.0.0-alpha.137",
     "@nl-design-system-unstable/demodam-design-tokens": "^1.0.0-alpha.149",
     "@nl-design-system-unstable/drechterland-design-tokens": "^1.0.0-alpha.154",
     "@nl-design-system-unstable/duiven-design-tokens": "^1.0.0-alpha.154",
@@ -70,12 +67,12 @@
     "@types/react-dom": "^18.2.23",
     "@utrecht/component-library-react": "9.0.3",
     "@utrecht/design-tokens": "^1.0.0-alpha.640",
-    "axios": "^1.6.8",
+    "axios": "^1.7.9",
     "clsx": "^2.1.0",
     "dateformat": "^5.0.3",
     "dedent": "^1.5.1",
-    "es-abstract": "^1.23.3",
-    "gatsby": "^5.13.3",
+    "es-abstract": "^1.23.5",
+    "gatsby": "^5.13.7",
     "gatsby-plugin-breadcrumb": "^12.3.2",
     "gatsby-plugin-html-attributes": "^1.0.5",
     "gatsby-plugin-layout": "^4.13.1",
