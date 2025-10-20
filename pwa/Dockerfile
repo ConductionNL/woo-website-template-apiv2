@@ -14,7 +14,7 @@ COPY . .
 
 RUN npm run build
 
-FROM nginx
+FROM nginx:1.25-alpine
 COPY --from=builder /app/public /usr/share/nginx/html
 
 RUN chown -R nginx:nginx /usr/share/nginx && chmod -R 755 /usr/share/nginx && \
