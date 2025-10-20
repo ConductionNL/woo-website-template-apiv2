@@ -79,4 +79,10 @@ export const nl = {
   "Job title": "Functiebenaming",
   "Part of task": "Onderdeel taak",
   "Organizational unit": "Organisatieonderdeel",
+  "something went wrong": "er is iets misgegaan",
+  "We encountered an error while loading the data from the municipality. This might be due to incorrect or incomplete data.":
+    "Er is een fout opgetreden bij het laden van de gegevens van de gemeente. Dit kan komen door onjuiste of incomplete gegevens.",
+  "Error details": "Foutdetails",
+  "Hide technical details": "Verberg technische details",
+  "Show technical details": "Toon technische details",
 };
