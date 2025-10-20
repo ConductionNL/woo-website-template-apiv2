@@ -4,9 +4,7 @@
   "private": true,
   "description": "Product Website Template",
   "author": "Conduction",
-  "keywords": [
-    "gatsby"
-  ],
+  "keywords": ["gatsby"],
   "overrides": {
     "vega": "^6.1.2"
   },
@@ -41,7 +39,6 @@
     "@nl-design-system-unstable/amsterdam-design-tokens": "^1.0.0-alpha.161",
     "@nl-design-system-unstable/bodegraven-reeuwijk-design-tokens": "^1.0.0-alpha.154",
     "@nl-design-system-unstable/borne-design-tokens": "^1.0.0-alpha.154",
-    "@nl-design-system-unstable/buren-design-tokens": "^1.0.0-alpha.154",
     "@nl-design-system-unstable/demodam-design-tokens": "^1.0.0-alpha.149",
     "@nl-design-system-unstable/drechterland-design-tokens": "^1.0.0-alpha.154",
     "@nl-design-system-unstable/duiven-design-tokens": "^1.0.0-alpha.154",
