@@ -25,8 +25,8 @@ https://beek.prod.openwoo.app
 https://beek.accept.openwoo.app
 https://beek.commonground.nu
 https://beek.accept.commonground.nu
-https://buren.openwoo.app
-https://buren.accept.openwoo.app
+https://buren.commonground.nu
+https://buren.accept.commonground.nu 
 https://dinkelland.openwoo.app
 https://dinkelland.accept.openwoo.app
 https://dinkelland.commonground.nu
@@ -135,6 +135,7 @@ https://horstadmaas.accept.commonground.nu
 
 export const connectSrcOther = `
 https://conduction.openwoo.app
+https://conduction.nl
 https://conduction.accept.openwoo.app
 https://koophulpje.openwoo.app
 https://koophulpje.accept.openwoo.app
