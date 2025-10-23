@@ -79,4 +79,10 @@ export const en = {
   "Job title": "Job title",
   "Part of task": "Part of task",
   "Organizational unit": "Organizational unit",
+  "something went wrong": "something went wrong",
+  "We encountered an error while loading the data from the municipality. This might be due to incorrect or incomplete data.":
+    "We encountered an error while loading the data from the municipality. This might be due to incorrect or incomplete data.",
+  "Error details": "Error details",
+  "Hide technical details": "Hide technical details",
+  "Show technical details": "Show technical details",
 };
