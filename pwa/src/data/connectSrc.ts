@@ -50,8 +50,8 @@ https://gouda.accept.openwoo.app
 
 https://helmond.openwoo.app
 https://helmond.accept.openwoo.app
-https://helmond.prod.openwoo.app
-https://helmond.prod.commonground.nu
+
+https://helmond.commonground.nu
 https://helmond.accept.commonground.nu
 https://hoekschewaard.openwoo.app
 https://hoekschewaard.accept.openwoo.app
@@ -174,3 +174,4 @@ http://localhost:8000
 http://localhost:8080
 http://localhost:3000
 `;
+
