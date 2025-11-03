@@ -39,6 +39,7 @@ https://epe.accept.openwoo.app
 https://epe.prod.openwoo.app
 https://epe.commonground.nu
 https://epe.accept.commonground.nu
+https://epe-a.accept.commonground.nu
 https://gooisemeren.openwoo.app
 https://gooisemeren.accept.openwoo.app
 https://gooisemeren.prod.openwoo.app
@@ -174,4 +175,5 @@ http://localhost:8000
 http://localhost:8080
 http://localhost:3000
 `;
+
 
