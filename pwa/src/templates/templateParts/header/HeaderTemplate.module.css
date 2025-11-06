@@ -13,12 +13,6 @@
   justify-content: space-between;
 }
 
-.quickLinks {
-  display: flex;
-  gap: 5px;
-  align-items: center;
-}
-
 .image:hover {
   cursor: pointer;
 }
