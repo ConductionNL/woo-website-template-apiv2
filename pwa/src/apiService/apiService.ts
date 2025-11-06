@@ -8,6 +8,8 @@ import OpenWoo from "./resources/openWoo";
 import FooterContent from "./resources/footerContent";
 import Markdown from "./resources/markdown";
 import AvailableFilters from "./resources/availableFilters";
+import MenusApi from "./resources/menus";
+import PagesApi from "./resources/pages";
 
 interface PromiseMessage {
   loading?: string;
@@ -23,24 +25,53 @@ export type TSendFunction = (
 ) => Promise<AxiosResponse>;
 
 export default class APIService {
+  private getApiBaseUrl(): string {
+    const fromSession = window.sessionStorage.getItem("API_BASE_URL") ?? "";
+    return fromSession && fromSession.trim().length > 0 ? fromSession : "/api";
+  }
+
+  private attachLogging(instance: AxiosInstance): AxiosInstance {
+    instance.interceptors.request.use((config) => {
+      try {
+        const base = config.baseURL ?? window.location.origin;
+        const fullUrl = new URL(config.url ?? "", base).toString();
+        const method = (config.method ?? "get").toUpperCase();
+        // eslint-disable-next-line no-console
+        console.info(`[API Request] ${method} ${fullUrl}`);
+      } catch (_) {}
+      return config;
+    });
+    instance.interceptors.response.use((response) => {
+      const upstreamUrl = response.headers?.["x-upstream-url"] as string | undefined;
+      const upstreamStatus = response.headers?.["x-upstream-status"] as string | undefined;
+      if (upstreamUrl || upstreamStatus) {
+        // eslint-disable-next-line no-console
+        console.info(`[API Upstream] url=${upstreamUrl ?? "-"} status=${upstreamStatus ?? String(response.status)}`);
+      }
+      return response;
+    });
+    return instance;
+  }
   public get BaseClient(): AxiosInstance {
-    return axios.create({
-      baseURL: window.sessionStorage.getItem("API_BASE_URL") ?? "",
+    const instance = axios.create({
+      baseURL: this.getApiBaseUrl(),
       headers: {
         Accept: "application/json",
         "Content-Type": "application/json",
       },
     });
+    return this.attachLogging(instance);
   }
 
   public get AvailableFiltersClient(): AxiosInstance {
-    return axios.create({
-      baseURL: window.sessionStorage.getItem("API_BASE_URL") ?? "",
+    const instance = axios.create({
+      baseURL: this.getApiBaseUrl(),
       headers: {
         Accept: "application/json+aggregations",
         "Content-Type": "application/json",
       },
     });
+    return this.attachLogging(instance);
   }
 
   public get FooterContentClient(): AxiosInstance {
@@ -72,6 +103,14 @@ export default class APIService {
 
   public get Markdown(): Markdown {
     return new Markdown(this.MarkdownClient, this.Send);
+  }
+
+  public get Menus(): MenusApi {
+    return new MenusApi(this.BaseClient, this.Send);
+  }
+
+  public get Pages(): PagesApi {
+    return new PagesApi(this.BaseClient, this.Send);
   }
 
   // Send method

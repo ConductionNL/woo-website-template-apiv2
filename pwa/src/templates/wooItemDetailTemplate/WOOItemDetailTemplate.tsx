@@ -10,8 +10,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  UnorderedList,
-  UnorderedListItem,
   Link,
 } from "@utrecht/component-library-react/dist/css-module";
 import { translateDate } from "../../services/dateFormat";
@@ -95,14 +93,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     const date = new Date(str);
     return !isNaN(date.getTime()) && date.toISOString().slice(0, 10) === str.slice(0, 10);
   }
-
-  const getExtension = (attachment: any) => {
-    if (attachment.extension) {
-      return attachment.extension;
-    } else {
-      return attachment.type.split("/").pop();
-    }
-  };
 
   const checkIfVisible = (property: any) => {
     return getItems.data["@self"].schema.properties[property].visible !== false;
