@@ -127,6 +127,7 @@
     --utrecht-page-footer-heading-font-weight,
     inherit
   ) !important;
+  font-size: var(--utrecht-page-footer-heading-font-size, inherit) !important;
 }
 
 .dynamicItemHeading {

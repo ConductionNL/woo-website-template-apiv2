@@ -25,8 +25,8 @@ https://beek.prod.openwoo.app
 https://beek.accept.openwoo.app
 https://beek.commonground.nu
 https://beek.accept.commonground.nu
-https://buren.openwoo.app
-https://buren.accept.openwoo.app
+https://buren.commonground.nu
+https://buren.accept.commonground.nu 
 https://dinkelland.openwoo.app
 https://dinkelland.accept.openwoo.app
 https://dinkelland.commonground.nu
@@ -39,6 +39,7 @@ https://epe.accept.openwoo.app
 https://epe.prod.openwoo.app
 https://epe.commonground.nu
 https://epe.accept.commonground.nu
+https://epe-a.accept.commonground.nu
 https://gooisemeren.openwoo.app
 https://gooisemeren.accept.openwoo.app
 https://gooisemeren.prod.openwoo.app
@@ -50,8 +51,8 @@ https://gouda.accept.openwoo.app
 
 https://helmond.openwoo.app
 https://helmond.accept.openwoo.app
-https://helmond.prod.openwoo.app
-https://helmond.prod.commonground.nu
+
+https://helmond.commonground.nu
 https://helmond.accept.commonground.nu
 https://hoekschewaard.openwoo.app
 https://hoekschewaard.accept.openwoo.app
@@ -135,6 +136,7 @@ https://horstadmaas.accept.commonground.nu
 
 export const connectSrcOther = `
 https://conduction.openwoo.app
+https://conduction.nl
 https://conduction.accept.openwoo.app
 https://koophulpje.openwoo.app
 https://koophulpje.accept.openwoo.app
@@ -173,3 +175,5 @@ http://localhost:8000
 http://localhost:8080
 http://localhost:3000
 `;
+
+
