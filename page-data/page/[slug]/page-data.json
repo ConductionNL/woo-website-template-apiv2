@@ -1,0 +1,1 @@
+{"componentChunkName":"component---src-pages-page-[slug]-tsx","path":"/page/[slug]/","result":{"pageContext":{"breadcrumb":{"location":"/page/[slug]/","crumbs":[{"pathname":"/","crumbLabel":"Home"},{"pathname":"/page","crumbLabel":"page"},{"pathname":"/page/[slug]","crumbLabel":"[slug]"}]}}},"staticQueryHashes":[],"slicesMap":{},"matchPath":"/page/:slug"}
