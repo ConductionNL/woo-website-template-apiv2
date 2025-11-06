@@ -58,12 +58,12 @@ jobs:
       - name: Login to Container Registry
         id: containerregistry-login
         run: |
-         if [ "${{ secrets.GITHUB_TOKEN }}" != "" ]; then
-           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $(cut -d'/' -f1 <<< $GITHUB_REPOSITORY) --password-stdin
-           echo "##[set-output name=success;]true"
-         else
-           echo "##[set-output name=success;]false"
-         fi
+          if [ "${{ secrets.GITHUB_TOKEN }}" != "" ]; then
+            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $(cut -d'/' -f1 <<< $GITHUB_REPOSITORY) --password-stdin
+            echo "##[set-output name=success;]true"
+          else
+            echo "##[set-output name=success;]false"
+          fi
       - if: steps.containerregistry-login.outputs.success == 'true' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development')
         name: Push to Container Registry
         run: docker compose push
@@ -72,9 +72,18 @@ jobs:
         name: Push versioned containers to Container Registry
         id: version-push
         run: |
-          images=$(docker compose images -q | xargs docker inspect --format='{{ index .RepoTags 0}}' | cut -d':' -f1 | grep $APP_NAME)
+          if [ -z "$APP_NAME" ]; then
+            echo "APP_NAME is not set, skipping versioned push"
+            exit 0
+          fi
+          images=$(docker compose images -q | xargs docker inspect --format='{{ index .RepoTags 0}}' | cut -d':' -f1 | grep "$APP_NAME" || true)
+          if [ -z "$images" ]; then
+            echo "No images found matching APP_NAME=$APP_NAME"
+            exit 0
+          fi
           for image in $images
           do
+            echo "Pushing ${image}:${APP_BUILD}"
             docker push "${image}":"${APP_BUILD}"
           done
       - name: Print release name
