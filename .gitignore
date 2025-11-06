@@ -3,3 +3,6 @@
 pwa/.cache
 pwa/node_modules
 pwa/public
+check-helm-runtime.sh
+git-push.sh
+build-and-push-image.sh
