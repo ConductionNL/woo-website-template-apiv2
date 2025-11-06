@@ -169,11 +169,12 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "epe.openwoo.app":
     case "epe.prod.openwoo.app":
     case "epe.koophulpje.nl":
-    case "epe.prod.commonground.nu":
+    case "epe.commonground.nu":
       return Epe;
     case "acceptatie-open.epe.nl":
     case "epe.accept.openwoo.app":
     case "epe.accept.commonground.nu":
+    case "epe-a.accept.commonground.nu":  
       return EpeAccept;
 
     case "ede-theme":

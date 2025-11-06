@@ -43,7 +43,7 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
         </div>
         <div className={styles.navContainer}>
           <Logo onClick={() => navigate("/")} />
-          <div className={styles.navRight}>
+          <div>
             {quickLinks?.length > 0 && (
               <nav role="navigation" aria-label={t("Quick links")} className={styles.quickLinks}>
                 {quickLinks.map((item: any, idx: number) => {
@@ -55,7 +55,6 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
                     <Button
                       key={idx}
                       appearance="secondary"
-                      className={styles.quickLink}
                       onClick={() => open(href, "_blank")}
                       tabIndex={0}
                       aria-label={`${t(item?.ariaLabel ?? item?.name ?? "Link")}, ${t("Opens a new window")}`}
@@ -66,7 +65,6 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
                     <Button
                       key={idx}
                       appearance="secondary"
-                      className={styles.quickLink}
                       onClick={() => navigate(item?.link ?? "/")}
                       tabIndex={0}
                       aria-label={t(item?.ariaLabel ?? item?.name ?? "Link")}

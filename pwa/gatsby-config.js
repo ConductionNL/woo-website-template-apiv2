@@ -1,6 +1,5 @@
-require("dotenv").config({
-  path: `static/.env.${process.env.NODE_ENV}`,
-});
+// Always load root .env as the single source of truth and override anything else
+try { require("dotenv").config({ path: `${__dirname}/../.env`, override: true }); } catch (_) {}
 
 module.exports = {
   /**
