@@ -15,7 +15,6 @@ import { IconPack, library } from "@fortawesome/fontawesome-svg-core";
 import { useEnvironment } from "../hooks/useEnvironment";
 import { ToolTip } from "@conduction/components";
 import { Helmet } from "react-helmet";
-import { usePages } from "../hooks/pages";
 
 export const TOOLTIP_ID = "cb8f47c3-7151-4a46-954d-784a531b01e6";
 
@@ -53,8 +52,6 @@ const Layout: React.FC<LayoutProps> = ({ children, pageContext, location }) => {
       },
     }));
   }, [pageContext, location]);
-
-  const pagesQuery = usePages().getAll();
 
   if (!globalContext.initiated) return <></>;
 

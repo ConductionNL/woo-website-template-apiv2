@@ -4,9 +4,7 @@
   "private": true,
   "description": "Product Website Template",
   "author": "Conduction",
-  "keywords": [
-    "gatsby"
-  ],
+  "keywords": ["gatsby"],
   "overrides": {
     "vega": "^6.1.2"
   },
@@ -67,7 +65,7 @@
     "@types/qs": "^6.9.14",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.23",
-    "@utrecht/component-library-react": "9.0.3",
+    "@utrecht/component-library-react": "^3.0.1-alpha.27",
     "@utrecht/design-tokens": "^1.0.0-alpha.640",
     "axios": "^1.7.9",
     "clsx": "^2.1.0",
@@ -104,7 +102,6 @@
     "@parcel/watcher": "^2.5.1",
     "@types/dateformat": "^5.0.2",
     "@types/dedent": "^0.7.2",
-    "@types/lodash": "^4.17.20",
     "@types/node": "^20.12.3",
     "@types/react-helmet": "^6.1.11",
     "@types/showdown": "2.0.6",
@@ -114,7 +111,6 @@
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.34.1",
     "gh-pages": "^6.1.1",
-    "http-proxy-middleware": "^3.0.2",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
     "npm-run-all": "^4.1.5",

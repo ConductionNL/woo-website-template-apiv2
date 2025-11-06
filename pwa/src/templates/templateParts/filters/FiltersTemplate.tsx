@@ -112,56 +112,29 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   React.useEffect(() => {
     if (!getCategories.isSuccess || !getCategories.data || !getCategories.data.facets) return;
 
-    // Enrich facets with titles when available (compatible with different API payloads)
-    const response: any = getCategories.data;
-    const facetsConfig: any = response?.availableFacets ?? response?.facetsConfig ?? response?.facets_config ?? response?.facetable;
-
-    const rawFacets: any = response?.facets?.facets ?? response?.facets;
-    let facets: any = rawFacets;
-
-    if (facets) {
-      const facetsWithTitles: Record<string, any> = {};
-      Object.entries(facets as Record<string, any>).forEach(([key, value]) => {
-        if (key === "@self" && value && typeof value === "object") {
-          facetsWithTitles[key] = {} as Record<string, any>;
-          Object.entries(value as Record<string, any>).forEach(([subKey, subValue]) => {
-            facetsWithTitles[key][subKey] = {
-              ...(subValue as Record<string, any>),
-              title: facetsConfig?.object_fields?.[subKey]?.title || subKey,
-            };
-          });
-        } else {
-          facetsWithTitles[key] = {
-            ...(value as Record<string, any>),
-            title: facetsConfig?.object_fields?.[key]?.title || key,
-          };
-        }
-      });
-
-      facets = facetsWithTitles;
-    } else {
-      console.warn("No facets in response");
-    }
+    let facets: any = getCategories.data.facets;
 
     if (facets["@self"]?.schema?.buckets) {
       facets = { categorie: facets["@self"].schema.buckets };
     }
 
-    const categoriesWithData = Object.values(facets as Record<string, any>)?.map((facet: any) =>
-      facet?.map((category: any) =>
-        (() => {
-          const id = category.key;
-          const name = category.label ?? id;
-          if (!name) return null;
+    const categoriesWithData = Object.values(facets as Record<string, any>)
+      .map((facet: any) =>
+        facet
+          .map((category: any) =>
+            (() => {
+              const id = category.key;
+              const name = category.label ?? id;
+              if (!name) return null;
 
-          return {
-            label: _.upperFirst(String(name).toLowerCase()),
-            value: String(id),
-          };
-        })(),
+              return {
+                label: _.upperFirst(String(name).toLowerCase()),
+                value: String(id),
+              };
+            })(),
+          )
+          .filter(Boolean),
       )
-        .filter(Boolean),
-    )
       .flat();
 
     const uniqueOptions: any[] = _.orderBy(_.uniqBy(categoriesWithData, "value"), "label", "asc");
@@ -170,11 +143,8 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
     setCategoryOptions({ options: uniqueOptions });
 
-    const yearBuckets: any[] =
-      response?.facets?.facets?.["@self"]?.published?.buckets ?? response?.facets?.["@self"]?.published?.buckets;
-
-    if (yearBuckets) {
-      const availableYears: number[] = (yearBuckets as any[])
+    if (getCategories.data?.facets?.["@self"]?.published?.buckets) {
+      const availableYears: number[] = (getCategories.data.facets["@self"].published.buckets as any[])
         .map((b: any) => Number(b.key))
         .filter(Boolean);
 
