@@ -4,7 +4,9 @@
   "private": true,
   "description": "Product Website Template",
   "author": "Conduction",
-  "keywords": ["gatsby"],
+  "keywords": [
+    "gatsby"
+  ],
   "overrides": {
     "vega": "^6.1.2"
   },

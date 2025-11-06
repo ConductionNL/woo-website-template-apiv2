@@ -33,4 +33,3 @@ ls -l "$out_dir" || true
 cp -f "$out_dir/runtime.json" /usr/share/nginx/html/runtime.json || true
 chmod 0644 /usr/share/nginx/html/runtime.json || true
 echo "[entrypoint] wrote /usr/share/nginx/html/runtime.json"
-
