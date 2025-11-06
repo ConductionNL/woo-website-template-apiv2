@@ -115,12 +115,6 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
-.contentColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 28px;
-}
-
 .dynamicSectionTitle,
 .dynamicItemHeading {
   margin-block-end: 18px !important;
