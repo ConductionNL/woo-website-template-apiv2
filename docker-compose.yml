@@ -9,6 +9,11 @@ services:
     environment:
       - UPSTREAM_HOST=${UPSTREAM_HOST}
       - UPSTREAM_BASE=${UPSTREAM_BASE}
+      - DOMAIN=${DOMAIN}
+    volumes:
+      - ./pwa/docker/templates/default.conf.template:/etc/nginx/templates/default.conf.template:ro
+
+
 volumes:
   db-data: {}
   uc-data: {}
