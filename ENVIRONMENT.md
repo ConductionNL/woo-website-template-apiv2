@@ -89,7 +89,7 @@ Where defined:
 
 ### Runtime (NGINX proxy) variables
 
-Where: container env at runtime (Compose/Helm), rendered into `/etc/nginx/conf.d/default.conf` from `pwa/docker/default.conf.template`.
+Where: container env at runtime (Compose/Helm), rendered into `/etc/nginx/conf.d/default.conf` from `pwa/docker/templates/default.conf.template`.
 
 - `UPSTREAM_HOST` (string)
   - The `Host` header to pass upstream, e.g. `softwarecatalogus.test.commonground.nu`.
