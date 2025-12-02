@@ -9,6 +9,8 @@ on:
     branches:
       - main
       - development
+      - container-setup-v1-barry   # <--- jouw branch
+  workflow_dispatch: {}             # <--- handmatig starten via Actions-tab
 
 jobs:
   build:
@@ -16,6 +18,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
+
       - name: Export release code
         if: (success() || failure())
         id: releasecode #version number in a more comprehensible format: 0.1.YearMonthDay in UTC
@@ -24,37 +27,58 @@ jobs:
           export RELEASE=$VERSION.$(date --utc +%y%m%d)
           echo "RELEASE=$RELEASE" >> $GITHUB_ENV
           echo "##[set-output name=releasename]$RELEASE"
+
       - name: Setting APP_NAME
         run: |
           export NAME=$(grep APP_NAME= .env | cut -d '=' -f2)
           echo "APP_NAME=$NAME" >> $GITHUB_ENV
+
       - name: Print app name
         run: echo "APP_NAME = $APP_NAME"
+
       - name: Setting APP_ENV to dev
         run: |
           echo "APP_ENV=dev">> $GITHUB_ENV
           echo "APP_BUILD=dev">> $GITHUB_ENV
           echo "set APP_ENV to $APP_ENV"
+
+      # >>> Override voor jouw branch: altijd tag 'barry' <<<
+      - name: Override APP_ENV/APP_BUILD for barry branch
+        if: github.ref == 'refs/heads/container-setup-v1-barry'
+        run: |
+          echo "APP_ENV=barry" >> $GITHUB_ENV
+          echo "APP_BUILD=barry" >> $GITHUB_ENV
+          echo "set APP_ENV to $APP_ENV (barry branch)"
+      # <<< Einde override >>>
+
       - name: Setting APP_ENV to prod
         if: contains( github.ref, 'main' ) || contains( github.base_ref, 'main' )
         run: |
           echo "APP_ENV=latest">> $GITHUB_ENV
           echo "APP_BUILD=latest">> $GITHUB_ENV
           echo "set APP_ENV to $APP_ENV"
+
       - name: Print definitive APP_ENV
         run: echo "APP_ENV is now $APP_ENV and APP_BUILD is now $APP_BUILD"
+
       - name: Build the Docker image
         run: docker compose build --build-arg APP_ENV=$APP_ENV --build-arg APP_BUILD=$APP_BUILD --build-arg APP_BUILD_ALL_FIXTURES=true
+
       - name: Run the docker image
         run: docker compose up -d
+
       - name: Taking some sleep (for containers to come up)
         run: sleep 20
+
       - name: Check if all containers are running
         run: docker ps
+
       - name: Dumping the logs
         run: docker compose logs
+
       - name: Show all images
         run: docker images
+
       - name: Login to Container Registry
         id: containerregistry-login
         run: |
@@ -64,7 +88,12 @@ jobs:
           else
             echo "##[set-output name=success;]false"
           fi
-      - if: steps.containerregistry-login.outputs.success == 'true' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development')
+
+      # Push ook voor barry-branch
+      - if: steps.containerregistry-login.outputs.success == 'true' && 
+            (github.ref == 'refs/heads/main' || 
+             github.ref == 'refs/heads/development' || 
+             github.ref == 'refs/heads/container-setup-v1-barry')
         name: Push to Container Registry
         run: docker compose push
 
@@ -86,11 +115,13 @@ jobs:
             echo "Pushing ${image}:${APP_BUILD}"
             docker push "${image}":"${APP_BUILD}"
           done
+
       - name: Print release name
         if: (success() || failure())
         run: echo $RELEASENAME
         env:
           RELEASENAME: ${{ steps.releasecode.outputs.releasename }}
+
       - name: Create Release
         if: contains( github.ref, 'main' ) && steps.version-push.outputs.success == 'true' && ( success() || failure() )
         id: create_release
@@ -103,6 +134,7 @@ jobs:
           release_name: ${{ steps.releasecode.outputs.releasename }}
           draft: false
           prerelease: false
+
       - name: Chores
         if: (success() || failure())
         run: docker compose down
