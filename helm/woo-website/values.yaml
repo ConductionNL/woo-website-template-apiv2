@@ -5,7 +5,7 @@ pwa:
   image:
     image: "ghcr.io/conductionnl/woo-website-v2"
     pullPolicy: Always
-    tag: "helm"
+    tag: "latest"
   upstream:
     host: ""
     base: ""
@@ -81,7 +81,7 @@ resources:
   #   cpu: 10m
   #   memory: 128Mi
    requests:
-     cpu: 100m
+     cpu: 128m
      memory: 128Mi
 
 autoscaling:
