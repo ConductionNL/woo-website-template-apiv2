@@ -233,7 +233,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
               className={styles.backLink}
               href="/"
               onClick={(e: any) => {
-                e.preventDefault(), navigate("/");
+                (e.preventDefault(), navigate("/"));
               }}
               tabIndex={0}
               aria-label={t("Back to homepage")}
@@ -274,8 +274,34 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           }
 
                           if (typeof value === "string") {
-                            const isValidDate = isDate(value);
-                            formattedValue = isValidDate ? translateDate(i18n.language, value) ?? "-" : value;
+                            const schemaFormat = getItems.data["@self"]?.schema?.properties?.[key]?.format;
+
+                            switch (schemaFormat) {
+                              case "url":
+                              case "uri":
+                                return (
+                                  <TableRow
+                                    key={key}
+                                    className={styles.tableRow}
+                                    tabIndex={0}
+                                    aria-label={`${getName(key)}, ${value}`}
+                                  >
+                                    <TableCell>{getName(key)}</TableCell>
+                                    <TableCell>
+                                      <Link href={value} target="_blank" rel="noopener noreferrer">
+                                        {value}
+                                      </Link>
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              case "date":
+                              case "date-time":
+                                formattedValue = translateDate(i18n.language, value) ?? "-";
+                                break;
+                              default:
+                                formattedValue = isDate(value) ? (translateDate(i18n.language, value) ?? "-") : value;
+                                break;
+                            }
                           } else if (Array.isArray(value)) {
                             if (key === "themes" || key === "themas") {
                               return (
