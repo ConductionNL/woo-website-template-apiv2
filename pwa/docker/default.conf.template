@@ -51,7 +51,9 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header Accept-Encoding ""; # required for sub_filter
 
-        sub_filter '${UPSTREAM_HOST}' $host;
+        sub_filter_types text/plain;
+        sub_filter 'http://${UPSTREAM_HOST}'  '$scheme://$host';
+        sub_filter 'https://${UPSTREAM_HOST}' '$scheme://$host';
         sub_filter_once off;
     }
 
@@ -59,16 +61,19 @@ server {
     location ~ ^/apps/opencatalogi/catalogs/[^/]+/sitemaps/sitemapindex-diwoo-infocat[0-9]+\.xml$ {
         proxy_pass https://${UPSTREAM_HOST};
         proxy_set_header Accept-Encoding "";
-        sub_filter '${UPSTREAM_HOST}' $host;
-        sub_filter_once off; 
+        sub_filter_types application/xml text/xml;
+        sub_filter 'http://${UPSTREAM_HOST}'  '$scheme://$host';
+        sub_filter 'https://${UPSTREAM_HOST}' '$scheme://$host';
+        sub_filter_once off;
     }
 
     # sitemap publications
     location ~ ^/apps/opencatalogi/catalogs/[^/]+/sitemaps/sitemapindex-diwoo-infocat[0-9]+\.xml/publications$ {
         proxy_pass https://${UPSTREAM_HOST};
         proxy_set_header Accept-Encoding "";
-        sub_filter '${UPSTREAM_HOST}' $host;
+        sub_filter_types application/xml text/xml;
+        sub_filter 'http://${UPSTREAM_HOST}'  '$scheme://$host';
+        sub_filter 'https://${UPSTREAM_HOST}' '$scheme://$host';
         sub_filter_once off;
     }
 }
-
