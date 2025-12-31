@@ -16,6 +16,7 @@ import { useEnvironment } from "../hooks/useEnvironment";
 import { ToolTip } from "@conduction/components";
 import { Helmet } from "react-helmet";
 import { usePages } from "../hooks/pages";
+import { ErrorBoundary } from "../components/errorBoundary/ErrorBoundary";
 
 export const TOOLTIP_ID = "cb8f47c3-7151-4a46-954d-784a531b01e6";
 
@@ -63,17 +64,19 @@ const Layout: React.FC<LayoutProps> = ({ children, pageContext, location }) => {
       <GlobalProvider value={[globalContext, setGlobalContext]}>
         <Head />
         <APIProvider value={API}>
-          <Surface>
-            <Document>
-              <ToolTip id={TOOLTIP_ID} />
+          <ErrorBoundary>
+            <Surface>
+              <Document>
+                <ToolTip id={TOOLTIP_ID} />
 
-              {/* <Toaster position="bottom-right" /> Turned off for now */}
+                {/* <Toaster position="bottom-right" /> Turned off for now */}
 
-              <div className={styles.container}>
-                <Content {...{ children }} />
-              </div>
-            </Document>
-          </Surface>
+                <div className={styles.container}>
+                  <Content {...{ children }} />
+                </div>
+              </Document>
+            </Surface>
+          </ErrorBoundary>
         </APIProvider>
       </GlobalProvider>
     </>
