@@ -27,6 +27,7 @@ const ResultsDisplaySwitch: React.FC<ResultsDisplaySwitchProps> = ({ layoutClass
         className={styles.button}
         onClick={() => setDisplay({ [displayKey]: "cards" })}
         aria-label={t("Cards view")}
+        aria-pressed={isActive(displayKey, "cards")}
       >
         <FontAwesomeIcon icon={faGripVertical} /> {t("Cards")}
       </Button>
@@ -36,6 +37,7 @@ const ResultsDisplaySwitch: React.FC<ResultsDisplaySwitchProps> = ({ layoutClass
         className={styles.button}
         onClick={() => setDisplay({ [displayKey]: "table" })}
         aria-label={t("Table view")}
+        aria-pressed={isActive(displayKey, "table")}
       >
         <FontAwesomeIcon icon={faTable} /> {t("Table")}
       </Button>
