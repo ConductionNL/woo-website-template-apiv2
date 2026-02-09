@@ -36,6 +36,10 @@
   text-transform: var(--utrecht-heading-1-text-transform, inherit);
 }
 
+.hyphenated {
+  hyphens: auto;
+}
+
 .backLink:hover {
   cursor: pointer;
 }

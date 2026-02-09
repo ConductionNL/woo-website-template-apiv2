@@ -245,6 +245,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
           {getItems.isSuccess && getItems.data && (
             <div className={styles.content} role="region" aria-label={t("Details")}>
               <Heading1
+                className={styles.hyphenated}
                 id="mainContent"
                 tabIndex={0}
                 aria-label={`${t("Title of woo request")}, ${getItems.data.title ?? getItems.data.titel ?? getItems.data.name ?? getItems.data.naam ?? getItems.data.id}`}
