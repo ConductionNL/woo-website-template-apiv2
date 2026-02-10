@@ -84,8 +84,7 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
                   className={clsx(styles.languageSelect, i18n.language === "nl" && styles.languageSelectDisabled)}
                   onClick={() => i18n.changeLanguage("nl")}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
+                    if (e.key === "Enter") {
                       i18n.changeLanguage("nl");
                     }
                   }}
@@ -105,8 +104,7 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
                   className={clsx(styles.languageSelect, i18n.language === "en" && styles.languageSelectDisabled)}
                   onClick={() => i18n.changeLanguage("en")}
                   onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
+                    if (e.key === "Enter") {
                       i18n.changeLanguage("en");
                     }
                   }}
