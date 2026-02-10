@@ -213,6 +213,10 @@ const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content })
             item.link !== "no-link" &&
             !(/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && <InternalLink {...{ item }} />}
 
+          {/* Internal Link Github/Markdown link */}
+          {(item.linkMode === "markdown" || (!item.linkMode && item.markdownLink)) &&
+            (item.link || item.markdownLink) && <MarkdownLink {...{ item }} />}
+
           {/* MultiRow */}
           {item.valueMode === "multiRow" && <MultiRow {...{ item }} />}
 
@@ -380,6 +384,27 @@ const InternalLink: React.FC<LinkComponentProps> = ({ item }) => {
       }}
       tabIndex={0}
       aria-label={`${t(item.ariaLabel)}, ${t(item.value ?? item.name)}`}
+      role="button"
+      href={item.link}
+    >
+      {renderIcon(item, "left")}
+      {t(item.value ?? item.name)}
+      {renderIcon(item, "right")}
+    </Link>
+  );
+};
+
+const MarkdownLink: React.FC<LinkComponentProps> = ({ item }) => {
+  const { t } = useTranslation();
+
+  return (
+    <Link
+      className={styles.link}
+      onClick={(e: any) => {
+        (e.preventDefault(), navigate(`/markdown/${item.name.replaceAll(" ", "_")}/?link=${item.link}`));
+      }}
+      tabIndex={0}
+      aria-label={`${t(item.ariaLabel)}, ${t(item.link)}`}
       role="button"
       href={item.link}
     >
