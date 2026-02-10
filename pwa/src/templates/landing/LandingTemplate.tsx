@@ -37,7 +37,9 @@ export const LandingTemplate: React.FC = () => {
       <Page>
         <PageContent className={styles.container}>
           <FiltersTemplate isLoading={getItems.isLoading} />
-          {getItems.data?.results?.length === 0 && !getItems.isLoading && <span>{t("No results found")}.</span>}
+          {getItems.data?.results?.length === 0 && !getItems.isLoading && (
+            <span role="status">{t("No results found")}.</span>
+          )}
 
           {getItems.data?.results && getItems.data?.results?.length > 0 && (
             <div id="mainContent">
