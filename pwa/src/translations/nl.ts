@@ -85,4 +85,10 @@ export const nl = {
   "Error details": "Foutdetails",
   "Hide technical details": "Verberg technische details",
   "Show technical details": "Toon technische details",
+  "Contact met de gemeente": "Contact met de gemeente",
+  "Neem contact op": "Neem contact op",
+  "Toegankelijkheid": "Toegankelijkheid",
+  "Over deze website": "Over deze website",
+  "Bezoekadres": "Bezoekadres",
+  "Algemeen": "Algemeen",
 };
