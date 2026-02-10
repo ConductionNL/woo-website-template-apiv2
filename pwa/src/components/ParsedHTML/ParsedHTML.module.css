@@ -7,20 +7,6 @@
   margin-block-end: var(--utrecht-space-block-lg);
 }
 
-/* Hyphenate headings to ensure that long headings wrap properly */
-.container :global(.utrecht-heading-1),
-.container :global(.utrecht-heading-2),
-.container :global(.utrecht-heading-3),
-.container :global(.utrecht-heading-4),
-.container :global(.utrecht-heading-5),
-.container :global(h1),
-.container :global(h2),
-.container :global(h3),
-.container :global(h4),
-.container :global(h5) {
-  hyphens: auto;
-}
-
 .backLink:hover {
   cursor: pointer;
 }
