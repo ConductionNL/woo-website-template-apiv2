@@ -6,3 +6,5 @@ pwa/public
 check-helm-runtime.sh
 git-push.sh
 build-and-push-image.sh
+
+.cursor/debug.log

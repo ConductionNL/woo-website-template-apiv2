@@ -41,7 +41,11 @@ export const LandingTemplate: React.FC = () => {
 
           {getItems.data?.results && getItems.data?.results?.length > 0 && (
             <div id="mainContent">
-              <ResultsDisplayTemplate displayKey="landing-results" requests={getItems.data.results} />
+              {getItems.isFetching ? (
+                <Skeleton height={"200px"} />
+              ) : (
+                <ResultsDisplayTemplate displayKey="landing-results" requests={getItems.data.results} />
+              )}
               <div role="region" aria-label={t("Pagination")} className={styles.pagination}>
                 <Pagination
                   ariaLabels={{
@@ -58,7 +62,7 @@ export const LandingTemplate: React.FC = () => {
               </div>
             </div>
           )}
-          {getItems.isLoading && <Skeleton height={"200px"} />}
+          {getItems.isLoading && !getItems.data && <Skeleton height={"200px"} />}
         </PageContent>
       </Page>
     </>
