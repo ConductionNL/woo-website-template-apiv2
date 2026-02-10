@@ -44,7 +44,7 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
         <div className={styles.navContainer}>
           <Logo
             onClick={() => navigate("/")}
-            aria-label={"Logo " + (window.sessionStorage.getItem("ORGANISATION_NAME") ?? "")}
+            ariaLabel={"Logo " + (window.sessionStorage.getItem("ORGANISATION_NAME") ?? "")}
           />
           <div>
             {quickLinks?.length > 0 && (
