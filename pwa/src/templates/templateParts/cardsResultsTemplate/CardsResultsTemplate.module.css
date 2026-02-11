@@ -35,11 +35,6 @@
 
 .description {
   color: var(--conduction-card-wrapper-color) !important;
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
   text-decoration: var(--conduction-card-wrapper-text-decoration, inherit);
   text-decoration-color: var(
     --conduction-card-wrapper-text-decoration-color,

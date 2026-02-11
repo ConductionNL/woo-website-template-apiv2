@@ -17,7 +17,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
 
   return (
     <>
-      <div className={styles.componentsGrid} role="status" aria-live="polite" aria-atomic="true" aria-label={t("Woo Request")}>
+      <div className={styles.componentsGrid} aria-label={t("Woo Request")}>
         {requests.map((request) => (
           <CardWrapper
             role="region"
@@ -25,11 +25,11 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
             className={styles.cardContainer}
             onClick={() => navigate(request.id.toString())}
             tabIndex={0}
-            aria-label={`${
+            aria-label={`${removeHTMLFromString(removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id))}, ${
               request["@self"].published
                 ? translateDate(i18n.language, request["@self"].published ?? request.publicatiedatum ?? request.created)
                 : t("N/A")
-            }, ${removeHTMLFromString(removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id))}, ${removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? t("No summary available")))} ${
+            }, ${removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? t("No summary available")))} ${
               window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true"
                 ? `,${request.catalog?.organization?.title ?? request.organization?.title ?? t("No municipality available")}`
                 : ""
@@ -54,12 +54,9 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
               </CardHeaderDate>
             </CardHeader>
 
-
             <Paragraph className={styles.description}>
-              {removeHTMLFromString(
-                  removeHTMLFromString(request.summary ?? request.samenvatting ?? ""),
-                )}
-              </Paragraph>
+              {removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? ""))}
+            </Paragraph>
 
             {(window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ||
               window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true") && (

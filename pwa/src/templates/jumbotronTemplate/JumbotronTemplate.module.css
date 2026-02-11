@@ -40,6 +40,10 @@
   color: var(--conduction-card-wrapper-color) !important;
 }
 
+.hyphenated {
+  hyphens: auto;
+}
+
 .title {
   border-block-end: var(--conduction-card-wrapper-header-border-block-end);
   color: var(
