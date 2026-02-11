@@ -8,7 +8,19 @@
     "gatsby"
   ],
   "overrides": {
-    "vega": "^6.1.2"
+    "webpack": "^5.105.0",
+    "cookie": "^1.1.1",
+    "tmp": "^0.2.5",
+    "@parcel/core": "^2.16.4",
+    "@parcel/cache": "^2.16.4",
+    "@parcel/fs": "^2.16.4",
+    "@parcel/package-manager": "^2.16.4",
+    "@parcel/workers": "^2.16.4",
+    "@parcel/types": "^2.16.4",
+    "@parcel/plugin": "^2.16.4",
+    "@parcel/reporter-dev-server": "^2.16.4",
+    "@parcel/transformer-js": "^2.16.4",
+    "vega": "^6.2.0"
   },
   "scripts": {
     "dev": "gatsby develop",
@@ -29,8 +41,8 @@
     "prepare": "cd .. && husky install"
   },
   "dependencies": {
-    "@amsterdam/design-system-css": "^0.9.0",
-    "@amsterdam/design-system-react": "^0.9.0",
+    "@amsterdam/design-system-css": "^3.1.0",
+    "@amsterdam/design-system-react": "^3.1.0",
     "@conduction/components": "2.2.57",
     "@conduction/theme": "1.1.59",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
@@ -67,14 +79,14 @@
     "@types/qs": "^6.9.14",
     "@types/react": "^18.2.74",
     "@types/react-dom": "^18.2.23",
-    "@utrecht/component-library-react": "9.0.3",
+    "@utrecht/component-library-react": "^13.0.0",
     "@utrecht/design-tokens": "^1.0.0-alpha.640",
     "axios": "^1.7.9",
     "clsx": "^2.1.0",
     "dateformat": "^5.0.3",
     "dedent": "^1.5.1",
     "es-abstract": "^1.23.5",
-    "gatsby": "^5.13.7",
+    "gatsby": "^5.16.1",
     "gatsby-plugin-breadcrumb": "^12.3.2",
     "gatsby-plugin-html-attributes": "^1.0.5",
     "gatsby-plugin-layout": "^4.13.1",
