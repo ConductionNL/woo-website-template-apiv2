@@ -31,7 +31,7 @@
   "dependencies": {
     "@amsterdam/design-system-css": "^0.9.0",
     "@amsterdam/design-system-react": "^0.9.0",
-    "@conduction/components": "2.2.54",
+    "@conduction/components": "2.2.57",
     "@conduction/theme": "1.1.59",
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "6.6.0",
@@ -110,6 +110,7 @@
     "@types/showdown": "2.0.6",
     "@typescript-eslint/eslint-plugin": "^7.5.0",
     "@typescript-eslint/parser": "^7.5.0",
+    "baseline-browser-mapping": "^2.9.19",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-react": "^7.34.1",

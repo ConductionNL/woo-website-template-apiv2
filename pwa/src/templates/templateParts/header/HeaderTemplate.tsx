@@ -90,7 +90,7 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
                     }
                   }}
                   tabIndex={0}
-                  aria-label="Vertaal pagina naar het Nederlands"
+                  aria-label={t("Translate page to Dutch")}
                   role="button"
                   aria-pressed={i18n.language === "nl" ? true : false}
                   aria-disabled={i18n.language === "nl" ? true : false}
@@ -111,7 +111,7 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
                     }
                   }}
                   tabIndex={0}
-                  aria-label="Translate page to English"
+                  aria-label={t("Translate page to English")}
                   role="button"
                   aria-pressed={i18n.language === "en" ? true : false}
                   aria-disabled={i18n.language === "en" ? true : false}

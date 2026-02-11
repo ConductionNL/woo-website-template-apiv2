@@ -12,6 +12,7 @@ export const useOpenWoo = (queryClient: QueryClient) => {
       ["OpenWoo", filters, currentPage, limit, window.sessionStorage.getItem("OIDN_NUMBER")],
       () => API?.OpenWoo.getAll(filters, currentPage, limit),
       {
+        keepPreviousData: true,
         onError: (error) => {
           console.warn(error.message);
         },

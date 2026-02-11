@@ -12,10 +12,10 @@ export const Head: React.FC = () => {
   const { gatsbyContext } = useGatsbyContext();
   const { t, i18n } = useTranslation();
 
+  const isLocalHost =
+    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const [connectSrc, setConnectSrc] = React.useState<string>(
-    `${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${
-      window.location.hostname === "localhost" ? connectSrcLocal : ""
-    }`,
+    `${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${isLocalHost ? connectSrcLocal : ""}`,
   );
 
   const processUrls = (urlString: string): string => {
@@ -46,11 +46,11 @@ export const Head: React.FC = () => {
     if (isSafari) {
       setConnectSrc(
         `${processUrls(connectSrcStandard)} ${processUrls(connectSrcMunicipalities)} ${processUrls(connectSrcOther)} ${processUrls(
-          window.location.hostname === "localhost" ? connectSrcLocal : "",
+          isLocalHost ? connectSrcLocal : "",
         )}`,
       );
     }
-  }, [isSafari]);
+  }, [isSafari, isLocalHost]);
 
   return (
     <Helmet
