@@ -29,7 +29,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
         scrollRightButton: t("Scroll table to the right"),
       }}
     >
-      <div role="status" aria-label={t("Woo Request")}>
+      <div aria-label={t("Woo Request")}>
         <Table className={styles.table}>
           <TableHeader className={styles.tableHeader}>
             <TableRow>
@@ -103,9 +103,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                 )}
                 <TableCell>
                   <div className={styles.description}>
-                    {removeHTMLFromString(
-                      removeHTMLFromString(request.summary ?? request.samenvatting ?? ""),
-                    )}
+                    {removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? ""))}
                   </div>
                 </TableCell>
               </TableRow>

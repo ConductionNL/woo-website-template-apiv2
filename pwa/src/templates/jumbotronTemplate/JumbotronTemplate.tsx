@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as styles from "./JumbotronTemplate.module.css";
+import clsx from "clsx";
 import { Heading1, Paragraph, Page, PageContent } from "@utrecht/component-library-react/dist/css-module";
 import { CardWrapper } from "@conduction/components";
 import { useTranslation } from "react-i18next";
@@ -15,7 +16,7 @@ export const JumbotronTemplate: React.FC = () => {
       <Page>
         <PageContent>
           <CardWrapper aria-label={t("Jumbotron card")} role="contentinfo" className={styles.card}>
-            <Heading1 className={styles.title}>
+            <Heading1 className={clsx(styles.title, styles.hyphenated)}>
               {t("Woo-publications of")} {window.sessionStorage.getItem("ORGANISATION_NAME")}
             </Heading1>
 
