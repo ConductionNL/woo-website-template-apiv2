@@ -1,0 +1,13 @@
+diff --git a/node_modules/gatsby/dist/internal-plugins/functions/middleware.js b/node_modules/gatsby/dist/internal-plugins/functions/middleware.js
+index f57d5dd..8b085be 100644
+--- a/node_modules/gatsby/dist/internal-plugins/functions/middleware.js
++++ b/node_modules/gatsby/dist/internal-plugins/functions/middleware.js
+@@ -109,7 +109,7 @@ function setCookies(req, _res, next) {
+   if (!cookies) {
+     return next();
+   }
+-  req.cookies = _cookie.default.parse(cookies);
++  req.cookies = require("cookie").parse(cookies);
+   return next();
+ }
+ function bodyParserMiddlewareWithConfig(type) {
