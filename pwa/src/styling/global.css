@@ -10,6 +10,17 @@ body {
   margin: 0;
 }
 
+/* Prevent flash of unstyled content (FOUC) by hiding body until theme class is applied */
+body:not([class]) {
+  opacity: 0;
+  visibility: hidden;
+}
+
+body[class] {
+  opacity: 1;
+  visibility: visible;
+}
+
 .utrecht-link > svg {
   margin-inline-end: var(--utrecht-icon-gap);
 }
