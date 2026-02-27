@@ -5,6 +5,7 @@ import { defaultDisplayContext, IDisplayContext } from "./displays";
 import { defaultPaginationContext, IPaginationContext } from "./pagination";
 import { defaultQueryLimitContext, IQueryLimitContext } from "./queryLimit";
 import { defaultCategoriesContext, ICategoriesContext } from "./categoryOptions";
+import { defaultYearOptionsContext, IYearOptionsContext } from "./yearOptions";
 
 export interface IGlobalContext {
   initiated: boolean;
@@ -14,6 +15,7 @@ export interface IGlobalContext {
   pagination: IPaginationContext;
   queryLimit: IQueryLimitContext;
   categoryOptions: ICategoriesContext;
+  yearOptions: IYearOptionsContext;
 }
 
 export const defaultGlobalContext: IGlobalContext = {
@@ -24,6 +26,7 @@ export const defaultGlobalContext: IGlobalContext = {
   pagination: defaultPaginationContext,
   queryLimit: defaultQueryLimitContext,
   categoryOptions: defaultCategoriesContext,
+  yearOptions: defaultYearOptionsContext,
 };
 
 export const GlobalContext = React.createContext<
