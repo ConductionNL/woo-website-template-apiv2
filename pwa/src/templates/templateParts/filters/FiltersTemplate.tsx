@@ -17,6 +17,7 @@ import { useGatsbyContext } from "../../../context/gatsby";
 import { useAvailableFilters } from "../../../hooks/availableFilters";
 import { usePaginationContext } from "../../../context/pagination";
 import { useCategoriesContext } from "../../../context/categoryOptions";
+import { useYearOptionsContext } from "../../../context/yearOptions";
 
 interface FiltersTemplateProps {
   isLoading: boolean;
@@ -28,7 +29,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   const { gatsbyContext } = useGatsbyContext();
   const { filters, setFilters } = useFiltersContext();
   const { categoryOptions, setCategoryOptions } = useCategoriesContext();
-  const [yearOptions, setYearOptions] = React.useState<any[]>([]);
+  const { yearOptions, setYearOptions } = useYearOptionsContext();
   const [queryParams, setQueryParams] = React.useState<IFiltersContext>(defaultFiltersContext);
   const [categoryParams, setCategoryParams] = React.useState<any>();
   const filterTimeout = React.useRef<NodeJS.Timeout | null>(null);
@@ -56,7 +57,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
     setValue(
       "year",
-      yearOptions.find((year: any) => {
+      yearOptions.options.find((year: any) => {
         return year.value === params.year;
       }),
     );
@@ -103,7 +104,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
     if (_.isEqual(filters, queryParams)) return;
 
     setQueryParams(filters);
-    const categoryLabel = categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])?.label.replace(/\s+/g, "_");
+    const categoryLabel = categoryOptions.options
+      .find((option: any) => option.value === filters["@self[schema]"])
+      ?.label.replace(/\s+/g, "_");
 
     navigate(`/${filtersToUrlQueryParams({ ...filters, "@self[schema]": categoryLabel })}`);
     setPagination({ currentPage: 1 });
@@ -114,7 +117,8 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
     // Enrich facets with titles when available (compatible with different API payloads)
     const response: any = getCategories.data;
-    const facetsConfig: any = response?.availableFacets ?? response?.facetsConfig ?? response?.facets_config ?? response?.facetable;
+    const facetsConfig: any =
+      response?.availableFacets ?? response?.facetsConfig ?? response?.facets_config ?? response?.facetable;
 
     const rawFacets: any = response?.facets?.facets ?? response?.facets;
     let facets: any = rawFacets;
@@ -147,21 +151,23 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
       facets = { categorie: facets["@self"].schema.buckets };
     }
 
-    const categoriesWithData = Object.values(facets as Record<string, any>)?.map((facet: any) =>
-      facet?.map((category: any) =>
-        (() => {
-          const id = category.key;
-          const name = category.label ?? id;
-          if (!name) return null;
+    const categoriesWithData = Object.values(facets as Record<string, any>)
+      ?.map((facet: any) =>
+        facet
+          ?.map((category: any) =>
+            (() => {
+              const id = category.key;
+              const name = category.label ?? id;
+              if (!name) return null;
 
-          return {
-            label: _.upperFirst(String(name).toLowerCase()),
-            value: String(id),
-          };
-        })(),
+              return {
+                label: _.upperFirst(String(name).toLowerCase()),
+                value: String(id),
+              };
+            })(),
+          )
+          .filter(Boolean),
       )
-        .filter(Boolean),
-    )
       .flat();
 
     const uniqueOptions: any[] = _.orderBy(_.uniqBy(categoriesWithData, "value"), "label", "asc");
@@ -174,9 +180,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
       response?.facets?.facets?.["@self"]?.published?.buckets ?? response?.facets?.["@self"]?.published?.buckets;
 
     if (yearBuckets) {
-      const availableYears: number[] = (yearBuckets as any[])
-        .map((b: any) => Number(b.key))
-        .filter(Boolean);
+      const availableYears: number[] = (yearBuckets as any[]).map((b: any) => Number(b.key)).filter(Boolean);
 
       const dynamicYears = availableYears
         .map((year) => ({
@@ -188,7 +192,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
         .sort((a, b) => Number(b.value) - Number(a.value));
 
       if (!_.isEqual(dynamicYears, yearOptions)) {
-        setYearOptions(dynamicYears);
+        setYearOptions({ options: dynamicYears });
 
         if (categoryParams?.year) {
           setValue(
@@ -212,14 +216,12 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
         />
 
         <SelectSingle
-          options={yearOptions}
+          options={yearOptions.options}
           name="year"
           placeholder={t("Year")}
           isClearable
-          defaultValue={yearOptions.find((year: any) => {
-            return (
-              year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"]
-            );
+          defaultValue={yearOptions.options.find((year: any) => {
+            return year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"];
           })}
           {...{ register, errors, control }}
           ariaLabel={t("Select year")}
