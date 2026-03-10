@@ -160,14 +160,14 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
               const name = category.label ?? id;
               if (!name) return null;
 
-          return {
-            label: _.upperFirst(String(name).toLowerCase()),
-            value: String(id),
-          };
-        })(),
+              return {
+                label: _.upperFirst(String(name).toLowerCase()),
+                value: String(id),
+              };
+            })(),
+          )
+          .filter(Boolean),
       )
-        .filter(Boolean),
-    )
       .flat();
 
     const uniqueOptions: any[] = _.orderBy(_.uniqBy(categoriesWithData, "value"), "label", "asc");
