@@ -26,7 +26,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
     <HorizontalOverflowWrapper
       ariaLabels={{ scrollLeftButton: t("Left scroll button"), scrollRightButton: t("Right scroll button") }}
     >
-      <div role="region" aria-label={t("Woo Request")}>
+      <div aria-label={t("Woo Request")}>
         <Table className={styles.table}>
           <TableHeader className={styles.tableHeader}>
             <TableRow>
@@ -94,7 +94,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                 )}
                 <TableCell>
                   <div className={styles.description}>
-                    {removeHTMLFromString(removeHTMLFromString(request.samenvatting)) ?? t("No summary available")}
+                    {removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? ""))}
                   </div>
                 </TableCell>
                 <TableCell>

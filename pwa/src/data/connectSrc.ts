@@ -9,14 +9,24 @@ https://opencatalogi.accept.commonground.nu
 export const connectSrcMunicipalities = `
 https://albrandswaard.openwoo.app
 https://albrandswaard.accept.openwoo.app
-https://barendrecht.openwoo.app
+https://baarn.prod.openwoo.app
+https://baarn.accept.openwoo.app
+https://baarn.commonground.nu
+https://baarn.accept.commonground.nu
+https://barendrecht.prod.openwoo.app
 https://barendrecht.accept.openwoo.app
+https://barendrecht.commonground.nu
+https://barendrecht.accept.commonground.nu
 https://barneveld.prod.openwoo.app
 https://barneveld.accept.openwoo.app
 https://barneveld.prod.commonground.nu
 https://barneveld.accept.commonground.nu
-https://buren.openwoo.app
-https://buren.accept.openwoo.app
+https://beek.prod.openwoo.app
+https://beek.accept.openwoo.app
+https://beek.commonground.nu
+https://beek.accept.commonground.nu
+https://buren.commonground.nu
+https://buren.accept.commonground.nu 
 https://dinkelland.openwoo.app
 https://dinkelland.accept.openwoo.app
 https://dinkelland.commonground.nu
@@ -27,8 +37,9 @@ https://ede.accept.openwoo.app
 https://epe.openwoo.app
 https://epe.accept.openwoo.app
 https://epe.prod.openwoo.app
-https://epe.prod.commonground.nu
+https://epe.commonground.nu
 https://epe.accept.commonground.nu
+https://epe-a.accept.commonground.nu
 https://gooisemeren.openwoo.app
 https://gooisemeren.accept.openwoo.app
 https://gooisemeren.prod.openwoo.app
@@ -40,8 +51,8 @@ https://gouda.accept.openwoo.app
 
 https://helmond.openwoo.app
 https://helmond.accept.openwoo.app
-https://helmond.prod.openwoo.app
-https://helmond.prod.commonground.nu
+
+https://helmond.commonground.nu
 https://helmond.accept.commonground.nu
 https://hoekschewaard.openwoo.app
 https://hoekschewaard.accept.openwoo.app
@@ -72,11 +83,14 @@ https://noaberkracht.commonground.nu
 https://noaberkracht.accept.commonground.nu
 https://noaberkracht.openwoo.app
 https://noaberkracht.accept.openwoo.app
-https://noordwijk.openwoo.app
 https://noordwijk.accept.openwoo.app
+https://noordwijk.commonground.nu
+https://noordwijk.accept.commonground.nu
 https://oudeijsselstreek.accept.openwoo.app
 https://oudeijsselstreek.prod.openwoo.app
 https://oudeijsselstreek.prod.commonground.nu
+
+https://oudeijsselstreek.commonground.nu
 https://oudeijsselstreek.commonground.nu
 https://oudeijsselstreek.accept.commonground.nu
 https://ridderkerk.openwoo.app
@@ -85,16 +99,20 @@ https://rijssen-holten.openwoo.app
 https://rijssen-holten.accept.openwoo.app
 https://roosendaal.openwoo.app
 https://roosendaal.accept.openwoo.app
-https://roosendaal.prod.commonground.nu
+https://roosendaal.commonground.nu
 https://roosendaal.accept.commonground.nu
 https://rotterdam.openwoo.app
 https://rotterdam.accept.openwoo.app
 https://soest.openwoo.app
 https://soest.accept.openwoo.app
-https://soest.prod.commonground.nu
+https://soest.commonground.nu
 https://soest.accept.commonground.nu
 https://stedebroec.openwoo.app
 https://stedebroec.accept.openwoo.app
+https://stichtsevecht.openwoo.app
+https://stichtsevecht.accept.openwoo.app
+https://stichtsevecht.commonground.nu
+https://stichtsevecht.accept.commonground.nu
 https://texel.openwoo.app
 https://texel.accept.openwoo.app
 https://tubbergen.openwoo.app
@@ -118,6 +136,7 @@ https://horstadmaas.accept.commonground.nu
 
 export const connectSrcOther = `
 https://conduction.openwoo.app
+https://conduction.nl
 https://conduction.accept.openwoo.app
 https://koophulpje.openwoo.app
 https://koophulpje.accept.openwoo.app
@@ -129,6 +148,7 @@ https://noaberkracht.commonground.nu
 https://openwoo.app
 https://odmh.accept.openwoo.app
 https://odmh.accept.commonground.nu
+https://odmh.commonground.nu
 https://open-webconcept.accept.openwoo.app
 https://sloterburg.openwoo.app
 https://sloterburg.accept.openwoo.app
@@ -144,10 +164,17 @@ https://tilburg.accept.commonground.nu
 https://bct.accept.commonground.nu
 https://bct.commonground.nu
 https://bct.openwoo.app
+https://bct-zgw.accept.commonground.nu
+https://bct-zgw.commonground.nu
+https://bct-zgw.openwoo.app
+https://bct-zgw.accept.openwoo.app
 `;
 
 export const connectSrcLocal = `
 http://localhost:8000 
 http://localhost:8080
 http://localhost:3000
+http://127.0.0.1:7246
 `;
+
+

@@ -15,6 +15,8 @@ import { IconPack, library } from "@fortawesome/fontawesome-svg-core";
 import { useEnvironment } from "../hooks/useEnvironment";
 import { ToolTip } from "@conduction/components";
 import { Helmet } from "react-helmet";
+import { usePages } from "../hooks/pages";
+import { ErrorBoundary } from "../components/errorBoundary/ErrorBoundary";
 import { BrowserRouter } from "react-router-dom";
 
 export const TOOLTIP_ID = "cb8f47c3-7151-4a46-954d-784a531b01e6";
@@ -29,15 +31,22 @@ const Layout: React.FC<LayoutProps> = ({ children, pageContext, location }) => {
   const [API, setAPI] = React.useState<APIService>(React.useContext(APIContext));
   const [globalContext, setGlobalContext] = React.useState<IGlobalContext>(defaultGlobalContext);
   const { initiateFromEnv, initiateFromJSON } = useEnvironment();
+  const [environmentInitialized, setEnvironmentInitialized] = React.useState(false);
 
   library.add(fas, fab as IconPack, far as IconPack);
 
-  React.useEffect(() => {
-    if (process.env.GATSBY_ENV_VARS_SET === "true") {
-      initiateFromEnv();
-    } else {
-      initiateFromJSON(window.location.hostname, window.location.host);
-    }
+  // Initialize environment synchronously before first render
+  React.useLayoutEffect(() => {
+    const initEnvironment = async () => {
+      if (process.env.GATSBY_ENV_VARS_SET === "true") {
+        await initiateFromEnv();
+      } else {
+        initiateFromJSON(window.location.hostname, window.location.host);
+      }
+      setEnvironmentInitialized(true);
+    };
+
+    initEnvironment();
   }, []);
 
   React.useEffect(() => {
@@ -54,14 +63,17 @@ const Layout: React.FC<LayoutProps> = ({ children, pageContext, location }) => {
     }));
   }, [pageContext, location]);
 
-  if (!globalContext.initiated) return <></>;
+  const pagesQuery = usePages().getAll();
+
+  if (!globalContext.initiated || !environmentInitialized) return <></>;
 
   return (
     <>
       <BrowserRouter>
-        <GlobalProvider value={[globalContext, setGlobalContext]}>
-          <Head />
-          <APIProvider value={API}>
+      <GlobalProvider value={[globalContext, setGlobalContext]}>
+        <Head />
+        <APIProvider value={API}>
+          <ErrorBoundary>
             <Surface>
               <Document>
                 <ToolTip id={TOOLTIP_ID} />
@@ -73,8 +85,9 @@ const Layout: React.FC<LayoutProps> = ({ children, pageContext, location }) => {
                 </div>
               </Document>
             </Surface>
-          </APIProvider>
-        </GlobalProvider>
+          </ErrorBoundary>
+        </APIProvider>
+      </GlobalProvider>
       </BrowserRouter>
     </>
   );

@@ -10,8 +10,6 @@ import {
   TableBody,
   TableRow,
   TableCell,
-  UnorderedList,
-  UnorderedListItem,
   Link,
 } from "@utrecht/component-library-react/dist/css-module";
 import { translateDate } from "../../services/dateFormat";
@@ -83,7 +81,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
       case "Organisatieonderdeel":
         return t("Organizational unit");
       default:
-        return t(getItems.data["@self"].schema.properties[name]?.title ?? upperFirstName);
+        return _.upperFirst(t(getItems.data["@self"].schema.properties[name]?.title ?? upperFirstName));
     }
   };
 
@@ -95,14 +93,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     const date = new Date(str);
     return !isNaN(date.getTime()) && date.toISOString().slice(0, 10) === str.slice(0, 10);
   }
-
-  const getExtension = (attachment: any) => {
-    if (attachment.extension) {
-      return attachment.extension;
-    } else {
-      return attachment.type.split("/").pop();
-    }
-  };
 
   const checkIfVisible = (property: any) => {
     return getItems.data["@self"].schema.properties[property].visible !== false;
@@ -243,7 +233,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
               className={styles.backLink}
               href="/"
               onClick={(e: any) => {
-                e.preventDefault(), navigate("/");
+                (e.preventDefault(), navigate("/"));
               }}
               tabIndex={0}
               aria-label={t("Back to homepage")}
@@ -255,6 +245,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
           {getItems.isSuccess && getItems.data && (
             <div className={styles.content} role="region" aria-label={t("Details")}>
               <Heading1
+                className={styles.hyphenated}
                 id="mainContent"
                 tabIndex={0}
                 aria-label={`${t("Title of woo request")}, ${getItems.data.title ?? getItems.data.titel ?? getItems.data.name ?? getItems.data.naam ?? getItems.data.id}`}
@@ -284,8 +275,34 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           }
 
                           if (typeof value === "string") {
-                            const isValidDate = isDate(value);
-                            formattedValue = isValidDate ? translateDate(i18n.language, value) ?? "-" : value;
+                            const schemaFormat = getItems.data["@self"]?.schema?.properties?.[key]?.format;
+
+                            switch (schemaFormat) {
+                              case "url":
+                              case "uri":
+                                return (
+                                  <TableRow
+                                    key={key}
+                                    className={styles.tableRow}
+                                    tabIndex={0}
+                                    aria-label={`${getName(key)}, ${value}`}
+                                  >
+                                    <TableCell>{getName(key)}</TableCell>
+                                    <TableCell>
+                                      <Link href={value} target="_blank" rel="noopener noreferrer">
+                                        {value}
+                                      </Link>
+                                    </TableCell>
+                                  </TableRow>
+                                );
+                              case "date":
+                              case "date-time":
+                                formattedValue = translateDate(i18n.language, value) ?? "-";
+                                break;
+                              default:
+                                formattedValue = isDate(value) ? (translateDate(i18n.language, value) ?? "-") : value;
+                                break;
+                            }
                           } else if (Array.isArray(value)) {
                             if (key === "themes" || key === "themas") {
                               return (

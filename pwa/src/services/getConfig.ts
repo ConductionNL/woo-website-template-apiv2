@@ -1,6 +1,8 @@
 // Municipalities
 import Albrandswaard from "./../../static/configFiles/municipalities/albrandswaard/albrandswaard.json";
 import AlbrandswaardAccept from "./../../static/configFiles/municipalities/albrandswaard/albrandswaard-accept.json";
+import Baarn from "./../../static/configFiles/municipalities/baarn/baarn.json";
+import BaarnAccept from "./../../static/configFiles/municipalities/baarn/baarn-accept.json";
 import Barendrecht from "./../../static/configFiles/municipalities/barendrecht/barendrecht.json";
 import BarendrechtAccept from "./../../static/configFiles/municipalities/barendrecht/barendrecht-accept.json";
 import Barneveld from "./../../static/configFiles/municipalities/barneveld/barneveld.json";
@@ -47,6 +49,8 @@ import Soest from "./../../static/configFiles/municipalities/soest/soest.json";
 import SoestAccept from "./../../static/configFiles/municipalities/soest/soest-accept.json";
 import StedeBroec from "./../../static/configFiles/municipalities/stede-broec/stede-broec.json";
 import StedeBroecAccept from "./../../static/configFiles/municipalities/stede-broec/stede-broec-accept.json";
+import StichtseVecht from "./../../static/configFiles/municipalities/stichtse-vecht/stichtse-vecht.json";
+import StichtseVechtAccept from "./../../static/configFiles/municipalities/stichtse-vecht/stichtse-vecht-accept.json";
 import Texel from "./../../static/configFiles/municipalities/texel/texel.json";
 import TexelAccept from "./../../static/configFiles/municipalities/texel/texel-accept.json";
 import Tubbergen from "./../../static/configFiles/municipalities/tubbergen/tubbergen.json";
@@ -92,6 +96,19 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "albrandswaard.accept.openwoo.app":
       return AlbrandswaardAccept;
 
+    case "baarn":
+    case "open.baarn.nl":
+    case "baarn.openwoo.app":
+    case "baarn.koophulpje.nl":
+    case "baarn.prod.openwoo.app":
+    case "baarn.commonground.nu":
+      return Baarn;
+    case "acceptatie-open.baarn.nl":
+    case "baarn.accept.openwoo.app":
+      return BaarnAccept;
+
+
+
     case "barendrecht":
     case "open.barendrecht.nl":
     case "barendrecht.openwoo.app":
@@ -120,7 +137,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "beek.openwoo.app":
     case "beek.prod.openwoo.app":
     case "beek.koophulpje.nl":
-    case "beek.prod.commonground.nu":
+    case "beek.commonground.nu":
       return Beek;
     case "acceptatie-open.beek.nl":
     case "beek.accept.openwoo.app":
@@ -152,11 +169,12 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "epe.openwoo.app":
     case "epe.prod.openwoo.app":
     case "epe.koophulpje.nl":
-    case "epe.prod.commonground.nu":
+    case "epe.commonground.nu":
       return Epe;
     case "acceptatie-open.epe.nl":
     case "epe.accept.openwoo.app":
     case "epe.accept.commonground.nu":
+    case "epe-a.accept.commonground.nu":  
       return EpeAccept;
 
     case "ede-theme":
@@ -328,6 +346,18 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "acceptatie-open.stedebroec.nl":
     case "stedebroec.accept.openwoo.app":
       return StedeBroecAccept;
+
+    case "stichtse-vecht-theme":
+       case "open.stichtsevecht.nl":
+       case "stichtsevecht.openwoo.app":
+       case "stichtsevecht.koophulpje.nl":
+       case "stichtsevecht.prod.openwoo.app":
+       case "stichtsevecht.commonground.nu":
+        return StichtseVecht;
+      case "acceptatie-open.stichtsevecht.nl":
+      case "stichtsevecht.accept.openwoo.app":
+      case "stichtsevecht.accept.commonground.nu":
+        return StichtseVechtAccept;  
 
     case "texel":
     case "open.texel.nl":

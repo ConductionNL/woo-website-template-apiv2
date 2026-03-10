@@ -34,5 +34,6 @@
         "printWidth": 150
       }
     }
-  ]
+  ],
+  "endOfLine": "lf"
 }
