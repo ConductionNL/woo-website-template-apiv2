@@ -58,12 +58,14 @@ import { translateDate } from "../../services/dateFormat";
 import { useHeaderTopNavItems } from "../../hooks/useHeaderTopNavItems";
 import { SelectCreate } from "@conduction/components/lib/components/formFields";
 import { SELECT_CREATE, SELECT_MULTIPLE, SELECT_SINGLE } from "../../data/SelectData";
+import { ErrorScreen } from "../../components/errorScreen/ErrorScreen";
 
 export const WooThemeTemplate: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState<number>(1);
   const [buttonsDisabled, setButtonsDisabled] = React.useState<boolean>(false);
   const [selectMaxWith, setSelectMaxWith] = React.useState<boolean>(true);
   const [utrechtSelectMaxWith, setUtrechtSelectMaxWith] = React.useState<boolean>(true);
+  const [errorScreenFullPage, setErrorScreenFullPage] = React.useState<boolean>(false);
 
   const { filters } = useFiltersContext();
   const { t, i18n } = useTranslation();
@@ -229,7 +231,7 @@ export const WooThemeTemplate: React.FC = () => {
             className={styles.backLink}
             href="/"
             onClick={(e: any) => {
-              e.preventDefault(), console.log("click");
+              (e.preventDefault(), console.log("click"));
             }}
             tabIndex={0}
           >
@@ -576,6 +578,28 @@ export const WooThemeTemplate: React.FC = () => {
           <span className={styles.tooltip} data-tooltip-id={TOOLTIP_ID} data-tooltip-content={"Tooltip"}>
             Hover Me!
           </span>
+        </div>
+
+        <h2>Error Components:</h2>
+        <div>
+          <h3 className={styles.header}>ErrorScreen (500):</h3>
+          <p>
+            The styling of this error screen is driven entirely by the theme tokens set above. Colors, typography and
+            spacing are derived from the active theme.
+          </p>
+          <Button
+            appearance="secondary-action-button"
+            aria-expanded={errorScreenFullPage}
+            onClick={() => setErrorScreenFullPage(!errorScreenFullPage)}
+          >
+            {errorScreenFullPage ? "Toon inline" : "Toon als volledige pagina"}
+          </Button>
+          <div className={clsx(!errorScreenFullPage && styles.errorInlineWrapper)}>
+            <ErrorScreen
+              error={Object.assign(new Error("Internal Server Error"), { name: "500" })}
+              errorInfo={{ componentStack: "\n    at SomeComponent\n    at Layout" } as React.ErrorInfo}
+            />
+          </div>
         </div>
       </PageContent>
     </Page>

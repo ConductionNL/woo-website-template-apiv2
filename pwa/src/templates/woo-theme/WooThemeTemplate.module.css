@@ -392,3 +392,11 @@ input[type="radio"]:disabled:checked {
     --utrecht-radio-button-checked-disabled-color
   ) !important;
 }
+
+.errorInlineWrapper > div:first-child {
+  min-height: unset;
+  background: transparent;
+  display: block;
+  align-items: unset;
+  justify-content: unset;
+}

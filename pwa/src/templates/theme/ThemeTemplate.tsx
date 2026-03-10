@@ -106,6 +106,7 @@ import { SELECT_CREATE, SELECT_MULTIPLE, SELECT_SINGLE } from "../../data/Select
 import { Calendar } from "@utrecht/component-library-react/dist/Calendar";
 import { addWeeks, addYears } from "date-fns";
 import { AcCard, AcFlex, AcLink } from "../../components/tilburg/components";
+import { ErrorScreen } from "../../components/errorScreen/ErrorScreen";
 
 export const ThemeTemplate: React.FC = () => {
   const [currentPage, setCurrentPage] = React.useState<number>(1);
@@ -117,6 +118,7 @@ export const ThemeTemplate: React.FC = () => {
   const [radioButtonChecked, setRadioButtonChecked] = React.useState<string>("checked");
   const [tabIndex, setTabIndex] = React.useState(0);
   const [sidenavCurrent, setSidenavCurrent] = React.useState<string>("dashboard");
+  const [errorScreenFullPage, setErrorScreenFullPage] = React.useState<boolean>(false);
 
   const { gatsbyContext } = useGatsbyContext();
 
@@ -500,7 +502,7 @@ export const ThemeTemplate: React.FC = () => {
             className={styles.backLink}
             href="/"
             onClick={(e: any) => {
-              e.preventDefault(), console.log("click");
+              (e.preventDefault(), console.log("click"));
             }}
             tabIndex={0}
           >
@@ -806,7 +808,7 @@ export const ThemeTemplate: React.FC = () => {
                     <Link
                       href="/"
                       onClick={(e: any) => {
-                        e.preventDefault(), console.log("click");
+                        (e.preventDefault(), console.log("click"));
                       }}
                       tabIndex={0}
                     >
@@ -1324,6 +1326,24 @@ export const ThemeTemplate: React.FC = () => {
           <span className={styles.tooltip} data-tooltip-id={TOOLTIP_ID} data-tooltip-content={"Tooltip"}>
             Hover Me!
           </span>
+        </div>
+
+        <h2>Error Components:</h2>
+        <div>
+          <h3 className={styles.header}>ErrorScreen (500):</h3>
+          <p>
+            The styling of this error screen is driven entirely by the theme tokens set above. Colors, typography and
+            spacing are derived from the active theme.
+          </p>
+          <button onClick={() => setErrorScreenFullPage(!errorScreenFullPage)}>
+            {errorScreenFullPage ? "Show inline" : "Show full page"}
+          </button>
+          <div className={clsx(!errorScreenFullPage && styles.errorInlineWrapper)}>
+            <ErrorScreen
+              error={Object.assign(new Error("Internal Server Error"), { name: "500" })}
+              errorInfo={{ componentStack: "\n    at SomeComponent\n    at Layout" } as React.ErrorInfo}
+            />
+          </div>
         </div>
       </PageContent>
     </Page>

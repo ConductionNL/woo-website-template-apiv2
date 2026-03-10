@@ -1,78 +1,126 @@
 import * as React from "react";
 import * as styles from "./ErrorScreen.module.css";
 import {
-    Page,
-    PageContent,
-    Heading1,
-    Heading2,
-    Paragraph,
-    Button,
-    Alert,
+  Page,
+  PageContent,
+  Heading1,
+  Heading2,
+  Paragraph,
+  Button,
+  Alert,
+  CodeBlock,
+  OrderedList,
+  OrderedListItem,
+  Link,
+  Separator,
 } from "@utrecht/component-library-react/dist/css-module";
+import { HorizontalOverflowWrapper } from "@conduction/components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { faWarning } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
+import { navigate } from "gatsby";
 
 interface ErrorScreenProps {
-    error: Error | null;
-    errorInfo?: React.ErrorInfo | null;
+  error: Error | null;
+  errorInfo?: React.ErrorInfo | null;
 }
 
 export const ErrorScreen: React.FC<ErrorScreenProps> = ({ error, errorInfo }) => {
-    const { t } = useTranslation();
-    const [showDetails, setShowDetails] = React.useState(false);
+  const { t } = useTranslation();
+  const [showDetails, setShowDetails] = React.useState(false);
 
-    return (
-        <div className={styles.wrapper}>
-            <Page>
-                <PageContent className={styles.container}>
-                    <div className={styles.iconContainer}>
-                        <FontAwesomeIcon icon={faExclamationTriangle} className={styles.icon} />
-                    </div>
+  const errorCode = error?.name && /^\d+$/.test(error.name) ? error.name : null;
+  const isHomePage = typeof window !== "undefined" && window.location.pathname === "/";
 
-                    <Heading1 className={styles.title}>Oops, {t("something went wrong")}!</Heading1>
+  return (
+    <div className={styles.wrapper}>
+      <Page>
+        <PageContent className={styles.container}>
+          <Heading1 className={styles.title}>{t("Deze pagina is tijdelijk niet beschikbaar")}</Heading1>
 
-                    <Paragraph className={styles.description}>
-                        {t(
-                            "We encountered an error while loading the data from the municipality. This might be due to incorrect or incomplete data.",
-                        )}
-                    </Paragraph>
+          <Paragraph>
+            {t(
+              "We konden de gevraagde overheidsinformatie niet weergeven. Dit is waarschijnlijk een tijdelijk probleem aan onze kant — niets dat u heeft gedaan.",
+            )}
+          </Paragraph>
 
-                    {error && (
-                        <Alert className={styles.alert} type="error">
-                            <Heading2 className={styles.errorTitle}>{t("Error details")}:</Heading2>
-                            <Paragraph className={styles.errorMessage}>
-                                <strong>{error.name}:</strong> {error.message}
-                            </Paragraph>
-                        </Alert>
+          <Paragraph>{t("Wat kunt u doen?")}</Paragraph>
+
+          <OrderedList>
+            <OrderedListItem>{t("Vernieuw de pagina en probeer het opnieuw.")}</OrderedListItem>
+            <OrderedListItem>{t("Controleer uw internetverbinding.")}</OrderedListItem>
+            {!isHomePage && (
+              <OrderedListItem>
+                {t("Ga terug naar de")}{" "}
+                <Link
+                  href="/"
+                  onClick={(e: React.MouseEvent) => {
+                    e.preventDefault();
+                    navigate("/");
+                  }}
+                >
+                  {t("homepage")}
+                </Link>
+                .
+              </OrderedListItem>
+            )}
+            <OrderedListItem>{t("Als het probleem aanhoudt, neem dan contact op met de gemeente.")}</OrderedListItem>
+          </OrderedList>
+
+          {error && (
+            <Alert className={styles.error} icon={<FontAwesomeIcon icon={faWarning} />} type="error">
+              <strong>
+                {t("Fout")} {error.name}:
+              </strong>{" "}
+              {error.message}
+            </Alert>
+          )}
+
+          {!isHomePage && (
+            <div className={styles.homeButtonWrapper}>
+              <Button appearance="primary-action-button" onClick={() => navigate("/")}>
+                {t("Terug naar de homepage")}
+              </Button>
+            </div>
+          )}
+
+          {errorInfo && (
+            <>
+              <Separator />
+              <div className={styles.detailsSection}>
+                <div className={styles.toggleButtonWrapper}>
+                  <Button
+                    appearance="secondary-action-button"
+                    aria-expanded={showDetails}
+                    aria-controls="error-technical-details"
+                    onClick={() => setShowDetails(!showDetails)}
+                  >
+                    {showDetails ? t("Technische details verbergen") : t("Technische details tonen")}
+                  </Button>
+                </div>
+
+                {showDetails && (
+                  <div id="error-technical-details">
+                    {error?.stack && (
+                      <>
+                        <Heading2>{t("Stack trace")}:</Heading2>
+                        <HorizontalOverflowWrapper
+                          ariaLabels={{
+                            scrollLeftButton: t("Scroll naar links"),
+                            scrollRightButton: t("Scroll naar rechts"),
+                          }}
+                        >
+                          <CodeBlock className={styles.codeBlock}>{error.stack}</CodeBlock>
+                        </HorizontalOverflowWrapper>
+                      </>
                     )}
-
-                    {errorInfo && (
-                        <div className={styles.detailsSection}>
-                            <Button
-                                appearance="secondary-action-button"
-                                className={styles.toggleButton}
-                                onClick={() => setShowDetails(!showDetails)}
-                            >
-                                {showDetails ? t("Hide technical details") : t("Show technical details")}
-                            </Button>
-
-                            {showDetails && (
-                                <div className={styles.technicalDetails}>
-                                    <pre className={styles.stackTrace}>{errorInfo.componentStack}</pre>
-                                    {error?.stack && (
-                                        <>
-                                            <Heading2 className={styles.stackTitle}>Stack Trace:</Heading2>
-                                            <pre className={styles.stackTrace}>{error.stack}</pre>
-                                        </>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </PageContent>
-            </Page>
-        </div>
-    );
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </PageContent>
+      </Page>
+    </div>
+  );
 };
-
