@@ -11,7 +11,6 @@ import {
   CodeBlock,
   OrderedList,
   OrderedListItem,
-  Link,
   Separator,
 } from "@utrecht/component-library-react/dist/css-module";
 import { HorizontalOverflowWrapper } from "@conduction/components";
@@ -29,48 +28,27 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({ error, errorInfo }) =>
   const { t } = useTranslation();
   const [showDetails, setShowDetails] = React.useState(false);
 
-  const errorCode = error?.name && /^\d+$/.test(error.name) ? error.name : null;
   const isHomePage = typeof window !== "undefined" && window.location.pathname === "/";
 
   return (
     <div className={styles.wrapper}>
       <Page>
         <PageContent className={styles.container}>
-          <Heading1 className={styles.title}>{t("Deze pagina is tijdelijk niet beschikbaar")}</Heading1>
+          <Heading1 className={styles.title}>{t("This page is temporarily unavailable")}</Heading1>
 
-          <Paragraph>
-            {t(
-              "We konden de gevraagde overheidsinformatie niet weergeven. Dit is waarschijnlijk een tijdelijk probleem aan onze kant — niets dat u heeft gedaan.",
-            )}
-          </Paragraph>
-
-          <Paragraph>{t("Wat kunt u doen?")}</Paragraph>
+          <Paragraph>{t("The requested government information cannot currently be displayed.")}</Paragraph>
 
           <OrderedList>
-            <OrderedListItem>{t("Vernieuw de pagina en probeer het opnieuw.")}</OrderedListItem>
-            <OrderedListItem>{t("Controleer uw internetverbinding.")}</OrderedListItem>
-            {!isHomePage && (
-              <OrderedListItem>
-                {t("Ga terug naar de")}{" "}
-                <Link
-                  href="/"
-                  onClick={(e: React.MouseEvent) => {
-                    e.preventDefault();
-                    navigate("/");
-                  }}
-                >
-                  {t("homepage")}
-                </Link>
-                .
-              </OrderedListItem>
-            )}
-            <OrderedListItem>{t("Als het probleem aanhoudt, neem dan contact op met de gemeente.")}</OrderedListItem>
+            <OrderedListItem>{t("Refresh the page to try again.")}</OrderedListItem>
+            <OrderedListItem>{t("Check if you have an active internet connection.")}</OrderedListItem>
+
+            <OrderedListItem>{t("If the problem persists, please contact the municipality.")}</OrderedListItem>
           </OrderedList>
 
           {error && (
             <Alert className={styles.error} icon={<FontAwesomeIcon icon={faWarning} />} type="error">
               <strong>
-                {t("Fout")} {error.name}:
+                {t("Error")} {error.name}:
               </strong>{" "}
               {error.message}
             </Alert>
@@ -79,7 +57,7 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({ error, errorInfo }) =>
           {!isHomePage && (
             <div className={styles.homeButtonWrapper}>
               <Button appearance="primary-action-button" onClick={() => navigate("/")}>
-                {t("Terug naar de homepage")}
+                {t("Back to homepage")}
               </Button>
             </div>
           )}
@@ -95,7 +73,7 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({ error, errorInfo }) =>
                     aria-controls="error-technical-details"
                     onClick={() => setShowDetails(!showDetails)}
                   >
-                    {showDetails ? t("Technische details verbergen") : t("Technische details tonen")}
+                    {showDetails ? t("Hide technical details") : t("Show technical details")}
                   </Button>
                 </div>
 
@@ -106,8 +84,8 @@ export const ErrorScreen: React.FC<ErrorScreenProps> = ({ error, errorInfo }) =>
                         <Heading2>{t("Stack trace")}:</Heading2>
                         <HorizontalOverflowWrapper
                           ariaLabels={{
-                            scrollLeftButton: t("Scroll naar links"),
-                            scrollRightButton: t("Scroll naar rechts"),
+                            scrollLeftButton: t("Scroll left"),
+                            scrollRightButton: t("Scroll right"),
                           }}
                         >
                           <CodeBlock className={styles.codeBlock}>{error.stack}</CodeBlock>
