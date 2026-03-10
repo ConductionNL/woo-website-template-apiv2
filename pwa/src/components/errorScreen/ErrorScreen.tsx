@@ -27,9 +27,8 @@ interface ErrorScreenProps {
 
 export const ErrorScreen: React.FC<ErrorScreenProps> = ({ error, errorInfo }) => {
   const { t } = useTranslation();
-  const [showDetails, setShowDetails] = React.useState(true);
+  const [showDetails, setShowDetails] = React.useState(false);
 
-  const errorCode = error?.name && /^\d+$/.test(error.name) ? error.name : null;
   const isHomePage = typeof window !== "undefined" && window.location.pathname === "/";
 
   return (
