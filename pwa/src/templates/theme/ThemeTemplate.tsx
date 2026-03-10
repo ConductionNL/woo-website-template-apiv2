@@ -398,20 +398,20 @@ export const ThemeTemplate: React.FC = () => {
               </FormLabel>
             </FormField>
             <FormField type="checkbox">
-              <Checkbox checked id="checked" />
+              <Checkbox checked readOnly id="checked" />
               <FormLabel htmlFor="checked" type="checkbox">
                 Checked
               </FormLabel>
             </FormField>
             <FormField type="checkbox">
-              <Checkbox disabled id="disabled" />
-              <FormLabel htmlFor="disabled" type="checkbox">
+              <Checkbox disabled id="disabled-unchecked" />
+              <FormLabel htmlFor="disabled-unchecked" type="checkbox">
                 Disabled
               </FormLabel>
             </FormField>
             <FormField type="checkbox">
-              <Checkbox checked disabled id="disabled" />
-              <FormLabel htmlFor="disabled" type="checkbox">
+              <Checkbox checked readOnly disabled id="disabled-checked" />
+              <FormLabel htmlFor="disabled-checked" type="checkbox">
                 Checked Disabled
               </FormLabel>
             </FormField>
@@ -560,6 +560,7 @@ export const ThemeTemplate: React.FC = () => {
                 className={styles.radioButton}
                 value={radioButton.value}
                 checked={radioButtonChecked === radioButton.value}
+                onChange={() => setRadioButtonChecked(radioButton.value)}
               />
               <span className={styles.radioLabel} onClick={() => setRadioButtonChecked(radioButton.value)}>
                 {radioButton.label}
@@ -760,12 +761,12 @@ export const ThemeTemplate: React.FC = () => {
                 title: "Checked process step with multiple steps",
                 steps: [
                   {
-                    id: "dc18f54d-aadd-498f-b518-2fc74ce8e9b6",
+                    id: "dc18f54d-aadd-498f-b518-2fc74ce8e9b1",
                     status: "checked",
                     title: "checked process step 2-1",
                   },
                   {
-                    id: "dc18f54d-aadd-498f-b518-2fc74ce8e9b6",
+                    id: "dc18f54d-aadd-498f-b518-2fc74ce8e9b2",
                     status: "checked",
                     title: "checked process step 2-2",
                   },
@@ -778,17 +779,17 @@ export const ThemeTemplate: React.FC = () => {
                 title: "Current process step with steps",
                 steps: [
                   {
-                    id: "dc18f54d-aadd-498f-b518-2fc74ce8e9b6",
+                    id: "dc18f54d-aadd-498f-b518-2fc74ce8e9b3",
                     status: "current",
                     title: "current process step 3-1",
                   },
                   {
-                    id: "dc18f54d-aadd-498f-b518-2fc74ce8e9b6",
+                    id: "dc18f54d-aadd-498f-b518-2fc74ce8e9b4",
                     status: "warning",
                     title: "warning process step 3-2",
                   },
                   {
-                    id: "dc18f54d-aadd-498f-b518-2fc74ce8e9b6",
+                    id: "dc18f54d-aadd-498f-b518-2fc74ce8e9b5",
                     status: "error",
                     title: "error process step 3-3",
                   },
@@ -831,7 +832,7 @@ export const ThemeTemplate: React.FC = () => {
                 meta: <Paragraph>This process step has an error.</Paragraph>,
               },
               {
-                id: "1fc162c6-f1ab-4d1b-9007-d891cbd5614bfaefa",
+                id: "1fc162c6-f1ab-4d1b-9007-d891cbd5614bfaefb",
                 title: "disabled",
                 // @ts-ignore
                 status: "disabled",
@@ -944,7 +945,8 @@ export const ThemeTemplate: React.FC = () => {
             page={1}
             nextLabel=""
             previousLabel=""
-            onPageChange={(page) => console.log(page)}
+            linkTemplate={(page) => `#page-${page}`}
+            onChange={(page) => console.log(page)}
           />
         </div>
 

@@ -38,7 +38,7 @@ export const AcCard: React.FC<AcCardProps> = ({
   return (
     <div className={_CLASSES}>
       {image && <img src={image} alt="" />}
-      <div className={styles.acCardContent}>{children}</div>
+      <div className={styles.acCard}>{children}</div>
     </div>
   );
 };
