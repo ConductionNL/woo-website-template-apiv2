@@ -1,78 +1,104 @@
 import * as React from "react";
 import * as styles from "./ErrorScreen.module.css";
 import {
-    Page,
-    PageContent,
-    Heading1,
-    Heading2,
-    Paragraph,
-    Button,
-    Alert,
+  Page,
+  PageContent,
+  Heading1,
+  Heading2,
+  Paragraph,
+  Button,
+  Alert,
+  CodeBlock,
+  OrderedList,
+  OrderedListItem,
+  Separator,
 } from "@utrecht/component-library-react/dist/css-module";
+import { HorizontalOverflowWrapper } from "@conduction/components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationTriangle } from "@fortawesome/free-solid-svg-icons";
+import { faWarning } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
+import { navigate } from "gatsby";
 
 interface ErrorScreenProps {
-    error: Error | null;
-    errorInfo?: React.ErrorInfo | null;
+  error: Error | null;
+  errorInfo?: React.ErrorInfo | null;
 }
 
 export const ErrorScreen: React.FC<ErrorScreenProps> = ({ error, errorInfo }) => {
-    const { t } = useTranslation();
-    const [showDetails, setShowDetails] = React.useState(false);
+  const { t } = useTranslation();
+  const [showDetails, setShowDetails] = React.useState(false);
 
-    return (
-        <div className={styles.wrapper}>
-            <Page>
-                <PageContent className={styles.container}>
-                    <div className={styles.iconContainer}>
-                        <FontAwesomeIcon icon={faExclamationTriangle} className={styles.icon} />
-                    </div>
+  const isHomePage = typeof window !== "undefined" && window.location.pathname === "/";
 
-                    <Heading1 className={styles.title}>Oops, {t("something went wrong")}!</Heading1>
+  return (
+    <div className={styles.wrapper}>
+      <Page>
+        <PageContent className={styles.container}>
+          <Heading1 className={styles.title}>{t("This page is temporarily unavailable")}</Heading1>
 
-                    <Paragraph className={styles.description}>
-                        {t(
-                            "We encountered an error while loading the data from the municipality. This might be due to incorrect or incomplete data.",
-                        )}
-                    </Paragraph>
+          <Paragraph>{t("The requested government information cannot currently be displayed.")}</Paragraph>
 
-                    {error && (
-                        <Alert className={styles.alert} type="error">
-                            <Heading2 className={styles.errorTitle}>{t("Error details")}:</Heading2>
-                            <Paragraph className={styles.errorMessage}>
-                                <strong>{error.name}:</strong> {error.message}
-                            </Paragraph>
-                        </Alert>
+          <OrderedList>
+            <OrderedListItem>{t("Refresh the page to try again.")}</OrderedListItem>
+            <OrderedListItem>{t("Check if you have an active internet connection.")}</OrderedListItem>
+
+            <OrderedListItem>{t("If the problem persists, please contact the municipality.")}</OrderedListItem>
+          </OrderedList>
+
+          {error && (
+            <Alert className={styles.error} icon={<FontAwesomeIcon icon={faWarning} />} type="error">
+              <strong>
+                {t("Error")} {error.name}:
+              </strong>{" "}
+              {error.message}
+            </Alert>
+          )}
+
+          {!isHomePage && (
+            <div className={styles.homeButtonWrapper}>
+              <Button appearance="primary-action-button" onClick={() => navigate("/")}>
+                {t("Back to homepage")}
+              </Button>
+            </div>
+          )}
+
+          {errorInfo && (
+            <>
+              <Separator />
+              <div className={styles.detailsSection}>
+                <div className={styles.toggleButtonWrapper}>
+                  <Button
+                    appearance="secondary-action-button"
+                    aria-expanded={showDetails}
+                    aria-controls="error-technical-details"
+                    onClick={() => setShowDetails(!showDetails)}
+                  >
+                    {showDetails ? t("Hide technical details") : t("Show technical details")}
+                  </Button>
+                </div>
+
+                {showDetails && (
+                  <div id="error-technical-details">
+                    {error?.stack && (
+                      <>
+                        <Heading2>{t("Stack trace")}:</Heading2>
+                        <HorizontalOverflowWrapper
+                          ariaLabels={{
+                            scrollLeftButton: t("Scroll left"),
+                            scrollRightButton: t("Scroll right"),
+                          }}
+                        >
+                          <CodeBlock className={styles.codeBlock}>{error.stack}</CodeBlock>
+                        </HorizontalOverflowWrapper>
+                      </>
                     )}
-
-                    {errorInfo && (
-                        <div className={styles.detailsSection}>
-                            <Button
-                                appearance="secondary-action-button"
-                                className={styles.toggleButton}
-                                onClick={() => setShowDetails(!showDetails)}
-                            >
-                                {showDetails ? t("Hide technical details") : t("Show technical details")}
-                            </Button>
-
-                            {showDetails && (
-                                <div className={styles.technicalDetails}>
-                                    <pre className={styles.stackTrace}>{errorInfo.componentStack}</pre>
-                                    {error?.stack && (
-                                        <>
-                                            <Heading2 className={styles.stackTitle}>Stack Trace:</Heading2>
-                                            <pre className={styles.stackTrace}>{error.stack}</pre>
-                                        </>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                    )}
-                </PageContent>
-            </Page>
-        </div>
-    );
+                  </div>
+                )}
+              </div>
+            </>
+          )}
+        </PageContent>
+      </Page>
+    </div>
+  );
 };
-
