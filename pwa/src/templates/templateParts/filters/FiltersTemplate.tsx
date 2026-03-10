@@ -24,9 +24,6 @@ interface FiltersTemplateProps {
 }
 
 export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) => {
-  //  Uncomment to show errorScreen
-  // void (undefined as any).filters;
-
   const { t } = useTranslation();
   const { setPagination } = usePaginationContext();
   const { gatsbyContext } = useGatsbyContext();
