@@ -68,6 +68,9 @@
 /* Global internal styling */
 @import "./global.css";
 
+/* Mobile overrides styling */
+@import "./mobile-overrides.css";
+
 /* Theme overrides styling */
 @import "./theme-overrides.css";
 
