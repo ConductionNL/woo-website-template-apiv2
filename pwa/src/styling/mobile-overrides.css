@@ -1,0 +1,89 @@
+@media only screen and (max-width: 992px) {
+  .utrecht-heading-1 {
+    font-size: var(
+      --utrecht-heading-1-tablet-font-size,
+      var(--utrecht-heading-1-font-size)
+    ) !important;
+  }
+  .utrecht-heading-2 {
+    font-size: var(
+      --utrecht-heading-2-tablet-font-size,
+      var(--utrecht-heading-2-font-size)
+    ) !important;
+  }
+  .utrecht-heading-3 {
+    font-size: var(
+      --utrecht-heading-3-tablet-font-size,
+      var(--utrecht-heading-3-font-size)
+    ) !important;
+  }
+  .utrecht-heading-4 {
+    font-size: var(
+      --utrecht-heading-4-tablet-font-size,
+      var(--utrecht-heading-4-font-size)
+    ) !important;
+  }
+  .utrecht-heading-5 {
+    font-size: var(
+      --utrecht-heading-5-tablet-font-size,
+      var(--utrecht-heading-5-font-size)
+    ) !important;
+  }
+  .utrecht-heading-6 {
+    font-size: var(
+      --utrecht-heading-6-tablet-font-size,
+      var(--utrecht-heading-6-font-size)
+    ) !important;
+  }
+  .utrecht-page-footer {
+    background-image: var(
+      --utrecht-page-footer-mobile-background-image,
+      var(--utrecht-page-footer-background-image)
+    ) !important;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .utrecht-heading-1 {
+    font-size: var(
+      --utrecht-heading-1-mobile-font-size,
+      var(--utrecht-heading-1-font-size)
+    ) !important;
+  }
+  .utrecht-heading-2 {
+    font-size: var(
+      --utrecht-heading-2-mobile-font-size,
+      var(--utrecht-heading-2-font-size)
+    ) !important;
+  }
+  .utrecht-heading-3 {
+    font-size: var(
+      --utrecht-heading-3-mobile-font-size,
+      var(--utrecht-heading-3-font-size)
+    ) !important;
+  }
+  .utrecht-heading-4 {
+    font-size: var(
+      --utrecht-heading-4-mobile-font-size,
+      var(--utrecht-heading-4-font-size)
+    ) !important;
+  }
+  .utrecht-heading-5 {
+    font-size: var(
+      --utrecht-heading-5-mobile-font-size,
+      var(--utrecht-heading-5-font-size)
+    ) !important;
+  }
+  .utrecht-heading-6 {
+    font-size: var(
+      --utrecht-heading-6-mobile-font-size,
+      var(--utrecht-heading-6-font-size)
+    ) !important;
+  }
+  .utrecht-page-footer {
+    background-image: var(
+      --utrecht-page-footer-mobile-background-image,
+      var(--utrecht-page-footer-background-image)
+    ) !important;
+  }
+}
