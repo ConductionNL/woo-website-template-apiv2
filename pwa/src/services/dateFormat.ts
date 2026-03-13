@@ -8,7 +8,7 @@ import { en as enD, nl as nlD } from "../translations/days";
 //
 // Supported input formats and how each is handled:
 //
-//   1. dd-mm-yyyy  e.g. "17-02-2026"  (Dutch format — what we primarily send)
+//   1. dd-mm-yyyy  e.g. "17-02-2026"  (European format — what we primarily send)
 //      Safari returns Invalid Date for this. We parse the parts manually and construct
 //      the Date in local time via new Date(year, month - 1, day).
 //
@@ -17,9 +17,9 @@ import { en as enD, nl as nlD } from "../translations/days";
 //        - If the first part is > 12 it must be a day  → treat as dd-mm-yyyy  e.g. "17-06-2026" → June 17th  ✓
 //        - If the second part is > 12 it must be a day → treat as mm-dd-yyyy  e.g. "06-17-2026" → June 17th  ✓
 //        - If both ≤ 12 (ambiguous, e.g. "01-06-2026") → we CANNOT tell if this is Jan 6th or June 1st.
-//          We default to dd-mm-yyyy (June 1st) because this is a Dutch application.
+//          We default to dd-mm-yyyy (June 1st) because this is a European application.
 //          If you send mm-dd-yyyy with both parts ≤ 12, the date will be parsed incorrectly.
-//          Solution: don't send American date formats to a Dutch application.
+//          Solution: don't send American date formats to a European application.
 //
 //   3. yyyy-mm-dd  e.g. "2026-02-17"  (ISO date-only — no time component)
 //      Safari technically parses this, but treats it as UTC midnight. In non-UTC timezones
