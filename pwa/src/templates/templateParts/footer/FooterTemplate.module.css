@@ -63,6 +63,10 @@
     --utrecht-page-footer-link-hover-text-decoration-color,
     inherit
   ) !important;
+  text-decoration-skip-ink: var(
+    --utrecht-page-footer-link-hover-text-decoration-skip-ink,
+    inherit
+  ) !important;
 }
 
 .link {
