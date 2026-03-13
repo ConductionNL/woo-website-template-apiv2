@@ -2,15 +2,36 @@ import dateFormat, { i18n } from "dateformat";
 import { en as enM, nl as nlM } from "../translations/months";
 import { en as enD, nl as nlD } from "../translations/days";
 
-// Safari is a delightful browser that, unlike every other modern browser, chokes on date
-// strings that every other browser handles fine. This function exists solely to work around
-// Safari-specific date parsing failures — other browsers do not need this.
+// Why this function exists — two separate root causes:
+//
+// ROOT CAUSE 1 — WebKit's strict ECMAScript compliance (affects formats 1 & 2):
+//   WebKit (Apple's browser engine) follows the ECMAScript spec strictly: only ISO 8601
+//   format (yyyy-mm-dd) is a valid date string. Non-standard formats like dd-mm-yyyy return
+//   Invalid Date. Chrome uses its own Blink engine, which is more lenient and parses these
+//   anyway — but that leniency is technically non-spec-compliant.
+//
+//   Who is affected by this:
+//   - Safari on macOS, iOS, iPadOS (always uses WebKit)
+//   - Chrome, Firefox, Edge on iOS and iPadOS — Apple's App Store rules require ALL browsers
+//     on iOS/iPadOS to use WebKit as their JavaScript engine. Chrome on iOS is essentially a
+//     UI wrapper around WebKit, not Google's own Blink engine. So it behaves identically to
+//     Safari for date parsing purposes.
+//   - Chrome on macOS uses Blink, not WebKit, and does NOT have this issue.
+//   Note: since iOS/iPadOS 17.4 the EU Digital Markets Act allows non-WebKit browsers in the
+//   EU, but alternative engines are not yet widely deployed.
+//
+// ROOT CAUSE 2 — ECMAScript spec for date-only strings (affects format 3):
+//   The ECMAScript specification explicitly states that date-only ISO strings (yyyy-mm-dd)
+//   without a timezone must be interpreted as UTC midnight. This is intentional and affects
+//   ALL spec-compliant browsers, not just WebKit. In Amsterdam (UTC+1) or London (UTC+1 BST),
+//   "2026-02-17" parsed as UTC midnight becomes Feb 16 at 23:00 local time — the wrong day.
+//   We parse it manually to force local midnight instead.
 //
 // Supported input formats and how each is handled:
 //
 //   1. dd-mm-yyyy  e.g. "17-02-2026"  (European format — what we primarily send)
-//      Safari returns Invalid Date for this. We parse the parts manually and construct
-//      the Date in local time via new Date(year, month - 1, day).
+//      WebKit returns Invalid Date for this (non-ISO format, see Root Cause 1 above).
+//      We parse the parts manually and construct the Date in local time via new Date(year, month - 1, day).
 //
 //   2. mm-dd-yyyy  e.g. "02-17-2026"  (American format — please don't)
 //      Same regex pattern as dd-mm-yyyy, so we disambiguate by value where possible:
@@ -22,11 +43,12 @@ import { en as enD, nl as nlD } from "../translations/days";
 //          Solution: don't send American date formats to a European application.
 //
 //   3. yyyy-mm-dd  e.g. "2026-02-17"  (ISO date-only — no time component)
-//      Safari technically parses this, but treats it as UTC midnight. In non-UTC timezones
-//      that shifts the visible date by one day. We parse manually to get local midnight.
+//      All spec-compliant browsers parse this as UTC midnight (see Root Cause 2 above).
+//      In non-UTC timezones that shifts the visible date by one day. We parse manually
+//      to get local midnight instead.
 //
 //   4. yyyy-mm-ddTHH:mm:ss+HH:mm  e.g. "2026-02-17T12:18:39+00:00"  (full ISO datetime)
-//      Safari handles full ISO 8601 datetime strings correctly, including timezone offsets.
+//      All browsers handle full ISO 8601 datetime strings with a timezone offset correctly.
 //      We pass these directly to new Date() and let the browser do the work.
 //
 // Output: a JavaScript Date object representing the correct date in the user's local timezone.
