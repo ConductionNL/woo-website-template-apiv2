@@ -84,6 +84,13 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL", process.env.GATSBY_CSP_CONNECT_SRC_FULL ?? "");
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", process.env.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");
 
+    // Apply theme class immediately to prevent flash
+    const themeClass = process.env.GATSBY_NL_DESIGN_THEME_CLASSNAME ?? "conduction-theme";
+    if (typeof document !== "undefined") {
+      document.documentElement.className = themeClass;
+      document.body.className = themeClass;
+    }
+
     updateSessionStorage();
     await overlayFromRuntimeJson();
   };

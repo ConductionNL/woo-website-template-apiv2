@@ -10,13 +10,13 @@ body {
   margin: 0;
 }
 
-/* Prevent flash of unstyled content (FOUC) by hiding body until theme class is applied */
-body:not([class]) {
-  opacity: 0;
-  visibility: hidden;
+/* Hide body until ANY theme class (ending with "-theme") is applied */
+body:not([class*="-theme"]) {
+  opacity: 0 !important;
+  visibility: hidden !important;
 }
 
-body[class] {
+body[class*="-theme"] {
   opacity: 1;
   visibility: visible;
 }
