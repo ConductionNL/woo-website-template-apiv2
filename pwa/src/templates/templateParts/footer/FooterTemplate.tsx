@@ -175,7 +175,7 @@ export const FooterTemplate: React.FC = () => {
             />
           )}
 
-          <WithLoveByConduction />
+          {window.sessionStorage.getItem("FOOTER_HIDE_LOVE") !== "true" && <WithLoveByConduction />}
         </div>
       </div>
     </PageFooter>

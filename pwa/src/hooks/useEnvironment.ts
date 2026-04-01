@@ -44,6 +44,7 @@ export const useEnvironment = () => {
       set("FOOTER_LOGO_HREF", "GATSBY_FOOTER_LOGO_HREF");
       set("FOOTER_CONTENT", "GATSBY_FOOTER_CONTENT");
       set("FOOTER_CONTENT_HEADER", "GATSBY_FOOTER_CONTENT_HEADER");
+      set("FOOTER_HIDE_LOVE", "GATSBY_FOOTER_HIDE_LOVE");
       set("OIDN_NUMBER", "GATSBY_OIDN_NUMBER");
       set("SHOW_CATEGORY", "GATSBY_SHOW_CATEGORY");
       set("SHOW_ORGANIZATION", "GATSBY_SHOW_ORGANIZATION");
@@ -75,6 +76,7 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("FOOTER_LOGO_HREF", process.env.GATSBY_FOOTER_LOGO_HREF ?? "");
     window.sessionStorage.setItem("FOOTER_CONTENT", process.env.GATSBY_FOOTER_CONTENT ?? "");
     window.sessionStorage.setItem("FOOTER_CONTENT_HEADER", process.env.GATSBY_FOOTER_CONTENT_HEADER ?? "");
+    window.sessionStorage.setItem("FOOTER_HIDE_LOVE", process.env.GATSBY_FOOTER_HIDE_LOVE ?? "");
     window.sessionStorage.setItem("OIDN_NUMBER", process.env.GATSBY_OIDN_NUMBER ?? "");
     window.sessionStorage.setItem("SHOW_CATEGORY", process.env.GATSBY_SHOW_CATEGORY ?? "");
     window.sessionStorage.setItem("SHOW_ORGANIZATION", process.env.GATSBY_SHOW_ORGANIZATION ?? "");
@@ -115,6 +117,7 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("FOOTER_LOGO_HREF", config.GATSBY_FOOTER_LOGO_HREF ?? "");
     window.sessionStorage.setItem("FOOTER_CONTENT", config.GATSBY_FOOTER_CONTENT ?? "");
     window.sessionStorage.setItem("FOOTER_CONTENT_HEADER", config.GATSBY_FOOTER_CONTENT_HEADER ?? "");
+    window.sessionStorage.setItem("FOOTER_HIDE_LOVE", config.GATSBY_FOOTER_HIDE_LOVE ?? "");
     window.sessionStorage.setItem("OIDN_NUMBER", config.GATSBY_OIDN_NUMBER ?? "");
     window.sessionStorage.setItem("SHOW_CATEGORY", config.GATSBY_SHOW_CATEGORY ?? "");
     window.sessionStorage.setItem("SHOW_ORGANIZATION", config.GATSBY_SHOW_ORGANIZATION ?? "");
