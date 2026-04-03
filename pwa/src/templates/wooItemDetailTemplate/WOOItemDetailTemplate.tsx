@@ -347,6 +347,17 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         }
                       })}
 
+                    {attachmentsWithLabelsQuery.isLoading && (
+                      <TableRow className={styles.tableRow}>
+                        <TableCell>
+                          <Skeleton width={150} />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton count={3} />
+                        </TableCell>
+                      </TableRow>
+                    )}
+
                     {attachmentsWithLabelsQuery.isSuccess &&
                       groupedAttachmentsWithLabels.length > 0 &&
                       groupedAttachmentsWithLabels.map((sortedAttachments: any, idx: number) => (
@@ -394,6 +405,17 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         </TableRow>
                       ))}
 
+                    {attachmentsNoLabelsQuery.isLoading && (
+                      <TableRow className={styles.tableRow}>
+                        <TableCell>
+                          <Skeleton width={100} />
+                        </TableCell>
+                        <TableCell>
+                          <Skeleton count={5} />
+                        </TableCell>
+                      </TableRow>
+                    )}
+
                     {attachmentsNoLabelsQuery.isSuccess && unsortedAttachments.length > 0 && (
                       <TableRow
                         className={styles.tableRow}
@@ -403,18 +425,22 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
                         <TableCell>
                           <div id="attachmentsData">
-                            {unsortedAttachments.map(
-                              (bijlage: any, idx: number) =>
-                                bijlage.title && (
-                                  <div key={idx}>
-                                    <Link
-                                      href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
-                                      target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
-                                    >
-                                      {bijlage.title}
-                                    </Link>
-                                  </div>
-                                ),
+                            {attachmentsNoLabelsQuery.isFetching ? (
+                              <Skeleton count={5} />
+                            ) : (
+                              unsortedAttachments.map(
+                                (bijlage: any, idx: number) =>
+                                  bijlage.title && (
+                                    <div key={idx}>
+                                      <Link
+                                        href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
+                                        target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
+                                      >
+                                        {bijlage.title}
+                                      </Link>
+                                    </div>
+                                  ),
+                              )
                             )}
                           </div>
                           <div role="region" aria-label={t("Pagination")} className={styles.pagination}>
