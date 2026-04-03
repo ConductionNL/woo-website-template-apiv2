@@ -164,16 +164,19 @@ export const FooterTemplate: React.FC = () => {
           )}
         </div>
         <div className={styles.logoAndConduction}>
-          {window.sessionStorage.getItem("FOOTER_LOGO_URL") !== "false" && (
-            <Logo
-              variant="footer"
-              onClick={() =>
-                window.sessionStorage.getItem("FOOTER_LOGO_HREF")
-                  ? open(window.sessionStorage.getItem("FOOTER_LOGO_HREF") ?? "")
-                  : navigate("/")
-              }
-            />
-          )}
+          {/* GATSBY_FOOTER_HIDE_LOGO: set to "true" to hide the footer logo */}
+          {window.sessionStorage.getItem("FOOTER_HIDE_LOGO") !== "true" &&
+            /* @deprecated: setting GATSBY_FOOTER_LOGO_URL to "false" to hide the logo is deprecated, use GATSBY_FOOTER_HIDE_LOGO="true" instead */
+            window.sessionStorage.getItem("FOOTER_LOGO_URL") !== "false" && (
+              <Logo
+                variant="footer"
+                onClick={() =>
+                  window.sessionStorage.getItem("FOOTER_LOGO_HREF")
+                    ? open(window.sessionStorage.getItem("FOOTER_LOGO_HREF") ?? "")
+                    : navigate("/")
+                }
+              />
+            )}
 
           {window.sessionStorage.getItem("FOOTER_HIDE_LOVE") !== "true" && <WithLoveByConduction />}
         </div>
