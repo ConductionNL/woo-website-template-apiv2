@@ -73,6 +73,8 @@ export const nl = {
   "No results found": "Geen resultaten gevonden",
   "Loading results": "Resultaten laden",
   "Attachments are being loaded": "Bijlagen worden geladen",
+  "Attachments with label": "Bijlagen met label",
+  "Attachments with label are being loaded": "Bijlagen met label worden geladen",
   "result found": "resultaat gevonden",
   "results found": "resultaten gevonden",
   "Showing multiple": "Resultaten",

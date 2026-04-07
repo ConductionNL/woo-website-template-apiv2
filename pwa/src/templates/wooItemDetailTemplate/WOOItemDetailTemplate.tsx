@@ -349,11 +349,11 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
 
                     {attachmentsWithLabelsQuery.isLoading && (
                       <TableRow className={styles.tableRow}>
-                        <TableCell>{t("Attachments")}</TableCell>
+                        <TableCell>{t("Attachments with label")}</TableCell>
                         <TableCell>
                           <div className={styles.loadingCell} aria-live="polite" aria-busy="true">
                             <FontAwesomeIcon icon={faSpinner} spin />
-                            <span>{t("Attachments are being loaded")}</span>
+                            <span>{t("Attachments with label are being loaded")}</span>
                           </div>
                         </TableCell>
                       </TableRow>

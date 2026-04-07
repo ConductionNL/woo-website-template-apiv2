@@ -73,6 +73,8 @@ export const en = {
   "No results found": "No results found",
   "Loading results": "Loading results",
   "Attachments are being loaded": "Attachments are being loaded",
+  "Attachments with label": "Attachments with label",
+  "Attachments with label are being loaded": "Attachments with label are being loaded",
   "result found": "result found",
   "results found": "results found",
   "Showing multiple": "Results",
