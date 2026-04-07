@@ -16,7 +16,7 @@ import { translateDate } from "../../services/dateFormat";
 import { useTranslation } from "react-i18next";
 import { navigate } from "gatsby";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { QueryClient } from "react-query";
 import { useOpenWoo } from "../../hooks/openWoo";
 import { getPDFName } from "../../services/getPDFName";
@@ -349,11 +349,12 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
 
                     {attachmentsWithLabelsQuery.isLoading && (
                       <TableRow className={styles.tableRow}>
+                        <TableCell>{t("Attachments with label")}</TableCell>
                         <TableCell>
-                          <Skeleton width={150} />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton count={3} />
+                          <div className={styles.loadingCell} aria-live="polite" aria-busy="true">
+                            <FontAwesomeIcon icon={faSpinner} spin />
+                            <span>{t("Attachments with label are being loaded")}</span>
+                          </div>
                         </TableCell>
                       </TableRow>
                     )}
@@ -407,11 +408,12 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
 
                     {attachmentsNoLabelsQuery.isLoading && (
                       <TableRow className={styles.tableRow}>
+                        <TableCell>{t("Attachments")}</TableCell>
                         <TableCell>
-                          <Skeleton width={100} />
-                        </TableCell>
-                        <TableCell>
-                          <Skeleton count={5} />
+                          <div className={styles.loadingCell} aria-live="polite" aria-busy="true">
+                            <FontAwesomeIcon icon={faSpinner} spin />
+                            <span>{t("Attachments are being loaded")}</span>
+                          </div>
                         </TableCell>
                       </TableRow>
                     )}
