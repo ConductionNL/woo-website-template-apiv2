@@ -147,8 +147,8 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
       console.warn("No facets in response");
     }
 
-    if (facets["@self"]?.schema?.buckets) {
-      facets = { categorie: facets["@self"].schema.buckets };
+    if (facets?._schema?.data?.buckets) {
+      facets = { categorie: facets._schema.data?.buckets };
     }
 
     const categoriesWithData = Object.values(facets as Record<string, any>)
@@ -176,8 +176,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
     setCategoryOptions({ options: uniqueOptions });
 
-    const yearBuckets: any[] =
-      response?.facets?.facets?.["@self"]?.published?.buckets ?? response?.facets?.["@self"]?.published?.buckets;
+    const yearBuckets: any[] = response?.facets?.facets?.published?.buckets ?? response?.facets?.published?.buckets;
 
     if (yearBuckets) {
       const availableYears: number[] = (yearBuckets as any[]).map((b: any) => Number(b.key)).filter(Boolean);
