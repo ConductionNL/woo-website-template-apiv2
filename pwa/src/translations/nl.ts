@@ -72,6 +72,7 @@ export const nl = {
   "Can open a new window": "Kan een nieuw venster openen",
   "No results found": "Geen resultaten gevonden",
   "Loading results": "Resultaten laden",
+  "Attachments are being loaded": "Bijlagen worden geladen",
   "result found": "resultaat gevonden",
   "results found": "resultaten gevonden",
   "Showing multiple": "Resultaten",

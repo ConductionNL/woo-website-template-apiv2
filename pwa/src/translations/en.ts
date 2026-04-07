@@ -72,6 +72,7 @@ export const en = {
   "Can open a new window": "Can open a new window",
   "No results found": "No results found",
   "Loading results": "Loading results",
+  "Attachments are being loaded": "Attachments are being loaded",
   "result found": "result found",
   "results found": "results found",
   "Showing multiple": "Results",
