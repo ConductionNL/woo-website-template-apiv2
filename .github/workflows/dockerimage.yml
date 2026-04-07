@@ -30,10 +30,10 @@ jobs:
           echo "APP_NAME=$NAME" >> $GITHUB_ENV
       - name: Print app name
         run: echo "APP_NAME = $APP_NAME"
-      - name: Setting APP_ENV to dev
+      - name: Setting APP_ENV to development
         run: |
-          echo "APP_ENV=dev">> $GITHUB_ENV
-          echo "APP_BUILD=dev">> $GITHUB_ENV
+          echo "APP_ENV=development">> $GITHUB_ENV
+          echo "APP_BUILD=development">> $GITHUB_ENV
           echo "set APP_ENV to $APP_ENV"
       - name: Setting APP_ENV to prod
         if: contains( github.ref, 'main' ) || contains( github.base_ref, 'main' )
@@ -75,7 +75,16 @@ jobs:
           images=$(docker compose images -q | xargs docker inspect --format='{{ index .RepoTags 0}}' | cut -d':' -f1 | grep $APP_NAME)
           for image in $images
           do
-            docker push "${image}":"${APP_BUILD}"
+            docker push "${image}":"${RELEASE}"
+          done
+      - if: steps.containerregistry-login.outputs.success == 'true' && github.ref == 'refs/heads/development'
+        name: Push versioned containers to Container Registry (development)
+        id: version-push-dev
+        run: |
+          images=$(docker compose images -q | xargs docker inspect --format='{{ index .RepoTags 0}}' | cut -d':' -f1 | grep $APP_NAME)
+          for image in $images
+          do
+            docker push "${image}":"${RELEASE}-development"
           done
       - name: Print release name
         if: (success() || failure())
@@ -83,17 +92,29 @@ jobs:
         env:
           RELEASENAME: ${{ steps.releasecode.outputs.releasename }}
       - name: Create Release
-        if: contains( github.ref, 'main' ) && steps.version-push.outputs.success == 'true' && ( success() || failure() )
+        if: github.ref == 'refs/heads/main' && ( success() || failure() )
         id: create_release
         uses: actions/create-release@v1
         continue-on-error: true
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.releasecode.outputs.releasename }}
           release_name: ${{ steps.releasecode.outputs.releasename }}
           draft: false
           prerelease: false
+      - name: Create Pre-Release (development)
+        if: github.ref == 'refs/heads/development' && ( success() || failure() )
+        id: create_prerelease
+        uses: actions/create-release@v1
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.releasecode.outputs.releasename }}-development
+          release_name: ${{ steps.releasecode.outputs.releasename }}-development
+          draft: false
+          prerelease: true
       - name: Chores
         if: (success() || failure())
         run: docker compose down
