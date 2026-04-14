@@ -81,6 +81,16 @@
     var(--utrecht-focus-outline-color, revert)
   ) !important;
 
+  outline-offset: var(
+    --utrecht-skip-link-outline-offset,
+    var(--utrecht-focus-outline-offset, revert)
+  ) !important;
+
+  outline-width: var(
+    --utrecht-skip-link-outline-width,
+    var(--utrecht-focus-outline-width, revert)
+  ) !important;
+
   inset-block-start: var(
     --utrecht-skip-link-inset-block-start,
     var(--_utrecht-skip-link-inset, 0)
@@ -90,4 +100,6 @@
     --utrecht-skip-link-inset-inline-start,
     var(--_utrecht-skip-link-inset, 0)
   ) !important;
+
+  justify-content: var(--utrecht-skip-link-justify-content, center) !important;
 }
