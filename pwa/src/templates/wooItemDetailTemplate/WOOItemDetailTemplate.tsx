@@ -247,7 +247,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
               <Heading1
                 className={styles.hyphenated}
                 id="mainContent"
-                tabIndex={0}
                 aria-label={`${t("Title of woo request")}, ${getItems.data.title ?? getItems.data.titel ?? getItems.data.name ?? getItems.data.naam ?? getItems.data.id}`}
               >
                 {removeHTMLFromString(removeHTMLFromString(getItems.data.titel ?? getItems.data.title))}
@@ -284,7 +283,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                   <TableRow
                                     key={key}
                                     className={styles.tableRow}
-                                    tabIndex={0}
                                     aria-label={`${getName(key)}, ${value}`}
                                   >
                                     <TableCell>{getName(key)}</TableCell>
@@ -310,7 +308,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                   <TableRow
                                     key={key}
                                     className={styles.tableRow}
-                                    tabIndex={0}
                                     aria-labelledby={"themesName themesData"}
                                   >
                                     <TableCell id="themesName">{t("Themes")}</TableCell>
@@ -337,7 +334,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                             <TableRow
                               key={key}
                               className={styles.tableRow}
-                              tabIndex={0}
                               aria-label={`${getName(key)}, ${formattedValue}`}
                             >
                               <TableCell>{getName(key)}</TableCell>
@@ -365,7 +361,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         <TableRow
                           className={styles.tableRow}
                           key={idx}
-                          tabIndex={0}
                           aria-label={
                             sortedAttachments.attachments.length === 1
                               ? `${getLabel(sortedAttachments.label)}, ${
@@ -421,7 +416,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                     {attachmentsNoLabelsQuery.isSuccess && unsortedAttachments.length > 0 && (
                       <TableRow
                         className={styles.tableRow}
-                        tabIndex={0}
                         aria-labelledby="attachmentsName attachmentsData"
                       >
                         <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
