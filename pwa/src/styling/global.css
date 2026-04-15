@@ -138,3 +138,12 @@ body[class*="-theme"] {
   font-size: var(--utrecht-accordion-button-font-size);
   font-weight: var(--utrecht-accordion-button-font-weight);
 }
+
+#filters [class*="indicatorContainer"] svg {
+  color: hsl(0, 0%, 46%);
+}
+
+body[class*="-theme"] {
+  --conduction-input-select-list-option-focus-background-color: #4D94FF;
+  --conduction-input-select-list-option-hover-background-color: #4D94FF;
+}
