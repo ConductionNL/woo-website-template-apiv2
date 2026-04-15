@@ -225,6 +225,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
           })}
           {...{ register, errors, control }}
           ariaLabel={t("Select year")}
+          clearIndicatorAttributes={{
+            "aria-label": t("Clear selection")
+          }}
         />
 
         {getCategories.isLoading && <Skeleton height="50px" />}
@@ -241,6 +244,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
             disabled={getCategories.isLoading}
             {...{ register, errors, control }}
             ariaLabel={t("Select category")}
+            clearIndicatorAttributes={{
+              "aria-label": t("Clear selection")
+            }}
           />
         )}
 
