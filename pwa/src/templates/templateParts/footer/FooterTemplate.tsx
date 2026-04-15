@@ -53,6 +53,7 @@ type TDynamicContentItem = {
 };
 
 export const FooterTemplate: React.FC = () => {
+  const { t } = useTranslation();
   const menusQuery = useMenus().getAll();
   const footerContentQuery = useFooterContent().getContent();
   const footerSections: TDynamicContentItem[] | undefined = React.useMemo(() => {
@@ -158,6 +159,7 @@ export const FooterTemplate: React.FC = () => {
   return (
     <PageFooter className={styles.footer}>
       <div className={styles.container}>
+        <Heading2 className={styles.visuallyHidden}>{t("Footer")}</Heading2>
         <div className={styles.contentGrid}>
           {orderedSections.map((content: TDynamicContentItem | null, idx: number) =>
             content ? <DynamicSection key={idx} {...{ content }} /> : <div key={`empty-${idx}`} />,
