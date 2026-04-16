@@ -158,7 +158,7 @@ export const FooterTemplate: React.FC = () => {
   return (
     <PageFooter className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.contentGrid}>
+        <div className={styles.contentGrid} lang="nl">
           {orderedSections.map((content: TDynamicContentItem | null, idx: number) =>
             content ? <DynamicSection key={idx} {...{ content }} /> : <div key={`empty-${idx}`} />,
           )}
@@ -186,8 +186,6 @@ export const FooterTemplate: React.FC = () => {
 };
 
 const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content }) => {
-  const { t } = useTranslation();
-
   return (
     <section>
       <DynamicSectionHeading heading={window.sessionStorage.getItem("FOOTER_CONTENT_HEADER") ?? ""} {...{ content }} />
@@ -200,7 +198,7 @@ const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content })
               title={item.value ?? item.name}
             />
           )}
-          {item.label && <strong>{t(item.label)}</strong>}
+          {item.label && <strong>{item.label}</strong>}
 
           {/* External Link */}
           {(item.linkMode === "link" || (!item.linkMode && item.link )) &&
@@ -228,40 +226,36 @@ const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content })
 };
 
 const DynamicSectionHeading: React.FC<{ content: TDynamicContentItem; heading?: string }> = ({ content, heading }) => {
-  const { t } = useTranslation();
-
   switch (heading) {
     case "heading-1":
-      return <Heading1 className={styles.dynamicSectionTitle}>{t(content.title)}</Heading1>;
+      return <Heading1 className={styles.dynamicSectionTitle}>{content.title}</Heading1>;
     case "heading-2":
-      return <Heading2 className={styles.dynamicSectionTitle}>{t(content.title)}</Heading2>;
+      return <Heading2 className={styles.dynamicSectionTitle}>{content.title}</Heading2>;
     case "heading-3":
-      return <Heading3 className={styles.dynamicSectionTitle}>{t(content.title)}</Heading3>;
+      return <Heading3 className={styles.dynamicSectionTitle}>{content.title}</Heading3>;
     case "heading-4":
-      return <Heading4 className={styles.dynamicSectionTitle}>{t(content.title)}</Heading4>;
+      return <Heading4 className={styles.dynamicSectionTitle}>{content.title}</Heading4>;
     case "heading-5":
-      return <Heading5 className={styles.dynamicSectionTitle}>{t(content.title)}</Heading5>;
+      return <Heading5 className={styles.dynamicSectionTitle}>{content.title}</Heading5>;
     default:
-      return <Heading3 className={styles.dynamicSectionTitle}>{t(content.title)}</Heading3>;
+      return <Heading3 className={styles.dynamicSectionTitle}>{content.title}</Heading3>;
   }
 };
 
 const DynamicItemHeading: React.FC<{ title: string; heading?: string }> = ({ title, heading }) => {
-  const { t } = useTranslation();
-
   switch (heading) {
     case "heading-1":
-      return <Heading1 className={styles.dynamicItemHeading}>{t(title)}</Heading1>;
+      return <Heading1 className={styles.dynamicItemHeading}>{title}</Heading1>;
     case "heading-2":
-      return <Heading2 className={styles.dynamicItemHeading}>{t(title)}</Heading2>;
+      return <Heading2 className={styles.dynamicItemHeading}>{title}</Heading2>;
     case "heading-3":
-      return <Heading3 className={styles.dynamicItemHeading}>{t(title)}</Heading3>;
+      return <Heading3 className={styles.dynamicItemHeading}>{title}</Heading3>;
     case "heading-4":
-      return <Heading4 className={styles.dynamicItemHeading}>{t(title)}</Heading4>;
+      return <Heading4 className={styles.dynamicItemHeading}>{title}</Heading4>;
     case "heading-5":
-      return <Heading5 className={styles.dynamicItemHeading}>{t(title)}</Heading5>;
+      return <Heading5 className={styles.dynamicItemHeading}>{title}</Heading5>;
     default:
-      return <Heading3 className={styles.dynamicItemHeading}>{t(title)}</Heading3>;
+      return <Heading3 className={styles.dynamicItemHeading}>{title}</Heading3>;
   }
 };
 
@@ -363,18 +357,16 @@ const ExternalLink: React.FC<LinkComponentProps> = ({ item }) => {
       href={getFullUrl(item.link)}
       target="_blank"
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${item.value || item.name}, ${t("Opens a new window")}`}
+      aria-label={`${item.ariaLabel}, ${item.value || item.name}, ${t("Opens a new window")}`}
     >
       {renderIcon(item, "left")}
-      {t(item.value || item.name)}
+      {item.value || item.name}
       {renderIcon(item, "right")}
     </Link>
   );
 };
 
 const InternalLink: React.FC<LinkComponentProps> = ({ item }) => {
-  const { t } = useTranslation();
-
   return (
     <Link
       className={styles.link}
@@ -382,12 +374,12 @@ const InternalLink: React.FC<LinkComponentProps> = ({ item }) => {
         (e.preventDefault(), navigate(item.link ?? ""));
       }}
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${t(item.value ?? item.name)}`}
+      aria-label={`${item.ariaLabel}, ${item.value ?? item.name}`}
       role="button"
       href={item.link}
     >
       {renderIcon(item, "left")}
-      {t(item.value ?? item.name)}
+      {item.value ?? item.name}
       {renderIcon(item, "right")}
     </Link>
   );
@@ -404,12 +396,10 @@ const MultiRow: React.FC<LinkComponentProps> = ({ item }) => {
 };
 
 const NoLink: React.FC<LinkComponentProps> = ({ item }) => {
-  const { t } = useTranslation();
-
   return (
     <span>
       {renderIcon(item, "left")}
-      {t(item.value ?? item.name)}
+      {item.value ?? item.name}
       {renderIcon(item, "right")}
     </span>
   );
