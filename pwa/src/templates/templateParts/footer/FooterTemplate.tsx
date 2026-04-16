@@ -375,7 +375,6 @@ const InternalLink: React.FC<LinkComponentProps> = ({ item }) => {
       }}
       tabIndex={0}
       aria-label={`${item.ariaLabel}, ${item.value ?? item.name}`}
-      role="button"
       href={item.link}
     >
       {renderIcon(item, "left")}
