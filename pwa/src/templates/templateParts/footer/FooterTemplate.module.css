@@ -125,6 +125,12 @@
   gap: 28px;
 }
 
+.headingLevel1 { --_heading-font-size: var(--utrecht-heading-1-font-size, inherit); }
+.headingLevel2 { --_heading-font-size: var(--utrecht-heading-2-font-size, inherit); }
+.headingLevel3 { --_heading-font-size: var(--utrecht-heading-3-font-size, inherit); }
+.headingLevel4 { --_heading-font-size: var(--utrecht-heading-4-font-size, inherit); }
+.headingLevel5 { --_heading-font-size: var(--utrecht-heading-5-font-size, inherit); }
+
 .dynamicSectionTitle,
 .dynamicItemHeading {
   margin-block-end: 18px !important;
@@ -137,7 +143,7 @@
     --utrecht-page-footer-heading-font-weight,
     inherit
   ) !important;
-  font-size: var(--utrecht-page-footer-heading-font-size, inherit) !important;
+  font-size: var(--utrecht-page-footer-heading-font-size, var(--_heading-font-size, inherit)) !important;
 }
 
 .dynamicItemHeading {
