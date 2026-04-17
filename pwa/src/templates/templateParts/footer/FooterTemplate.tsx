@@ -21,6 +21,7 @@ import { IconPrefix, IconName } from "@fortawesome/fontawesome-svg-core";
 import { useMenus } from "../../../hooks/menus";
 import { getMenusFromPositions } from "../../../services/menuUtils";
 import { useFooterContent } from "../../../hooks/footerContent";
+import { t } from "i18next";
 
 export const DEFAULT_FOOTER_CONTENT_URL =
   "https://raw.githubusercontent.com/ConductionNL/woo-website-template/main/pwa/src/templates/templateParts/footer/FooterContent.json";
