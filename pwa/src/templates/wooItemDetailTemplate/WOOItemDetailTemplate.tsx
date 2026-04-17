@@ -111,7 +111,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     ];
 
     const enrichedData = {
-      publicatiedatum: data["@self"]?.published,
+      publicatiedatum: data.publicatiedatum ?? data["@self"]?.published,
       categorie: data["@self"]?.schema?.title,
       ...data,
     };

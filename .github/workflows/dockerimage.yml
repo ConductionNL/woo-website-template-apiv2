@@ -14,8 +14,8 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v1
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
       - name: Export release code
         if: (success() || failure())
         id: releasecode #version number in a more comprehensible format: 0.1.YearMonthDay in UTC
@@ -23,7 +23,7 @@ jobs:
           export VERSION=$(grep APP_VERSION= .env | cut -d '=' -f2)
           export RELEASE=$VERSION.$(date --utc +%y%m%d)
           echo "RELEASE=$RELEASE" >> $GITHUB_ENV
-          echo "##[set-output name=releasename]$RELEASE"
+          echo "releasename=$RELEASE" >> $GITHUB_OUTPUT
       - name: Setting APP_NAME
         run: |
           export NAME=$(grep APP_NAME= .env | cut -d '=' -f2)
@@ -60,9 +60,9 @@ jobs:
         run: |
          if [ "${{ secrets.GITHUB_TOKEN }}" != "" ]; then
            echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $(cut -d'/' -f1 <<< $GITHUB_REPOSITORY) --password-stdin
-           echo "##[set-output name=success;]true"
+           echo "success=true" >> $GITHUB_OUTPUT
          else
-           echo "##[set-output name=success;]false"
+           echo "success=false" >> $GITHUB_OUTPUT
          fi
       - if: steps.containerregistry-login.outputs.success == 'true' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development')
         name: Push to Container Registry
@@ -94,13 +94,13 @@ jobs:
       - name: Create Release
         if: github.ref == 'refs/heads/main' && ( success() || failure() )
         id: create_release
-        uses: actions/create-release@v1
+        uses: softprops/action-gh-release@v2
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: ${{ steps.releasecode.outputs.releasename }}
-          release_name: ${{ steps.releasecode.outputs.releasename }}
+          name: ${{ steps.releasecode.outputs.releasename }}
           draft: false
           prerelease: false
       - name: Create Pre-Release (development)

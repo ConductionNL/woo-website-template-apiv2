@@ -15,7 +15,7 @@ export default class OpenWoo {
   }
 
   public getAll = async (filters: IFiltersContext, currentPage: number, limit: number): Promise<any> => {
-    let endpoint = `/publications?_limit=${limit}&_page=${currentPage}${filtersToQueryParams(filters)}`;
+    let endpoint = `/publications?_limit=${limit}&_page=${currentPage}&_order[publicatiedatum]=desc&_extend[]=@self.schema${filtersToQueryParams(filters)}`;
 
     // TODO: Uncomment this when filtering on oin is available in the API
     // if (window.sessionStorage.getItem("OIDN_NUMBER")) {

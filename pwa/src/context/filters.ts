@@ -3,15 +3,15 @@ import { GlobalContext } from "./global";
 
 export interface IFiltersContext {
   _search: string | undefined;
-  "@self[published][gte]": string | undefined;
-  "@self[published][lte]": string | undefined;
+  "publicatiedatum[gte]": string | undefined;
+  "publicatiedatum[lte]": string | undefined;
   "@self[schema]": string | undefined;
 }
 
 export const defaultFiltersContext: IFiltersContext = {
   _search: "",
-  "@self[published][gte]": undefined,
-  "@self[published][lte]": undefined,
+  "publicatiedatum[gte]": undefined,
+  "publicatiedatum[lte]": undefined,
   "@self[schema]": undefined,
 };
 
