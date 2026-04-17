@@ -138,3 +138,7 @@ body[class*="-theme"] {
   font-size: var(--utrecht-accordion-button-font-size);
   font-weight: var(--utrecht-accordion-button-font-weight);
 }
+
+#filters [class*="indicatorContainer"] svg {
+  color: hsl(0, 0%, 46%);
+}

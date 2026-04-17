@@ -115,4 +115,5 @@ export const nl = {
   "Contact met de gemeente": "Contact met de gemeente",
   "Neem contact op": "Neem contact op",
   "Over deze website": "Over deze website",
+  "Clear selection": "Selectie wissen",
 };
