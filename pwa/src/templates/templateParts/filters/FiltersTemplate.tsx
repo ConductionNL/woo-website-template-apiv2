@@ -220,21 +220,21 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
         <div className={styles.filterField}>
           <FormLabel htmlFor="year-filter">{t("Year")}</FormLabel>
-        <SelectSingle
-          id="year-filter"
-          options={yearOptions.options}
-          name="year"
-          placeholder={t("Year")}
-          isClearable
-          defaultValue={yearOptions.options.find((year: any) => {
-            return year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"];
-          })}
-          {...{ register, errors, control }}
-          ariaLabel={t("Select year")}
-          clearIndicatorAttributes={{
-            "aria-label": t("Clear selection")
-          }}
-        />
+          <SelectSingle
+            id="year-filter"
+            options={yearOptions.options}
+            name="year"
+            placeholder={t("Year")}
+            isClearable
+            defaultValue={yearOptions.options.find((year: any) => {
+              return year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"];
+            })}
+            {...{ register, errors, control }}
+            ariaLabel={t("Select year")}
+            clearIndicatorAttributes={{
+              "aria-label": t("Clear selection")
+            }}
+          />
         </div>
 
         {getCategories.isLoading && <Skeleton height="50px" />}
@@ -254,9 +254,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
               disabled={getCategories.isLoading}
               {...{ register, errors, control }}
               ariaLabel={t("Select category")}
-            clearIndicatorAttributes={{
-              "aria-label": t("Clear selection")
-            }}
+              clearIndicatorAttributes={{
+                "aria-label": t("Clear selection")
+              }}
             />
           </div>
         )}
