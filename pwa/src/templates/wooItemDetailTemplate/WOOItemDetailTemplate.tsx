@@ -43,6 +43,13 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
 
   const sortAlphaNum = (a: any, b: any) => a.title.localeCompare(b.title, i18n.language, { numeric: true });
 
+  const activateLinkOnSpace = (e: React.KeyboardEvent<HTMLAnchorElement>) => {
+    if (e.key === " ") {
+      e.preventDefault();
+      e.currentTarget.click();
+    }
+  };
+
   const getLabel = (label: string) => {
     switch (_.upperFirst(label)) {
       case "Informatieverzoek":
@@ -287,7 +294,12 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                   >
                                     <TableCell>{getName(key)}</TableCell>
                                     <TableCell>
-                                      <Link href={value} target="_blank" rel="noopener noreferrer">
+                                      <Link
+                                        href={value}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onKeyDown={activateLinkOnSpace}
+                                      >
                                         {value}
                                       </Link>
                                     </TableCell>
@@ -383,7 +395,11 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                               <div id="labelAttachmentsData">
                                 {sortedAttachments.attachments.map((attachment: any, idx: number) => (
                                   <div key={idx}>
-                                    <Link href={attachment.accessUrl} target="blank">
+                                    <Link
+                                      href={attachment.accessUrl}
+                                      target="blank"
+                                      onKeyDown={activateLinkOnSpace}
+                                    >
                                       {`${attachment.title ?? getPDFName(attachment.accessUrl)}`}
                                     </Link>
                                   </div>
@@ -393,7 +409,11 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           )}
                           {sortedAttachments.attachments.length === 1 && (
                             <TableCell>
-                              <Link href={sortedAttachments.attachments[0].accessUrl} target="blank">
+                              <Link
+                                href={sortedAttachments.attachments[0].accessUrl}
+                                target="blank"
+                                onKeyDown={activateLinkOnSpace}
+                              >
                                 {`${sortedAttachments.attachments[0].title ?? getPDFName(sortedAttachments.attachments[0].accessUrl)}`}
                               </Link>
                             </TableCell>
@@ -431,6 +451,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                       <Link
                                         href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
                                         target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
+                                        onKeyDown={activateLinkOnSpace}
                                       >
                                         {bijlage.title}
                                       </Link>
