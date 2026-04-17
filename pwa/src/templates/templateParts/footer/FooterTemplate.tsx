@@ -1,5 +1,6 @@
 import * as React from "react";
 import * as styles from "./FooterTemplate.module.css";
+import clsx from "clsx";
 import parse from "html-react-parser";
 import {
   PageFooter,
@@ -203,7 +204,7 @@ const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content })
           {item.label && <strong>{item.label}</strong>}
 
           {/* External Link */}
-          {(item.linkMode === "link" || (!item.linkMode && item.link )) &&
+          {(item.linkMode === "link" || (!item.linkMode && item.link)) &&
             item.link &&
             item.link !== "no-link" &&
             (/^https?:\/\//i.test(item.link) || /^www\./i.test(item.link)) && <ExternalLink {...{ item }} />}
@@ -230,34 +231,34 @@ const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content })
 const DynamicSectionHeading: React.FC<{ content: TDynamicContentItem; heading?: string }> = ({ content, heading }) => {
   switch (heading) {
     case "heading-1":
-      return <Heading1 className={styles.dynamicSectionTitle}>{content.title}</Heading1>;
+      return <Heading1 className={clsx(styles.dynamicSectionTitle, styles.headingLevel1)}>{t(content.title)}</Heading1>;
     case "heading-2":
-      return <Heading2 className={styles.dynamicSectionTitle}>{content.title}</Heading2>;
+      return <Heading2 className={clsx(styles.dynamicSectionTitle, styles.headingLevel2)}>{t(content.title)}</Heading2>;
     case "heading-3":
-      return <Heading3 className={styles.dynamicSectionTitle}>{content.title}</Heading3>;
+      return <Heading3 className={clsx(styles.dynamicSectionTitle, styles.headingLevel3)}>{t(content.title)}</Heading3>;
     case "heading-4":
-      return <Heading4 className={styles.dynamicSectionTitle}>{content.title}</Heading4>;
+      return <Heading4 className={clsx(styles.dynamicSectionTitle, styles.headingLevel4)}>{t(content.title)}</Heading4>;
     case "heading-5":
-      return <Heading5 className={styles.dynamicSectionTitle}>{content.title}</Heading5>;
+      return <Heading5 className={clsx(styles.dynamicSectionTitle, styles.headingLevel5)}>{t(content.title)}</Heading5>;
     default:
-      return <Heading3 className={styles.dynamicSectionTitle}>{content.title}</Heading3>;
+      return <Heading3 className={clsx(styles.dynamicSectionTitle, styles.headingLevel3)}>{t(content.title)}</Heading3>;
   }
 };
 
 const DynamicItemHeading: React.FC<{ title: string; heading?: string }> = ({ title, heading }) => {
   switch (heading) {
     case "heading-1":
-      return <Heading1 className={styles.dynamicItemHeading}>{title}</Heading1>;
+      return <Heading1 className={clsx(styles.dynamicItemHeading, styles.headingLevel1)}>{t(title)}</Heading1>;
     case "heading-2":
-      return <Heading2 className={styles.dynamicItemHeading}>{title}</Heading2>;
+      return <Heading2 className={clsx(styles.dynamicItemHeading, styles.headingLevel2)}>{t(title)}</Heading2>;
     case "heading-3":
-      return <Heading3 className={styles.dynamicItemHeading}>{title}</Heading3>;
+      return <Heading3 className={clsx(styles.dynamicItemHeading, styles.headingLevel3)}>{t(title)}</Heading3>;
     case "heading-4":
-      return <Heading4 className={styles.dynamicItemHeading}>{title}</Heading4>;
+      return <Heading4 className={clsx(styles.dynamicItemHeading, styles.headingLevel4)}>{t(title)}</Heading4>;
     case "heading-5":
-      return <Heading5 className={styles.dynamicItemHeading}>{title}</Heading5>;
+      return <Heading5 className={clsx(styles.dynamicItemHeading, styles.headingLevel5)}>{t(title)}</Heading5>;
     default:
-      return <Heading3 className={styles.dynamicItemHeading}>{title}</Heading3>;
+      return <Heading3 className={clsx(styles.dynamicItemHeading, styles.headingLevel3)}>{t(title)}</Heading3>;
   }
 };
 
