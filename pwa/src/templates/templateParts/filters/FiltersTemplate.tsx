@@ -7,7 +7,7 @@ import Skeleton from "react-loading-skeleton";
 import { useForm } from "react-hook-form";
 import { InputText, SelectSingle } from "@conduction/components";
 import { IFiltersContext, defaultFiltersContext, useFiltersContext } from "../../../context/filters";
-import { Button, FormLabel } from "@utrecht/component-library-react/dist/css-module";
+import { Button } from "@utrecht/component-library-react/dist/css-module";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMagnifyingGlass, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { useTranslation } from "react-i18next";
@@ -207,45 +207,51 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   return (
     <div id="filters" className={styles.container}>
       <form role="region" aria-label={t("Filters")} onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-        <FormLabel className={styles.filterField}>
-          {t("Search")}
+        <div className={`${styles.floatingLabelWrapper}${watcher._search ? ` ${styles.hasValue}` : ""}`}>
+          <label className={styles.floatingLabel}>{t("Search")}</label>
           <InputText
             name="_search"
-            placeholder={`${t("Search")}..`}
+            placeholder=" "
             defaultValue={filters._search}
             ariaLabel={t("Search")}
             {...{ register, errors }}
           />
-        </FormLabel>
+        </div>
 
-        <div className={styles.filterField}>
-          <FormLabel htmlFor="year-filter">{t("Year")}</FormLabel>
+        <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.year ? ` ${styles.hasValue}` : ""}`}>
+          <label htmlFor="year-filter" className={styles.floatingLabel}>
+            {t("Year")}
+          </label>
           <SelectSingle
             id="year-filter"
             options={yearOptions.options}
             name="year"
-            placeholder={t("Year")}
+            placeholder=""
             isClearable
             defaultValue={yearOptions.options.find((year: any) => {
-              return year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"];
+              return (
+                year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"]
+              );
             })}
             {...{ register, errors, control }}
             ariaLabel={t("Select year")}
             clearIndicatorAttributes={{
-              "aria-label": t("Clear selection")
+              "aria-label": t("Clear selection"),
             }}
           />
         </div>
 
         {getCategories.isLoading && <Skeleton height="50px" />}
         {getCategories.isSuccess && (
-          <div className={styles.filterField}>
-            <FormLabel htmlFor="category-filter">{t("Category")}</FormLabel>
+          <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.category ? ` ${styles.hasValue}` : ""}`}>
+            <label htmlFor="category-filter" className={styles.floatingLabel}>
+              {t("Category")}
+            </label>
             <SelectSingle
               id="category-filter"
               options={categoryOptions.options}
               name="category"
-              placeholder={t("Category")}
+              placeholder=""
               defaultValue={
                 categoryOptions.options &&
                 categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])
@@ -255,7 +261,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
               {...{ register, errors, control }}
               ariaLabel={t("Select category")}
               clearIndicatorAttributes={{
-                "aria-label": t("Clear selection")
+                "aria-label": t("Clear selection"),
               }}
             />
           </div>
