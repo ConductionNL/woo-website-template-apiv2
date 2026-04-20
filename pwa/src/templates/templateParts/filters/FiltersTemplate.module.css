@@ -40,14 +40,23 @@
      padding-top (0.75rem) + half of 44px min-height (1.375rem) = 2.125rem */
   top: 2.125rem;
   transform: translateY(-50%);
-  /* Match placeholder styling exactly */
-  font-size: var(--utrecht-form-control-font-size, 1rem);
+  /* Match placeholder styling exactly — conduction select tokens take priority */
+  font-size: var(
+    --conduction-input-select-placeholder-font-size,
+    var(--utrecht-form-input-placeholder-font-size, var(--utrecht-document-font-size, 1.125rem))
+  );
   font-family: var(
     --conduction-input-select-placeholder-font-family,
     var(--utrecht-form-input-placeholder-font-family, inherit)
   );
-  font-weight: normal;
-  font-style: var(--utrecht-form-control-placeholder-font-style, normal);
+  font-weight: var(
+    --conduction-input-select-placeholder-font-weight,
+    var(--utrecht-form-input-placeholder-font-weight, normal)
+  );
+  font-style: var(
+    --conduction-input-select-placeholder-font-style,
+    var(--utrecht-form-control-placeholder-font-style, normal)
+  );
   line-height: 1;
   color: var(
     --conduction-input-select-placeholder-color,
