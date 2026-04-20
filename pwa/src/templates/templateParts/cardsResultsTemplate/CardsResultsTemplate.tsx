@@ -10,9 +10,10 @@ import { removeHTMLFromString } from "../../../services/removeHTMLFromString";
 
 interface CardsResultsTemplateProps {
   requests: any[];
+  schemas?: Record<string, any>;
 }
 
-export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requests }) => {
+export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requests, schemas }) => {
   const { t, i18n } = useTranslation();
 
   return (
@@ -35,7 +36,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
                 : ""
             } ${
               window.sessionStorage.getItem("SHOW_CATEGORY") === "true"
-                ? `, ${t("Category")}, ${request["@self"].schema.title || t("No category available")}`
+                ? `, ${t("Category")}, ${schemas?.[request["@self"]?.schema]?.title || t("No category available")}`
                 : ""
             }`}
           >
@@ -71,7 +72,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
                 {window.sessionStorage.getItem("SHOW_CATEGORY") === "true" && (
                   <CardHeaderDate>
                     <span data-tooltip-id={TOOLTIP_ID} data-tooltip-content={t("Category")}>
-                      {request["@self"].schema.title || t("No category available")}
+                      {schemas?.[request["@self"]?.schema]?.title || t("No category available")}
                     </span>
                   </CardHeaderDate>
                 )}

@@ -17,9 +17,10 @@ import { removeHTMLFromString } from "../../../services/removeHTMLFromString";
 
 interface TableResultsTemplateProps {
   requests: any[];
+  schemas?: Record<string, any>;
 }
 
-export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requests }) => {
+export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requests, schemas }) => {
   const { t, i18n } = useTranslation();
 
   return (
@@ -71,7 +72,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                   window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true"
                     ? `,${request["@self"]?.organization?.title ?? request.organization?.title ?? t("No municipality available")}`
                     : ""
-                } ${window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ? `, ${request["@self"].schema.title || t("No category available")}` : ""}, ${
+                } ${window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ? `, ${schemas?.[request["@self"]?.schema]?.title || t("No category available")}` : ""}, ${
                   removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? "")) ??
                   t("No summary available")
                 }`}
@@ -103,7 +104,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                             styles.categoryAndMunicipality,
                         )}
                       >
-                        {request["@self"].schema.title || t("No category available")}
+                        {schemas?.[request["@self"]?.schema]?.title || t("No category available")}
                       </TableCell>
                     )}
                   </>
