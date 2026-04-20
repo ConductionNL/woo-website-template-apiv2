@@ -1,8 +1,21 @@
+/*
+ * FiltersTemplate layout
+ * ──────────────────────
+ * .container holds the filter form on the left and the ResultsDisplaySwitch on
+ * the right. justify-content: space-between keeps them at opposite ends of the
+ * row; no align-items override so both children stretch to the same height.
+ */
 .container {
   display: flex;
   justify-content: space-between;
 }
 
+/*
+ * The form uses a wrapping flex row so filter fields reflow to a new line on
+ * smaller viewports. align-items: center keeps the search button vertically
+ * centred with the input fields even though the inputs may render at slightly
+ * different heights due to their own internal padding.
+ */
 .form {
   display: flex;
   flex-wrap: wrap;
@@ -10,6 +23,27 @@
   align-items: center;
 }
 
+/*
+ * Floating-label pattern (WCAG 3.3.2 – Labels or Instructions)
+ * ─────────────────────────────────────────────────────────────
+ * Each input / select is wrapped in a .floatingLabelWrapper so the <label>
+ * can be positioned absolutely on top of the control.  The wrapper itself has
+ * no extra padding because the label uses top: 50% to sit at the exact
+ * vertical centre of the control — the same spot where the native placeholder
+ * text would appear, regardless of the control's actual pixel height.
+ *
+ * On focus or when the field has a value the label slides up to top: 0, which
+ * centres it on the control's top border.  A white background is added so the
+ * label text visually "breaks" through the border line — the classic floating-
+ * label effect.  The label remains readable at all times, satisfying WCAG.
+ *
+ * Why top: 50% instead of a hard-coded rem value?
+ * The @conduction/components SelectSingle and InputText controls render at
+ * heights determined by their own design tokens (Utrecht / NL Design System).
+ * Hard-coded offsets broke whenever the theme changed.  top: 50% +
+ * translateY(-50%) is always the true vertical midpoint of whatever the
+ * control actually renders to.
+ */
 .floatingLabelWrapper {
   position: relative;
 }
@@ -17,8 +51,12 @@
 .floatingLabel {
   position: absolute;
   left: 0.625rem;
+
+  /* Default: centred on the control — matches native placeholder position */
   top: 50%;
   transform: translateY(-50%);
+
+  /* Mirror the placeholder's typography so the label looks identical to it */
   font-size: var(
     --conduction-input-select-placeholder-font-size,
     var(--utrecht-form-input-placeholder-font-size, var(--utrecht-document-font-size, 1.125rem))
@@ -40,6 +78,8 @@
     --conduction-input-select-placeholder-color,
     var(--utrecht-form-input-placeholder-color, #757575)
   );
+
+  /* Transparent so the input background shows through in the default state */
   background-color: transparent;
   padding-inline: 0.25rem;
   pointer-events: none;
@@ -48,12 +88,20 @@
   z-index: 2;
 }
 
+/*
+ * Floating state — triggered by CSS :focus-within (native inputs) or by the
+ * .hasValue class added via React's watcher when the field has a value.
+ * top: 0 + translateY(-50%) centres the label on the wrapper's top edge,
+ * which aligns with the control's top border.  The white background punches
+ * through the border so the label text floats on it.
+ */
 .floatingLabelWrapper:focus-within .floatingLabel,
 .floatingLabelWrapper.hasValue .floatingLabel {
   top: 0;
   background-color: var(--utrecht-document-background-color, #fff);
 }
 
+/* Each field (including its floatingLabelWrapper) grows equally */
 .form > * {
   flex: 1;
   min-width: 175px !important;
@@ -63,6 +111,7 @@
   cursor: pointer;
 }
 
+/* Spin the icon while results are loading */
 .button:disabled svg {
   animation-name: spinner;
   animation-duration: 1500ms;
