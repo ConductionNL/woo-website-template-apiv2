@@ -70,6 +70,20 @@
   background-color: var(--utrecht-document-background-color, #fff);
 }
 
+/*
+ * react-select's control has min-height 38px (vs 44px for InputText), so the
+ * vertical centre sits at padding-top (0.75rem) + 19px (1.1875rem) = 1.9375rem.
+ */
+.selectWrapper .floatingLabel {
+  top: 1.9375rem;
+}
+
+.selectWrapper:focus-within .floatingLabel,
+.selectWrapper.hasValue .floatingLabel {
+  top: 0.75rem;
+  background-color: var(--utrecht-document-background-color, #fff);
+}
+
 .form > * {
   flex: 1;
   min-width: 175px !important;

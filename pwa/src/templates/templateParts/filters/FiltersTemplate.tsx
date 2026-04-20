@@ -218,7 +218,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
           />
         </div>
 
-        <div className={`${styles.floatingLabelWrapper}${watcher.year ? ` ${styles.hasValue}` : ""}`}>
+        <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.year ? ` ${styles.hasValue}` : ""}`}>
           <label htmlFor="year-filter" className={styles.floatingLabel}>
             {t("Year")}
           </label>
@@ -243,7 +243,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
         {getCategories.isLoading && <Skeleton height="50px" />}
         {getCategories.isSuccess && (
-          <div className={`${styles.floatingLabelWrapper}${watcher.category ? ` ${styles.hasValue}` : ""}`}>
+          <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.category ? ` ${styles.hasValue}` : ""}`}>
             <label htmlFor="category-filter" className={styles.floatingLabel}>
               {t("Category")}
             </label>
