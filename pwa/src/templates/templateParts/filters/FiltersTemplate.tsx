@@ -156,7 +156,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
         facet
           ?.map((category: any) =>
             (() => {
-              const id = category.key;
+              const id = category.value;
               const name = category.label ?? id;
               if (!name) return null;
 
@@ -220,7 +220,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
           />
         </div>
 
-        <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.year ? ` ${styles.hasValue}` : ""}`}>
+        <div
+          className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.year ? ` ${styles.hasValue}` : ""}`}
+        >
           <label htmlFor="year-filter" className={styles.floatingLabel}>
             {t("Year")}
           </label>
@@ -231,9 +233,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
             placeholder=""
             isClearable
             defaultValue={yearOptions.options.find((year: any) => {
-              return (
-                year.after === filters["publicatiedatum[gte]"] && year.before === filters["publicatiedatum[lte]"]
-              );
+              return year.after === filters["publicatiedatum[gte]"] && year.before === filters["publicatiedatum[lte]"];
             })}
             {...{ register, errors, control }}
             ariaLabel={t("Select year")}
@@ -245,7 +245,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
         {getCategories.isLoading && <Skeleton height="50px" />}
         {getCategories.isSuccess && (
-          <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.category ? ` ${styles.hasValue}` : ""}`}>
+          <div
+            className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.category ? ` ${styles.hasValue}` : ""}`}
+          >
             <label htmlFor="category-filter" className={styles.floatingLabel}>
               {t("Category")}
             </label>

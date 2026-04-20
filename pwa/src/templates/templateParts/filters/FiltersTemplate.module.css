@@ -6,9 +6,8 @@
 
 .form {
   display: flex;
-  flex-wrap: wrap;
   gap: 12px;
-  align-items: flex-end;
+  align-items: center;
 }
 
 /*
@@ -43,7 +42,10 @@
   /* Match placeholder styling exactly — conduction select tokens take priority */
   font-size: var(
     --conduction-input-select-placeholder-font-size,
-    var(--utrecht-form-input-placeholder-font-size, var(--utrecht-document-font-size, 1.125rem))
+    var(
+      --utrecht-form-input-placeholder-font-size,
+      var(--utrecht-document-font-size, 1.125rem)
+    )
   );
   font-family: var(
     --conduction-input-select-placeholder-font-family,
@@ -66,7 +68,9 @@
   background-color: transparent;
   padding-inline: 0.25rem;
   pointer-events: none;
-  transition: top 0.15s ease-out, background-color 0.1s ease-out;
+  transition:
+    top 0.15s ease-out,
+    background-color 0.1s ease-out;
   white-space: nowrap;
   z-index: 2;
 }
