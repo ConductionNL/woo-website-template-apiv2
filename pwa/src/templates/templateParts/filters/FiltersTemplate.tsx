@@ -205,43 +205,99 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   }, [getCategories.isSuccess, getCategories.data]);
 
   return (
+    /*
+     * #filters is used as an anchor by the ResultsTemplate skip-link so users
+     * can jump straight to the filter controls.
+     */
     <div id="filters" className={styles.container}>
+      {/*
+       * role="region" + aria-label turns the form into a named landmark so
+       * screen-reader users can navigate to it directly from the landmarks menu.
+       */}
       <form role="region" aria-label={t("Filters")} onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-        <InputText
-          name="_search"
-          placeholder={`${t("Search")}..`}
-          defaultValue={filters._search}
-          ariaLabel={t("Search")}
-          {...{ register, errors }}
-        />
 
-        <SelectSingle
-          options={yearOptions.options}
-          name="year"
-          placeholder={t("Year")}
-          isClearable
-          defaultValue={yearOptions.options.find((year: any) => {
-            return year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"];
-          })}
-          {...{ register, errors, control }}
-          ariaLabel={t("Select year")}
-        />
+        {/*
+         * Floating-label pattern — same structure for every field:
+         *
+         *   <div floatingLabelWrapper [hasValue]>   ← position:relative anchor
+         *     <label floatingLabel>…</label>         ← sits at top:50% (placeholder
+         *                                               position) by default; slides
+         *                                               to top:0 (border) on focus or
+         *                                               when the field has a value
+         *     <InputText | SelectSingle />
+         *   </div>
+         *
+         * hasValue is added by watching the react-hook-form watcher so the label
+         * stays floated after the user leaves the field (CSS :focus-within alone
+         * would drop it back down when the field loses focus).
+         *
+         * placeholder is kept as " " / "" so the native placeholder text does
+         * not compete visually with the floating label in the default state.
+         *
+         * ariaLabel on each control provides the programmatic label association
+         * for assistive technology (WCAG 1.3.1).
+         * clearIndicatorAttributes adds an aria-label to the react-select clear
+         * button, which has no visible text (WCAG 1.1.1).
+         */}
+
+        <div className={`${styles.floatingLabelWrapper}${watcher._search ? ` ${styles.hasValue}` : ""}`}>
+          <label className={styles.floatingLabel}>{t("Search")}</label>
+          <InputText
+            name="_search"
+            placeholder=" "
+            defaultValue={filters._search}
+            ariaLabel={t("Search")}
+            {...{ register, errors }}
+          />
+        </div>
+
+        <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.year ? ` ${styles.hasValue}` : ""}`}>
+          <label htmlFor="year-filter" className={styles.floatingLabel}>
+            {t("Year")}
+          </label>
+          <SelectSingle
+            id="year-filter"
+            options={yearOptions.options}
+            name="year"
+            placeholder=""
+            isClearable
+            defaultValue={yearOptions.options.find((year: any) => {
+              return (
+                year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"]
+              );
+            })}
+            {...{ register, errors, control }}
+            ariaLabel={t("Select year")}
+            clearIndicatorAttributes={{
+              "aria-label": t("Clear selection"),
+            }}
+          />
+        </div>
 
         {getCategories.isLoading && <Skeleton height="50px" />}
         {getCategories.isSuccess && (
-          <SelectSingle
-            options={categoryOptions.options}
-            name="category"
-            placeholder={t("Category")}
-            defaultValue={
-              categoryOptions.options &&
-              categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])
-            }
-            isClearable
-            disabled={getCategories.isLoading}
-            {...{ register, errors, control }}
-            ariaLabel={t("Select category")}
-          />
+          <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.category ? ` ${styles.hasValue}` : ""}`}>
+            <label htmlFor="category-filter" className={styles.floatingLabel}>
+              {t("Category")}
+            </label>
+            <SelectSingle
+              id="category-filter"
+              options={categoryOptions.options}
+              name="category"
+              placeholder=""
+              defaultValue={
+                categoryOptions.options &&
+                categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])
+              }
+              isClearable
+              disabled={getCategories.isLoading}
+              {...{ register, errors, control }}
+              ariaLabel={t("Select category")}
+              clearIndicatorAttributes={{
+                "aria-label": t("Clear selection"),
+              }}
+            />
+          </div>
         )}
 
         <Button
@@ -254,6 +310,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
         </Button>
       </form>
 
+      {/* Tile / table view toggle, rendered outside the form so it is not submitted */}
       <ResultsDisplaySwitch displayKey="landing-results" />
     </div>
   );
