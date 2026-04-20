@@ -55,7 +55,14 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                 className={styles.tableRow}
                 key={request.id}
                 onClick={() => navigate(request.id.toString())}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    navigate(request.id.toString());
+                  }
+                }}
                 tabIndex={0}
+                role="link"
                 aria-label={`${removeHTMLFromString(removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id))},  ${
                   request.publicatiedatum
                     ? translateDate(i18n.language, request.publicatiedatum)

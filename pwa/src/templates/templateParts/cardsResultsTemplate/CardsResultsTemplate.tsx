@@ -20,7 +20,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
       <div className={styles.componentsGrid} aria-label={t("Woo Request")}>
         {requests.map((request) => (
           <CardWrapper
-            role="region"
+            role="link"
             key={request.id}
             className={styles.cardContainer}
             onClick={() => navigate(request.id.toString())}

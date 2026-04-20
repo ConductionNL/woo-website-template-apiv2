@@ -176,7 +176,6 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
     setCategoryOptions({ options: uniqueOptions });
 
-    const yearBuckets: any[] = response?.facets?.facets?.published?.buckets ?? response?.facets?.published?.buckets;
     const yearBuckets: any[] =
       response?.facets?.publicatiedatum?.data?.buckets ?? response?.facets?.publicatiedatum?.buckets;
 
@@ -210,41 +209,64 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   return (
     <div id="filters" className={styles.container}>
       <form role="region" aria-label={t("Filters")} onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-        <InputText
-          name="_search"
-          placeholder={`${t("Search")}..`}
-          defaultValue={filters._search}
-          ariaLabel={t("Search")}
-          {...{ register, errors }}
-        />
+        <div className={`${styles.floatingLabelWrapper}${watcher._search ? ` ${styles.hasValue}` : ""}`}>
+          <label className={styles.floatingLabel}>{t("Search")}</label>
+          <InputText
+            name="_search"
+            placeholder=" "
+            defaultValue={filters._search}
+            ariaLabel={t("Search")}
+            {...{ register, errors }}
+          />
+        </div>
 
-        <SelectSingle
-          options={yearOptions.options}
-          name="year"
-          placeholder={t("Year")}
-          isClearable
-          defaultValue={yearOptions.options.find((year: any) => {
-            return year.after === filters["publicatiedatum[gte]"] && year.before === filters["publicatiedatum[lte]"];
-          })}
-          {...{ register, errors, control }}
-          ariaLabel={t("Select year")}
-        />
+        <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.year ? ` ${styles.hasValue}` : ""}`}>
+          <label htmlFor="year-filter" className={styles.floatingLabel}>
+            {t("Year")}
+          </label>
+          <SelectSingle
+            id="year-filter"
+            options={yearOptions.options}
+            name="year"
+            placeholder=""
+            isClearable
+            defaultValue={yearOptions.options.find((year: any) => {
+              return (
+                year.after === filters["publicatiedatum[gte]"] && year.before === filters["publicatiedatum[lte]"]
+              );
+            })}
+            {...{ register, errors, control }}
+            ariaLabel={t("Select year")}
+            clearIndicatorAttributes={{
+              "aria-label": t("Clear selection"),
+            }}
+          />
+        </div>
 
         {getCategories.isLoading && <Skeleton height="50px" />}
         {getCategories.isSuccess && (
-          <SelectSingle
-            options={categoryOptions.options}
-            name="category"
-            placeholder={t("Category")}
-            defaultValue={
-              categoryOptions.options &&
-              categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])
-            }
-            isClearable
-            disabled={getCategories.isLoading}
-            {...{ register, errors, control }}
-            ariaLabel={t("Select category")}
-          />
+          <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.category ? ` ${styles.hasValue}` : ""}`}>
+            <label htmlFor="category-filter" className={styles.floatingLabel}>
+              {t("Category")}
+            </label>
+            <SelectSingle
+              id="category-filter"
+              options={categoryOptions.options}
+              name="category"
+              placeholder=""
+              defaultValue={
+                categoryOptions.options &&
+                categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])
+              }
+              isClearable
+              disabled={getCategories.isLoading}
+              {...{ register, errors, control }}
+              ariaLabel={t("Select category")}
+              clearIndicatorAttributes={{
+                "aria-label": t("Clear selection"),
+              }}
+            />
+          </div>
         )}
 
         <Button
