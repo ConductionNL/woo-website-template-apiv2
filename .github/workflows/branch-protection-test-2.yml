@@ -1,0 +1,9 @@
+name: Branch Protection Test 2
+
+on:
+  pull_request:
+    branches: [main, beta]
+
+jobs:
+  check-branch:
+    uses: ConductionNL/.github/.github/workflows/branch-protection.yml@main
