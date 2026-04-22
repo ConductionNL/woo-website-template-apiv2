@@ -21,6 +21,7 @@ import { IconPrefix, IconName } from "@fortawesome/fontawesome-svg-core";
 import { useMenus } from "../../../hooks/menus";
 import { getMenusFromPositions } from "../../../services/menuUtils";
 import { useFooterContent } from "../../../hooks/footerContent";
+import { t } from "i18next";
 
 export const DEFAULT_FOOTER_CONTENT_URL =
   "https://raw.githubusercontent.com/ConductionNL/woo-website-template/main/pwa/src/templates/templateParts/footer/FooterContent.json";
@@ -54,6 +55,7 @@ type TDynamicContentItem = {
 };
 
 export const FooterTemplate: React.FC = () => {
+  const { t } = useTranslation();
   const menusQuery = useMenus().getAll();
   const footerContentQuery = useFooterContent().getContent();
   const footerSections: TDynamicContentItem[] | undefined = React.useMemo(() => {
@@ -159,7 +161,8 @@ export const FooterTemplate: React.FC = () => {
   return (
     <PageFooter className={styles.footer}>
       <div className={styles.container}>
-        <div className={styles.contentGrid}>
+        <Heading2 className={styles.visuallyHidden}>{t("Footer")}</Heading2>
+        <div className={styles.contentGrid} lang="nl">
           {orderedSections.map((content: TDynamicContentItem | null, idx: number) =>
             content ? <DynamicSection key={idx} {...{ content }} /> : <div key={`empty-${idx}`} />,
           )}
@@ -187,8 +190,6 @@ export const FooterTemplate: React.FC = () => {
 };
 
 const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content }) => {
-  const { t } = useTranslation();
-
   return (
     <section>
       <DynamicSectionHeading heading={window.sessionStorage.getItem("FOOTER_CONTENT_HEADER") ?? ""} {...{ content }} />
@@ -201,7 +202,7 @@ const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content })
               title={item.value ?? item.name}
             />
           )}
-          {item.label && <strong>{t(item.label)}</strong>}
+          {item.label && <strong>{item.label}</strong>}
 
           {/* External Link */}
           {(item.linkMode === "link" || (!item.linkMode && item.link)) &&
@@ -229,8 +230,6 @@ const DynamicSection: React.FC<{ content: TDynamicContentItem }> = ({ content })
 };
 
 const DynamicSectionHeading: React.FC<{ content: TDynamicContentItem; heading?: string }> = ({ content, heading }) => {
-  const { t } = useTranslation();
-
   switch (heading) {
     case "heading-1":
       return <Heading1 className={clsx(styles.dynamicSectionTitle, styles.headingLevel1)}>{t(content.title)}</Heading1>;
@@ -248,8 +247,6 @@ const DynamicSectionHeading: React.FC<{ content: TDynamicContentItem; heading?: 
 };
 
 const DynamicItemHeading: React.FC<{ title: string; heading?: string }> = ({ title, heading }) => {
-  const { t } = useTranslation();
-
   switch (heading) {
     case "heading-1":
       return <Heading1 className={clsx(styles.dynamicItemHeading, styles.headingLevel1)}>{t(title)}</Heading1>;
@@ -364,18 +361,16 @@ const ExternalLink: React.FC<LinkComponentProps> = ({ item }) => {
       href={getFullUrl(item.link)}
       target="_blank"
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${item.value || item.name}, ${t("Opens a new window")}`}
+      aria-label={`${item.ariaLabel}, ${item.value || item.name}, ${t("Opens a new window")}`}
     >
       {renderIcon(item, "left")}
-      {t(item.value || item.name)}
+      {item.value || item.name}
       {renderIcon(item, "right")}
     </Link>
   );
 };
 
 const InternalLink: React.FC<LinkComponentProps> = ({ item }) => {
-  const { t } = useTranslation();
-
   return (
     <Link
       className={styles.link}
@@ -383,12 +378,11 @@ const InternalLink: React.FC<LinkComponentProps> = ({ item }) => {
         (e.preventDefault(), navigate(item.link ?? ""));
       }}
       tabIndex={0}
-      aria-label={`${t(item.ariaLabel)}, ${t(item.value ?? item.name)}`}
-      role="button"
+      aria-label={`${item.ariaLabel}, ${item.value ?? item.name}`}
       href={item.link}
     >
       {renderIcon(item, "left")}
-      {t(item.value ?? item.name)}
+      {item.value ?? item.name}
       {renderIcon(item, "right")}
     </Link>
   );
@@ -405,12 +399,10 @@ const MultiRow: React.FC<LinkComponentProps> = ({ item }) => {
 };
 
 const NoLink: React.FC<LinkComponentProps> = ({ item }) => {
-  const { t } = useTranslation();
-
   return (
     <span>
       {renderIcon(item, "left")}
-      {t(item.value ?? item.name)}
+      {item.value ?? item.name}
       {renderIcon(item, "right")}
     </span>
   );

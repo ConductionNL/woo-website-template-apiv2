@@ -115,4 +115,5 @@ export const en = {
   "Contact met de gemeente": "Contact with the municipality",
   "Neem contact op": "Contact us",
   "Over deze website": "About this website",
+  "Clear selection": "Clear selection",
 };
