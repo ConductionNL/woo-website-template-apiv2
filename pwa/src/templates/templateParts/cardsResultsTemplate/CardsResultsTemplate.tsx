@@ -10,9 +10,10 @@ import { removeHTMLFromString } from "../../../services/removeHTMLFromString";
 
 interface CardsResultsTemplateProps {
   requests: any[];
+  schemas?: Record<string, any>;
 }
 
-export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requests }) => {
+export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requests, schemas }) => {
   const { t, i18n } = useTranslation();
 
   return (
@@ -26,8 +27,8 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
             onClick={() => navigate(request.id.toString())}
             tabIndex={0}
             aria-label={`${removeHTMLFromString(removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id))}, ${
-              request["@self"].published
-                ? translateDate(i18n.language, request.publicatiedatum ?? request["@self"].published ?? request.created)
+              request.publicatiedatum
+                ? translateDate(i18n.language, request.publicatiedatum)
                 : t("N/A")
             }, ${removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? t("No summary available")))} ${
               window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true"
@@ -35,7 +36,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
                 : ""
             } ${
               window.sessionStorage.getItem("SHOW_CATEGORY") === "true"
-                ? `, ${t("Category")}, ${request["@self"].schema.title || t("No category available")}`
+                ? `, ${t("Category")}, ${schemas?.[request["@self"]?.schema]?.title || t("No category available")}`
                 : ""
             }`}
           >
@@ -48,8 +49,8 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
                 </Heading2>
               </CardHeaderTitle>
               <CardHeaderDate>
-                {request.publicatiedatum || request["@self"].published
-                  ? translateDate(i18n.language, request.publicatiedatum || request["@self"].published)
+                {request.publicatiedatum
+                  ? translateDate(i18n.language, request.publicatiedatum)
                   : t("N/A")}
               </CardHeaderDate>
             </CardHeader>
@@ -71,7 +72,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
                 {window.sessionStorage.getItem("SHOW_CATEGORY") === "true" && (
                   <CardHeaderDate>
                     <span data-tooltip-id={TOOLTIP_ID} data-tooltip-content={t("Category")}>
-                      {request["@self"].schema.title || t("No category available")}
+                      {schemas?.[request["@self"]?.schema]?.title || t("No category available")}
                     </span>
                   </CardHeaderDate>
                 )}

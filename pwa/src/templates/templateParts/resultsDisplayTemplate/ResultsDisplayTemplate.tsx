@@ -6,9 +6,10 @@ import { TableResultsTemplate } from "../tableResultsTemplate/TableResultsTempla
 interface ResultsDisplayTemplateProps {
   requests: any[];
   displayKey: string; // should implement with an unique key
+  schemas?: Record<string, any>;
 }
 
-export const ResultsDisplayTemplate: React.FC<ResultsDisplayTemplateProps> = ({ requests, displayKey }) => {
+export const ResultsDisplayTemplate: React.FC<ResultsDisplayTemplateProps> = ({ requests, displayKey, schemas }) => {
   const { displays, setDisplay } = useDisplayContext();
 
   React.useEffect(() => {
@@ -19,8 +20,8 @@ export const ResultsDisplayTemplate: React.FC<ResultsDisplayTemplateProps> = ({ 
 
   return (
     <>
-      {displays[displayKey] === "cards" && <CardsResultsTemplate {...{ requests }} />}
-      {displays[displayKey] === "table" && <TableResultsTemplate {...{ requests }} />}
+      {displays[displayKey] === "cards" && <CardsResultsTemplate {...{ requests, schemas }} />}
+      {displays[displayKey] === "table" && <TableResultsTemplate {...{ requests, schemas }} />}
     </>
   );
 };

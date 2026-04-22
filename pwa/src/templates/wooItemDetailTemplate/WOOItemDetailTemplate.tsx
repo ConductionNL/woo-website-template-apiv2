@@ -39,7 +39,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const [requestedPage, setRequestedPage] = React.useState<number>(pagination.currentPage);
 
   const attachmentsWithLabelsQuery = useOpenWoo(queryClient).getAttachmentsWithLabels(wooItemId);
-  const attachmentsNoLabelsQuery = useOpenWoo(queryClient).getAttachmentsNoLabels(wooItemId, 10, requestedPage);
+  const attachmentsNoLabelsQuery = useOpenWoo(queryClient).getAttachmentsNoLabels(wooItemId, 50, requestedPage);
 
   const sortAlphaNum = (a: any, b: any) => a.title.localeCompare(b.title, i18n.language, { numeric: true });
 
@@ -118,7 +118,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     ];
 
     const enrichedData = {
-      publicatiedatum: data["@self"]?.published,
+      publicatiedatum: data.publicatiedatum ?? data["@self"]?.published,
       categorie: data["@self"]?.schema?.title,
       ...data,
     };

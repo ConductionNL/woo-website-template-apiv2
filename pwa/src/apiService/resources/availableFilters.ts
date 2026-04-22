@@ -15,8 +15,8 @@ export default class AvailableFilters {
       "/publications?_limit=20&_page=1&_facetable=true" +
       "&_facets[@self][schema][type]=terms" +
       "&_facets[@self][register][type]=terms" +
-      "&_facets[@self][published][type]=date_histogram" +
-      "&_facets[@self][published][interval]=year";
+      "&_facets[publicatiedatum][type]=date_histogram" +
+      "&_facets[publicatiedatum][interval]=year";
     const { data } = await this._send(this._instance, "GET", endpoint);
     return data;
   };
