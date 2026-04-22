@@ -2,7 +2,7 @@ name: Branch Protection Test 2
 
 on:
   pull_request:
-    branches: [main, beta]
+    branches: [main, beta, test]
 
 jobs:
   check-branch:
