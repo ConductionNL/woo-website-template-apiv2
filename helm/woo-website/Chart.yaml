@@ -12,12 +12,12 @@ description: A Helm chart for the Skeleton Gatsby Application
 # pipeline. Library charts do not define any templates and therefore cannot be deployed.
 type: application
 
-# This is the chart version. This version number should be incremented each time you make changes
-# to the chart and its templates, including the app version.
-# Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 1.0.6
+# Chart-version: bump bij elke chart-wijziging (semver).
+# 1.1.0 — platform-grade hardening: securityContext, resources.limits,
+# dedicated SA, expliciete probes, pinned image bases (zie pwa/Dockerfile).
+version: 1.1.0
 
-# This is the version number of the application being deployed. This version number should be
-# incremented each time you make changes to the application. Versions are not expected to
-# follow Semantic Versioning. They should reflect the version the application is using.
-appVersion: 1.0.0
+# AppVersion: image-versie van de PWA. Sync met de image-tag die in CI gebouwd
+# en gepusht wordt. Default in values.yaml is nog `latest` (drift-bron) — wordt
+# pas weg als CI semver-tags publiceert.
+appVersion: "1.0.0"
