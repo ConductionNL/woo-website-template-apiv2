@@ -9,6 +9,15 @@ on:
     branches:
       - main
       - development
+  # Manual trigger: run from any branch with a custom image tag.
+  # Use case: bouwen vanaf refactor branch zonder de refactor naar main
+  # te hoeven mergen. Tijdelijk — verwijder dit blok zodra refactor merged is.
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Image tag to push (e.g. refactor)"
+        required: true
+        default: "refactor"
 
 jobs:
   build:
@@ -41,6 +50,13 @@ jobs:
           echo "APP_ENV=latest">> $GITHUB_ENV
           echo "APP_BUILD=latest">> $GITHUB_ENV
           echo "set APP_ENV to $APP_ENV"
+      # Manual override: workflow_dispatch input wins over branch-based defaults.
+      - name: Setting APP_ENV/APP_BUILD from workflow_dispatch input
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          echo "APP_ENV=${{ inputs.tag }}">> $GITHUB_ENV
+          echo "APP_BUILD=${{ inputs.tag }}">> $GITHUB_ENV
+          echo "set APP_ENV/APP_BUILD to ${{ inputs.tag }} (workflow_dispatch)"
       - name: Print definitive APP_ENV
         run: echo "APP_ENV is now $APP_ENV and APP_BUILD is now $APP_BUILD"
       - name: Build the Docker image
@@ -64,7 +80,7 @@ jobs:
          else
            echo "##[set-output name=success;]false"
          fi
-      - if: steps.containerregistry-login.outputs.success == 'true' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development')
+      - if: steps.containerregistry-login.outputs.success == 'true' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development' || github.event_name == 'workflow_dispatch')
         name: Push to Container Registry
         run: docker compose push
 
