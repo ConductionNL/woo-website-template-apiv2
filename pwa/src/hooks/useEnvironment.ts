@@ -51,6 +51,7 @@ export const useEnvironment = () => {
       set("SHOW_ORGANIZATION", "GATSBY_SHOW_ORGANIZATION");
       set("ANALYTICS_URL", "GATSBY_ANALYTICS_URL");
       set("DATE_FULL_MONTH", "GATSBY_DATE_FULL_MONTH");
+      set("TABLE_SCROLL_MODE", "GATSBY_TABLE_SCROLL_MODE");
       // Apply theme class immediately if provided
       const themeClass = window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "conduction-theme";
       if (typeof document !== "undefined") {
@@ -84,6 +85,7 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("SHOW_ORGANIZATION", process.env.GATSBY_SHOW_ORGANIZATION ?? "");
     window.sessionStorage.setItem("ANALYTICS_URL", process.env.GATSBY_ANALYTICS_URL ?? "");
     window.sessionStorage.setItem("DATE_FULL_MONTH", process.env.GATSBY_DATE_FULL_MONTH ?? "");
+    window.sessionStorage.setItem("TABLE_SCROLL_MODE", process.env.GATSBY_TABLE_SCROLL_MODE ?? "");
     // CSP overrides (optional)
     window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL", process.env.GATSBY_CSP_CONNECT_SRC_FULL ?? "");
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", process.env.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");
@@ -126,6 +128,7 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("SHOW_ORGANIZATION", config.GATSBY_SHOW_ORGANIZATION ?? "");
     window.sessionStorage.setItem("ANALYTICS_URL", config.GATSBY_ANALYTICS_URL ?? "");
     window.sessionStorage.setItem("DATE_FULL_MONTH", config.GATSBY_DATE_FULL_MONTH ?? "");
+    window.sessionStorage.setItem("TABLE_SCROLL_MODE", config.GATSBY_TABLE_SCROLL_MODE ?? "");
     // CSP overrides (optional)
     window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL", config.GATSBY_CSP_CONNECT_SRC_FULL ?? "");
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", config.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");

@@ -29,6 +29,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
         scrollLeftButton: t("Scroll table to the left"),
         scrollRightButton: t("Scroll table to the right"),
       }}
+      scrollMode={(window.sessionStorage.getItem("TABLE_SCROLL_MODE") as "buttons" | "scrollbar") || "buttons"}
     >
       <div aria-label={t("Woo Request")}>
         <Table className={styles.table}>
@@ -50,7 +51,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
               <TableHeaderCell>{t("Summary")}</TableHeaderCell>
             </TableRow>
           </TableHeader>
-          <TableBody className={styles.tableBody}>
+          <TableBody className={styles.tableBody} lang="nl">
             {requests.map((request) => (
               <TableRow
                 className={styles.tableRow}
