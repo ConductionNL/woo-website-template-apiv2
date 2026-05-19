@@ -25,6 +25,7 @@ ${GATSBY_SHOW_CATEGORY}
 ${GATSBY_SHOW_ORGANIZATION}
 ${GATSBY_ANALYTICS_URL}
 ${GATSBY_DATE_FULL_MONTH}
+${GATSBY_TABLE_SCROLL_MODE}
 ' < "$tpl" > "$out_dir/runtime.json"
 
 chmod 0644 "$out_dir/runtime.json" || true

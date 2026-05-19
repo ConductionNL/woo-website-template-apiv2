@@ -116,4 +116,5 @@ export const en = {
   "Neem contact op": "Contact us",
   "Over deze website": "About this website",
   "Clear selection": "Clear selection",
+  "About this website": "About this website",
 };

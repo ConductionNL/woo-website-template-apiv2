@@ -140,6 +140,7 @@
   }
 
   .form {
+    flex-wrap: wrap;
     margin-block-end: 12px;
   }
 }
