@@ -264,6 +264,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                   scrollLeftButton: t("Scroll table to the left"),
                   scrollRightButton: t("Scroll table to the right"),
                 }}
+                scrollMode={(window.sessionStorage.getItem("TABLE_SCROLL_MODE") as "buttons" | "scrollbar") || "buttons"}
               >
                 <Table className={styles.table}>
                   <TableBody className={styles.tableBody}>
@@ -293,7 +294,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                     aria-label={`${getName(key)}, ${value}`}
                                   >
                                     <TableCell>{getName(key)}</TableCell>
-                                    <TableCell>
+                                    <TableCell lang={i18n.language || undefined}>
                                       <Link
                                         href={value}
                                         target="_blank"
@@ -323,7 +324,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                     aria-labelledby={"themesName themesData"}
                                   >
                                     <TableCell id="themesName">{t("Themes")}</TableCell>
-                                    <TableCell id="themesData">
+                                    <TableCell id="themesData" lang={i18n.language || undefined}>
                                       {value.map((theme: any, idx: number) => (
                                         <span key={idx}>
                                           {theme.title ? theme.title + (idx !== value?.length - 1 ? ", " : "") : theme}
@@ -349,7 +350,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                               aria-label={`${getName(key)}, ${formattedValue}`}
                             >
                               <TableCell>{getName(key)}</TableCell>
-                              <TableCell>{formattedValue}</TableCell>
+                              <TableCell lang={i18n.language || undefined}>{formattedValue}</TableCell>
                             </TableRow>
                           );
                         }
@@ -391,7 +392,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           <TableCell>{getLabel(sortedAttachments.label)}</TableCell>
 
                           {sortedAttachments.attachments.length > 1 && (
-                            <TableCell>
+                            <TableCell lang={i18n.language || undefined}>
                               <div id="labelAttachmentsData">
                                 {sortedAttachments.attachments.map((attachment: any, idx: number) => (
                                   <div key={idx}>
@@ -408,7 +409,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                             </TableCell>
                           )}
                           {sortedAttachments.attachments.length === 1 && (
-                            <TableCell>
+                            <TableCell lang={i18n.language || undefined}>
                               <Link
                                 href={sortedAttachments.attachments[0].accessUrl}
                                 target="blank"
@@ -439,7 +440,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         aria-labelledby="attachmentsName attachmentsData"
                       >
                         <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
-                        <TableCell>
+                        <TableCell lang={i18n.language || undefined}>
                           <div id="attachmentsData">
                             {attachmentsNoLabelsQuery.isFetching ? (
                               <Skeleton count={5} />
