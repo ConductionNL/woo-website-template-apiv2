@@ -51,7 +51,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
               <TableHeaderCell>{t("Summary")}</TableHeaderCell>
             </TableRow>
           </TableHeader>
-          <TableBody className={styles.tableBody} lang="nl">
+          <TableBody className={styles.tableBody} lang={i18n.language || undefined}>
             {requests.map((request) => (
               <TableRow
                 className={styles.tableRow}
