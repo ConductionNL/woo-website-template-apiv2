@@ -1,0 +1,90 @@
+# Forgejo Actions — bouw de PWA-container en push naar de Codeberg-registry.
+# Triggers + push-gedrag overgenomen van de oude GitHub-workflow dockerimage.yml.
+#
+# VEREISTEN (nog te regelen; staat nu uit op de repo):
+#   1. Repo-settings (admin): units "Actions" EN "Packages" aanzetten.
+#      Nu: has_actions=false, has_packages=false -> deze workflow draait niet.
+#   2. Codeberg-secrets (repo of org):
+#        CODEBERG_USERNAME  — Codeberg-account met write:package op 'conduction'
+#        CODEBERG_TOKEN     — access token van dat account, scope write:package
+#                             (User Settings -> Applications -> Access Tokens)
+#   3. Runner: Codeberg shared runner. Image-builds kunnen NIET met de Docker
+#      daemon op shared runners; daarom buildah (podman). Label codeberg-medium
+#      = 10 min runtime. Onze build is ~5 min, dus krap. Bij timeouts: een
+#      self-hosted runner of groter label.
+#
+# Bewust GEEN github.*-context (github.repository_owner e.d.) — op Codeberg
+# onbetrouwbaar. Owner staat hardcoded in het image-pad; branch/event komen uit
+# de standaard runner-env-vars; credentials uit secrets.
+#
+# Tag-gedrag (zoals origin):
+#   - push main          -> :latest
+#   - push development    -> :dev
+#   - workflow_dispatch   -> :<input.tag>  (override)
+#   - pull_request        -> alleen bouwen, NIET pushen (build-check)
+# Geen build op git-tags (V*) — die werden ook op GitHub niet als image-tag
+# gepusht (dat waren git/release-tags).
+#
+# De GATSBY_*-config wordt runtime geinjecteerd (GATSBY_ENV_VARS_SET=true +
+# entrypoint-templating), dus build-time hoeven die waarden niet mee.
+
+name: Build & Push Container
+
+on:
+  pull_request:
+    branches:
+      - main
+      - development
+  push:
+    branches:
+      - main
+      - development
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Image-tag om te pushen (override)"
+        required: false
+        default: ""
+
+jobs:
+  build-push:
+    runs-on: codeberg-medium
+    steps:
+      - name: Checkout
+        uses: https://code.forgejo.org/actions/checkout@v4
+
+      - name: Bepaal image-tag en push-keuze
+        id: meta
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          set -eu
+          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
+            branch="${GITHUB_BASE_REF}"
+            push="false"
+          else
+            branch="${GITHUB_REF_NAME}"
+            push="true"
+          fi
+          if [ "$branch" = "main" ]; then
+            tag="latest"
+          else
+            tag="dev"
+          fi
+          if [ -n "${INPUT_TAG:-}" ]; then
+            tag="${INPUT_TAG}"
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "push=$push" >> "$GITHUB_OUTPUT"
+          echo "Image: codeberg.org/conduction/woo-website-v2:$tag (push=$push)"
+
+      - name: Build & push naar Codeberg-registry
+        uses: https://codeberg.org/actions/buildah-simple@main
+        with:
+          tag: "codeberg.org/conduction/woo-website-v2:${{ steps.meta.outputs.tag }}"
+          context: pwa
+          additional_flags: "--build-arg=GATSBY_ENV_VARS_SET=true"
+          push: "${{ steps.meta.outputs.push }}"
+          registry: "codeberg.org"
+          username: "${{ secrets.CODEBERG_USERNAME }}"
+          password: "${{ secrets.CODEBERG_TOKEN }}"

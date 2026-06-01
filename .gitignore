@@ -41,6 +41,16 @@ coverage/
 .env.*.local
 !.env.example
 
+# ── Secrets / sleutels (nooit committen) ────────────────────────────
+*.pem
+*.key
+*_rsa
+*.crt
+
+# ── Lokale build/push naar Docker Hub ───────────────────────────────
+# Geisoleerde docker-credentialstore van build-and-push.sh; bevat tokens.
+.docker/
+
 # ── Tooling logs ─────────────────────────────────────────────────────
 .cursor/
 

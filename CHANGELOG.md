@@ -1,5 +1,54 @@
 # Changelog
 
+## 2026-06-01 — Migratie naar Codeberg + lokale build/push (feat/workflow-dispatch-image-build)
+
+Repo verhuist van GitHub (`ConductionNL`) naar Codeberg (`Conduction`). Op
+Codeberg hebben we (nog) geen rechten om Forgejo Actions aan te zetten, dus de
+CI-gedreven image-build vervalt. In plaats daarvan bouwen we het image lokaal en
+pushen het naar Docker Hub.
+
+### Git-remote
+
+- `origin` omgezet naar `https://codeberg.org/Conduction/woo-website-template-apiv2.git`.
+- Oude GitHub-URL bewaard als remote `github` (terugvaloptie).
+
+### `build-and-push.sh` (nieuw)
+
+- Bouwt service `pwa` via `docker compose build` en pusht naar
+  `docker.io/conduction2022/woo-website-v2:<tag>`. Tag als argument.
+- Gebruikt een **geisoleerde `DOCKER_CONFIG`** (project-lokale `.docker/`) zodat
+  een login hier de persoonlijke `~/.docker/config.json` niet aanraakt.
+- `CONTAINER_REGISTRY_BASE` wordt als shell-override meegegeven (wint van `.env`),
+  zodat het getrackte `.env` niet bewerkt hoeft te worden.
+- Auth via `DOCKERHUB_TOKEN` (stdin) of interactieve login bij eerste run.
+- Conform shell-style-guide: `set -euo pipefail`, SPDX/role-header, `main "$@"`,
+  shellcheck-clean.
+
+### `.gitignore`
+
+- `.docker/` toegevoegd (geisoleerde credentialstore — bevat tokens).
+- `.env` uit git-tracking gehaald (`git rm --cached .env`); stond al in
+  `.gitignore` maar werd nog getrackt voor de CI. **NB:** eerdere inhoud blijft
+  in de git-historie staan — roteer secrets als die erin stonden.
+
+### CI-workflows
+
+- `.github/workflows/` → `.forgejo/workflows/` verplaatst (Forgejo's native
+  locatie). Inert zolang Actions op Codeberg uit staat (`has_actions=false`).
+- **Nieuw: `.forgejo/workflows/container.yml`** — bouwt de PWA-container met
+  buildah (geen Docker daemon op Codeberg shared runners) en pusht naar de
+  Codeberg-registry `codeberg.org/conduction/woo-website-v2`. Triggers +
+  push-gedrag overgenomen van de oude `dockerimage.yml`: push main → `:latest`,
+  push development → `:dev`, `workflow_dispatch` → override, pull_request →
+  alleen bouwen. Geen `github.*`-context (op Codeberg onbetrouwbaar); creds uit
+  secrets `CODEBERG_USERNAME`/`CODEBERG_TOKEN`. Vereist nog: Actions + Packages
+  units aan + die secrets + `codeberg-medium` runner (10 min, krap).
+- **`dockerimage.yml` verwijderd** — vervangen door `container.yml`; draaide op
+  `docker compose`/ghcr.io en zou op Codeberg falen + dubbel bouwen.
+- Overige verplaatste workflows (deploy/plantuml/PR-checks) blijven voorlopig
+  staan; GitHub-specifieke deploy-workflows werken niet op Codeberg.
+- `.github/ISSUE_TEMPLATE/bug.yml` blijft staan (door Forgejo ondersteund).
+
 ## 2026-04-30 — Platform-grade hardening (refactor/platform-grade-cleanup)
 
 Cleanup voor gebruik als gepinde chart-dependency in `react-base`. Geen
