@@ -1,5 +1,21 @@
 # Changelog
 
+## 2026-06-02 — container.yml: Forgejo-native context i.p.v. ${GITHUB_*} (feat/workflow-dispatch-image-build)
+
+De CI-workflow las branch/event uit rauwe `${GITHUB_EVENT_NAME}`/`${GITHUB_BASE_REF}`/
+`${GITHUB_REF_NAME}`-env-vars. Die bestaan pas als de runner ze exporteert.
+
+### `.forgejo/workflows/container.yml`
+
+- Beslissingswaarden nu via de **`github.*`-context** (`github.event_name`,
+  `github.ref_name`, `github.base_ref`) + `inputs.tag`, geïnjecteerd via de
+  step-`env:`. Forgejo aliast `github.*` naar de `forgejo`-context en evalueert
+  dit los van de runnerversie (geverifieerd in de Forgejo Actions-docs).
+- `$GITHUB_OUTPUT` blijft — standaard step-output-bestand, door elke runner gezet.
+- Header-comment gecorrigeerd: de oude claim "bewust geen github.*-context" klopte
+  niet; die context is juist de robuuste keuze.
+- YAML gevalideerd (`yaml.safe_load`).
+
 ## 2026-06-02 — Inline defaults in docker-compose.yml (feat/workflow-dispatch-image-build)
 
 Na het uit tracking halen van `.env` (zie 2026-06-01) viel de variabele-interpolatie

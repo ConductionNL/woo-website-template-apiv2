@@ -13,9 +13,11 @@
 #      = 10 min runtime. Onze build is ~5 min, dus krap. Bij timeouts: een
 #      self-hosted runner of groter label.
 #
-# Bewust GEEN github.*-context (github.repository_owner e.d.) — op Codeberg
-# onbetrouwbaar. Owner staat hardcoded in het image-pad; branch/event komen uit
-# de standaard runner-env-vars; credentials uit secrets.
+# Branch/event/tag komen uit de github.*-context (event_name/ref_name/base_ref)
+# en inputs.tag. Forgejo aliast github.* naar de forgejo-context en evalueert
+# deze los van de runnerversie — robuuster dan rauwe ${GITHUB_*}-env-vars, die
+# pas door de runner geexporteerd hoeven te worden. Zie Forgejo Actions-docs.
+# Owner staat hardcoded in het image-pad; credentials uit secrets.
 #
 # Tag-gedrag (zoals origin):
 #   - push main          -> :latest
@@ -55,18 +57,24 @@ jobs:
 
       - name: Bepaal image-tag en push-keuze
         id: meta
+        # Waarden via de github.*-context (Forgejo-evaluator) i.p.v. rauwe
+        # ${GITHUB_*}-env-vars. GITHUB_OUTPUT blijft: dat is het standaard
+        # step-output-bestand en wordt door elke runner gezet.
         env:
+          EVENT_NAME: ${{ github.event_name }}
+          REF_NAME: ${{ github.ref_name }}
+          BASE_REF: ${{ github.base_ref }}
           INPUT_TAG: ${{ inputs.tag }}
         run: |
           set -eu
-          if [ "${GITHUB_EVENT_NAME}" = "pull_request" ]; then
-            branch="${GITHUB_BASE_REF}"
+          if [ "${EVENT_NAME}" = "pull_request" ]; then
+            branch="${BASE_REF}"
             push="false"
           else
-            branch="${GITHUB_REF_NAME}"
+            branch="${REF_NAME}"
             push="true"
           fi
-          if [ "$branch" = "main" ]; then
+          if [ "${branch}" = "main" ]; then
             tag="latest"
           else
             tag="dev"
@@ -74,9 +82,9 @@ jobs:
           if [ -n "${INPUT_TAG:-}" ]; then
             tag="${INPUT_TAG}"
           fi
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
-          echo "push=$push" >> "$GITHUB_OUTPUT"
-          echo "Image: codeberg.org/conduction/woo-website-v2:$tag (push=$push)"
+          echo "tag=${tag}" >> "${GITHUB_OUTPUT}"
+          echo "push=${push}" >> "${GITHUB_OUTPUT}"
+          echo "Image: codeberg.org/conduction/woo-website-v2:${tag} (push=${push})"
 
       - name: Build & push naar Codeberg-registry
         uses: https://codeberg.org/actions/buildah-simple@main
