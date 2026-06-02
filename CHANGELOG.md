@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-06-02 — Inline defaults in docker-compose.yml (feat/workflow-dispatch-image-build)
+
+Na het uit tracking halen van `.env` (zie 2026-06-01) viel de variabele-interpolatie
+in `docker-compose.yml` terug op lege strings: zonder lokale `.env` kreeg de build
+lege `GATSBY_*`-build-args en lege `UPSTREAM_*`. `env_file` is geen oplossing —
+dat voedt alleen de container-runtime, niet de `${VAR}`-interpolatie van build-args.
+
+### `docker-compose.yml`
+
+- Alle `${VAR}`-verwijzingen voorzien van inline defaults `${VAR:-default}`,
+  getrokken uit `.env.example`. `docker compose up` werkt nu out-of-the-box zonder
+  lokale `.env`; een eigen `.env` (auto-geladen) overschrijft de defaults nog steeds.
+- Uitzondering: `GATSBY_FAVICON_URL` blijft leeg met verwijzing naar `.env.example`
+  (data-URI van ~1 KB; inline onleesbaar, puur cosmetisch).
+- Gevalideerd met `docker compose config` zonder `.env`: image rendert naar
+  `ghcr.io/conductionnl/woo-website-v2:dev`, `UPSTREAM_*` en `GATSBY_*` ingevuld.
+
 ## 2026-06-01 — Migratie naar Codeberg + lokale build/push (feat/workflow-dispatch-image-build)
 
 Repo verhuist van GitHub (`ConductionNL`) naar Codeberg (`Conduction`). Op
