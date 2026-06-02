@@ -1,5 +1,22 @@
 # Changelog
 
+## 2026-06-02 — CLAUDE.md toegevoegd: CI/registry-beleid vastgelegd (feat/workflow-dispatch-image-build)
+
+Repo-`CLAUDE.md` aangemaakt met de besloten registry-strategie en de bekende,
+tijdelijke mismatch tussen CI en deployments.
+
+### `CLAUDE.md` (nieuw)
+
+- **CI/registry-beleid**: voorlopig bouwen op Codeberg + pushen naar de
+  Codeberg-registry via PAT (besluit directeur). Overstap naar Docker Hub
+  (`docker.io/conduction2022/woo-website-v2`) staat klaar mét exacte
+  `container.yml`-wijziging voor wanneer dat akkoord is.
+- **Bekende mismatch gedocumenteerd**: ArgoCD-deployments zijn 2026-06-02
+  gemigreerd om van Docker Hub te pullen, terwijl CI naar de Codeberg-registry
+  pusht → build→deploy-loop nog niet rond (handmatig `build-and-push.sh` nodig).
+- Context over de GitHub→Codeberg source-migratie + GitHub Pages-restant
+  (`product-page-deploy.yml`).
+
 ## 2026-06-02 — container.yml: Forgejo-native context i.p.v. ${GITHUB_*} (feat/workflow-dispatch-image-build)
 
 De CI-workflow las branch/event uit rauwe `${GITHUB_EVENT_NAME}`/`${GITHUB_BASE_REF}`/
