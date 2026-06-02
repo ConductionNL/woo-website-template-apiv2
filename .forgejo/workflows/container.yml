@@ -53,7 +53,8 @@ jobs:
     runs-on: codeberg-medium
     steps:
       - name: Checkout
-        uses: https://code.forgejo.org/actions/checkout@v4
+        # gepind op v4 (supply-chain: SHA i.p.v. bewegende tag)
+        uses: https://code.forgejo.org/actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
 
       - name: Bepaal image-tag en push-keuze
         id: meta
@@ -87,7 +88,8 @@ jobs:
           echo "Image: codeberg.org/conduction/woo-website-v2:${tag} (push=${push})"
 
       - name: Build & push naar Codeberg-registry
-        uses: https://codeberg.org/actions/buildah-simple@main
+        # gepind op main-HEAD (supply-chain: SHA i.p.v. bewegende branch)
+        uses: https://codeberg.org/actions/buildah-simple@b91d3b21a1b6999b99e6d14ba7e692a4449cce62
         with:
           tag: "codeberg.org/conduction/woo-website-v2:${{ steps.meta.outputs.tag }}"
           context: pwa

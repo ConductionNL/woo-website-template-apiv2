@@ -14,6 +14,11 @@ De CI-workflow las branch/event uit rauwe `${GITHUB_EVENT_NAME}`/`${GITHUB_BASE_
 - `$GITHUB_OUTPUT` blijft — standaard step-output-bestand, door elke runner gezet.
 - Header-comment gecorrigeerd: de oude claim "bewust geen github.*-context" klopte
   niet; die context is juist de robuuste keuze.
+- **Actions gepind op commit-SHA** (supply-chain): `checkout@34e1148…` (= v4),
+  `buildah-simple@b91d3b2…` (= main-HEAD). Bewegende tags/branches vermeden;
+  oorspronkelijke ref als comment behouden.
+- Externe deps geverifieerd: beide action-repos bestaan, `codeberg-medium`-runner
+  bestaat (10 min cap), Codeberg-OCI-registry + `write:packages`-PAT-eis bevestigd.
 - YAML gevalideerd (`yaml.safe_load`).
 
 ## 2026-06-02 — Inline defaults in docker-compose.yml (feat/workflow-dispatch-image-build)
