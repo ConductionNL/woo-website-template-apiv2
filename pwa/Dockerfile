@@ -14,7 +14,7 @@ WORKDIR /app
 # Reproducible install: lockfile-driven. @parcel/watcher zit in devDependencies,
 # dus de aparte install-stap die hier eerder stond is niet meer nodig.
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN npm ci --include=dev
 
 # App-sources na deps zodat de dep-layer cachet
 COPY . .
