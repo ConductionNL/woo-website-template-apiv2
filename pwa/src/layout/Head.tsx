@@ -17,6 +17,9 @@ export const Head: React.FC = () => {
   const [connectSrc, setConnectSrc] = React.useState<string>(
     `${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${isLocalHost ? connectSrcLocal : ""}`,
   );
+  const [analyticsUrl, setAnalyticsUrl] = React.useState<string>(
+    window.sessionStorage.getItem("ANALYTICS_URL") ?? "",
+  );
 
   const processUrls = (urlString: string): string => {
     if (!urlString) return "";
@@ -52,6 +55,14 @@ export const Head: React.FC = () => {
     }
   }, [isSafari, isLocalHost]);
 
+  React.useEffect(() => {
+    const handleStorageChange = () => {
+      setAnalyticsUrl(window.sessionStorage.getItem("ANALYTICS_URL") ?? "");
+    };
+    window.addEventListener("sessionStorageChange", handleStorageChange);
+    return () => window.removeEventListener("sessionStorageChange", handleStorageChange);
+  }, []);
+
   return (
     <Helmet
       htmlAttributes={{
@@ -72,13 +83,14 @@ export const Head: React.FC = () => {
         connect-src 'self' ${connectSrc};
         style-src 'self' 'unsafe-inline';
         font-src * data:;
-        ${location.hostname === "localhost" && "script-src 'self' 'unsafe-eval';"}
+        script-src 'self' ${analyticsUrl ? new URL(analyticsUrl).origin : ""} ${location.hostname === "localhost" ? "'unsafe-eval'" : ""};
         `}
       ></meta>
       <title>{`Woo | ${window.sessionStorage.getItem("ORGANISATION_NAME") || process.env.GATSBY_ORGANISATION_NAME || ""} | ${
         getPageTitle(translatedCrumbs, gatsbyContext.location) ?? "Error"
       }`}</title>
       <link rel="icon" type="svg" href={window.sessionStorage.getItem("FAVICON_URL") || process.env.GATSBY_FAVICON_URL || ""} />
+      {analyticsUrl && <script id="analytics" async src={analyticsUrl} />}
     </Helmet>
   );
 };

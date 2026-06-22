@@ -72,6 +72,9 @@ export const nl = {
   "Can open a new window": "Kan een nieuw venster openen",
   "No results found": "Geen resultaten gevonden",
   "Loading results": "Resultaten laden",
+  "Attachments are being loaded": "Bijlagen worden geladen",
+  "Attachments with label": "Bijlagen met label",
+  "Attachments with label are being loaded": "Bijlagen met label worden geladen",
   "result found": "resultaat gevonden",
   "results found": "resultaten gevonden",
   "Showing multiple": "Resultaten",
@@ -112,4 +115,5 @@ export const nl = {
   "Contact met de gemeente": "Contact met de gemeente",
   "Neem contact op": "Neem contact op",
   "Over deze website": "Over deze website",
+  "Clear selection": "Selectie wissen",
 };

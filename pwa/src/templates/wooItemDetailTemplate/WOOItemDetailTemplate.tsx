@@ -16,7 +16,7 @@ import { translateDate } from "../../services/dateFormat";
 import { useTranslation } from "react-i18next";
 import { navigate } from "gatsby";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { faArrowLeft, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import { QueryClient } from "react-query";
 import { useOpenWoo } from "../../hooks/openWoo";
 import { getPDFName } from "../../services/getPDFName";
@@ -42,6 +42,13 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const attachmentsNoLabelsQuery = useOpenWoo(queryClient).getAttachmentsNoLabels(wooItemId, 10, requestedPage);
 
   const sortAlphaNum = (a: any, b: any) => a.title.localeCompare(b.title, i18n.language, { numeric: true });
+
+  const activateLinkOnSpace = (e: React.KeyboardEvent<HTMLAnchorElement>) => {
+    if (e.key === " ") {
+      e.preventDefault();
+      e.currentTarget.click();
+    }
+  };
 
   const getLabel = (label: string) => {
     switch (_.upperFirst(label)) {
@@ -247,7 +254,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
               <Heading1
                 className={styles.hyphenated}
                 id="mainContent"
-                tabIndex={0}
                 aria-label={`${t("Title of woo request")}, ${getItems.data.title ?? getItems.data.titel ?? getItems.data.name ?? getItems.data.naam ?? getItems.data.id}`}
               >
                 {removeHTMLFromString(removeHTMLFromString(getItems.data.titel ?? getItems.data.title))}
@@ -284,12 +290,16 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                   <TableRow
                                     key={key}
                                     className={styles.tableRow}
-                                    tabIndex={0}
                                     aria-label={`${getName(key)}, ${value}`}
                                   >
                                     <TableCell>{getName(key)}</TableCell>
                                     <TableCell>
-                                      <Link href={value} target="_blank" rel="noopener noreferrer">
+                                      <Link
+                                        href={value}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        onKeyDown={activateLinkOnSpace}
+                                      >
                                         {value}
                                       </Link>
                                     </TableCell>
@@ -310,7 +320,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                   <TableRow
                                     key={key}
                                     className={styles.tableRow}
-                                    tabIndex={0}
                                     aria-labelledby={"themesName themesData"}
                                   >
                                     <TableCell id="themesName">{t("Themes")}</TableCell>
@@ -337,7 +346,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                             <TableRow
                               key={key}
                               className={styles.tableRow}
-                              tabIndex={0}
                               aria-label={`${getName(key)}, ${formattedValue}`}
                             >
                               <TableCell>{getName(key)}</TableCell>
@@ -347,13 +355,24 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         }
                       })}
 
+                    {attachmentsWithLabelsQuery.isLoading && (
+                      <TableRow className={styles.tableRow}>
+                        <TableCell>{t("Attachments with label")}</TableCell>
+                        <TableCell>
+                          <div className={styles.loadingCell} aria-live="polite" aria-busy="true">
+                            <FontAwesomeIcon icon={faSpinner} spin />
+                            <span>{t("Attachments with label are being loaded")}</span>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+
                     {attachmentsWithLabelsQuery.isSuccess &&
                       groupedAttachmentsWithLabels.length > 0 &&
                       groupedAttachmentsWithLabels.map((sortedAttachments: any, idx: number) => (
                         <TableRow
                           className={styles.tableRow}
                           key={idx}
-                          tabIndex={0}
                           aria-label={
                             sortedAttachments.attachments.length === 1
                               ? `${getLabel(sortedAttachments.label)}, ${
@@ -376,7 +395,11 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                               <div id="labelAttachmentsData">
                                 {sortedAttachments.attachments.map((attachment: any, idx: number) => (
                                   <div key={idx}>
-                                    <Link href={attachment.accessUrl} target="blank">
+                                    <Link
+                                      href={attachment.accessUrl}
+                                      target="blank"
+                                      onKeyDown={activateLinkOnSpace}
+                                    >
                                       {`${attachment.title ?? getPDFName(attachment.accessUrl)}`}
                                     </Link>
                                   </div>
@@ -386,7 +409,11 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           )}
                           {sortedAttachments.attachments.length === 1 && (
                             <TableCell>
-                              <Link href={sortedAttachments.attachments[0].accessUrl} target="blank">
+                              <Link
+                                href={sortedAttachments.attachments[0].accessUrl}
+                                target="blank"
+                                onKeyDown={activateLinkOnSpace}
+                              >
                                 {`${sortedAttachments.attachments[0].title ?? getPDFName(sortedAttachments.attachments[0].accessUrl)}`}
                               </Link>
                             </TableCell>
@@ -394,27 +421,43 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                         </TableRow>
                       ))}
 
+                    {attachmentsNoLabelsQuery.isLoading && (
+                      <TableRow className={styles.tableRow}>
+                        <TableCell>{t("Attachments")}</TableCell>
+                        <TableCell>
+                          <div className={styles.loadingCell} aria-live="polite" aria-busy="true">
+                            <FontAwesomeIcon icon={faSpinner} spin />
+                            <span>{t("Attachments are being loaded")}</span>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    )}
+
                     {attachmentsNoLabelsQuery.isSuccess && unsortedAttachments.length > 0 && (
                       <TableRow
                         className={styles.tableRow}
-                        tabIndex={0}
                         aria-labelledby="attachmentsName attachmentsData"
                       >
                         <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
                         <TableCell>
                           <div id="attachmentsData">
-                            {unsortedAttachments.map(
-                              (bijlage: any, idx: number) =>
-                                bijlage.title && (
-                                  <div key={idx}>
-                                    <Link
-                                      href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
-                                      target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
-                                    >
-                                      {bijlage.title}
-                                    </Link>
-                                  </div>
-                                ),
+                            {attachmentsNoLabelsQuery.isFetching ? (
+                              <Skeleton count={5} />
+                            ) : (
+                              unsortedAttachments.map(
+                                (bijlage: any, idx: number) =>
+                                  bijlage.title && (
+                                    <div key={idx}>
+                                      <Link
+                                        href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
+                                        target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
+                                        onKeyDown={activateLinkOnSpace}
+                                      >
+                                        {bijlage.title}
+                                      </Link>
+                                    </div>
+                                  ),
+                              )
                             )}
                           </div>
                           <div role="region" aria-label={t("Pagination")} className={styles.pagination}>

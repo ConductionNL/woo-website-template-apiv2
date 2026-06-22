@@ -53,11 +53,20 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
             {requests.map((request) => (
               <TableRow
                 className={styles.tableRow}
-                key={request._id}
-                onClick={() => navigate(request._id)}
+                key={request.id}
+                onClick={() => navigate(request.id.toString())}
+                onKeyDown={(e: React.KeyboardEvent) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    navigate(request.id.toString());
+                  }
+                }}
                 tabIndex={0}
-                aria-label={`${removeHTMLFromString(removeHTMLFromString(request.titel))},  ${
-                  request.publicatiedatum ? translateDate(i18n.language, request.publicatiedatum) : t("N/A")
+                role="link"
+                aria-label={`${removeHTMLFromString(removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id))},  ${
+                  request.publicatiedatum || request["@self"].published
+                    ? translateDate(i18n.language, request.publicatiedatum || request["@self"].published)
+                    : t("N/A")
                 } ${
                   window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true" ? `,${request.organisatie?.naam}` : ""
                 } ${window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ? `, ${request.categorie}` : ""}, ${

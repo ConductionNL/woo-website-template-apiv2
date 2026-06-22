@@ -20,14 +20,14 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
       <div className={styles.componentsGrid} aria-label={t("Woo Request")}>
         {requests.map((request) => (
           <CardWrapper
-            role="region"
+            role="link"
             key={request.id}
             className={styles.cardContainer}
             onClick={() => navigate(request.id.toString())}
             tabIndex={0}
             aria-label={`${removeHTMLFromString(removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id))}, ${
               request["@self"].published
-                ? translateDate(i18n.language, request["@self"].published ?? request.publicatiedatum ?? request.created)
+                ? translateDate(i18n.language, request.publicatiedatum ?? request["@self"].published ?? request.created)
                 : t("N/A")
             }, ${removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? t("No summary available")))} ${
               window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true"
