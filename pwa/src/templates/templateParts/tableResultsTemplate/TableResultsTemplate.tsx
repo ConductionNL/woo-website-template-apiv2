@@ -17,14 +17,19 @@ import { removeHTMLFromString } from "../../../services/removeHTMLFromString";
 
 interface TableResultsTemplateProps {
   requests: any[];
+  schemas?: Record<string, any>;
 }
 
-export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requests }) => {
+export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requests, schemas }) => {
   const { t, i18n } = useTranslation();
 
   return (
     <HorizontalOverflowWrapper
-      ariaLabels={{ scrollLeftButton: t("Left scroll button"), scrollRightButton: t("Right scroll button") }}
+      ariaLabels={{
+        scrollLeftButton: t("Scroll table to the left"),
+        scrollRightButton: t("Scroll table to the right"),
+      }}
+      scrollMode={(window.sessionStorage.getItem("TABLE_SCROLL_MODE") as "buttons" | "scrollbar") || "buttons"}
     >
       <div aria-label={t("Woo Request")}>
         <Table className={styles.table}>
@@ -49,7 +54,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
               <TableHeaderCell>{t("Summary")}</TableHeaderCell>
             </TableRow>
           </TableHeader>
-          <TableBody className={styles.tableBody}>
+          <TableBody className={styles.tableBody} lang={i18n.language || undefined}>
             {requests.map((request) => (
               <TableRow
                 className={styles.tableRow}
@@ -64,13 +69,16 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                 tabIndex={0}
                 role="link"
                 aria-label={`${removeHTMLFromString(removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id))},  ${
-                  request.publicatiedatum || request["@self"].published
-                    ? translateDate(i18n.language, request.publicatiedatum || request["@self"].published)
+                  request.publicatiedatum
+                    ? translateDate(i18n.language, request.publicatiedatum)
                     : t("N/A")
                 } ${
-                  window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true" ? `,${request.organisatie?.naam}` : ""
-                } ${window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ? `, ${request.categorie}` : ""}, ${
-                  removeHTMLFromString(removeHTMLFromString(request.samenvatting)) ?? t("No summary available")
+                  window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true"
+                    ? `,${request["@self"]?.organization?.title ?? request.organization?.title ?? t("No municipality available")}`
+                    : ""
+                } ${window.sessionStorage.getItem("SHOW_CATEGORY") === "true" ? `, ${schemas?.[request["@self"]?.schema]?.title || t("No category available")}` : ""}, ${
+                  removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? "")) ??
+                  t("No summary available")
                 }`}
               >
                 <TableCell>
@@ -86,7 +94,9 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                   <>
                     {window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true" && (
                       <TableCell className={styles.categoryAndMunicipality}>
-                        {request.organisatie?.naam ?? t("No municipality available")}
+                        {request["@self"]?.organization?.title ??
+                          request.organization?.title ??
+                          t("No municipality available")}
                       </TableCell>
                     )}
                     {window.sessionStorage.getItem("SHOW_CATEGORY") === "true" && (
@@ -96,7 +106,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                             styles.categoryAndMunicipality,
                         )}
                       >
-                        {request.categorie ?? t("No category available")}
+                        {schemas?.[request["@self"]?.schema]?.title || t("No category available")}
                       </TableCell>
                     )}
                   </>

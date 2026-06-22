@@ -89,7 +89,7 @@ export const LandingTemplate: React.FC = () => {
               {getItems.isFetching ? (
                 <Skeleton height={"200px"} />
               ) : (
-                <ResultsDisplayTemplate displayKey="landing-results" requests={getItems.data.results} />
+                <ResultsDisplayTemplate displayKey="landing-results" requests={getItems.data.results} schemas={getItems.data["@self"]?.schemas} />
               )}
               <div role="region" aria-label={t("Pagination")} className={styles.pagination}>
                 <Pagination

@@ -74,8 +74,8 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   const onSubmit = (data: any) => {
     setFilters({
       _search: data._search,
-      "@self[published][gte]": data.year?.after,
-      "@self[published][lte]": data.year?.before,
+      "publicatiedatum[gte]": data.year?.after,
+      "publicatiedatum[lte]": data.year?.before,
       "@self[schema]": data.category?.value,
     });
   };
@@ -147,8 +147,8 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
       console.warn("No facets in response");
     }
 
-    if (facets["@self"]?.schema?.buckets) {
-      facets = { categorie: facets["@self"].schema.buckets };
+    if (facets?._schema?.data?.buckets) {
+      facets = { categorie: facets._schema.data?.buckets };
     }
 
     const categoriesWithData = Object.values(facets as Record<string, any>)
@@ -156,7 +156,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
         facet
           ?.map((category: any) =>
             (() => {
-              const id = category.key;
+              const id = category.value;
               const name = category.label ?? id;
               if (!name) return null;
 
@@ -177,10 +177,12 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
     setCategoryOptions({ options: uniqueOptions });
 
     const yearBuckets: any[] =
-      response?.facets?.facets?.["@self"]?.published?.buckets ?? response?.facets?.["@self"]?.published?.buckets;
+      response?.facets?.publicatiedatum?.data?.buckets ?? response?.facets?.publicatiedatum?.buckets;
 
     if (yearBuckets) {
-      const availableYears: number[] = (yearBuckets as any[]).map((b: any) => Number(b.key)).filter(Boolean);
+      const availableYears: number[] = (yearBuckets as any[])
+        .map((b: any) => parseInt((b.value ?? b.key ?? "").toString().substring(0, 4), 10))
+        .filter(Boolean);
 
       const dynamicYears = availableYears
         .map((year) => ({
@@ -251,7 +253,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
           />
         </div>
 
-        <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.year ? ` ${styles.hasValue}` : ""}`}>
+        <div
+          className={`${styles.floatingLabelWrapper}${watcher.year ? ` ${styles.hasValue}` : ""}`}
+        >
           <label htmlFor="year-filter" className={styles.floatingLabel}>
             {t("Year")}
           </label>
@@ -262,9 +266,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
             placeholder=""
             isClearable
             defaultValue={yearOptions.options.find((year: any) => {
-              return (
-                year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"]
-              );
+              return year.after === filters["publicatiedatum[gte]"] && year.before === filters["publicatiedatum[lte]"];
             })}
             {...{ register, errors, control }}
             ariaLabel={t("Select year")}
@@ -276,7 +278,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
         {getCategories.isLoading && <Skeleton height="50px" />}
         {getCategories.isSuccess && (
-          <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.category ? ` ${styles.hasValue}` : ""}`}>
+          <div
+            className={`${styles.floatingLabelWrapper}${watcher.category ? ` ${styles.hasValue}` : ""}`}
+          >
             <label htmlFor="category-filter" className={styles.floatingLabel}>
               {t("Category")}
             </label>

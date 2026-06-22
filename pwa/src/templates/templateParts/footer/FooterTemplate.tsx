@@ -181,7 +181,7 @@ export const FooterTemplate: React.FC = () => {
       )}
       <PageFooter className={styles.footer}>
         <div className={styles.container}>
-          <Heading2 className={styles.visuallyHidden}>{t("Footer")}</Heading2>
+          <Heading2 className={styles.visuallyHidden}>{t("About this website")}</Heading2>
           <div className={styles.contentGrid} lang="nl">
             {orderedSections.map((content: TDynamicContentItem | null, idx: number) =>
               content ? <DynamicSection key={idx} {...{ content }} /> : <div key={`empty-${idx}`} />,
