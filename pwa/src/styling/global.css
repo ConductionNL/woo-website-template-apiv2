@@ -8,6 +8,14 @@
 html,
 body {
   margin: 0;
+  /*
+   * Root/body font-size = the rem base. Set per theme via --conduction-root-font-size
+   * (e.g. .wassenaar-theme = 1.12rem). When a theme does not set it, it falls back to
+   * 1rem, i.e. the user's browser base (16px by default). A relative unit (rem) is used
+   * on purpose so visitors who increase their browser font-size / zoom keep working
+   * (accessibility) — never hard-code a px value here.
+   */
+  font-size: var(--conduction-root-font-size, 1rem);
 }
 
 /* Hide body until ANY theme class (ending with "-theme") is applied */
