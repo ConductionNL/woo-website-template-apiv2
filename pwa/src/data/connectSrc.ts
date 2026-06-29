@@ -138,6 +138,7 @@ export const connectSrcOther = `
 https://conduction.openwoo.app
 https://conduction.nl
 https://conduction.accept.openwoo.app
+https://canary.accept.commonground.nu
 https://koophulpje.openwoo.app
 https://koophulpje.accept.openwoo.app
 https://koophulpje.commonground.nu

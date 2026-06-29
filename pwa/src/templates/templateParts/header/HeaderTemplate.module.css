@@ -44,9 +44,10 @@
 }
 
 .skipLink {
-  font-weight: var(--utrecht-skip-link-font-weight);
   width: var(--utrecht-skip-link-width);
+  font-weight: var(--utrecht-skip-link-font-weight);
   font-size: var(--utrecht-skip-link-font-size);
+  font-family: var(--utrecht-skip-link-font-family);
   border-radius: var(--utrecht-skip-link-border-radius);
   border-width: var(--utrecht-skip-link-border-width);
   border-style: var(--utrecht-skip-link-border-style);

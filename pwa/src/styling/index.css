@@ -1,6 +1,9 @@
 /* Package includes */
 @import "react-loading-skeleton/dist/skeleton.css";
 @import "@amsterdam/design-system-css/dist/pagination/pagination.css";
+/* FontAwesome free webfont — provides the "Font Awesome 6 Free" @font-face so CSS
+   content: "\f105" (used by the unordered-list marker) can render the icon glyph. */
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 /* @import '@amsterdam/design-system-css/dist/date-input/date-input.css'; */
 
 /* Design Tokens maintained by Conduction */
@@ -38,6 +41,7 @@
 @import "../../node_modules/@conduction/theme/municipalities/almere-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/vaals-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/noorderzijlvest-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/wassenaar-design-tokens/dist/index.css";
 
 /* Design Tokens maintained by Frameless */
 @import "../../node_modules/@utrecht/design-tokens/dist/theme.css";
