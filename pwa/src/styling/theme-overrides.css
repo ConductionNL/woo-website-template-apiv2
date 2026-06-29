@@ -2,3 +2,21 @@
 svg.octicon {
   margin-inline-end: 8px;
 }
+
+/* Unordered-list marker — driven by NLDS design tokens, but inert by default.
+   Each declaration reads a --utrecht-unordered-list-marker-* custom property
+   with a fallback that reproduces the browser's default ::marker behavior. When
+   a theme does not define these tokens, the fallbacks keep the list's normal
+   marker; the styling only changes appearance for a theme that opts in (e.g.
+   Wassenaar's FontAwesome angle-right). A bare var() with NO fallback does not
+   drop the declaration — an undefined token is invalid-at-computed-value-time
+   and resets the property to its inherited/initial value, which DOES alter the
+   default marker. The fallbacks below prevent that. Styling ::marker directly
+   means no list-style / layout overrides are needed. */
+.utrecht-unordered-list > li::marker {
+  content: var(--utrecht-unordered-list-marker-content, "●");
+  color: var(--utrecht-unordered-list-marker-color, currentColor);
+  font-family: var(--utrecht-unordered-list-marker-font-family, inherit);
+  font-weight: var(--utrecht-unordered-list-marker-font-weight, inherit);
+  font-size: var(--utrecht-unordered-list-marker-font-size, inherit);
+}

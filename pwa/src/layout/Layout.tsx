@@ -70,24 +70,24 @@ const Layout: React.FC<LayoutProps> = ({ children, pageContext, location }) => {
   return (
     <>
       <BrowserRouter>
-      <GlobalProvider value={[globalContext, setGlobalContext]}>
-        <Head />
-        <APIProvider value={API}>
-          <ErrorBoundary>
-            <Surface>
-              <Document>
-                <ToolTip id={TOOLTIP_ID} />
+        <GlobalProvider value={[globalContext, setGlobalContext]}>
+          <Head />
+          <APIProvider value={API}>
+            <ErrorBoundary>
+              <Surface>
+                <Document>
+                  <ToolTip id={TOOLTIP_ID} />
 
-                {/* <Toaster position="bottom-right" /> Turned off for now */}
+                  {/* <Toaster position="bottom-right" /> Turned off for now */}
 
-                <div className={styles.container}>
-                  <Content {...{ children }} />
-                </div>
-              </Document>
-            </Surface>
-          </ErrorBoundary>
-        </APIProvider>
-      </GlobalProvider>
+                  <div className={styles.container}>
+                    <Content {...{ children }} />
+                  </div>
+                </Document>
+              </Surface>
+            </ErrorBoundary>
+          </APIProvider>
+        </GlobalProvider>
       </BrowserRouter>
     </>
   );
