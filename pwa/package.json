@@ -10,7 +10,13 @@
   "overrides": {
     "webpack": "^5.105.0",
     "cookie": "^1.1.1",
-    "tmp": "^0.2.5",
+    "tmp": "^0.2.7",
+    "lodash": "$lodash",
+    "path-to-regexp": "0.1.13",
+    "serialize-javascript": "^7.0.7",
+    "@ardatan/relay-compiler": {
+      "immutable": "3.8.3"
+    },
     "@parcel/core": "^2.16.4",
     "@parcel/cache": "^2.16.4",
     "@parcel/fs": "^2.16.4",
@@ -96,7 +102,7 @@
     "html-react-parser": "^5.1.10",
     "i18next": "^23.10.1",
     "jwt-decode": "^4.0.0",
-    "lodash": "^4.17.21",
+    "lodash": "^4.18.1",
     "qs": "^6.12.0",
     "react": "^18.2.0",
     "react-collapsible": "^2.10.0",
