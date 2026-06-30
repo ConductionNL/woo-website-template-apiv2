@@ -39,6 +39,21 @@
   opacity: 50%;
 }
 
+/*
+ * The Logo (conduction component) and the NL/EN language switcher render as bare
+ * focusable elements (div/span with role="button") and ship no focus styling of
+ * their own, so they fall back to the browser default outline. Wire them to the
+ * theme focus tokens (--utrecht-focus-outline-*) so their keyboard focus matches
+ * every other focusable element in the header (skip-link, buttons, links).
+ */
+.logo:focus-visible,
+.languageSelect:focus-visible {
+  outline-style: var(--utrecht-focus-outline-style, revert);
+  outline-color: var(--utrecht-focus-outline-color, revert);
+  outline-width: var(--utrecht-focus-outline-width, revert);
+  outline-offset: var(--utrecht-focus-outline-offset, revert);
+}
+
 .languageSeperator {
   user-select: none;
 }
