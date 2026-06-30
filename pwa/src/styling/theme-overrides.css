@@ -3,6 +3,32 @@ svg.octicon {
   margin-inline-end: 8px;
 }
 
+/* Button mouse-focus fix.
+   @utrecht/button-css applies the focus appearance (e.g. white background /
+   black text from the focus design tokens) on plain `:focus`
+   (.utrecht-button:focus:not(...)). Plain `:focus` also fires on a MOUSE click
+   and lingers after the pointer moves away, until something else is clicked —
+   so a clicked button stays "white" with no keyboard interaction involved.
+   The focus appearance is only meaningful as a KEYBOARD indicator, so we scope
+   it to `:focus-visible`: for a non-keyboard focus (`:focus:not(:focus-visible)`)
+   we reset to the button's normal computed colors. `:hover` and `:active` are
+   excluded so they still win while the pointer is on / pressing the button, and
+   keyboard focus (`:focus-visible`) is untouched and keeps the white indicator.
+   Uses the component's own internal --_utrecht-button-* vars so every appearance
+   (primary-action, secondary-action, …) resets correctly. Extra :not() pseudo-
+   classes give this higher specificity than the component rule, so it wins
+   regardless of stylesheet import order. */
+.utrecht-button:focus:not(:focus-visible):not(:hover):not(:active):not(
+    :disabled,
+    [aria-disabled="true"],
+    .utrecht-button--disabled
+  ) {
+  background-color: var(--_utrecht-button-background-color);
+  border-color: var(--_utrecht-button-border-color);
+  color: var(--_utrecht-button-color);
+  scale: 1;
+}
+
 /* Unordered-list marker — driven by NLDS design tokens, but inert by default.
    Each declaration reads a --utrecht-unordered-list-marker-* custom property
    with a fallback that reproduces the browser's default ::marker behavior. When
