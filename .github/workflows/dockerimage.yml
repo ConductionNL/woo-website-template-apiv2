@@ -40,7 +40,7 @@ jobs:
         if: contains( github.ref, 'development' ) || contains( github.base_ref, 'development' )
         run: |
           echo "APP_ENV=development" >> $GITHUB_ENV
-          echo "APP_BUILD=development-${RELEASE}" >> $GITHUB_ENV
+          echo "APP_BUILD=development" >> $GITHUB_ENV
 
       - name: Print definitive APP_ENV
         run: echo "APP_ENV is now $APP_ENV and APP_BUILD is now $APP_BUILD"
@@ -70,7 +70,7 @@ jobs:
         name: Push to Container Registry (main → latest)
         run: docker compose push
       - if: steps.containerregistry-login.outputs.success == 'true' && github.ref == 'refs/heads/development'
-        name: Push to Container Registry (development → development-{release})
+        name: Push to Container Registry (development → development)
         run: docker compose push
 
       - name: Print release name
