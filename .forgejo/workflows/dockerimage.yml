@@ -1,12 +1,21 @@
 # Docker Image CI — Codeberg (Forgejo Actions)
 #
-# This is the active CI pipeline. It runs on Codeberg using Forgejo Actions.
-# `runs-on: con-ci` targets our own self-hosted runners (registered with the
-# `con-ci` label) instead of any hosted runner.
+# This is the ACTIVE CI pipeline and is written specifically for Codeberg.
 #
-# The equivalent GitHub Actions workflow at .github/workflows/dockerimage.yml is
-# kept for reference/backup only and has its automatic triggers disabled so it
-# does not double-run here (Forgejo also picks up files under .github/workflows).
+# - `runs-on: con-ci` targets our own self-hosted runners (registered with the
+#   `con-ci` label).
+# - Images are built with docker compose and pushed to Codeberg's built-in
+#   container registry at codeberg.org/<owner>/<project>.
+# - Releases are cut with the Forgejo-native `actions/forgejo-release` action
+#   (the GitHub-only release actions from the old workflow do not exist on
+#   Codeberg).
+#
+# The GitHub Actions workflow at .github/workflows/dockerimage.yml is kept for
+# reference/backup only and has its automatic triggers disabled.
+#
+# NOTE: the con-ci runner must be able to reach the Forgejo actions host
+# (data.forgejo.org / code.forgejo.org) and the docker registries through its
+# egress proxy, otherwise the `uses:` actions cannot be downloaded.
 name: Docker Image CI
 
 on:
@@ -24,7 +33,7 @@ jobs:
     runs-on: con-ci
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+
       - name: Export release code
         if: (success() || failure())
         id: releasecode #version number in a more comprehensible format: 0.1.YearMonthDay in UTC
@@ -40,6 +49,15 @@ jobs:
       - name: Print app name
         run: echo "APP_NAME = $APP_NAME"
 
+      # Publish to Codeberg's container registry instead of ghcr.io.
+      # This overrides CONTAINER_REGISTRY_BASE from .env; docker compose gives
+      # precedence to shell env vars over the .env file, so the image becomes
+      # codeberg.org/<owner>/${CONTAINER_PROJECT_NAME}.
+      - name: Setting container registry (Codeberg)
+        run: |
+          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
+          echo "CONTAINER_REGISTRY_BASE=codeberg.org/$OWNER" >> $GITHUB_ENV
+
       - name: Setting APP_ENV for main
         if: contains( github.ref, 'main' ) || contains( github.base_ref, 'main' )
         run: |
@@ -52,7 +70,7 @@ jobs:
           echo "APP_BUILD=development" >> $GITHUB_ENV
 
       - name: Print definitive APP_ENV
-        run: echo "APP_ENV is now $APP_ENV and APP_BUILD is now $APP_BUILD"
+        run: echo "APP_ENV is now $APP_ENV, APP_BUILD is now $APP_BUILD, registry is $CONTAINER_REGISTRY_BASE"
       - name: Build the Docker image
         run: docker compose build --build-arg APP_ENV=$APP_ENV --build-arg APP_BUILD=$APP_BUILD --build-arg APP_BUILD_ALL_FIXTURES=true
       - name: Run the docker image
@@ -65,15 +83,28 @@ jobs:
         run: docker compose logs
       - name: Show all images
         run: docker images
-      - name: Login to Container Registry
+
+      # Log in to the Codeberg container registry. By default this uses the
+      # automatically provided Forgejo Actions token (no extra secret required).
+      # If your Codeberg instance's automatic token lacks package:write scope,
+      # add a REGISTRY_TOKEN secret (a Codeberg token with package write) and it
+      # will be preferred automatically.
+      # The credential is passed via env rather than interpolated into the shell
+      # so it stays out of the command line, and login failures fail loudly.
+      - name: Login to Codeberg Container Registry
         id: containerregistry-login
+        env:
+          REGISTRY_HOST: codeberg.org
+          REGISTRY_USER: ${{ github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-         if [ "${{ secrets.GITHUB_TOKEN }}" != "" ]; then
-           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $(cut -d'/' -f1 <<< $GITHUB_REPOSITORY) --password-stdin
-           echo "success=true" >> $GITHUB_OUTPUT
-         else
-           echo "success=false" >> $GITHUB_OUTPUT
-         fi
+          if [ -z "$REGISTRY_TOKEN" ]; then
+            echo "No registry token available; skipping login and push."
+            echo "success=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "$REGISTRY_TOKEN" | docker login "$REGISTRY_HOST" -u "$REGISTRY_USER" --password-stdin
+          echo "success=true" >> "$GITHUB_OUTPUT"
 
       - if: steps.containerregistry-login.outputs.success == 'true' && github.ref == 'refs/heads/main'
         name: Push to Container Registry (main → latest)
@@ -87,30 +118,39 @@ jobs:
         run: echo $RELEASENAME
         env:
           RELEASENAME: ${{ steps.releasecode.outputs.releasename }}
-      - name: Create Release
+
+      # forgejo-release uploads assets to a Forgejo release (creating the tag
+      # and release if needed). We have no build artifacts to attach, so we just
+      # ensure an empty directory exists to satisfy the action.
+      - name: Prepare release assets directory
+        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development') && ( success() || failure() )
+        run: mkdir -p release
+
+      - name: Create Release (main)
         if: github.ref == 'refs/heads/main' && ( success() || failure() )
         id: create_release
-        uses: softprops/action-gh-release@v2
+        uses: actions/forgejo-release@v2.13.1
         continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.releasecode.outputs.releasename }}
-          name: ${{ steps.releasecode.outputs.releasename }}
-          draft: false
+          direction: upload
+          release-dir: release
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.releasecode.outputs.releasename }}
+          title: ${{ steps.releasecode.outputs.releasename }}
           prerelease: false
       - name: Create Pre-Release (development)
         if: github.ref == 'refs/heads/development' && ( success() || failure() )
         id: create_prerelease
-        uses: actions/create-release@v1
+        uses: actions/forgejo-release@v2.13.1
         continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ steps.releasecode.outputs.releasename }}-development
-          release_name: ${{ steps.releasecode.outputs.releasename }}-development
-          draft: false
+          direction: upload
+          release-dir: release
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.releasecode.outputs.releasename }}-development
+          title: ${{ steps.releasecode.outputs.releasename }}-development
           prerelease: true
+
       - name: Chores
         if: (success() || failure())
         run: docker compose down
