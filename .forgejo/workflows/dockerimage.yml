@@ -26,8 +26,13 @@
 #
 # Rootless BuildKit requires unprivileged user namespaces in the job
 # container (BUILDKITD_FLAGS=--oci-worker-no-process-sandbox is set below).
-# If the build fails with rootlesskit/clone/unshare errors, the runner's
-# seccomp/apparmor settings for this class need to be relaxed.
+# Per BuildKit's official "rootless in docker without --privileged" docs the
+# job container must run with seccomp+apparmor unconfined and an unmasked
+# /proc — requested below via container.options (observed 2026-07-07:
+# without them rootlesskit dies on "newuidmap: Could not open proc
+# directory"). If the runner strips or forbids these options, they must be
+# allowed (or set as defaults for this class) in the runner config on the
+# talos side.
 #
 # The old docker-compose smoke test (up -d, docker ps, logs) is gone: without
 # a daemon there is nothing to `up`. The GitHub Actions workflow at
@@ -53,6 +58,15 @@ jobs:
       # on every step. Everything happens under $HOME because the mounted
       # workspace may not be writable for a non-root user.
       image: docker.io/moby/buildkit:v0.31.1-rootless
+      # Required for rootlesskit's nested user namespace (see header):
+      # unconfined seccomp/apparmor allow unshare(CLONE_NEWUSER), unmasked
+      # system paths give newuidmap a full /proc, and /dev/fuse enables
+      # fuse-overlayfs instead of the slow vfs fallback.
+      options: >-
+        --security-opt seccomp=unconfined
+        --security-opt apparmor=unconfined
+        --security-opt systempaths=unconfined
+        --device /dev/fuse
     steps:
       - name: Checkout (manual — no node on these runners)
         shell: sh
