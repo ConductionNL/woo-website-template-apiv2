@@ -161,6 +161,12 @@ jobs:
                 ;;
             esac
           done < .env
+          # Cap Gatsby's build workers: one-per-core on a fat CI node
+          # overshoots the job's memory budget (full build measured >5 GiB
+          # peak locally, 2026-07-07) and an OOM takes the runner's podman
+          # socket down with it. Two workers trades build time for peak.
+          set -- "$@" --build-arg "GATSBY_CPU_COUNT=2"
+
           # RUN steps (npm install) execute with the image-under-construction's
           # env, not the job's, so the runner-injected proxy settings must be
           # handed in as build args. HTTP_PROXY/HTTPS_PROXY/NO_PROXY are
@@ -172,19 +178,24 @@ jobs:
             --build-arg "NO_PROXY=${NO_PROXY:-}"
 
           if [ "$PUSH" != "true" ]; then
-            set -- "$@" --no-push
+            set -- "$@" --no-push --no-push-cache
           fi
 
-          # Docker Hub pulls normally go via index.docker.io, which is NOT
-          # on the egress allowlist ("Forbidden", observed 2026-07-08);
-          # registry-1.docker.io IS. Map hub pulls onto it — same registry
-          # backend, allowlisted host (verified locally: "retrieving image
-          # from mapped registry").
+          # (index.docker.io is on the egress allowlist since 2026-07-07,
+          # so no --registry-mirror mapping is needed anymore.)
+          # Layer cache lives in its own package in the Codeberg registry:
+          # the expensive npm-install layer is reused as long as
+          # package*.json is unchanged, because the Dockerfile copies
+          # package*.json and runs npm install BEFORE the `COPY . .` of the
+          # sources — keep that order or every commit invalidates the layer.
+          # snapshot-mode=redo makes filesystem snapshots much cheaper.
           /kaniko/executor \
             --context "dir://$(pwd)/pwa" \
             --dockerfile Dockerfile \
             --destination "${IMAGE}" \
-            --registry-mirror registry-1.docker.io \
+            --snapshot-mode=redo \
+            --cache=true \
+            --cache-repo "codeberg.org/${OWNER}/${PROJECT}-cache" \
             "$@"
 
   # Releases via the Forgejo REST API (creates tag + release in one call).

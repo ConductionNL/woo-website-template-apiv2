@@ -33,6 +33,11 @@ ARG GATSBY_SHOW_ORGANIZATION
 ARG GATSBY_ANALYTICS_URL
 ARG GATSBY_DATE_FULL_MONTH
 ARG GATSBY_TABLE_SCROLL_MODE
+# Gatsby spawns one build worker per visible CPU core by default; CI passes
+# a small number here to bound peak memory (the default keeps local builds
+# unchanged). Accepts a number, "logical_cores" or "physical_cores".
+ARG GATSBY_CPU_COUNT=logical_cores
+ENV GATSBY_CPU_COUNT=$GATSBY_CPU_COUNT
 ENV GATSBY_ENV_VARS_SET=$GATSBY_ENV_VARS_SET
 ENV GATSBY_API_BASE_URL=$GATSBY_API_BASE_URL
 ENV GATSBY_DEV_ENVIRONMENT=$GATSBY_DEV_ENVIRONMENT
