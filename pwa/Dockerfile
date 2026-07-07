@@ -5,10 +5,11 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 
 # Copy all files from current directory to working dir in image
-# install node modules and build assets
-RUN npm install
-
-RUN npm install @parcel/watcher
+# install node modules and build assets.
+# One RUN on purpose: separate npm layers leave cross-layer whiteouts
+# (rotated npm logs) that kaniko cannot extract from cached layers
+# (".wh.* invalid argument", observed 2026-07-07).
+RUN npm install && npm install @parcel/watcher
 
 COPY . .
 
