@@ -175,10 +175,16 @@ jobs:
             set -- "$@" --no-push
           fi
 
+          # Docker Hub pulls normally go via index.docker.io, which is NOT
+          # on the egress allowlist ("Forbidden", observed 2026-07-08);
+          # registry-1.docker.io IS. Map hub pulls onto it — same registry
+          # backend, allowlisted host (verified locally: "retrieving image
+          # from mapped registry").
           /kaniko/executor \
             --context "dir://$(pwd)/pwa" \
             --dockerfile Dockerfile \
             --destination "${IMAGE}" \
+            --registry-mirror registry-1.docker.io \
             "$@"
 
   # Releases via the Forgejo REST API (creates tag + release in one call).
