@@ -70,20 +70,32 @@ jobs:
       # unprivileged. No bash, so `shell: sh` on every step.
       image: codeberg.org/conduction/kaniko@sha256:c3109d5926a997b100c4343944e06c6b30a6804b2f9abe0994d3de6ef92b028e
     steps:
-      - name: Checkout (tarball — no git or node in this image)
+      - name: Checkout (kaniko git clone — the executor is the only proxy-capable tool here)
         shell: sh
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Used by the executor for the clone if the repo is not public.
+          GIT_USERNAME: ${{ github.actor }}
+          GIT_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          # Source goes into the default working directory: it is a mounted
-          # volume, which kaniko leaves alone when it wipes the container
-          # filesystem between build stages. Fallback ref for PR events
-          # whose merge SHA has no archive.
-          wget --header "Authorization: token ${GITHUB_TOKEN}" -O src.tar.gz \
-            "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/archive/${GITHUB_SHA}.tar.gz" \
-            || wget --header "Authorization: token ${GITHUB_TOKEN}" -O src.tar.gz \
-              "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/archive/${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}.tar.gz"
-          tar -xzf src.tar.gz
+          # busybox wget ignores proxy env vars for https URLs (verified
+          # 2026-07-07), so a tarball download can never pass the egress
+          # proxy. The executor IS proxy-aware (Go; sends CONNECT via the
+          # injected HTTPS_PROXY — verified against a test proxy), and it
+          # can clone git build contexts. Trick: point it at a nonexistent
+          # dockerfile — it clones into /kaniko/buildcontext, then errors
+          # out before building anything; the clone stays behind for the
+          # build step. /kaniko is exempt from kaniko's filesystem
+          # snapshotting, so the source also survives the real build.
+          REF="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          PIN=""
+          if [ "${GITHUB_EVENT_NAME}" = "push" ]; then PIN="#${GITHUB_SHA}"; fi
+          /kaniko/executor \
+            --context "git://codeberg.org/${GITHUB_REPOSITORY}.git#refs/heads/${REF}${PIN}" \
+            --dockerfile .kaniko-clone-only --no-push || true
+          # The expected error above is only about the dockerfile; verify
+          # the clone itself is complete or fail the job here.
+          test -f /kaniko/buildcontext/.env
+          test -f /kaniko/buildcontext/pwa/Dockerfile
 
       - name: Build the image (and push on branch pushes)
         shell: sh
@@ -99,8 +111,8 @@ jobs:
           REGISTRY_USER: ${{ secrets.REGISTRY_USER || github.actor }}
           REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
         run: |
-          # The archive extracts into a directory named after the repo.
-          cd "${GITHUB_REPOSITORY#*/}"
+          # Source was cloned here by the checkout step.
+          cd /kaniko/buildcontext
 
           # Image name: codeberg.org/<owner>/<project>:<tag>, mirroring the
           # compose file (CONTAINER_PROJECT_NAME comes from .env). Tag:
