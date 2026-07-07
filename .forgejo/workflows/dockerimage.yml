@@ -18,12 +18,15 @@
 #     pipeline uses, as a container job on con-ci-oci (the build class the
 #     techbook designates for image build+push).
 #
-# kaniko caveats: the project was archived by Google in 2025, so the pin
-# stays on the final release (v1.23.2). If gcr.io is not pullable by the
-# runner, mirror the image once to the Codeberg registry
-# (docker pull gcr.io/kaniko-project/executor:v1.23.2-debug &&
-#  docker tag ... codeberg.org/conduction/kaniko:v1.23.2-debug &&
-#  docker push ...) and point `image:` below at the mirror.
+# kaniko is a BRIDGE (agreed with infra 2026-07-07, review date 2026-10-01):
+# upstream was archived by Google 2025-06-03, frozen at v1.23.x, no security
+# patches. Once the runners apply a targeted seccomp profile to job
+# containers, the rootless-BuildKit variant in git history becomes viable
+# and replaces it — expect that migration ask around the review date.
+# The builder image comes from our own mirror (codeberg.org/conduction/
+# kaniko, public package, no pull credentials needed), pinned by digest;
+# gcr.io stays off the allowlist. Keep the -debug variant: container jobs
+# need a shell (busybox sh) in the image.
 #
 # `docker compose` is no longer used in CI (docker-compose.yml remains the
 # source of truth for local dev; the build step mirrors its pwa service:
@@ -34,13 +37,15 @@
 # the Forgejo API. The GitHub Actions workflow at
 # .github/workflows/dockerimage.yml is kept for reference/backup only.
 #
-# Egress (talos allowlist) — the JOB itself needs:
-#   - docker.io registry endpoints (registry-1.docker.io, auth.docker.io and
-#     the download CDN): kaniko pulls the node:20 and nginx base images;
-#   - registry.npmjs.org: `npm install` runs as a process in this job during
-#     the image build (same procedure as pypi.org for the handbook, talos
-#     commit 2026-07-06);
-#   - codeberg.org: checkout, image push and the release API.
+# Egress (talos allowlist — all in place since 2026-07-07): codeberg.org
+# (checkout, builder image, image push, release API), the docker.io registry
+# endpoints incl. both CDNs (node:20/nginx base images) and
+# registry.npmjs.org (npm install during the build). Any new host the build
+# touches will 403 at the proxy — ask infra, it's a one-line reviewed change.
+# NB the runner injects HTTP(S)_PROXY/NO_PROXY into the job and kaniko
+# honors them for its own pulls/pushes, but RUN steps inside the build get
+# the image-under-construction's env — the proxy is therefore passed through
+# as predefined proxy build-args in the build step below.
 name: Docker Image CI
 
 on:
@@ -57,11 +62,13 @@ jobs:
   build:
     runs-on: con-ci-oci
     container:
-      # The :debug variant ships a busybox shell (the runner needs one to
-      # exec run steps); the plain executor image is shell-less. Runs as
-      # root inside its own throwaway container, unprivileged. No bash, so
-      # `shell: sh` on every step.
-      image: gcr.io/kaniko-project/executor:v1.23.2-debug
+      # Our mirror of gcr.io/kaniko-project/executor:v1.23.2-debug, pinned
+      # by digest (verified identical to the upstream multi-arch index by
+      # infra, 2026-07-07). The :debug variant ships a busybox shell (the
+      # runner needs one to exec run steps); the plain executor image is
+      # shell-less. Runs as root inside its own throwaway container,
+      # unprivileged. No bash, so `shell: sh` on every step.
+      image: codeberg.org/conduction/kaniko@sha256:c3109d5926a997b100c4343944e06c6b30a6804b2f9abe0994d3de6ef92b028e
     steps:
       - name: Checkout (tarball — no git or node in this image)
         shell: sh
@@ -81,11 +88,16 @@ jobs:
       - name: Build the image (and push on branch pushes)
         shell: sh
         env:
-          # Registry credentials: a REGISTRY_TOKEN secret (Codeberg token
-          # with package:write) is preferred; the automatic Actions token is
-          # the fallback and works if it carries package scope.
-          REGISTRY_USER: ${{ github.actor }}
-          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN || secrets.GITHUB_TOKEN }}
+          # Push auth REQUIRES the REGISTRY_TOKEN secret: a Codeberg access
+          # token with scope write:package only, owned by an org member (or
+          # machine account) with package write. The automatic Actions token
+          # carries NO package write on Forgejo v15 (platform fact; upstream
+          # rejected granting it, forgejo PR #6538) — no fallback to it.
+          # The registry requires the login username to match the token's
+          # owner, so set the REGISTRY_USER secret to that account name; it
+          # falls back to the pushing user for the personal-token case.
+          REGISTRY_USER: ${{ secrets.REGISTRY_USER || github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
         run: |
           # The archive extracts into a directory named after the repo.
           cd "${GITHUB_REPOSITORY#*/}"
@@ -104,7 +116,12 @@ jobs:
           IMAGE="codeberg.org/${OWNER}/${PROJECT}:${TAG}"
 
           PUSH=false
-          if [ "${GITHUB_EVENT_NAME}" = "push" ] && [ -n "${REGISTRY_TOKEN}" ]; then
+          if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
+            if [ -z "${REGISTRY_TOKEN}" ]; then
+              echo "REGISTRY_TOKEN secret is missing (Codeberg access token, scope write:package)." >&2
+              echo "The automatic Actions token cannot push packages on Forgejo v15 — see workflow header." >&2
+              exit 1
+            fi
             PUSH=true
             # kaniko reads registry auth from /kaniko/.docker/config.json;
             # the credential is written there, never onto a command line.
@@ -132,6 +149,16 @@ jobs:
                 ;;
             esac
           done < .env
+          # RUN steps (npm install) execute with the image-under-construction's
+          # env, not the job's, so the runner-injected proxy settings must be
+          # handed in as build args. HTTP_PROXY/HTTPS_PROXY/NO_PROXY are
+          # docker-predefined args: no ARG lines needed in the Dockerfile and
+          # they do not end up in the image config.
+          set -- "$@" \
+            --build-arg "HTTP_PROXY=${HTTP_PROXY:-}" \
+            --build-arg "HTTPS_PROXY=${HTTPS_PROXY:-}" \
+            --build-arg "NO_PROXY=${NO_PROXY:-}"
+
           if [ "$PUSH" != "true" ]; then
             set -- "$@" --no-push
           fi
