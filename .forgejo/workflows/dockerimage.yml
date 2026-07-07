@@ -1,27 +1,37 @@
 # Docker Image CI — Codeberg (Forgejo Actions)
 #
-# This is the ACTIVE CI pipeline and is written specifically for Codeberg.
+# This is the ACTIVE CI pipeline and is written specifically for Codeberg and
+# the talos runners.
 #
-# Runner-class choice (talos house rules): this job needs the host docker
-# daemon (docker compose build/up/push) → host class `con-ci`, NOT the
-# container class `con-ci-oci` used by the handbook/preview pipeline.
+# Runner-class choice (talos house rules): there is NO docker daemon and no
+# docker CLI anywhere on this infra — not on the con-ci host class (observed
+# 2026-07-07: "docker: command not found") and not inside container jobs.
+# Per the techbook, image build+push belongs on the con-ci-oci build class.
+# So the image is built DAEMONLESS with rootless BuildKit inside the job
+# container and pushed straight to the Codeberg registry. `docker compose`
+# is not used in CI at all anymore (docker-compose.yml remains the source of
+# truth for local dev; the build step below mirrors its pwa service: same
+# context, image name and GATSBY_* build args from .env).
 #
-# The con-ci host runner has no node and no curl (same constraints as
-# documented in .forgejo/workflows/preview.yaml). Therefore this workflow
-# uses NO `uses:` actions at all:
-#   - checkout is a manual `git init + fetch` (actions/checkout needs node);
-#   - releases are created via the Forgejo REST API, with curl running in a
-#     container (actions/forgejo-release needs node; the host has no curl,
-#     but it always has docker).
+# As in preview.yaml there are NO `uses:` actions (no node on the runners):
+# checkout is a manual git fetch and releases go through the Forgejo API.
 #
-# Images are built with docker compose and pushed to Codeberg's built-in
-# container registry at codeberg.org/<owner>/<project>.
+# Egress (talos allowlist for con-ci-oci) — the JOB itself needs:
+#   - docker.io registry endpoints (registry-1.docker.io, auth.docker.io and
+#     the download CDN) for the node:20 and nginx base images that buildkitd
+#     pulls during the build;
+#   - registry.npmjs.org for `npm install` inside the image build (same
+#     procedure as pypi.org for the handbook, talos commit 2026-07-06);
+#   - codeberg.org for checkout, image push and the release API.
 #
-# The GitHub Actions workflow at .github/workflows/dockerimage.yml is kept for
-# reference/backup only and has its automatic triggers disabled.
+# Rootless BuildKit requires unprivileged user namespaces in the job
+# container (BUILDKITD_FLAGS=--oci-worker-no-process-sandbox is set below).
+# If the build fails with rootlesskit/clone/unshare errors, the runner's
+# seccomp/apparmor settings for this class need to be relaxed.
 #
-# Egress: the con-ci allowlist must contain codeberg.org and docker.io
-# (both already present, see talos notes in preview.yaml).
+# The old docker-compose smoke test (up -d, docker ps, logs) is gone: without
+# a daemon there is nothing to `up`. The GitHub Actions workflow at
+# .github/workflows/dockerimage.yml is kept for reference/backup only.
 name: Docker Image CI
 
 on:
@@ -36,157 +46,135 @@ on:
 
 jobs:
   build:
-    runs-on: con-ci
+    runs-on: con-ci-oci
+    container:
+      # Rootless variant: runs as uid 1000, builds without a docker daemon.
+      # The image ships git (for checkout) but no bash — hence `shell: sh`
+      # on every step. Everything happens under $HOME because the mounted
+      # workspace may not be writable for a non-root user.
+      image: docker.io/moby/buildkit:v0.31.1-rootless
     steps:
       - name: Checkout (manual — no node on these runners)
+        shell: sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           # init + fetch instead of `git clone --branch` so pull_request refs
-          # (refs/pull/N/merge) work too, not just branch pushes.
+          # (refs/pull/N/merge) work too, not just branch pushes. Auth goes
+          # through env-scoped git config so the token never lands in URLs,
+          # logs or the process list.
+          mkdir -p "$HOME/src"
+          cd "$HOME/src"
           git init .
           git remote add origin "https://codeberg.org/${GITHUB_REPOSITORY}.git"
-          # Auth via env-scoped git config so the token never appears in
-          # URLs, logs or the process list (and nothing is written to the
-          # host's ~/.git-credentials, unlike the container job in
-          # preview.yaml).
           export GIT_CONFIG_COUNT=1
           export GIT_CONFIG_KEY_0=http.extraHeader
           export GIT_CONFIG_VALUE_0="Authorization: Basic $(printf '%s:%s' "${GITHUB_ACTOR}" "${GITHUB_TOKEN}" | base64 | tr -d '\n')"
-          # Fallbacks: merge ref may not exist → try the PR head ref, then a
-          # plain branch name (push events).
+          # Fallbacks: merge ref may not exist -> PR head ref -> branch name.
           git fetch --depth 1 origin "${GITHUB_REF}" \
             || git fetch --depth 1 origin "${GITHUB_REF%merge}head" \
             || git fetch --depth 1 origin "${GITHUB_REF_NAME}"
           git checkout --force FETCH_HEAD
 
-      - name: Export release code
-        if: (success() || failure())
-        id: releasecode #version number in a more comprehensible format: 0.1.YearMonthDay in UTC
-        run: |
-          export VERSION=$(grep APP_VERSION= .env | cut -d '=' -f2)
-          export RELEASE=$VERSION.$(date --utc +%y%m%d)
-          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
-          echo "releasename=$RELEASE" >> $GITHUB_OUTPUT
-      - name: Setting APP_NAME
-        run: |
-          export NAME=$(grep APP_NAME= .env | cut -d '=' -f2)
-          echo "APP_NAME=$NAME" >> $GITHUB_ENV
-      - name: Print app name
-        run: echo "APP_NAME = $APP_NAME"
-
-      # Publish to Codeberg's container registry instead of ghcr.io.
-      # This overrides CONTAINER_REGISTRY_BASE from .env; docker compose gives
-      # precedence to shell env vars over the .env file, so the image becomes
-      # codeberg.org/<owner>/${CONTAINER_PROJECT_NAME}.
-      - name: Setting container registry (Codeberg)
-        run: |
-          OWNER=$(echo "${{ github.repository_owner }}" | tr '[:upper:]' '[:lower:]')
-          echo "CONTAINER_REGISTRY_BASE=codeberg.org/$OWNER" >> $GITHUB_ENV
-
-      - name: Setting APP_ENV for main
-        if: contains( github.ref, 'main' ) || contains( github.base_ref, 'main' )
-        run: |
-          echo "APP_ENV=latest" >> $GITHUB_ENV
-          echo "APP_BUILD=latest" >> $GITHUB_ENV
-      - name: Setting APP_ENV for development
-        if: contains( github.ref, 'development' ) || contains( github.base_ref, 'development' )
-        run: |
-          echo "APP_ENV=development" >> $GITHUB_ENV
-          echo "APP_BUILD=development" >> $GITHUB_ENV
-
-      - name: Print definitive APP_ENV
-        run: echo "APP_ENV is now $APP_ENV, APP_BUILD is now $APP_BUILD, registry is $CONTAINER_REGISTRY_BASE"
-      - name: Build the Docker image
-        run: docker compose build --build-arg APP_ENV=$APP_ENV --build-arg APP_BUILD=$APP_BUILD --build-arg APP_BUILD_ALL_FIXTURES=true
-      - name: Run the docker image
-        run: docker compose up -d
-      - name: Taking some sleep (for containers to come up)
-        run: sleep 20
-      - name: Check if all containers are running
-        run: docker ps
-      - name: Dumping the logs
-        run: docker compose logs
-      - name: Show all images
-        run: docker images
-
-      # Log in to the Codeberg container registry. By default this uses the
-      # automatically provided Forgejo Actions token (no extra secret required).
-      # If your Codeberg instance's automatic token lacks package:write scope,
-      # add a REGISTRY_TOKEN secret (a Codeberg token with package write) and it
-      # will be preferred automatically.
-      # The credential is passed via env rather than interpolated into the shell
-      # so it stays out of the command line, and login failures fail loudly.
-      - name: Login to Codeberg Container Registry
-        id: containerregistry-login
+      - name: Build the image (and push on branch pushes)
+        shell: sh
         env:
-          REGISTRY_HOST: codeberg.org
+          # Registry credentials: a REGISTRY_TOKEN secret (Codeberg token
+          # with package:write) is preferred; the automatic Actions token is
+          # the fallback and works if it carries package scope.
           REGISTRY_USER: ${{ github.actor }}
           REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
-          if [ -z "$REGISTRY_TOKEN" ]; then
-            echo "No registry token available; skipping login and push."
-            echo "success=false" >> "$GITHUB_OUTPUT"
-            exit 0
+          cd "$HOME/src"
+
+          # Image name: codeberg.org/<owner>/<project>:<tag>, mirroring the
+          # compose file (CONTAINER_REGISTRY_BASE is overridden to Codeberg,
+          # CONTAINER_PROJECT_NAME comes from .env). Tag: main -> latest,
+          # development -> development; PR builds tag after their base branch
+          # but are never pushed.
+          OWNER=$(printf '%s' "${GITHUB_REPOSITORY%%/*}" | tr 'A-Z' 'a-z')
+          PROJECT=$(grep '^CONTAINER_PROJECT_NAME=' .env | cut -d '=' -f2)
+          REF="${GITHUB_BASE_REF:-${GITHUB_REF_NAME}}"
+          case "$REF" in
+            *main*) TAG=latest ;;
+            *)      TAG=development ;;
+          esac
+          IMAGE="codeberg.org/${OWNER}/${PROJECT}:${TAG}"
+
+          PUSH=false
+          if [ "${GITHUB_EVENT_NAME}" = "push" ] && [ -n "${REGISTRY_TOKEN}" ]; then
+            PUSH=true
+            # buildctl reads registry auth from the docker config file; the
+            # credential is written there, never onto a command line.
+            export DOCKER_CONFIG="$HOME/.docker"
+            mkdir -p "$DOCKER_CONFIG"
+            AUTH=$(printf '%s:%s' "${REGISTRY_USER}" "${REGISTRY_TOKEN}" | base64 | tr -d '\n')
+            printf '{"auths":{"codeberg.org":{"auth":"%s"}}}\n' "$AUTH" > "$DOCKER_CONFIG/config.json"
           fi
-          echo "$REGISTRY_TOKEN" | docker login "$REGISTRY_HOST" -u "$REGISTRY_USER" --password-stdin
-          echo "success=true" >> "$GITHUB_OUTPUT"
+          echo "Building ${IMAGE} (push=${PUSH})"
 
-      - if: steps.containerregistry-login.outputs.success == 'true' && github.ref == 'refs/heads/main'
-        name: Push to Container Registry (main → latest)
-        run: docker compose push
-      - if: steps.containerregistry-login.outputs.success == 'true' && github.ref == 'refs/heads/development'
-        name: Push to Container Registry (development → development)
-        run: docker compose push
+          # GATSBY_* build args from .env, parsed line-based exactly like
+          # compose does (the file cannot be sourced: some values contain
+          # unquoted spaces) with surrounding quotes stripped. Args the
+          # Dockerfile does not declare only produce a warning.
+          set --
+          while IFS= read -r line; do
+            case "$line" in
+              GATSBY_*=*)
+                k=${line%%=*}
+                v=${line#*=}
+                case "$v" in
+                  \"*\") v=${v#\"}; v=${v%\"} ;;
+                  \'*\') v=${v#\'}; v=${v%\'} ;;
+                esac
+                set -- "$@" --opt "build-arg:${k}=${v}"
+                ;;
+            esac
+          done < .env
 
-      - name: Print release name
-        if: (success() || failure())
-        run: echo $RELEASENAME
-        env:
-          RELEASENAME: ${{ steps.releasecode.outputs.releasename }}
+          # Daemonless rootless build; no-process-sandbox is required when
+          # buildkitd runs unprivileged inside a container.
+          export BUILDKITD_FLAGS="--oci-worker-no-process-sandbox"
+          buildctl-daemonless.sh build \
+            --frontend dockerfile.v0 \
+            --local context=pwa \
+            --local dockerfile=pwa \
+            "$@" \
+            --output "type=image,name=${IMAGE},push=${PUSH}"
 
-      # Releases via the Forgejo REST API (creates the tag + release in one
-      # call). The old actions/forgejo-release action is a node action and
-      # cannot run on these runners; curl is missing on the host, so it runs
-      # in a pinned container image. All values are passed as env vars so the
-      # token never hits the command line. Failures (e.g. 409 when the
-      # release already exists) do not fail the build, matching the old
-      # `continue-on-error: true`.
-      - name: Create Release (main)
-        if: github.ref == 'refs/heads/main' && ( success() || failure() )
+  # Releases via the Forgejo REST API (creates tag + release in one call).
+  # The old actions/forgejo-release is a node action and cannot run on these
+  # runners, so this runs curl in a small pinned container. Runs even when
+  # the build failed, matching the old `continue-on-error: true` +
+  # `success() || failure()` behaviour; a 409 (release already exists) does
+  # not fail the job either.
+  release:
+    needs: build
+    if: ${{ !cancelled() && github.event_name == 'push' }}
+    runs-on: con-ci-oci
+    container:
+      image: docker.io/curlimages/curl:8.14.1
+    steps:
+      - name: Create release (main) or pre-release (development)
+        shell: sh
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ steps.releasecode.outputs.releasename }}
-          RELEASE_PRERELEASE: "false"
         run: |
-          docker run --rm \
-            -e GITHUB_TOKEN -e RELEASE_TAG -e RELEASE_PRERELEASE \
-            -e GITHUB_REPOSITORY -e GITHUB_SHA \
-            --entrypoint /bin/sh docker.io/curlimages/curl:8.14.1 -c '
-              curl -fsS -X POST \
-                "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/releases" \
-                -H "Authorization: token ${GITHUB_TOKEN}" \
-                -H "Content-Type: application/json" \
-                -d "{\"tag_name\":\"${RELEASE_TAG}\",\"name\":\"${RELEASE_TAG}\",\"target_commitish\":\"${GITHUB_SHA}\",\"prerelease\":${RELEASE_PRERELEASE}}"
-            ' || echo "Release ${RELEASE_TAG} not created (it may already exist)"
-      - name: Create Pre-Release (development)
-        if: github.ref == 'refs/heads/development' && ( success() || failure() )
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          RELEASE_TAG: ${{ steps.releasecode.outputs.releasename }}-development
-          RELEASE_PRERELEASE: "true"
-        run: |
-          docker run --rm \
-            -e GITHUB_TOKEN -e RELEASE_TAG -e RELEASE_PRERELEASE \
-            -e GITHUB_REPOSITORY -e GITHUB_SHA \
-            --entrypoint /bin/sh docker.io/curlimages/curl:8.14.1 -c '
-              curl -fsS -X POST \
-                "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/releases" \
-                -H "Authorization: token ${GITHUB_TOKEN}" \
-                -H "Content-Type: application/json" \
-                -d "{\"tag_name\":\"${RELEASE_TAG}\",\"name\":\"${RELEASE_TAG}\",\"target_commitish\":\"${GITHUB_SHA}\",\"prerelease\":${RELEASE_PRERELEASE}}"
-            ' || echo "Release ${RELEASE_TAG} not created (it may already exist)"
-
-      - name: Chores
-        if: (success() || failure())
-        run: docker compose down
+          case "${GITHUB_REF_NAME}" in
+            main)        SUFFIX="";             PRERELEASE=false ;;
+            development) SUFFIX="-development"; PRERELEASE=true ;;
+            *) echo "No release for branch ${GITHUB_REF_NAME}"; exit 0 ;;
+          esac
+          # Release name 0.1.YearMonthDay (UTC), read from .env at the built
+          # commit — no checkout needed in this job.
+          VERSION=$(curl -fsS -H "Authorization: token ${GITHUB_TOKEN}" \
+            "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/raw/.env?ref=${GITHUB_SHA}" \
+            | grep '^APP_VERSION=' | cut -d '=' -f2)
+          RELEASE_TAG="${VERSION}.$(date -u +%y%m%d)${SUFFIX}"
+          echo "Creating release ${RELEASE_TAG}"
+          curl -fsS -X POST \
+            "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/releases" \
+            -H "Authorization: token ${GITHUB_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d "{\"tag_name\":\"${RELEASE_TAG}\",\"name\":\"${RELEASE_TAG}\",\"target_commitish\":\"${GITHUB_SHA}\",\"prerelease\":${PRERELEASE}}" \
+            || echo "Release ${RELEASE_TAG} not created (it may already exist)"
