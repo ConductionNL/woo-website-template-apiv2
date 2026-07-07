@@ -2,20 +2,26 @@
 #
 # This is the ACTIVE CI pipeline and is written specifically for Codeberg.
 #
-# - `runs-on: con-ci` targets our own self-hosted runners (registered with the
-#   `con-ci` label).
-# - Images are built with docker compose and pushed to Codeberg's built-in
-#   container registry at codeberg.org/<owner>/<project>.
-# - Releases are cut with the Forgejo-native `actions/forgejo-release` action
-#   (the GitHub-only release actions from the old workflow do not exist on
-#   Codeberg).
+# Runner-class choice (talos house rules): this job needs the host docker
+# daemon (docker compose build/up/push) → host class `con-ci`, NOT the
+# container class `con-ci-oci` used by the handbook/preview pipeline.
+#
+# The con-ci host runner has no node and no curl (same constraints as
+# documented in .forgejo/workflows/preview.yaml). Therefore this workflow
+# uses NO `uses:` actions at all:
+#   - checkout is a manual `git init + fetch` (actions/checkout needs node);
+#   - releases are created via the Forgejo REST API, with curl running in a
+#     container (actions/forgejo-release needs node; the host has no curl,
+#     but it always has docker).
+#
+# Images are built with docker compose and pushed to Codeberg's built-in
+# container registry at codeberg.org/<owner>/<project>.
 #
 # The GitHub Actions workflow at .github/workflows/dockerimage.yml is kept for
 # reference/backup only and has its automatic triggers disabled.
 #
-# NOTE: the con-ci runner must be able to reach the Forgejo actions host
-# (data.forgejo.org / code.forgejo.org) and the docker registries through its
-# egress proxy, otherwise the `uses:` actions cannot be downloaded.
+# Egress: the con-ci allowlist must contain codeberg.org and docker.io
+# (both already present, see talos notes in preview.yaml).
 name: Docker Image CI
 
 on:
@@ -32,7 +38,27 @@ jobs:
   build:
     runs-on: con-ci
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout (manual — no node on these runners)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          # init + fetch instead of `git clone --branch` so pull_request refs
+          # (refs/pull/N/merge) work too, not just branch pushes.
+          git init .
+          git remote add origin "https://codeberg.org/${GITHUB_REPOSITORY}.git"
+          # Auth via env-scoped git config so the token never appears in
+          # URLs, logs or the process list (and nothing is written to the
+          # host's ~/.git-credentials, unlike the container job in
+          # preview.yaml).
+          export GIT_CONFIG_COUNT=1
+          export GIT_CONFIG_KEY_0=http.extraHeader
+          export GIT_CONFIG_VALUE_0="Authorization: Basic $(printf '%s:%s' "${GITHUB_ACTOR}" "${GITHUB_TOKEN}" | base64 | tr -d '\n')"
+          # Fallbacks: merge ref may not exist → try the PR head ref, then a
+          # plain branch name (push events).
+          git fetch --depth 1 origin "${GITHUB_REF}" \
+            || git fetch --depth 1 origin "${GITHUB_REF%merge}head" \
+            || git fetch --depth 1 origin "${GITHUB_REF_NAME}"
+          git checkout --force FETCH_HEAD
 
       - name: Export release code
         if: (success() || failure())
@@ -119,37 +145,47 @@ jobs:
         env:
           RELEASENAME: ${{ steps.releasecode.outputs.releasename }}
 
-      # forgejo-release uploads assets to a Forgejo release (creating the tag
-      # and release if needed). We have no build artifacts to attach, so we just
-      # ensure an empty directory exists to satisfy the action.
-      - name: Prepare release assets directory
-        if: (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/development') && ( success() || failure() )
-        run: mkdir -p release
-
+      # Releases via the Forgejo REST API (creates the tag + release in one
+      # call). The old actions/forgejo-release action is a node action and
+      # cannot run on these runners; curl is missing on the host, so it runs
+      # in a pinned container image. All values are passed as env vars so the
+      # token never hits the command line. Failures (e.g. 409 when the
+      # release already exists) do not fail the build, matching the old
+      # `continue-on-error: true`.
       - name: Create Release (main)
         if: github.ref == 'refs/heads/main' && ( success() || failure() )
-        id: create_release
-        uses: actions/forgejo-release@v2.13.1
-        continue-on-error: true
-        with:
-          direction: upload
-          release-dir: release
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.releasecode.outputs.releasename }}
-          title: ${{ steps.releasecode.outputs.releasename }}
-          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ steps.releasecode.outputs.releasename }}
+          RELEASE_PRERELEASE: "false"
+        run: |
+          docker run --rm \
+            -e GITHUB_TOKEN -e RELEASE_TAG -e RELEASE_PRERELEASE \
+            -e GITHUB_REPOSITORY -e GITHUB_SHA \
+            --entrypoint /bin/sh docker.io/curlimages/curl:8.14.1 -c '
+              curl -fsS -X POST \
+                "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/releases" \
+                -H "Authorization: token ${GITHUB_TOKEN}" \
+                -H "Content-Type: application/json" \
+                -d "{\"tag_name\":\"${RELEASE_TAG}\",\"name\":\"${RELEASE_TAG}\",\"target_commitish\":\"${GITHUB_SHA}\",\"prerelease\":${RELEASE_PRERELEASE}}"
+            ' || echo "Release ${RELEASE_TAG} not created (it may already exist)"
       - name: Create Pre-Release (development)
         if: github.ref == 'refs/heads/development' && ( success() || failure() )
-        id: create_prerelease
-        uses: actions/forgejo-release@v2.13.1
-        continue-on-error: true
-        with:
-          direction: upload
-          release-dir: release
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.releasecode.outputs.releasename }}-development
-          title: ${{ steps.releasecode.outputs.releasename }}-development
-          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          RELEASE_TAG: ${{ steps.releasecode.outputs.releasename }}-development
+          RELEASE_PRERELEASE: "true"
+        run: |
+          docker run --rm \
+            -e GITHUB_TOKEN -e RELEASE_TAG -e RELEASE_PRERELEASE \
+            -e GITHUB_REPOSITORY -e GITHUB_SHA \
+            --entrypoint /bin/sh docker.io/curlimages/curl:8.14.1 -c '
+              curl -fsS -X POST \
+                "https://codeberg.org/api/v1/repos/${GITHUB_REPOSITORY}/releases" \
+                -H "Authorization: token ${GITHUB_TOKEN}" \
+                -H "Content-Type: application/json" \
+                -d "{\"tag_name\":\"${RELEASE_TAG}\",\"name\":\"${RELEASE_TAG}\",\"target_commitish\":\"${GITHUB_SHA}\",\"prerelease\":${RELEASE_PRERELEASE}}"
+            ' || echo "Release ${RELEASE_TAG} not created (it may already exist)"
 
       - name: Chores
         if: (success() || failure())
