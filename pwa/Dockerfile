@@ -69,8 +69,8 @@ RUN chown -R nginx:nginx /usr/share/nginx && chmod -R 755 /usr/share/nginx && \
         chown -R nginx:nginx /var/cache/nginx && \
         chown -R nginx:nginx /var/log/nginx && \
         chown -R nginx:nginx /etc/nginx/conf.d
-RUN touch /var/run/nginx.pid && \
-        chown -R nginx:nginx /var/run/nginx.pid
+# NB no pid-file setup here: the pid lives in /tmp (see docker/nginx.conf) —
+# /var/run is on kaniko's ignore list and does not exist during CI builds.
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/default.conf.template /etc/nginx/templates/default.conf.template

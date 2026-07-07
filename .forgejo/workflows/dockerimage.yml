@@ -196,6 +196,7 @@ jobs:
             --snapshot-mode=redo \
             --cache=true \
             --cache-repo "codeberg.org/${OWNER}/${PROJECT}-cache" \
+            --compressed-caching=false \
             "$@"
 
   # Releases via the Forgejo REST API (creates tag + release in one call).
