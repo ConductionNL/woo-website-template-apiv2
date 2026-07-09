@@ -402,7 +402,7 @@ export const WooThemeTemplate: React.FC = () => {
 
         <div>
           <h3 className={styles.header}>CardWrapper and CardHeader:</h3>
-          <CardWrapper className={styles.cardContainer}>
+          <CardWrapper className={styles.cardContainer} onClick={() => console.log("click")}>
             <CardHeader className={styles.cardHeader}>
               <CardHeaderDate>{translateDate(i18n.language, cardDate)}</CardHeaderDate>
               <CardHeaderTitle className={styles.title}>
@@ -422,27 +422,27 @@ export const WooThemeTemplate: React.FC = () => {
           <h3 className={styles.header}>Logo:</h3>
           <section className={styles.section}>
             <span>Logo:</span>
-            <Logo onClick={() => console.log("click")} />
+            <Logo onClick={() => console.log("click")} layoutClassName={styles.logo} />
 
             <span>Header:</span>
             <div className={styles.logoHeader}>
-              <Logo variant="header" onClick={() => console.log("click")} />
+              <Logo variant="header" onClick={() => console.log("click")} layoutClassName={styles.logo} />
             </div>
 
             <span>Footer:</span>
             <div className={styles.logoFooter}>
-              <Logo variant="footer" onClick={() => console.log("click")} />
+              <Logo variant="footer" onClick={() => console.log("click")} layoutClassName={styles.logo} />
             </div>
 
             <span>NavBar:</span>
             <Container layoutClassName={styles.primaryNavContainer}>
               <div className={clsx(styles.logoContainer, styles.logoDesktopNavigation)}>
-                <Logo variant="navbar" onClick={() => console.log("click")} />
+                <Logo variant="navbar" onClick={() => console.log("click")} layoutClassName={styles.logo} />
               </div>
               <PrimaryTopNav
                 mobileLogo={
                   <div className={clsx(styles.logoContainer, styles.logoMobile)}>
-                    <Logo variant="navbar" onClick={() => console.log("click")} />
+                    <Logo variant="navbar" onClick={() => console.log("click")} layoutClassName={styles.logo} />
                   </div>
                 }
                 items={headerTopNavItems}
