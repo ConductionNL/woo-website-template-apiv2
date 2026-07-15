@@ -79,18 +79,12 @@
     --utrecht-skip-link-border-bottom-color,
     var(--utrecht-skip-link-border-color)
   );
-  /* Prefer the theme's focus glow (--utrecht-focus-box-shadow, e.g.
-     Midden-Delfland); themes without it keep the solid ring built from the
-     skip-link box-shadow width and the inverse outline color. */
-  --_utrecht-focus-ring-box-shadow: var(
-    --utrecht-focus-box-shadow,
-    0 0 0
-      var(
-        --utrecht-skip-link-box-shadow-width,
-        var(--utrecht-focus-outline-width, 0)
-      )
-      var(--utrecht-focus-inverse-outline-color, transparent)
-  ) !important;
+  --_utrecht-focus-ring-box-shadow: 0 0 0
+    var(
+      --utrecht-skip-link-box-shadow-width,
+      var(--utrecht-focus-outline-width, 0)
+    )
+    var(--utrecht-focus-inverse-outline-color, transparent) !important;
 }
 
 .skipLink:focus {

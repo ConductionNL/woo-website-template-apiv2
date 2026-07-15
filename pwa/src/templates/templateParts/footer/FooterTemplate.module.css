@@ -105,40 +105,6 @@
   ) !important;
 }
 
-/* Keyboard focus — the .link rule above forces the footer link color with
-   !important, which also beats the utrecht link focus color, leaving white
-   text on the white focus background. Restore the focus tokens' colors on
-   :focus-visible (higher specificity than .link, so these !important
-   declarations win). Fallbacks keep themes without focus tokens unchanged. */
-.link:focus-visible {
-  color: var(--utrecht-focus-color, inherit) !important;
-  background-color: var(
-    --utrecht-focus-background-color,
-    transparent
-  ) !important;
-  /* The .link rule's !important text-decoration-line suppresses underlines in
-     every state, so restore it on focus from the link focus token (e.g. Buren:
-     buren.nl underlines focused links). Inherit fallback = no change for
-     themes without the token. */
-  text-decoration-line: var(
-    --utrecht-link-focus-text-decoration,
-    inherit
-  ) !important;
-  /* Focus glow — inert unless the theme defines the token (e.g.
-     Midden-Delfland's layered white glow around focused links on the colored
-     footer, matching the website's --focusBoxShadow). */
-  box-shadow: var(--utrecht-focus-box-shadow, none) !important;
-}
-
-/* Icons inside a focused footer link set their own color
-   (--utrecht-page-footer-icon-color) and would otherwise keep it on the focus
-   background (e.g. a white icon on the white focus pill). Follow the focus
-   color; falls back to inherit (= the .link focus color) when unset. */
-.link:focus-visible .iconLeft,
-.link:focus-visible .iconRight {
-  color: var(--utrecht-focus-color, inherit);
-}
-
 .withLoveConductionLink {
   display: inline-block;
 }
@@ -171,21 +137,11 @@
   gap: 28px;
 }
 
-.headingLevel1 {
-  --_heading-font-size: var(--utrecht-heading-1-font-size, inherit);
-}
-.headingLevel2 {
-  --_heading-font-size: var(--utrecht-heading-2-font-size, inherit);
-}
-.headingLevel3 {
-  --_heading-font-size: var(--utrecht-heading-3-font-size, inherit);
-}
-.headingLevel4 {
-  --_heading-font-size: var(--utrecht-heading-4-font-size, inherit);
-}
-.headingLevel5 {
-  --_heading-font-size: var(--utrecht-heading-5-font-size, inherit);
-}
+.headingLevel1 { --_heading-font-size: var(--utrecht-heading-1-font-size, inherit); }
+.headingLevel2 { --_heading-font-size: var(--utrecht-heading-2-font-size, inherit); }
+.headingLevel3 { --_heading-font-size: var(--utrecht-heading-3-font-size, inherit); }
+.headingLevel4 { --_heading-font-size: var(--utrecht-heading-4-font-size, inherit); }
+.headingLevel5 { --_heading-font-size: var(--utrecht-heading-5-font-size, inherit); }
 
 .dynamicSectionTitle,
 .dynamicItemHeading {
@@ -199,10 +155,7 @@
     --utrecht-page-footer-heading-font-weight,
     inherit
   ) !important;
-  font-size: var(
-    --utrecht-page-footer-heading-font-size,
-    var(--_heading-font-size, inherit)
-  ) !important;
+  font-size: var(--utrecht-page-footer-heading-font-size, var(--_heading-font-size, inherit)) !important;
 }
 
 .dynamicItemHeading {

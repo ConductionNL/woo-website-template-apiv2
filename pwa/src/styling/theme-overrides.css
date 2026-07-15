@@ -29,54 +29,6 @@ svg.octicon {
   scale: 1;
 }
 
-/* Focus glow on textboxes — driven by the --utrecht-textbox-focus-box-shadow
-   design token, inert by default. @utrecht/textbox-css has no box-shadow
-   support at all, so this is the only way the token reaches the component.
-   The glow (e.g. Midden-Delfland's layered white glow, matching the website's
-   --focusBoxShadow) deliberately applies ONLY to input fields, footer link
-   hover (FooterTemplate.module.css) and the skip-link
-   (HeaderTemplate.module.css) — not to buttons or links in general. Prefers
-   the textbox-specific token, falls back to the theme-wide focus glow, else
-   no shadow. */
-.utrecht-textbox:focus-visible {
-  box-shadow: var(
-    --utrecht-textbox-focus-box-shadow,
-    var(--utrecht-focus-box-shadow, none)
-  );
-}
-
-/* Link keyboard-focus outline — @utrecht/link-css applies the focus tokens'
-   color and background-color on links but never the outline, while the
-   NLDS focus tokens (and middendelfland.nl, which shows its dotted black
-   outline + glow on every focused link, e.g. in the footer) expect links to
-   carry the same indicator as buttons. Apply the focus outline tokens with
-   revert fallbacks (the exact pattern @utrecht/button-css uses), so themes
-   without focus outline tokens keep the browser/component default. */
-.utrecht-link--html-a:any-link:focus-visible,
-.utrecht-link--html-span:focus-visible {
-  outline-color: var(--utrecht-focus-outline-color, revert);
-  outline-offset: var(--utrecht-focus-outline-offset, revert);
-  outline-style: var(--utrecht-focus-outline-style, revert);
-  outline-width: var(--utrecht-focus-outline-width, revert);
-}
-
-/* Pagination keyboard focus — the conduction Pagination component
-   (react-paginate) renders bare <a> elements with no focus styling of their
-   own, so they fall back to the browser default outline. Wire them to the
-   theme focus tokens (black text on the white focus pill with the dotted
-   outline on Midden-Delfland/Voorschoten/Wassenaar, matching the pagination
-   on their live sites' search pages). The [class*="Pagination"] hook is the
-   same convention the component itself uses to find its list. Revert/inert
-   fallbacks keep themes without focus tokens unchanged. */
-ul[class*="Pagination"] a:focus-visible {
-  color: var(--utrecht-focus-color, inherit);
-  background-color: var(--utrecht-focus-background-color, transparent);
-  outline-style: var(--utrecht-focus-outline-style, revert);
-  outline-color: var(--utrecht-focus-outline-color, revert);
-  outline-width: var(--utrecht-focus-outline-width, revert);
-  outline-offset: var(--utrecht-focus-outline-offset, revert);
-}
-
 /* Unordered-list marker — driven by NLDS design tokens, but inert by default.
    Each declaration reads a --utrecht-unordered-list-marker-* custom property
    with a fallback that reproduces the browser's default ::marker behavior. When

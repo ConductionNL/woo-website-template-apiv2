@@ -10,16 +10,6 @@
   flex-direction: column;
 }
 
-/* Keyboard focus — CardWrapper renders a bare focusable div without focus
-   styling of its own, so wire it to the theme focus tokens; same rule as the
-   theme demo pages so real cards and demo cards look identical. */
-.cardContainer:focus-visible {
-  outline-style: var(--utrecht-focus-outline-style, revert);
-  outline-color: var(--utrecht-focus-outline-color, revert);
-  outline-width: var(--utrecht-focus-outline-width, revert);
-  outline-offset: var(--utrecht-focus-outline-offset, revert);
-}
-
 .cardContainer:hover .cardHeader {
   border-bottom-color: var(--conduction-card-header-hover-border-bottom-color);
 }
@@ -66,17 +56,6 @@
     --conduction-card-wrapper-hover-text-decoration-color,
     var(--conduction-card-wrapper-text-decoration-color, inherit)
   );
-}
-
-/* On focus the card title switches to the card-header title focus color
-   (black on Midden-Delfland/Voorschoten/Wassenaar, wired to their focus
-   tokens). A dedicated token rather than --utrecht-focus-color directly:
-   themes with an inverse focus style (e.g. Leiden's white focus color)
-   must not lose their title against the unchanged card background. Placed
-   after the hover rules so focus wins when both apply; inherit fallback
-   keeps themes without the token unchanged. */
-.cardContainer:focus-visible .title > * {
-  color: var(--conduction-card-header-title-focus-color, inherit) !important;
 }
 
 .cardFooter {

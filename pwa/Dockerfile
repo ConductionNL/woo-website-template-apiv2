@@ -1,15 +1,14 @@
-FROM node:20 AS builder
+FROM node:18 AS builder
 # Set working directory
 WORKDIR /app
 
 COPY package.json package-lock.json ./
 
 # Copy all files from current directory to working dir in image
-# install node modules and build assets.
-# One RUN on purpose: separate npm layers leave cross-layer whiteouts
-# (rotated npm logs) that kaniko cannot extract from cached layers
-# (".wh.* invalid argument", observed 2026-07-07).
-RUN npm install && npm install @parcel/watcher
+# install node modules and build assets
+RUN npm install
+
+RUN npm install @parcel/watcher
 
 COPY . .
 
@@ -34,11 +33,6 @@ ARG GATSBY_SHOW_ORGANIZATION
 ARG GATSBY_ANALYTICS_URL
 ARG GATSBY_DATE_FULL_MONTH
 ARG GATSBY_TABLE_SCROLL_MODE
-# Gatsby spawns one build worker per visible CPU core by default; CI passes
-# a small number here to bound peak memory (the default keeps local builds
-# unchanged). Accepts a number, "logical_cores" or "physical_cores".
-ARG GATSBY_CPU_COUNT=logical_cores
-ENV GATSBY_CPU_COUNT=$GATSBY_CPU_COUNT
 ENV GATSBY_ENV_VARS_SET=$GATSBY_ENV_VARS_SET
 ENV GATSBY_API_BASE_URL=$GATSBY_API_BASE_URL
 ENV GATSBY_DEV_ENVIRONMENT=$GATSBY_DEV_ENVIRONMENT
@@ -70,8 +64,8 @@ RUN chown -R nginx:nginx /usr/share/nginx && chmod -R 755 /usr/share/nginx && \
         chown -R nginx:nginx /var/cache/nginx && \
         chown -R nginx:nginx /var/log/nginx && \
         chown -R nginx:nginx /etc/nginx/conf.d
-# NB no pid-file setup here: the pid lives in /tmp (see docker/nginx.conf) —
-# /var/run is on kaniko's ignore list and does not exist during CI builds.
+RUN touch /var/run/nginx.pid && \
+        chown -R nginx:nginx /var/run/nginx.pid
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/default.conf.template /etc/nginx/templates/default.conf.template

@@ -2,37 +2,6 @@ import * as React from "react";
 import { getConfig } from "../services/getConfig";
 import { uniqueId } from "lodash";
 
-// DEV ONLY: set to a theme class (e.g. "barneveld-theme") to force that theme on every refresh,
-// without editing .env or restarting the dev server. Leave "" for normal (env/domain/config) behavior.
-const DEV_THEME_OVERRIDE = "";
-
-const DEFAULT_THEME_CLASSNAME = "conduction-theme";
-
-/**
- * The single place that writes the NL Design System theme class to the DOM.
- *
- * The class is intentionally set on BOTH <html> and <body> — each element needs it for a
- * different reason, and dropping either one breaks the page (see pwa/src/styling/global.css):
- *
- *  - <html>: the theme defines `--conduction-root-font-size`, which `html { font-size: ... }`
- *    reads to set the rem base. CSS custom properties only cascade DOWN, so if the class lived
- *    on <body> only, <html> could not see the variable and the rem base would wrongly fall back
- *    to 1rem. The root font-size is the ONLY token <html> actually consumes; the class carries
- *    all the other tokens too, but those are harmless there (unread, they just cascade down).
- *
- *  - <body>: the "flash guard" `body:not([class*="-theme"]) { visibility: hidden }` keeps the
- *    whole page invisible until a theme class lands on <body>. It also carries every token the
- *    components read. Remove it and the page never becomes visible.
- *
- * This is still a single source of truth: one value (`resolved`) written from one function.
- */
-const applyThemeClass = (themeClass: string) => {
-  if (typeof document === "undefined") return;
-  const resolved = DEV_THEME_OVERRIDE || themeClass || DEFAULT_THEME_CLASSNAME;
-  document.documentElement.className = resolved; // rem base via --conduction-root-font-size
-  document.body.className = resolved; // visibility gate + component tokens
-};
-
 export const useEnvironment = () => {
   const [, setSessionStorageUpdatedId] = React.useState("-1");
 
@@ -84,7 +53,11 @@ export const useEnvironment = () => {
       set("DATE_FULL_MONTH", "GATSBY_DATE_FULL_MONTH");
       set("TABLE_SCROLL_MODE", "GATSBY_TABLE_SCROLL_MODE");
       // Apply theme class immediately if provided
-      applyThemeClass(window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "");
+      const themeClass = window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "conduction-theme";
+      if (typeof document !== "undefined") {
+        document.documentElement.className = themeClass;
+        document.body.className = themeClass;
+      }
       updateSessionStorage();
     } catch (_) {}
   };
@@ -95,7 +68,7 @@ export const useEnvironment = () => {
       "API_BASE_URL",
       process.env.GATSBY_DEV_ENVIRONMENT === "true"
         ? "https://opencatalogi.accept.commonground.nu/apps/opencatalogi/api"
-        : (process.env.GATSBY_API_BASE_URL ?? ""),
+        : process.env.GATSBY_API_BASE_URL ?? "",
     );
     window.sessionStorage.setItem("NL_DESIGN_THEME_CLASSNAME", process.env.GATSBY_NL_DESIGN_THEME_CLASSNAME ?? "");
     window.sessionStorage.setItem("FAVICON_URL", process.env.GATSBY_FAVICON_URL ?? "");
@@ -118,7 +91,11 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", process.env.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");
 
     // Apply theme class immediately to prevent flash
-    applyThemeClass(process.env.GATSBY_NL_DESIGN_THEME_CLASSNAME ?? "");
+    const themeClass = process.env.GATSBY_NL_DESIGN_THEME_CLASSNAME ?? "conduction-theme";
+    if (typeof document !== "undefined") {
+      document.documentElement.className = themeClass;
+      document.body.className = themeClass;
+    }
 
     updateSessionStorage();
     await overlayFromRuntimeJson();
@@ -134,7 +111,7 @@ export const useEnvironment = () => {
       "API_BASE_URL",
       process.env.GATSBY_DEV_ENVIRONMENT === "true"
         ? "https://opencatalogi.accept.commonground.nu/apps/opencatalogi/api"
-        : (config.GATSBY_API_BASE_URL ?? ""),
+        : config.GATSBY_API_BASE_URL ?? "",
     );
     window.sessionStorage.setItem("NL_DESIGN_THEME_CLASSNAME", config.GATSBY_NL_DESIGN_THEME_CLASSNAME ?? "");
     window.sessionStorage.setItem("FAVICON_URL", config.GATSBY_FAVICON_URL ?? "");
@@ -155,9 +132,6 @@ export const useEnvironment = () => {
     // CSP overrides (optional)
     window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL", config.GATSBY_CSP_CONNECT_SRC_FULL ?? "");
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", config.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");
-
-    // Apply theme class immediately (this path previously relied on Head.tsx to set it)
-    applyThemeClass(config.GATSBY_NL_DESIGN_THEME_CLASSNAME ?? "");
 
     updateSessionStorage();
   };

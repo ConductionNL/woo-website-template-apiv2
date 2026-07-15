@@ -65,6 +65,12 @@ export const Head: React.FC = () => {
       htmlAttributes={{
         lang: currentLanguage,
       }}
+      bodyAttributes={{
+        class:
+          window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ||
+          process.env.GATSBY_NL_DESIGN_THEME_CLASSNAME ||
+          "conduction-theme",
+      }}
     >
       <meta
         httpEquiv="Content-Security-Policy"

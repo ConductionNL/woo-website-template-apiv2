@@ -1,19 +1,14 @@
-# Docker Image CI — GitHub Actions (reference / backup only)
-#
-# NOTE: CI has moved to Codeberg. The active pipeline now lives at
-# .forgejo/workflows/dockerimage.yml and runs on our own self-hosted runners
-# (via `runs-on: con-ci`).
-#
-# The automatic push/pull_request triggers below have been removed on purpose:
-# Forgejo Actions (Codeberg) also reads workflow files under .github/workflows,
-# so leaving them enabled would cause this workflow to run a second, duplicate
-# build on every push to Codeberg. It is kept here for reference and as a backup
-# should we ever move back to GitHub-hosted CI. It can still be started manually
-# from the Actions tab (workflow_dispatch).
 name: Docker Image CI
 
 on:
-  workflow_dispatch:
+  pull_request:
+    branches:
+      - main
+      - development
+  push:
+    branches:
+      - main
+      - development
 
 jobs:
   build:

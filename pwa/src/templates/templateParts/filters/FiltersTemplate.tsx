@@ -64,22 +64,11 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   };
 
   const handleSetSelectFormValues = (params: any): void => {
-    if (!getCategories.isSuccess) return;
-
-    /*
-     * The URL carries the category LABEL (written by the navigate effect below as
-     * `?categorie=<label_with_underscores>`), while option.value holds the schema id
-     * ("10") since the facet buckets became { value: <id>, label: <name> }. So restore
-     * by label; the value comparison stays as a fallback for old-style URLs where the
-     * param and the option value were both the name.
-     */
-    const target = params.categorie?.replace(/_/g, " ");
-    setValue(
-      "category",
-      categoryOptions.options.find(
-        (option: any) => option.label?.toLowerCase() === target?.toLowerCase() || option.value === target,
-      ),
-    );
+    getCategories.isSuccess &&
+      setValue(
+        "category",
+        categoryOptions.options.find((option: any) => option.value === params.categorie?.replace(/_/g, " ")),
+      );
   };
 
   const onSubmit = (data: any) => {
