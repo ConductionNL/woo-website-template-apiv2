@@ -2,6 +2,19 @@ FROM node:20 AS builder
 # Set working directory
 WORKDIR /app
 
+# npm log files are the whiteout source on this infra: every npm run writes
+# a timestamped log to /root/.npm/_logs and prunes older ones, and deleting
+# a file that came from an EARLIER layer becomes a whiteout entry (.wh.*)
+# in the layer tar. kaniko materializes whiteouts as literal files when it
+# re-extracts CACHED layers, and the CI runners' overlayfs forbids creating
+# ".wh.*" names — so any full cache hit dies with ".wh.* invalid argument"
+# (observed 2026-07-07 between the two npm installs, 2026-07-09 between
+# npm install and npm run build). logs-max=0 stops npm writing log files at
+# all: nothing to rotate, no cross-layer deletes, no whiteouts. Changing
+# this line also changes every cache key, retiring the poisoned cache
+# entries without manual registry cleanup.
+ENV NPM_CONFIG_LOGS_MAX=0
+
 COPY package.json package-lock.json ./
 
 # Copy all files from current directory to working dir in image

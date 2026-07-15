@@ -97,19 +97,33 @@ jobs:
           test -f /kaniko/buildcontext/.env
           test -f /kaniko/buildcontext/pwa/Dockerfile
 
-      - name: Build the image (and push on branch pushes)
+      # ──────────────────────────────────────────────────────────────────
+      # Build and push are SEPARATE steps: "Build the image" always runs
+      # and NEVER pushes the image; "Push the image" only runs for branch
+      # pushes. On a PR the push step is the only skipped step — that skip
+      # is the visible guarantee that the PR run pushed nothing.
+      #
+      # kaniko cannot hand a finished image to a later step (no daemon, no
+      # crane/skopeo in this container), so the push step is a second
+      # kaniko run that ASSEMBLES the image from the layer cache the build
+      # step uploaded moments earlier (branch pushes only) and pushes it.
+      # Identical context + identical build args → the cache keys line up
+      # and every expensive RUN layer (npm install, gatsby build) is a
+      # cache hit; on a cache miss it transparently rebuilds — slower but
+      # still correct. KEEP THE TWO ARG-PARSING BLOCKS IN SYNC: matching
+      # build args are exactly what makes the cache keys match.
+      # ──────────────────────────────────────────────────────────────────
+      - name: Build the image
         shell: sh
         env:
-          # Push auth REQUIRES the REGISTRY_TOKEN secret: a Codeberg access
-          # token with scope write:package only, owned by an org member (or
-          # machine account) with package write. The automatic Actions token
-          # carries NO package write on Forgejo v15 (platform fact; upstream
-          # rejected granting it, forgejo PR #6538) — no fallback to it.
-          # The registry requires the login username to match the token's
-          # owner, so set the REGISTRY_USER secret to that account name; it
-          # falls back to the pushing user for the personal-token case.
-          REGISTRY_USER: ${{ secrets.REGISTRY_USER || github.actor }}
-          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+          # Credentials are only present on push events, and only so this
+          # step can upload LAYER CACHE for the push step to assemble from
+          # — the image itself is never pushed here (--no-push always).
+          # On pull_request both are empty and --no-push-cache is added:
+          # a PR build has no credential at all, so it cannot push anything.
+          # See the push step for what the secrets must contain.
+          REGISTRY_USER: ${{ github.event_name == 'push' && (secrets.REGISTRY_USER || github.actor) || '' }}
+          REGISTRY_TOKEN: ${{ github.event_name == 'push' && secrets.REGISTRY_TOKEN || '' }}
         run: |
           # Source was cloned here by the checkout step.
           cd /kaniko/buildcontext
@@ -117,7 +131,7 @@ jobs:
           # Image name: codeberg.org/<owner>/<project>:<tag>, mirroring the
           # compose file (CONTAINER_PROJECT_NAME comes from .env). Tag:
           # main -> latest, development -> development; PR builds tag after
-          # their base branch but are never pushed.
+          # their base branch (naming only — nothing is pushed).
           OWNER=$(printf '%s' "${GITHUB_REPOSITORY%%/*}" | tr 'A-Z' 'a-z')
           PROJECT=$(grep '^CONTAINER_PROJECT_NAME=' .env | cut -d '=' -f2)
           REF="${GITHUB_BASE_REF:-${GITHUB_REF_NAME}}"
@@ -127,21 +141,23 @@ jobs:
           esac
           IMAGE="codeberg.org/${OWNER}/${PROJECT}:${TAG}"
 
-          PUSH=false
           if [ "${GITHUB_EVENT_NAME}" = "push" ]; then
             if [ -z "${REGISTRY_TOKEN}" ]; then
               echo "REGISTRY_TOKEN secret is missing (Codeberg access token, scope write:package)." >&2
               echo "The automatic Actions token cannot push packages on Forgejo v15 — see workflow header." >&2
               exit 1
             fi
-            PUSH=true
             # kaniko reads registry auth from /kaniko/.docker/config.json;
             # the credential is written there, never onto a command line.
             mkdir -p /kaniko/.docker
             AUTH=$(printf '%s:%s' "${REGISTRY_USER}" "${REGISTRY_TOKEN}" | base64 | tr -d '\n')
             printf '{"auths":{"codeberg.org":{"auth":"%s"}}}\n' "$AUTH" > /kaniko/.docker/config.json
+            CACHE_FLAGS=""
+            echo "Building ${IMAGE} — branch build, uploading layer cache for the push step"
+          else
+            CACHE_FLAGS="--no-push-cache"
+            echo "Building ${IMAGE} — PR check: no push, no cache upload, no credentials"
           fi
-          echo "Building ${IMAGE} (push=${PUSH})"
 
           # GATSBY_* build args from .env, parsed line-based exactly like
           # compose does (the file cannot be sourced: some values contain
@@ -177,18 +193,87 @@ jobs:
             --build-arg "HTTPS_PROXY=${HTTPS_PROXY:-}" \
             --build-arg "NO_PROXY=${NO_PROXY:-}"
 
-          if [ "$PUSH" != "true" ]; then
-            set -- "$@" --no-push --no-push-cache
-          fi
+          # --no-push ALWAYS: this step never pushes the image. Layer cache
+          # lives in its own package in the Codeberg registry: the expensive
+          # npm-install layer is reused as long as package*.json is
+          # unchanged, because the Dockerfile copies package*.json and runs
+          # npm install BEFORE the `COPY . .` of the sources — keep that
+          # order or every commit invalidates the layer. snapshot-mode=redo
+          # makes filesystem snapshots much cheaper. (index.docker.io is on
+          # the egress allowlist since 2026-07-07, so no --registry-mirror
+          # mapping is needed anymore.)
+          /kaniko/executor \
+            --context "dir://$(pwd)/pwa" \
+            --dockerfile Dockerfile \
+            --destination "${IMAGE}" \
+            --snapshot-mode=redo \
+            --cache=true \
+            --cache-repo "codeberg.org/${OWNER}/${PROJECT}-cache" \
+            --compressed-caching=false \
+            --no-push \
+            ${CACHE_FLAGS} \
+            "$@"
 
-          # (index.docker.io is on the egress allowlist since 2026-07-07,
-          # so no --registry-mirror mapping is needed anymore.)
-          # Layer cache lives in its own package in the Codeberg registry:
-          # the expensive npm-install layer is reused as long as
-          # package*.json is unchanged, because the Dockerfile copies
-          # package*.json and runs npm install BEFORE the `COPY . .` of the
-          # sources — keep that order or every commit invalidates the layer.
-          # snapshot-mode=redo makes filesystem snapshots much cheaper.
+      - name: Push the image
+        if: ${{ github.event_name == 'push' }}
+        shell: sh
+        env:
+          # Push auth REQUIRES the REGISTRY_TOKEN secret: a Codeberg access
+          # token with scope write:package only, owned by an org member (or
+          # machine account) with package write. The automatic Actions token
+          # carries NO package write on Forgejo v15 (platform fact; upstream
+          # rejected granting it, forgejo PR #6538) — no fallback to it.
+          # The registry requires the login username to match the token's
+          # owner, so set the REGISTRY_USER secret to that account name; it
+          # falls back to the pushing user for the personal-token case.
+          REGISTRY_USER: ${{ secrets.REGISTRY_USER || github.actor }}
+          REGISTRY_TOKEN: ${{ secrets.REGISTRY_TOKEN }}
+        run: |
+          cd /kaniko/buildcontext
+
+          # Same image name computation as the build step; on push events
+          # the ref IS the branch.
+          OWNER=$(printf '%s' "${GITHUB_REPOSITORY%%/*}" | tr 'A-Z' 'a-z')
+          PROJECT=$(grep '^CONTAINER_PROJECT_NAME=' .env | cut -d '=' -f2)
+          case "${GITHUB_REF_NAME}" in
+            *main*) TAG=latest ;;
+            *)      TAG=development ;;
+          esac
+          IMAGE="codeberg.org/${OWNER}/${PROJECT}:${TAG}"
+
+          # The build step already validated the token and wrote
+          # /kaniko/.docker/config.json (same job container, state
+          # persists between steps) — rewrite it anyway so this step also
+          # works standalone, e.g. when re-running a single failed step.
+          mkdir -p /kaniko/.docker
+          AUTH=$(printf '%s:%s' "${REGISTRY_USER}" "${REGISTRY_TOKEN}" | base64 | tr -d '\n')
+          printf '{"auths":{"codeberg.org":{"auth":"%s"}}}\n' "$AUTH" > /kaniko/.docker/config.json
+          echo "Assembling ${IMAGE} from the layer cache and pushing"
+
+          # Build args MUST match the build step exactly — they are part of
+          # the layer-cache keys. KEEP IN SYNC with the build step above.
+          set --
+          while IFS= read -r line; do
+            case "$line" in
+              GATSBY_*=*)
+                k=${line%%=*}
+                v=${line#*=}
+                case "$v" in
+                  \"*\") v=${v#\"}; v=${v%\"} ;;
+                  \'*\') v=${v#\'}; v=${v%\'} ;;
+                esac
+                set -- "$@" --build-arg "${k}=${v}"
+                ;;
+            esac
+          done < .env
+          set -- "$@" --build-arg "GATSBY_CPU_COUNT=2"
+          set -- "$@" \
+            --build-arg "HTTP_PROXY=${HTTP_PROXY:-}" \
+            --build-arg "HTTPS_PROXY=${HTTPS_PROXY:-}" \
+            --build-arg "NO_PROXY=${NO_PROXY:-}"
+
+          # Every RUN layer was just uploaded to the cache-repo by the
+          # build step, so this run is assembly + push, not a rebuild.
           /kaniko/executor \
             --context "dir://$(pwd)/pwa" \
             --dockerfile Dockerfile \
