@@ -32,10 +32,7 @@ name: Container image (ghcr)
 
 on:
   push:
-    branches:
-      - main
-      - development
-      - ci/ghcr-pipeline   # TIJDELIJK: pilot-trigger — verwijderen in de PR naar development
+    branches: [main, development]
     tags: ["v*.*.*"]
   pull_request:
     branches: [main, development]
