@@ -23,6 +23,14 @@ interface FiltersTemplateProps {
   isLoading: boolean;
 }
 
+/**
+ * Turns a category label into its URL-slug form by collapsing every run of whitespace
+ * (spaces, tabs, etc.) into a single underscore. Used on BOTH the write path (label ->
+ * URL) and the read path (matching the URL param back to an option), so the round-trip
+ * stays symmetric even for labels with trailing tabs or repeated spaces.
+ */
+const slugifyLabel = (label?: string): string | undefined => label?.replace(/\s+/g, "_");
+
 export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) => {
   const { t } = useTranslation();
   const { setPagination } = usePaginationContext();
@@ -72,12 +80,21 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
      * ("10") since the facet buckets became { value: <id>, label: <name> }. So restore
      * by label; the value comparison stays as a fallback for old-style URLs where the
      * param and the option value were both the name.
+     *
+     * Match by re-slugifying each option label the SAME way the write path does (see
+     * navigate effect below) instead of reversing it. The write transform
+     * (`\s+` -> `_`) is lossy for trailing/repeated whitespace such as a trailing tab
+     * ("...stukken\t") or double spaces, so reversing it (`_` -> " ") would not
+     * reproduce the original label and the round-trip would fail to match.
      */
-    const target = params.categorie?.replace(/_/g, " ");
+    const target = params.categorie;
     setValue(
       "category",
       categoryOptions.options.find(
-        (option: any) => option.label?.toLowerCase() === target?.toLowerCase() || option.value === target,
+        (option: any) =>
+          slugifyLabel(option.label)?.toLowerCase() === target?.toLowerCase() ||
+          option.value === target ||
+          option.label?.toLowerCase() === target?.replace(/_/g, " ").toLowerCase(),
       ),
     );
   };
@@ -115,9 +132,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
     if (_.isEqual(filters, queryParams)) return;
 
     setQueryParams(filters);
-    const categoryLabel = categoryOptions.options
-      .find((option: any) => option.value === filters["@self[schema]"])
-      ?.label.replace(/\s+/g, "_");
+    const categoryLabel = slugifyLabel(
+      categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])?.label,
+    );
 
     navigate(`/${filtersToUrlQueryParams({ ...filters, "@self[schema]": categoryLabel })}`);
     setPagination({ currentPage: 1 });
