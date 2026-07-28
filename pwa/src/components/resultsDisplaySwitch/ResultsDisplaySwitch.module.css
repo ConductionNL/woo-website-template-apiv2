@@ -8,6 +8,18 @@
   cursor: pointer;
 }
 
+/* The pressed button is the active view: it cannot be toggled off, so it
+   should not invite a click with hover feedback or a pointer cursor. */
+.button[aria-pressed="true"] {
+  cursor: default;
+}
+
+.button[aria-pressed="true"]:hover {
+  background-color: var(--utrecht-button-primary-action-background-color);
+  border-color: var(--utrecht-button-primary-action-border-color);
+  color: var(--utrecht-button-primary-action-color);
+}
+
 @media only screen and (max-width: 992px) {
   /* Tablet */
   .container {
