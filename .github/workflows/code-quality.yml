@@ -1,0 +1,48 @@
+name: Code Quality
+
+on:
+  push:
+    branches: [main, beta, development, feature/**, bugfix/**, hotfix/**]
+  pull_request:
+    types: [opened, reopened]
+    branches: [main, beta, development]
+  workflow_dispatch:
+
+concurrency:
+  group: quality-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+# Permission CEILING for the called quality pipeline. GitHub statically
+# validates the called workflow's declared job permissions against this
+# grant — even for jobs that are disabled — so it must cover the maximum
+# any nested job declares: journeydoc-capture (contents+actions write),
+# update-baseline / features-extract (contents write), and the Quality
+# Report PR comment (issues / pull-requests write).
+permissions:
+  contents: write
+  actions: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  quality:
+    if: github.event_name != 'push' || github.event.created != true
+    uses: ConductionNL/.github/.github/workflows/quality.yml@main
+    with:
+      app-name: woo-website-template-apiv2
+      # Gatsby site living entirely in pwa/ — no root package.json and no
+      # composer.json anywhere.
+      enable-php: false
+      frontend-path: pwa
+      enable-frontend: true
+      # eslint/stylelint were never enforced in this repo; the lint script
+      # (eslint + prettier) and typecheck can be enabled once the codebase
+      # passes them. stylelint has no npm script here at all.
+      enable-eslint: false
+      enable-stylelint: false
+      # The Gatsby production build is this repo's real quality gate — the
+      # only thing the legacy pull-request-build-check enforced.
+      frontend-checks: '["build"]'
+      # No openspec/specs and no docs/features.json — the features check
+      # would fail on every PR comparing "" against "[]".
+      enable-features-extract: false
