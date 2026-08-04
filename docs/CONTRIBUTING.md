@@ -17,3 +17,42 @@ Deelnemen aan het OpenWoo.app project is een uitnodiging om deel uit te maken va
 Wij geloven in de kracht van een gemeenschap die samenwerkt om iets geweldigs te bouwen. Uw bijdragen, groot of klein, zijn waardevol voor het succes van OpenWoo.app. Samen kunnen we een open, flexibel en gebruiksvriendelijk platform creëren dat de manier waarop we op het web werken, transformeert.
 
 We kijken uit naar uw bijdragen en het samen bouwen aan een de OpenWoo.app.
+
+## Commit-berichten: Conventional Commits (verplicht)
+
+Commit-berichten volgen [Conventional Commits](https://www.conventionalcommits.org):
+`type(scope)?: omschrijving`. De commit-types sturen de **automatische semantische
+versionering** van de Docker-images aan (semantic-release, zie
+`VERSIONING-PLAN-v3.md`) — een verkeerd type betekent dus ongemerkt een verkeerde
+of ontbrekende versie.
+
+| Type | Versie-effect |
+|---|---|
+| `fix:` | patch (`1.0.0` → `1.0.1`) |
+| `feat:` | minor (`1.0.0` → `1.1.0`) |
+| `feat!:` of footer `BREAKING CHANGE:` | major (`1.0.0` → `2.0.0`) |
+| `build:` `chore:` `ci:` `docs:` `perf:` `refactor:` `revert:` `style:` `test:` | geen release |
+
+Let op:
+
+- `hotfix:` is **geen** geldig type. Hotfix-*branches* heten `hotfix/*`, maar de
+  commits en PR-titels gebruiken `fix:`.
+- Een lokale git-hook (`.husky/commit-msg`, via husky/commitlint) weigert
+  afwijkende berichten direct bij het committen; CI controleert daarnaast elke
+  PR (titel én alle commits), dus omzeilen met `--no-verify` heeft geen zin.
+- PR-titels volgen dezelfde conventie: feature/hotfix-PR's worden ge-squash-merged,
+  waardoor de PR-titel de commit wordt die de versie bepaalt.
+
+### Merge-methodes per branch-paar
+
+| PR | Merge-methode |
+|---|---|
+| feature/fix-branch → `development` | **Squash** |
+| `hotfix/*` → `main` | **Squash** |
+| `development` → `beta` en `beta` → `main` | **Merge commit — nooit squashen of rebasen** |
+| back-merge `main` → `development` (na elke stabiele release) | **Merge commit — nooit squashen** |
+
+Squashen van een promotie- of back-merge-PR klapt de release-historie samen tot
+één commit: de versie-bump zou dan door die ene titel bepaald worden en
+`development` verliest de release-tags die het nodig heeft om correcte
+prerelease-versies te berekenen.

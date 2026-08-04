@@ -1,0 +1,78 @@
+# PR lint — Conventional Commits enforcement (see VERSIONING-PLAN).
+#
+# Commit types drive automated semantic versioning (fix: -> patch,
+# feat: -> minor, feat!/BREAKING CHANGE -> major), so a wrong message means a
+# wrong version — silently. Two checks:
+#
+#   title    PR title must be a Conventional Commit. Feature/hotfix PRs are
+#            squash-merged, so the TITLE becomes the commit that
+#            semantic-release reads. Skipped for the promotion PRs
+#            (development→beta, beta→main) — those are merge commits whose
+#            title never enters history.
+#   commits  every commit in the PR must be a Conventional Commit
+#            (commitlint; merge commits are ignored by its default rules).
+#            This is the CI backstop for the local .husky/commit-msg hook,
+#            which can be bypassed with --no-verify.
+#
+# The `github.server_url` guard exists because Forgejo/Codeberg also executes
+# files under .github/workflows; these jobs are GitHub-only and must be a
+# no-op there (the runners have no node and cannot run `uses:` actions).
+#
+# Actions pinned on commit SHA (supply-chain policy; resolved 2026-08-04,
+# tag in the comment).
+
+name: PR lint (Conventional Commits)
+
+on:
+  pull_request:
+    types: [opened, edited, reopened, synchronize]
+    branches: [main, beta, development]
+
+permissions:
+  pull-requests: read
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  title:
+    name: PR title is a Conventional Commit
+    if: >-
+      github.server_url == 'https://github.com' &&
+      github.head_ref != 'development' &&
+      github.head_ref != 'beta'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  commits:
+    name: All commits are Conventional Commits
+    if: github.server_url == 'https://github.com'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history — commitlint walks the PR range)
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      # npx -p installs the exact-pinned CLI + preset into a throwaway
+      # prefix — no `npm ci` of the full pwa dependency tree needed. Same
+      # versions as pwa/package.json devDependencies (keep in sync).
+      - name: commitlint over the PR commit range
+        run: |
+          npx --yes \
+            -p @commitlint/cli@19.8.1 \
+            -p @commitlint/config-conventional@19.8.1 \
+            commitlint \
+            --extends @commitlint/config-conventional \
+            --from ${{ github.event.pull_request.base.sha }} \
+            --to ${{ github.event.pull_request.head.sha }} \
+            --verbose

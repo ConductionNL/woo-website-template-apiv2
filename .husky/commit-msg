@@ -1,0 +1,4 @@
+# Reject commit messages that are not Conventional Commits — commit types
+# drive automated semantic versioning (see VERSIONING-PLAN). CI re-checks
+# every PR, so bypassing this hook (--no-verify) only postpones the failure.
+npx --no-install --prefix pwa commitlint --config pwa/commitlint.config.js --edit "$1"

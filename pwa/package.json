@@ -121,6 +121,8 @@
     "style-dictionary": "^3.9.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "19.8.1",
+    "@commitlint/config-conventional": "19.8.1",
     "@parcel/watcher": "^2.5.1",
     "@types/dateformat": "^5.0.2",
     "@types/dedent": "^0.7.2",
