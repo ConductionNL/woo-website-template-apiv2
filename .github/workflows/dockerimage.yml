@@ -1,112 +1,174 @@
-# Docker Image CI — GitHub Actions (reference / backup only)
+# Docker Image CI — restored pre-Codeberg workflow, modernized (2026-08-04).
 #
-# NOTE: CI has moved to Codeberg. The active pipeline now lives at
-# .forgejo/workflows/dockerimage.yml and runs on our own self-hosted runners
-# (via `runs-on: con-ci`).
+# Provenance: this is the workflow that built and pushed images on GitHub
+# before the Codeberg/kaniko migration (baseline: `git show
+# f57767c0~1:.github/workflows/dockerimage.yml`), restored per decision
+# 2026-08-04 and upgraded for semantic versioning (see VERSIONING-PLAN-v3.md).
 #
-# The automatic push/pull_request triggers below have been removed on purpose:
-# Forgejo Actions (Codeberg) also reads workflow files under .github/workflows,
-# so leaving them enabled would cause this workflow to run a second, duplicate
-# build on every push to Codeberg. It is kept here for reference and as a backup
-# should we ever move back to GitHub-hosted CI. It can still be started manually
-# from the Actions tab (workflow_dispatch).
+# What was restored from the original:
+#   - GitHub-hosted build that pushes to ghcr
+#   - the runtime SMOKE TEST (compose up → poll HTTP → logs) that the kaniko
+#     flow could not do (no docker daemon on those runners)
+# What was deliberately NOT restored (known bugs, see plan §3):
+#   - date-based releases from APP_VERSION (`success() || failure()` +
+#     continue-on-error created releases even for failed builds, and same-day
+#     merges overwrote each other's image tags). Releases and git tags are
+#     now created ONLY by semantic-release (.github/workflows/release.yml);
+#     this workflow builds images FROM those tags.
+# What was folded in from container.yml (superseded, kept dispatch-only):
+#   - declarative tags via docker/metadata-action: sha-<full-sha> (immutable
+#     deploy anchor), :main/:development branch pointers (no :latest — there
+#     were once two different "latest" on two registries), semver on v* tags
+#   - buildx + GHA layer cache, GATSBY_* build-args from .env,
+#     provenance: false (pilot decision, besluitregister 2026-07-15 —
+#     reconsider after the pilot)
+#
+# Triggers:
+#   pull_request        build + smoke test only, never pushes (push: false)
+#   push branch         image :development / :main + sha tag
+#   push tag v*.*.*     versioned image :vX.Y.Z[-development.N] + sha tag
+#   workflow_dispatch   invoked BY release.yml with --ref <new tag>, because
+#                       tags created with GITHUB_TOKEN do not fire push
+#                       events (GitHub anti-recursion rule) — dispatch is the
+#                       documented exception that does trigger workflows.
+#
+# The `github.server_url` guard exists because Forgejo/Codeberg also executes
+# files under .github/workflows — that is exactly why this workflow's
+# triggers were removed during the migration. The guard makes it a clean
+# no-op there instead; the Codeberg image build has its own pipeline
+# (.forgejo/workflows/dockerimage.yml).
+#
+# Actions pinned on commit SHA (supply-chain policy; resolved 2026-08-04,
+# tag in the comment).
+
 name: Docker Image CI
 
 on:
+  pull_request:
+    branches: [main, development]
+  push:
+    branches: [main, development]
+    tags: ["v*.*.*"]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+# Never cancel a branch/tag build (a cancelled tag build = a version without
+# an image); PR builds may be superseded by a newer push.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   build:
+    if: github.server_url == 'https://github.com'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-      - name: Export release code
-        if: (success() || failure())
-        id: releasecode #version number in a more comprehensible format: 0.1.YearMonthDay in UTC
-        run: |
-          export VERSION=$(grep APP_VERSION= .env | cut -d '=' -f2)
-          export RELEASE=$VERSION.$(date --utc +%y%m%d)
-          echo "RELEASE=$RELEASE" >> $GITHUB_ENV
-          echo "releasename=$RELEASE" >> $GITHUB_OUTPUT
-      - name: Setting APP_NAME
-        run: |
-          export NAME=$(grep APP_NAME= .env | cut -d '=' -f2)
-          echo "APP_NAME=$NAME" >> $GITHUB_ENV
-      - name: Print app name
-        run: echo "APP_NAME = $APP_NAME"
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - name: Setting APP_ENV for main
-        if: contains( github.ref, 'main' ) || contains( github.base_ref, 'main' )
+      # GATSBY_*-defaults from .env as build-args (line-based; .env is not
+      # source-able due to unquoted spaces). Only surrounding quotes are
+      # stripped. Tenant config stays runtime (runtime.json overlay) — these
+      # are bake-time defaults only. Same mechanism as the Codeberg flow.
+      - name: GATSBY_* build-args from .env
+        id: buildargs
         run: |
-          echo "APP_ENV=latest" >> $GITHUB_ENV
-          echo "APP_BUILD=latest" >> $GITHUB_ENV
-      - name: Setting APP_ENV for development
-        if: contains( github.ref, 'development' ) || contains( github.base_ref, 'development' )
-        run: |
-          echo "APP_ENV=development" >> $GITHUB_ENV
-          echo "APP_BUILD=development" >> $GITHUB_ENV
+          {
+            echo 'args<<BUILDARGS_EOF'
+            grep -E '^GATSBY_[A-Za-z0-9_]+=' .env \
+              | sed -e 's/^\([^=]*\)="\(.*\)"$/\1=\2/' \
+                    -e "s/^\([^=]*\)='\(.*\)'$/\1=\2/"
+            echo 'BUILDARGS_EOF'
+          } >> "$GITHUB_OUTPUT"
 
-      - name: Print definitive APP_ENV
-        run: echo "APP_ENV is now $APP_ENV and APP_BUILD is now $APP_BUILD"
-      - name: Build the Docker image
-        run: docker compose build --build-arg APP_ENV=$APP_ENV --build-arg APP_BUILD=$APP_BUILD --build-arg APP_BUILD_ALL_FIXTURES=true
-      - name: Run the docker image
-        run: docker compose up -d
-      - name: Taking some sleep (for containers to come up)
-        run: sleep 20
-      - name: Check if all containers are running
-        run: docker ps
-      - name: Dumping the logs
-        run: docker compose logs
-      - name: Show all images
-        run: docker images
-      - name: Login to Container Registry
-        id: containerregistry-login
-        run: |
-         if [ "${{ secrets.GITHUB_TOKEN }}" != "" ]; then
-           echo ${{ secrets.GITHUB_TOKEN }} | docker login ghcr.io -u $(cut -d'/' -f1 <<< $GITHUB_REPOSITORY) --password-stdin
-           echo "success=true" >> $GITHUB_OUTPUT
-         else
-           echo "success=false" >> $GITHUB_OUTPUT
-         fi
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
 
-      - if: steps.containerregistry-login.outputs.success == 'true' && github.ref == 'refs/heads/main'
-        name: Push to Container Registry (main → latest)
-        run: docker compose push
-      - if: steps.containerregistry-login.outputs.success == 'true' && github.ref == 'refs/heads/development'
-        name: Push to Container Registry (development → development)
-        run: docker compose push
-
-      - name: Print release name
-        if: (success() || failure())
-        run: echo $RELEASENAME
-        env:
-          RELEASENAME: ${{ steps.releasecode.outputs.releasename }}
-      - name: Create Release
-        if: github.ref == 'refs/heads/main' && ( success() || failure() )
-        id: create_release
-        uses: softprops/action-gh-release@v2
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Login ghcr
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
         with:
-          tag_name: ${{ steps.releasecode.outputs.releasename }}
-          name: ${{ steps.releasecode.outputs.releasename }}
-          draft: false
-          prerelease: false
-      - name: Create Pre-Release (development)
-        if: github.ref == 'refs/heads/development' && ( success() || failure() )
-        id: create_prerelease
-        uses: actions/create-release@v1
-        continue-on-error: true
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # All tag logic lives HERE, declaratively. metadata-action lowercases
+      # the image name itself (ConductionNL → conductionnl) — which is what
+      # keeps it equal to CONTAINER_REGISTRY_BASE/CONTAINER_PROJECT_NAME in
+      # .env, the name docker-compose (and the smoke test) uses.
+      - name: Docker metadata (tags + labels)
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
         with:
-          tag_name: ${{ steps.releasecode.outputs.releasename }}-development
-          release_name: ${{ steps.releasecode.outputs.releasename }}-development
-          draft: false
-          prerelease: true
-      - name: Chores
-        if: (success() || failure())
-        run: docker compose down
+          images: ghcr.io/${{ github.repository_owner }}/woo-website-v2
+          tags: |
+            type=sha,format=long
+            type=ref,event=branch
+            type=semver,pattern=v{{version}}
+
+      # Build WITHOUT pushing, loaded into the local daemon so the smoke
+      # test below can actually run the image. The push happens in a
+      # separate step after the smoke test passes — build and push being
+      # separate steps is the visible guarantee that nothing unsmoked is
+      # ever published (same principle as the Codeberg build/push split).
+      - name: Build image (no push)
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: pwa
+          file: pwa/Dockerfile
+          push: false
+          load: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            GATSBY_CPU_COUNT=2
+            ${{ steps.buildargs.outputs.args }}
+
+      # Runtime smoke test, restored from the original workflow: start the
+      # freshly built image via docker-compose (which supplies UPSTREAM_*
+      # from .env for the nginx template) and require an HTTP 200 from the
+      # site before anything is pushed. APP_BUILD selects the sha-tag we
+      # just built — the one tag every trigger type produces.
+      - name: Smoke test (compose up + HTTP check)
+        env:
+          APP_BUILD: sha-${{ github.sha }}
+        run: |
+          docker compose up --detach --no-build pwa
+          ok=""
+          for i in $(seq 1 30); do
+            if curl -fsS -o /dev/null http://localhost:8000/; then ok=1; break; fi
+            sleep 2
+          done
+          echo "--- docker compose ps ---";   docker compose ps
+          echo "--- docker compose logs ---"; docker compose logs
+          docker compose down
+          if [ -z "$ok" ]; then
+            echo "Smoke test FAILED: site did not answer on :8000 within 60s" >&2
+            exit 1
+          fi
+          echo "Smoke test passed"
+
+      # Same build definition with push: true — every layer is a cache hit
+      # from the build step above, so this is assembly + push, not a rebuild.
+      # KEEP THE BUILD ARGS IDENTICAL to the build step: matching args are
+      # what makes the cache keys line up.
+      - name: Push image (branch/tag/dispatch only)
+        if: github.event_name != 'pull_request'
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: pwa
+          file: pwa/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          provenance: false
+          cache-from: type=gha
+          build-args: |
+            GATSBY_CPU_COUNT=2
+            ${{ steps.buildargs.outputs.args }}

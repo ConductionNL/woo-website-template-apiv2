@@ -1,5 +1,24 @@
 # .github/workflows/container.yml — woo-website-v2 → ghcr.io
 #
+# ── SUPERSEDED 2026-08-04 (preserved for reference, never triggers) ─────────
+# The restored dockerimage.yml is now the active GitHub image pipeline
+# (decision 2026-08-04, see VERSIONING-PLAN-v3.md): it carries this
+# workflow's machinery (metadata-action tag schema, buildx + GHA cache,
+# provenance stance, GATSBY build-args) PLUS the pre-Codeberg runtime smoke
+# test. The automatic triggers below were replaced by workflow_dispatch so
+# this file can never produce a second, competing image build; it can still
+# be started manually from the Actions tab. Re-enabling = restoring the
+# original `on:` block (kept in the comment below).
+#
+# Original triggers:
+#   on:
+#     push:
+#       branches: [main, development]
+#       tags: ["v*.*.*"]
+#     pull_request:
+#       branches: [main, development]
+# ─────────────────────────────────────────────────────────────────────────────
+#
 # Tag-schema (besluit 2026-07-15, industriestandaard, git-SHA als anker):
 #   sha-<volledige commit-sha>  immutable anker, ELKE build (format=long is
 #     bewust: de metadata-action-default is een 7-teken short-sha en dat gaf
@@ -31,11 +50,7 @@
 name: Container image (ghcr)
 
 on:
-  push:
-    branches: [main, development]
-    tags: ["v*.*.*"]
-  pull_request:
-    branches: [main, development]
+  workflow_dispatch:
 
 permissions:
   contents: read
