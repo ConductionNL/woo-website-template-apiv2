@@ -73,6 +73,7 @@ jobs:
             -p @commitlint/config-conventional@19.8.1 \
             commitlint \
             --extends @commitlint/config-conventional \
+            --help-url 'https://github.com/ConductionNL/woo-website-template-apiv2/blob/main/docs/CONTRIBUTING.md#commit-berichten-conventional-commits-verplicht' \
             --from ${{ github.event.pull_request.base.sha }} \
             --to ${{ github.event.pull_request.head.sha }} \
             --verbose
