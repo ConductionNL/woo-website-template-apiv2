@@ -81,3 +81,23 @@ Squashen van een promotie- of back-merge-PR klapt de release-historie samen tot
 één commit: de versie-bump zou dan door die ene titel bepaald worden en
 `development` verliest de release-tags die het nodig heeft om correcte
 prerelease-versies te berekenen.
+
+## Licenties van dependencies
+
+CI controleert alle npm-dependencies tegen een lijst goedgekeurde licenties
+(zie ook de sectie *Licensing* in de README). Voor bijdragers is dit relevant:
+
+- Voegt een nieuwe dependency zonder geldige SPDX-licentie een fout toe aan de
+  "License (npm)"-check? Neem de package dan alleen op als daar een goede reden
+  voor is, en voeg een entry toe aan
+  [`.license-overrides.json`](../.license-overrides.json) met onderbouwing,
+  je GitHub-handle en datum (zie de bestaande entries voor het formaat).
+- `pwa/package.json` bevat bewust **`"private": true`**: dit is een website,
+  geen npm-package. De vlag maakt `npm publish` onmogelijk — ook per ongeluk,
+  bijvoorbeeld door CI-tooling (semantic-release's npm-plugin slaat publiceren
+  over dankzij deze vlag). **Niet verwijderen.**
+- Daardoor rapporteert license-checker onze eigen package altijd als
+  `UNLICENSED`: de tool negeert het licentieveld van private packages. Het
+  licentieveld (`EUPL-1.2`) is correcte metadata voor mensen en andere tooling,
+  en de eigen package heeft daarnaast een entry in `.license-overrides.json`
+  voor de check. Beide zijn nodig; geen van beide is overbodig.
