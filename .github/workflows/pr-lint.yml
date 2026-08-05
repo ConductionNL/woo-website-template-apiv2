@@ -63,17 +63,33 @@ jobs:
         with:
           node-version: 24
 
-      # npx -p installs the exact-pinned CLI + preset into a throwaway
-      # prefix — no `npm ci` of the full pwa dependency tree needed. Same
-      # versions as pwa/package.json devDependencies (keep in sync).
+      # The exact-pinned CLI + preset go into a scratch dir OUTSIDE the repo,
+      # and the config file sits next to that node_modules — commitlint
+      # resolves `extends` relative to the config file's location, so
+      # resolution works without installing the full pwa dependency tree.
+      # (A bare `--extends` flag resolves from the repo cwd instead and
+      # fails with MODULE_NOT_FOUND — learned on PR #150.) Same versions as
+      # pwa/package.json devDependencies (keep in sync).
       - name: commitlint over the PR commit range
         run: |
-          npx --yes \
-            -p @commitlint/cli@19.8.1 \
-            -p @commitlint/config-conventional@19.8.1 \
-            commitlint \
-            --extends @commitlint/config-conventional \
-            --help-url 'https://github.com/ConductionNL/woo-website-template-apiv2/blob/main/docs/CONTRIBUTING.md#commit-berichten-conventional-commits-verplicht' \
+          TOOL="$RUNNER_TEMP/commitlint-tool"
+          mkdir -p "$TOOL"
+          (
+            cd "$TOOL"
+            npm init -y > /dev/null
+            npm install --no-audit --no-fund \
+              @commitlint/cli@19.8.1 \
+              @commitlint/config-conventional@19.8.1 > /dev/null
+          )
+          cat > "$TOOL/commitlint.config.js" <<'EOF'
+          module.exports = {
+            extends: ["@commitlint/config-conventional"],
+            helpUrl:
+              "https://github.com/ConductionNL/woo-website-template-apiv2/blob/main/docs/CONTRIBUTING.md#commit-berichten-conventional-commits-verplicht",
+          };
+          EOF
+          "$TOOL/node_modules/.bin/commitlint" \
+            --config "$TOOL/commitlint.config.js" \
             --from ${{ github.event.pull_request.base.sha }} \
             --to ${{ github.event.pull_request.head.sha }} \
             --verbose
