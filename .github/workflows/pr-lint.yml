@@ -4,15 +4,17 @@
 # feat: -> minor, feat!/BREAKING CHANGE -> major), so a wrong message means a
 # wrong version — silently. Two checks:
 #
-#   title    PR title must be a Conventional Commit. Feature/hotfix PRs are
-#            squash-merged, so the TITLE becomes the commit that
-#            semantic-release reads. Skipped for the promotion PRs
-#            (development→beta, beta→main) — those are merge commits whose
-#            title never enters history.
 #   commits  every commit in the PR must be a Conventional Commit
 #            (commitlint; merge commits are ignored by its default rules).
-#            This is the CI backstop for the local .husky/commit-msg hook,
-#            which can be bypassed with --no-verify.
+#            THIS IS THE VERSION GATE: all PRs are merged with merge
+#            commits, so the individual branch commits are what
+#            semantic-release reads — every fix:/feat: commit bumps the
+#            version and lands in the changelog. CI backstop for the local
+#            .husky/commit-msg hook, which can be bypassed with --no-verify.
+#   title    PR title must be a Conventional Commit — hygiene for a readable
+#            PR overview (the title itself never enters history). Skipped
+#            for the promotion PRs (development→beta, beta→main) and
+#            backmerge/* PRs, whose titles are descriptive.
 #
 # The `github.server_url` guard exists because Forgejo/Codeberg also executes
 # files under .github/workflows; these jobs are GitHub-only and must be a
@@ -42,7 +44,8 @@ jobs:
     if: >-
       github.server_url == 'https://github.com' &&
       github.head_ref != 'development' &&
-      github.head_ref != 'beta'
+      github.head_ref != 'beta' &&
+      !startsWith(github.head_ref, 'backmerge/')
     runs-on: ubuntu-latest
     steps:
       - uses: amannn/action-semantic-pull-request@48f256284bd46cdaab1048c3721360e808335d50 # v6.1.1
