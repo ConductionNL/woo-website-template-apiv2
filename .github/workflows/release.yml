@@ -1,0 +1,110 @@
+# Release — semantic versioning via semantic-release (see VERSIONING-PLAN-v3.md).
+#
+# What this does on every push to development / main:
+#   1. semantic-release reads the Conventional Commits since the last release
+#      (enforcement: .husky/commit-msg + pr-lint.yml) and, when they warrant
+#      a release, creates the git tag + GitHub (pre-)release with generated
+#      notes. development → prerelease vX.Y.Z-development.N; main → vX.Y.Z.
+#      Config in .releaserc.json; only the commit-analyzer /
+#      release-notes-generator / github plugins run — this workflow never
+#      pushes commits, only tags and releases.
+#   2. If a tag was created: dispatch the image build (dockerimage.yml) for
+#      that tag. This dispatch is REQUIRED, not an optimization — pushes made
+#      with GITHUB_TOKEN do not fire `on: push` events (GitHub's
+#      anti-recursion rule), so the tag itself cannot trigger the build;
+#      workflow_dispatch is the documented exception that does trigger.
+#   3. On a STABLE release (main): push a backmerge/<tag> branch and open the
+#      back-merge PR main → development. The back-merge is what keeps
+#      development's prerelease versions correct after hotfixes (plan §6.4)
+#      and must be merged with a MERGE COMMIT (never squash) so the release
+#      tag's commit enters development's history.
+#
+# beta is deliberately absent: it is an org-branch-protection pass-through
+# and gets no versions, releases, or images (plan §6.1).
+#
+# concurrency queues (cancel-in-progress: false): a cancelled release run
+# would be a merge that silently produced no version.
+#
+# The `github.server_url` guard exists because Forgejo/Codeberg also executes
+# files under .github/workflows; this job is GitHub-only.
+#
+# Actions pinned on commit SHA, npm packages exact-pinned (supply-chain
+# policy; resolved 2026-08-04, tag in the comment).
+
+name: Release (semantic-release)
+
+on:
+  push:
+    branches: [main, development]
+
+permissions:
+  contents: write        # create tags + releases, push the backmerge branch
+  issues: write          # release-notes comments on resolved issues
+  pull-requests: write   # release-notes comments + the back-merge PR
+  actions: write         # dispatch dockerimage.yml for the new tag
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: github.server_url == 'https://github.com'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history + tags — semantic-release needs both)
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24
+
+      - name: semantic-release
+        run: npx --yes semantic-release@25.0.8
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # semantic-release leaves the new tag on HEAD (locally and on origin).
+      # No tag on HEAD = the commits warranted no release = nothing to do.
+      # Old date tags (V1.0.*) never match the ^v<digit> pattern.
+      - name: Detect created tag
+        id: tag
+        run: |
+          git fetch origin --tags --quiet
+          TAG=$(git tag --points-at HEAD | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+' | head -n 1 || true)
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          if [ -n "${TAG}" ]; then
+            echo "Release tag on HEAD: ${TAG}"
+          else
+            echo "No release was created for this push."
+          fi
+
+      - name: Build image for the new tag (workflow_dispatch — see header)
+        if: steps.tag.outputs.tag != ''
+        run: gh workflow run dockerimage.yml --ref "${{ steps.tag.outputs.tag }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Stable releases only (main, no prerelease suffix): open the
+      # back-merge PR so development regains the release tag in its history
+      # and recomputes its prerelease version (plan §6.4). Skipped when main
+      # is already contained in development (nothing to back-merge).
+      - name: Open back-merge PR main → development
+        if: github.ref == 'refs/heads/main' && steps.tag.outputs.tag != '' && !contains(steps.tag.outputs.tag, '-')
+        run: |
+          TAG="${{ steps.tag.outputs.tag }}"
+          git fetch origin development --quiet
+          if git merge-base --is-ancestor HEAD origin/development; then
+            echo "main is already part of development — no back-merge needed."
+            exit 0
+          fi
+          git push origin "HEAD:refs/heads/backmerge/${TAG}"
+          gh pr create \
+            --base development \
+            --head "backmerge/${TAG}" \
+            --title "chore: back-merge ${TAG} into development" \
+            --body "$(printf 'Automated back-merge of release **%s** (plan §6.4: keeps development prerelease versions correct and carries hotfixes back).\n\n**Merge with a MERGE COMMIT — do not squash.** Squashing would keep the release tag out of development history and break prerelease version calculation.' "${TAG}")"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

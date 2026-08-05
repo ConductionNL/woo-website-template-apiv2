@@ -292,7 +292,12 @@ jobs:
   # not fail the job either.
   release:
     needs: build
-    if: ${{ !cancelled() && github.event_name == 'push' }}
+    # DISABLED 2026-08-04: date-based releases are superseded by semantic
+    # versioning on GitHub (semantic-release creates vX.Y.Z tags + releases;
+    # see VERSIONING-PLAN-v3.md). Job preserved for reference — re-enable by
+    # restoring the original condition below.
+    # if: ${{ !cancelled() && github.event_name == 'push' }}
+    if: ${{ false }}
     runs-on: con-ci-oci
     container:
       image: docker.io/curlimages/curl:8.14.1
