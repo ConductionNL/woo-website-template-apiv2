@@ -48,10 +48,15 @@ When writing or suggesting a pull request:
   `beta → main`, and the automated `backmerge/*` PRs; their titles may be
   descriptive ("Release v1.2.0").
 - **Description: only the commits being merged.** Describe what this PR
-  changes and why — nothing else. No test plans, no review notes, no side
-  findings, no follow-ups for other repos, no version-effect explanations.
-  Anything discovered *while* doing the work but not *part of* the change
-  goes to the requester in chat or into a separate issue.
+  changes and why — nothing else. No test plans, no side findings, no
+  follow-ups for other repos, no version-effect explanations. Anything
+  discovered *while* doing the work but not *part of* the change goes to the
+  requester in chat or into a separate issue.
+- **Review notes: only to preempt a predictable reviewer question about THIS
+  change.** Example that qualifies: "upgrading the flagged packages doesn't
+  fix their licenses — latest versions use the same license form" (answers
+  the inevitable "why not just update?"). Not qualified: inventories of
+  things found along the way, or suggestions for other repos.
 
 ## Branch flow & merge methods
 
