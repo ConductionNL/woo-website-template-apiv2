@@ -1,4 +1,4 @@
-# PR lint — Conventional Commits enforcement (see VERSIONING-PLAN).
+# PR lint — Conventional Commits enforcement (see docs/CONTRIBUTING.md).
 #
 # Commit types drive automated semantic versioning (fix: -> patch,
 # feat: -> minor, feat!/BREAKING CHANGE -> major), so a wrong message means a

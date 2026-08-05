@@ -3,13 +3,14 @@
 # Provenance: this is the workflow that built and pushed images on GitHub
 # before the Codeberg/kaniko migration (baseline: `git show
 # f57767c0~1:.github/workflows/dockerimage.yml`), restored per decision
-# 2026-08-04 and upgraded for semantic versioning (see VERSIONING-PLAN-v3.md).
+# 2026-08-04 and upgraded for semantic versioning (tags come from
+# semantic-release — see release.yml; convention in docs/CONTRIBUTING.md).
 #
 # What was restored from the original:
 #   - GitHub-hosted build that pushes to ghcr
 #   - the runtime SMOKE TEST (compose up → poll HTTP → logs) that the kaniko
 #     flow could not do (no docker daemon on those runners)
-# What was deliberately NOT restored (known bugs, see plan §3):
+# What was deliberately NOT restored (known bugs in the original):
 #   - date-based releases from APP_VERSION (`success() || failure()` +
 #     continue-on-error created releases even for failed builds, and same-day
 #     merges overwrote each other's image tags). Releases and git tags are

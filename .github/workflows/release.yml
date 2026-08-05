@@ -1,4 +1,5 @@
-# Release — semantic versioning via semantic-release (see VERSIONING-PLAN-v3.md).
+# Release — semantic versioning via semantic-release (commit convention and
+# type→bump mapping: docs/CONTRIBUTING.md).
 #
 # What this does on every push to development / main:
 #   1. semantic-release reads the Conventional Commits since the last release
@@ -15,12 +16,16 @@
 #      workflow_dispatch is the documented exception that does trigger.
 #   3. On a STABLE release (main): push a backmerge/<tag> branch and open the
 #      back-merge PR main → development. The back-merge is what keeps
-#      development's prerelease versions correct after hotfixes (plan §6.4)
-#      and must be merged with a MERGE COMMIT (never squash) so the release
-#      tag's commit enters development's history.
+#      development's prerelease versions correct after hotfixes: the tag
+#      must become reachable from development, or its next prerelease is
+#      computed against a stale version. It must be merged with a MERGE
+#      COMMIT (never squash) so the release tag's commit enters
+#      development's history.
 #
 # beta is deliberately absent: it is an org-branch-protection pass-through
-# and gets no versions, releases, or images (plan §6.1).
+# (development → beta → main) and gets no versions, releases, or images —
+# merge commits carry the same commits through to main, where they are
+# analyzed once.
 #
 # concurrency queues (cancel-in-progress: false): a cancelled release run
 # would be a merge that silently produced no version.
@@ -89,7 +94,7 @@ jobs:
 
       # Stable releases only (main, no prerelease suffix): open the
       # back-merge PR so development regains the release tag in its history
-      # and recomputes its prerelease version (plan §6.4). Skipped when main
+      # and recomputes its prerelease version. Skipped when main
       # is already contained in development (nothing to back-merge).
       - name: Open back-merge PR main → development
         if: github.ref == 'refs/heads/main' && steps.tag.outputs.tag != '' && !contains(steps.tag.outputs.tag, '-')
@@ -105,6 +110,6 @@ jobs:
             --base development \
             --head "backmerge/${TAG}" \
             --title "chore: back-merge ${TAG} into development" \
-            --body "$(printf 'Automated back-merge of release **%s** (plan §6.4: keeps development prerelease versions correct and carries hotfixes back).\n\n**Merge with a MERGE COMMIT — do not squash.** Squashing would keep the release tag out of development history and break prerelease version calculation.' "${TAG}")"
+            --body "$(printf 'Automated back-merge of release **%s** — keeps development prerelease versions correct and carries hotfixes back.\n\n**Merge with a MERGE COMMIT — do not squash.** Squashing would keep the release tag out of development history and break prerelease version calculation.' "${TAG}")"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

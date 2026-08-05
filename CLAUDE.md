@@ -6,8 +6,9 @@ Guidance for AI assistants working in this repository.
 
 Every commit message MUST follow [Conventional Commits](https://www.conventionalcommits.org) —
 commit types drive **automated semantic versioning** of the Docker images
-(semantic-release; see `VERSIONING-PLAN-v3.md`). A wrong type silently produces
-a wrong or missing version bump.
+(semantic-release via `.github/workflows/release.yml`; convention documented in
+`docs/CONTRIBUTING.md`). A wrong type silently produces a wrong or missing
+version bump.
 
 Format: `type(scope)?: description`
 
@@ -58,4 +59,6 @@ versions.
 - `development` gets prerelease versions `vX.Y.Z-development.N`; `main` gets
   stable `vX.Y.Z`. Deployments pin on the immutable `sha-<full-sha>` image
   tags, never on moving pointers.
-- Full design, history and rationale: `VERSIONING-PLAN-v3.md`.
+- Design rationale lives in the workflow headers themselves
+  (`.github/workflows/release.yml` and `.github/workflows/dockerimage.yml`)
+  and in `docs/CONTRIBUTING.md`.

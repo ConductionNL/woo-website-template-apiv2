@@ -23,7 +23,7 @@ We kijken uit naar uw bijdragen en het samen bouwen aan een de OpenWoo.app.
 Commit-berichten volgen [Conventional Commits](https://www.conventionalcommits.org):
 `type(scope)?: omschrijving`. De commit-types sturen de **automatische semantische
 versionering** van de Docker-images aan (semantic-release, zie
-`VERSIONING-PLAN-v3.md`) — een verkeerd type betekent dus ongemerkt een verkeerde
+`.github/workflows/release.yml`) — een verkeerd type betekent dus ongemerkt een verkeerde
 of ontbrekende versie.
 
 | Type | Betekenis | Versie-effect |
