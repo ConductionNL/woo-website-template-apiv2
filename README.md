@@ -35,6 +35,30 @@ elke merge, waardoor een herstart van de omgeving ongemerkt een nieuwere
 (mogelijk kapotte) build binnenhaalt. Versietags en sha-tags worden nooit
 overschreven — wat je pint, blijft wat er draait.
 
+## Licensing
+
+Deze codebase is gelicentieerd onder de **EUPL-1.2** (zie [LICENSE.md](LICENSE.md)).
+
+De CI controleert alle npm-dependencies tegen een lijst van goedgekeurde
+open-source licenties. Een aantal dependencies staat bewust op de
+uitzonderingslijst, ook al hebben ze geen geldige SPDX-licentie:
+
+- **NL Design System design tokens van gemeenten** (`@nl-design-system-unstable/*-design-tokens`,
+  `@amsterdam/design-system-*`, `@utrecht/design-tokens`): deze packages bevatten
+  de **huisstijl van de betreffende gemeente of organisatie**. Die visuele
+  identiteit is eigendom van de gemeente en wordt daarom niet onder een
+  open-source licentie uitgebracht — de licentie in het package verwijst naar de
+  website van de gemeente. Dit template gebruikt die tokens uitsluitend om de
+  eigen WOO-website van diezelfde gemeente te renderen, precies het gebruik
+  waarvoor ze zijn gepubliceerd.
+- **`linkfs`**: heeft geen licentieveld, maar de LICENSE-file in het package is
+  een public-domain-verklaring (Unlicense).
+
+De volledige lijst met uitzonderingen inclusief onderbouwing per package staat
+in [`.license-overrides.json`](.license-overrides.json); het volledige
+licentierapport van elke build is als artifact te vinden bij de
+"License (npm)"-check in GitHub Actions.
+
 ### Snel starten (Node, zonder Docker)
 1. Ga naar de PWA-map: `cd pwa`
 2. Installeer dependencies: `npm ci` (of `npm install`)
