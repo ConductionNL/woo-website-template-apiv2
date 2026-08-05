@@ -175,6 +175,7 @@ jobs:
       # what makes the cache keys line up.
       - name: Push image (branch/tag/dispatch only)
         if: github.event_name != 'pull_request'
+        id: push
         uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
         with:
           context: pwa
@@ -187,3 +188,31 @@ jobs:
           build-args: |
             GATSBY_CPU_COUNT=2
             ${{ steps.buildargs.outputs.args }}
+
+      # The digest is the content-addressed identity of the pushed image —
+      # unlike tags it can never be repointed, so it is the strongest pin a
+      # deployment can use (image@sha256:...). Publishing it here is safe:
+      # it is a one-way hash, already visible in the registry to anyone who
+      # can see the image, and grants no access by itself.
+      - name: Image digest → job summary
+        if: github.event_name != 'pull_request'
+        env:
+          OWNER: ${{ github.repository_owner }}
+          DIGEST: ${{ steps.push.outputs.digest }}
+          TAGS: ${{ steps.meta.outputs.tags }}
+        run: |
+          {
+            echo "### 📦 Image pushed"
+            echo ""
+            echo "Pin deployments on the digest (strongest, content-addressed):"
+            echo ""
+            echo '```'
+            echo "ghcr.io/${OWNER,,}/woo-website-v2@${DIGEST}"
+            echo '```'
+            echo ""
+            echo "Tags pushed in this run:"
+            echo ""
+            echo '```'
+            echo "${TAGS}"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
