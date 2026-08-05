@@ -273,9 +273,9 @@ jobs:
                      "(no \`fix:\`/\`feat:\` changes since the last release)"
               fi
               echo ""
-              echo "_Preview is computed from the commits in this PR (semantic-release" \
-                   "dry-run); on squash-merge the PR title makes the final call — see" \
-                   "docs/CONTRIBUTING.md._"
+              echo "_Preview via semantic-release dry-run over the commits in this PR —" \
+                   "the same commits the release run analyzes after the merge commit" \
+                   "lands, so this is exact (barring races with other merges)._"
               echo ""
               echo "Tags this build would publish (PR check, or the build/smoke stage failed):"
             fi

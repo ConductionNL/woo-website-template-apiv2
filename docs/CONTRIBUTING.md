@@ -59,28 +59,34 @@ Let op:
 - Een lokale git-hook (`.husky/commit-msg`, via husky/commitlint) weigert
   afwijkende berichten direct bij het committen; CI controleert daarnaast elke
   PR (titel én alle commits), dus omzeilen met `--no-verify` heeft geen zin.
-- PR-titels volgen dezelfde conventie: feature/hotfix-PR's worden ge-squash-merged,
-  waardoor de PR-titel de commit wordt die de versie bepaalt. Markeer een
-  breaking change daarom in de titel zelf met `!` (bijv. `feat!: …`), niet
-  alleen in een footer.
-- Uitzondering: de promotie-PR's (`development → beta`, `beta → main`) en de
-  automatische `backmerge/*`-PR's worden met een merge commit samengevoegd —
-  hun titel komt nooit in de historie en hoeft dus geen Conventional Commit te
-  zijn (de titel-check slaat ze over).
+- Alle PR's worden met een **merge commit** samengevoegd. Daardoor komt elke
+  individuele commit van je branch in de historie terecht en telt **elke
+  commit mee voor de versie** — niet de PR-titel. Gebruik `fix:`/`feat:` dus
+  alleen voor commits die écht een gebruikersgerichte wijziging bevatten;
+  tussenstappen en opruimwerk zijn `chore:`/`refactor:`/`docs:`. Elke
+  `fix:`/`feat:`-commit wordt ook een regel in de changelog.
+- Markeer een breaking change in de commit zelf: `feat!: …` (of een
+  `BREAKING CHANGE:`-footer).
+- PR-titels volgen dezelfde conventie (CI controleert dit) — voor een leesbaar
+  PR-overzicht; de versie wordt bepaald door de commits. Uitzondering: de
+  promotie-PR's (`development → beta`, `beta → main`) en de automatische
+  `backmerge/*`-PR's — hun titel hoeft geen Conventional Commit te zijn (de
+  titel-check slaat ze over).
 
-### Merge-methodes per branch-paar
+### Merge-methode
 
-| PR | Merge-methode |
-|---|---|
-| feature/fix-branch → `development` | **Squash** |
-| `hotfix/*` → `main` | **Squash** |
-| `development` → `beta` en `beta` → `main` | **Merge commit — nooit squashen of rebasen** |
-| back-merge `main` → `development` (na elke stabiele release) | **Merge commit — nooit squashen** |
+**Alle PR's worden met een merge commit samengevoegd** — feature-branches,
+hotfixes, promoties (`development → beta → main`) en back-merges. Squash en
+rebase worden niet gebruikt (bij voorkeur uitgezet in de repo-instellingen):
 
-Squashen van een promotie- of back-merge-PR klapt de release-historie samen tot
-één commit: de versie-bump zou dan door die ene titel bepaald worden en
-`development` verliest de release-tags die het nodig heeft om correcte
-prerelease-versies te berekenen.
+- Squashen van een promotie- of back-merge-PR klapt de release-historie samen
+  tot één commit — de versie zou dan door één titel bepaald worden en
+  `development` verliest de release-tags die het nodig heeft voor correcte
+  prerelease-versies.
+- Rebase-mergen herschrijft commit-SHA's, waardoor de `sha-<sha>`-image-tags
+  niet meer terugwijzen naar de gebouwde commits.
+- Merge commits zelf ("Merge pull request …") zijn onschadelijk: commitlint en
+  semantic-release negeren ze allebei.
 
 ## Licenties van dependencies
 

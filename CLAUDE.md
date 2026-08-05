@@ -28,28 +28,30 @@ Rules:
   propose the corrected form.
 - Never bypass the `.husky/commit-msg` hook (`--no-verify`) — CI re-checks
   every PR anyway (`.github/workflows/pr-lint.yml`).
+- **Every branch commit enters history and counts** (all PRs are merged with
+  merge commits — no squash). Use `fix:`/`feat:` only on commits that really
+  contain that kind of change; intermediate and cleanup work is
+  `chore:`/`refactor:`/`docs:`. Every `fix:`/`feat:` commit also becomes a
+  line in the release changelog. Mark breaking changes in the commit itself
+  (`feat!:` or a `BREAKING CHANGE:` footer).
 
-## PR titles & descriptions (MANDATORY for titles)
+## PR titles & descriptions
 
 When writing or suggesting a pull request:
 
-- **Title = a Conventional Commit, and it decides the version.** Feature/hotfix
-  PRs are squash-merged, so the PR title becomes the commit that
-  semantic-release reads. Choose the type by what the change does to the
-  shipped Docker image: `fix:` → patch, `feat:` → minor, workflow/docs-only
-  work → `ci:`/`docs:` (no release). Enforced by `pr-lint.yml` — a wrong
-  title blocks the merge.
-- **Breaking changes: mark them in the title** with `!` (`feat!: …` or
-  `fix!: …`). Do not rely on a `BREAKING CHANGE:` footer hidden in the
-  description — the title is the reliable part of the squash commit.
-- **Exempt PRs** (merge-committed, title never enters history — pr-lint skips
-  the title check for these): `development → beta`, `beta → main`, and the
-  automated `backmerge/*` PRs. Their titles may be descriptive
-  ("Release v1.2.0"); never squash-merge them.
-- **Description is free-form** (no lint) and has no version effect. Include:
-  what changed and why, how it was tested, and any manual steps. For PRs into
-  `development`, note the expected version effect of the title (e.g. "`fix:`
-  → will release a patch prerelease on merge").
+- **The version is decided by the branch commits, not the title** (merge-commit
+  merging: the title never becomes a commit). semantic-release takes the
+  highest bump across the newly merged commits — one release per merge, not
+  one per commit.
+- **Title: still a Conventional Commit** — enforced by `pr-lint.yml`, for a
+  readable PR overview. Exempt (title check skipped): `development → beta`,
+  `beta → main`, and the automated `backmerge/*` PRs; their titles may be
+  descriptive ("Release v1.2.0").
+- **Description: only the commits being merged.** Describe what this PR
+  changes and why — nothing else. No test plans, no review notes, no side
+  findings, no follow-ups for other repos, no version-effect explanations.
+  Anything discovered *while* doing the work but not *part of* the change
+  goes to the requester in chat or into a separate issue.
 
 ## Branch flow & merge methods
 
@@ -58,17 +60,16 @@ When writing or suggesting a pull request:
 directly to `main`). `beta` is a pass-through required by org branch
 protections — it gets no tags, releases, or images.
 
-| PR | Merge method |
-|---|---|
-| feature/fix branch → `development` | **Squash** |
-| `hotfix/*` → `main` | **Squash** |
-| `development` → `beta`, `beta` → `main` | **Merge commit — never squash, never rebase** |
-| back-merge `main` → `development` (after each stable release) | **Merge commit — never squash** |
+**Every PR is merged with a MERGE COMMIT** — feature branches, hotfixes,
+promotions and back-merges alike. Never squash, never rebase-merge:
 
-Squashing a promotion or back-merge PR collapses the release history into one
-commit: the version bump would then be decided by that single title, and
-development would lose the release tags it needs to compute correct prerelease
-versions.
+- Squashing a promotion or back-merge collapses the release history into one
+  commit — the version would be decided by a single title, and development
+  would lose the release tags it needs for correct prerelease versions.
+- Rebase-merging rewrites commit SHAs, breaking the `sha-<sha>` image-tag
+  anchors.
+- Merge commits themselves ("Merge pull request …") are harmless: commitlint
+  and semantic-release both ignore them.
 
 ## Versioning (context)
 
