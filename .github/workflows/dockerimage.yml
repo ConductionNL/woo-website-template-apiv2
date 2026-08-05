@@ -226,10 +226,13 @@ jobs:
           NEXT=$(grep -oE 'next release version is [0-9][^ ]*' "$RUNNER_TEMP/semrel-preview.log" \
             | sed 's/.* //' | tail -n 1)
           echo "next=${NEXT}" >> "$GITHUB_OUTPUT"
+          # ::notice:: renders as an annotation banner on the job page, the
+          # run summary AND the PR checks tab — visible without expanding
+          # any step (the PR "Details" link lands on the job log view).
           if [ -n "${NEXT}" ]; then
-            echo "Merging this PR into ${GITHUB_BASE_REF} would release: v${NEXT}"
+            echo "::notice title=Release preview::Merging this PR into ${GITHUB_BASE_REF} releases v${NEXT}"
           else
-            echo "Merging this PR into ${GITHUB_BASE_REF} would release nothing:"
+            echo "::notice title=Release preview::Merging this PR into ${GITHUB_BASE_REF} releases nothing (no fix:/feat: changes since the last release)"
             grep -E 'no relevant changes|no new version' "$RUNNER_TEMP/semrel-preview.log" || tail -n 5 "$RUNNER_TEMP/semrel-preview.log"
           fi
 
@@ -281,3 +284,9 @@ jobs:
             echo "${TAGS}"
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+          # Annotation banner on the job page for push runs (PR runs get
+          # theirs from the version-preview step). Must be OUTSIDE the
+          # summary redirection above or the command is not processed.
+          if [ -n "${DIGEST}" ]; then
+            echo "::notice title=Image pushed::ghcr.io/${OWNER,,}/woo-website-v2@${DIGEST}"
+          fi
