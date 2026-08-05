@@ -15,7 +15,8 @@
 #     merges overwrote each other's image tags). Releases and git tags are
 #     now created ONLY by semantic-release (.github/workflows/release.yml);
 #     this workflow builds images FROM those tags.
-# What was folded in from container.yml (superseded, kept dispatch-only):
+# What was folded in from container.yml (the interim ghcr pipeline,
+# 2026-07-15 → 2026-08-05, REMOVED — reasoning below):
 #   - declarative tags via docker/metadata-action: sha-<full-sha> (immutable
 #     deploy anchor), :main/:development branch pointers (no :latest — there
 #     were once two different "latest" on two registries), semver on v* tags
@@ -37,6 +38,19 @@
 # triggers were removed during the migration. The guard makes it a clean
 # no-op there instead; the Codeberg image build has its own pipeline
 # (.forgejo/workflows/dockerimage.yml).
+#
+# container.yml was DELETED (2026-08-05), not preserved, because this
+# workflow is a strict superset of it (identical tag schema, cache, pins
+# and provenance stance — plus the smoke test, the tag/dispatch triggers
+# and the Forgejo guard). Keeping a runnable near-copy invited manual
+# dispatches that would push images WITHOUT the smoke test, and every
+# build change would need maintaining twice. The backup build role is
+# filled by the Codeberg pipeline, not by a second GitHub workflow.
+# The full file remains in git history:
+#   git log --oneline -- .github/workflows/container.yml
+# The filename dockerimage.yml was kept (over container.yml) to mirror the
+# .forgejo counterpart, keep the 2023-onward history in one path, and match
+# the dispatch reference in release.yml.
 #
 # Actions pinned on commit SHA (supply-chain policy; resolved 2026-08-04,
 # tag in the comment).
