@@ -26,12 +26,31 @@ versionering** van de Docker-images aan (semantic-release, zie
 `VERSIONING-PLAN-v3.md`) — een verkeerd type betekent dus ongemerkt een verkeerde
 of ontbrekende versie.
 
-| Type | Versie-effect |
-|---|---|
-| `fix:` | patch (`1.0.0` → `1.0.1`) |
-| `feat:` | minor (`1.0.0` → `1.1.0`) |
-| `feat!:` of footer `BREAKING CHANGE:` | major (`1.0.0` → `2.0.0`) |
-| `build:` `chore:` `ci:` `docs:` `perf:` `refactor:` `revert:` `style:` `test:` | geen release |
+| Type | Betekenis | Versie-effect |
+|---|---|---|
+| `fix:` | Herstelt een bug voor de gebruiker | **patch** (`1.0.0` → `1.0.1`) |
+| `feat:` | Nieuwe functionaliteit voor de gebruiker | **minor** (`1.0.0` → `1.1.0`) |
+| `feat!:` of footer `BREAKING CHANGE:` | Wijziging die bestaand gebruik breekt (API, config, gedrag) | **major** (`1.0.0` → `2.0.0`) |
+| `ci:` | CI/pipeline-configuratie (workflows onder `.github/`/`.forgejo/`, release-automatisering) | geen release |
+| `build:` | Build-systeem en tooling (Dockerfile, npm-scripts, dependencies) | geen release |
+| `chore:` | Onderhoud dat nergens anders past | geen release |
+| `docs:` | Alleen documentatie | geen release |
+| `refactor:` | Code herstructureren zonder gedragswijziging | geen release |
+| `perf:` | Performance-verbetering | geen release |
+| `style:` | Formattering/whitespace, geen logica | geen release |
+| `test:` | Tests toevoegen of herstellen | geen release |
+| `revert:` | Een eerdere commit terugdraaien | geen release |
+
+Kies het type vanuit de **gebruiker van de Docker-image** gezien: verandert er
+niets aan wat de applicatie doet (zoals bij `ci:`, `docs:`, `chore:`), dan is er
+geen reden voor een nieuw versienummer. Landen er op `development` alléén
+commits zonder versie-effect, dan wordt er dus **geen** release of versietag
+gemaakt — de `:development`-branch-image wordt wel gewoon opnieuw gebouwd (dat
+triggert de push zelf), er komt alleen geen nieuw versienummer.
+
+De hook controleert het *formaat*, niet de *eerlijkheid*: of iets dat `fix:`
+heet écht een bugfix is en geen feature, blijft een verantwoordelijkheid van de
+code review.
 
 Let op:
 
