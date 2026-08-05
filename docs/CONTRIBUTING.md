@@ -60,7 +60,13 @@ Let op:
   afwijkende berichten direct bij het committen; CI controleert daarnaast elke
   PR (titel én alle commits), dus omzeilen met `--no-verify` heeft geen zin.
 - PR-titels volgen dezelfde conventie: feature/hotfix-PR's worden ge-squash-merged,
-  waardoor de PR-titel de commit wordt die de versie bepaalt.
+  waardoor de PR-titel de commit wordt die de versie bepaalt. Markeer een
+  breaking change daarom in de titel zelf met `!` (bijv. `feat!: …`), niet
+  alleen in een footer.
+- Uitzondering: de promotie-PR's (`development → beta`, `beta → main`) en de
+  automatische `backmerge/*`-PR's worden met een merge commit samengevoegd —
+  hun titel komt nooit in de historie en hoeft dus geen Conventional Commit te
+  zijn (de titel-check slaat ze over).
 
 ### Merge-methodes per branch-paar
 

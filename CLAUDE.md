@@ -28,8 +28,28 @@ Rules:
   propose the corrected form.
 - Never bypass the `.husky/commit-msg` hook (`--no-verify`) — CI re-checks
   every PR anyway (`.github/workflows/pr-lint.yml`).
-- PR titles follow the same convention: feature/hotfix PRs are squash-merged,
-  so the PR title becomes the commit that semantic-release reads.
+
+## PR titles & descriptions (MANDATORY for titles)
+
+When writing or suggesting a pull request:
+
+- **Title = a Conventional Commit, and it decides the version.** Feature/hotfix
+  PRs are squash-merged, so the PR title becomes the commit that
+  semantic-release reads. Choose the type by what the change does to the
+  shipped Docker image: `fix:` → patch, `feat:` → minor, workflow/docs-only
+  work → `ci:`/`docs:` (no release). Enforced by `pr-lint.yml` — a wrong
+  title blocks the merge.
+- **Breaking changes: mark them in the title** with `!` (`feat!: …` or
+  `fix!: …`). Do not rely on a `BREAKING CHANGE:` footer hidden in the
+  description — the title is the reliable part of the squash commit.
+- **Exempt PRs** (merge-committed, title never enters history — pr-lint skips
+  the title check for these): `development → beta`, `beta → main`, and the
+  automated `backmerge/*` PRs. Their titles may be descriptive
+  ("Release v1.2.0"); never squash-merge them.
+- **Description is free-form** (no lint) and has no version effect. Include:
+  what changed and why, how it was tested, and any manual steps. For PRs into
+  `development`, note the expected version effect of the title (e.g. "`fix:`
+  → will release a patch prerelease on merge").
 
 ## Branch flow & merge methods
 
