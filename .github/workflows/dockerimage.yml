@@ -80,9 +80,22 @@ jobs:
   build:
     if: github.server_url == 'https://github.com'
     runs-on: ubuntu-latest
+    env:
+      # Suppress docker/build-push-action's own "Docker Build summary" job
+      # summary and the .dockerbuild record-archive upload: the summary
+      # embeds Docker-external links (feedback survey) we don't want to
+      # present as ours, and the record archive uploads build internals as
+      # an artifact nobody here consumes. Our own summary step below shows
+      # what we actually care about (tags, digest).
+      DOCKER_BUILD_SUMMARY: "false"
+      DOCKER_BUILD_RECORD_UPLOAD: "false"
     steps:
       - name: Checkout
         uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          # Full history + tags: the PR version preview below lets
+          # semantic-release analyze commits against existing release tags.
+          fetch-depth: 0
 
       # GATSBY_*-defaults from .env as build-args (line-based; .env is not
       # source-able due to unquoted spaces). Only surrounding quotes are
@@ -189,28 +202,80 @@ jobs:
             GATSBY_CPU_COUNT=2
             ${{ steps.buildargs.outputs.args }}
 
-      # The digest is the content-addressed identity of the pushed image —
-      # unlike tags it can never be repointed, so it is the strongest pin a
-      # deployment can use (image@sha256:...). Publishing it here is safe:
-      # it is a one-way hash, already visible in the registry to anyone who
-      # can see the image, and grants no access by itself.
-      - name: Image digest → job summary
-        if: github.event_name != 'pull_request'
+      # PR-only version preview: what would semantic-release create once
+      # this PR lands on its base branch? NOT hardcoded and NOT re-implemented
+      # version math — it is semantic-release itself in dry-run mode, with
+      # only the commit-analyzer plugin (no GitHub API calls, no tags or
+      # releases created). The PR checkout commit is exactly "base + this PR
+      # merged", so running the analysis on a local branch named after the
+      # base branch yields the same computation the real release run will do
+      # post-merge. Node 24: semantic-release 25 requires >=22.14.
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: github.event_name == 'pull_request'
+        with:
+          node-version: 24
+
+      - name: Version preview (semantic-release dry-run)
+        if: github.event_name == 'pull_request'
+        id: nextver
+        run: |
+          git checkout -B "${GITHUB_BASE_REF}"
+          npx --yes semantic-release@25.0.8 --dry-run --no-ci \
+            --plugins @semantic-release/commit-analyzer \
+            > "$RUNNER_TEMP/semrel-preview.log" 2>&1 || true
+          NEXT=$(grep -oE 'next release version is [0-9][^ ]*' "$RUNNER_TEMP/semrel-preview.log" \
+            | sed 's/.* //' | tail -n 1)
+          echo "next=${NEXT}" >> "$GITHUB_OUTPUT"
+          if [ -n "${NEXT}" ]; then
+            echo "Merging this PR into ${GITHUB_BASE_REF} would release: v${NEXT}"
+          else
+            echo "Merging this PR into ${GITHUB_BASE_REF} would release nothing:"
+            grep -E 'no relevant changes|no new version' "$RUNNER_TEMP/semrel-preview.log" || tail -n 5 "$RUNNER_TEMP/semrel-preview.log"
+          fi
+
+      # Our own build summary, on EVERY run — including PR builds, so the
+      # tags a merge would publish are visible and checkable beforehand.
+      # The digest (only present after a real push) is the content-addressed
+      # identity of the image — unlike tags it can never be repointed, so it
+      # is the strongest pin a deployment can use (image@sha256:...).
+      # Publishing it is safe: it is a one-way hash, already visible in the
+      # registry to anyone who can see the image, and grants no access.
+      - name: Build result → job summary
+        if: always() && steps.meta.outcome == 'success'
         env:
           OWNER: ${{ github.repository_owner }}
           DIGEST: ${{ steps.push.outputs.digest }}
           TAGS: ${{ steps.meta.outputs.tags }}
+          NEXT: ${{ steps.nextver.outputs.next }}
+          BASE: ${{ github.base_ref }}
         run: |
           {
-            echo "### 📦 Image pushed"
-            echo ""
-            echo "Pin deployments on the digest (strongest, content-addressed):"
-            echo ""
-            echo '```'
-            echo "ghcr.io/${OWNER,,}/woo-website-v2@${DIGEST}"
-            echo '```'
-            echo ""
-            echo "Tags pushed in this run:"
+            if [ -n "${DIGEST}" ]; then
+              echo "### 📦 Image pushed"
+              echo ""
+              echo "Pin deployments on the digest (strongest, content-addressed):"
+              echo ""
+              echo '```'
+              echo "ghcr.io/${OWNER,,}/woo-website-v2@${DIGEST}"
+              echo '```'
+              echo ""
+              echo "Tags pushed in this run:"
+            else
+              echo "### 🔍 Build check only — nothing was pushed"
+              echo ""
+              if [ -n "${NEXT}" ]; then
+                echo "Merging this PR into \`${BASE}\` would release: **v${NEXT}**"
+              elif [ -n "${BASE}" ]; then
+                echo "Merging this PR into \`${BASE}\` would release: **nothing**" \
+                     "(no \`fix:\`/\`feat:\` changes since the last release)"
+              fi
+              echo ""
+              echo "_Preview is computed from the commits in this PR (semantic-release" \
+                   "dry-run); on squash-merge the PR title makes the final call — see" \
+                   "docs/CONTRIBUTING.md._"
+              echo ""
+              echo "Tags this build would publish (PR check, or the build/smoke stage failed):"
+            fi
             echo ""
             echo '```'
             echo "${TAGS}"
