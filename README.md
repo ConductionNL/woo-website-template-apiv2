@@ -9,6 +9,32 @@ Zie ook de quickstart met voorbeelden in `pwa/README.md`.
 
 Helm-deploy? Zie `helm/woo-website/README.md` voor installatie en waarden.
 
+### Versionering & releases
+
+Dit project gebruikt automatische semantische versionering op basis van
+Conventional Commits — het commit-type bepaalt de versie-bump (`fix:` → patch,
+`feat:` → minor, breaking change → major). Zie `docs/CONTRIBUTING.md` voor de
+volledige werkwijze en de merge-regels per branch.
+
+- Merge naar `development` → prerelease `vX.Y.Z-development.N` (git-tag,
+  GitHub pre-release én Docker-image)
+- Merge naar `main` (via `beta`) → stabiele release `vX.Y.Z` met changelog
+
+Docker-images staan op `ghcr.io/conductionnl/woo-website-v2`:
+
+| Image-tag | Betekenis |
+|---|---|
+| `sha-<volledige commit-sha>` | Onveranderlijk anker per commit — deployments pinnen hierop of op een versietag |
+| `vX.Y.Z` | Stabiele release (main) |
+| `vX.Y.Z-development.N` | Ontwikkel-iteratie N richting versie X.Y.Z |
+| `main` / `development` | **Bewegende** branch-pointers — alleen voor lokaal gemak |
+
+Pin een omgeving (ook test/acceptatie) altijd op een **volledige versietag of
+sha-tag**, nooit op `development` of `main`: bewegende pointers veranderen bij
+elke merge, waardoor een herstart van de omgeving ongemerkt een nieuwere
+(mogelijk kapotte) build binnenhaalt. Versietags en sha-tags worden nooit
+overschreven — wat je pint, blijft wat er draait.
+
 ### Snel starten (Node, zonder Docker)
 1. Ga naar de PWA-map: `cd pwa`
 2. Installeer dependencies: `npm ci` (of `npm install`)

@@ -17,3 +17,67 @@ Deelnemen aan het OpenWoo.app project is een uitnodiging om deel uit te maken va
 Wij geloven in de kracht van een gemeenschap die samenwerkt om iets geweldigs te bouwen. Uw bijdragen, groot of klein, zijn waardevol voor het succes van OpenWoo.app. Samen kunnen we een open, flexibel en gebruiksvriendelijk platform creëren dat de manier waarop we op het web werken, transformeert.
 
 We kijken uit naar uw bijdragen en het samen bouwen aan een de OpenWoo.app.
+
+## Commit-berichten: Conventional Commits (verplicht)
+
+Commit-berichten volgen [Conventional Commits](https://www.conventionalcommits.org):
+`type(scope)?: omschrijving`. De commit-types sturen de **automatische semantische
+versionering** van de Docker-images aan (semantic-release, zie
+`.github/workflows/release.yml`) — een verkeerd type betekent dus ongemerkt een verkeerde
+of ontbrekende versie.
+
+| Type | Betekenis | Versie-effect |
+|---|---|---|
+| `fix:` | Herstelt een bug voor de gebruiker | **patch** (`1.0.0` → `1.0.1`) |
+| `feat:` | Nieuwe functionaliteit voor de gebruiker | **minor** (`1.0.0` → `1.1.0`) |
+| `feat!:` of footer `BREAKING CHANGE:` | Wijziging die bestaand gebruik breekt (API, config, gedrag) | **major** (`1.0.0` → `2.0.0`) |
+| `ci:` | CI/pipeline-configuratie (workflows onder `.github/`/`.forgejo/`, release-automatisering) | geen release |
+| `build:` | Build-systeem en tooling (Dockerfile, npm-scripts, dependencies) | geen release |
+| `chore:` | Onderhoud dat nergens anders past | geen release |
+| `docs:` | Alleen documentatie | geen release |
+| `refactor:` | Code herstructureren zonder gedragswijziging | geen release |
+| `perf:` | Performance-verbetering | geen release |
+| `style:` | Formattering/whitespace, geen logica | geen release |
+| `test:` | Tests toevoegen of herstellen | geen release |
+| `revert:` | Een eerdere commit terugdraaien | geen release |
+
+Kies het type vanuit de **gebruiker van de Docker-image** gezien: verandert er
+niets aan wat de applicatie doet (zoals bij `ci:`, `docs:`, `chore:`), dan is er
+geen reden voor een nieuw versienummer. Landen er op `development` alléén
+commits zonder versie-effect, dan wordt er dus **geen** release of versietag
+gemaakt — de `:development`-branch-image wordt wel gewoon opnieuw gebouwd (dat
+triggert de push zelf), er komt alleen geen nieuw versienummer.
+
+De hook controleert het *formaat*, niet de *eerlijkheid*: of iets dat `fix:`
+heet écht een bugfix is en geen feature, blijft een verantwoordelijkheid van de
+code review.
+
+Let op:
+
+- `hotfix:` is **geen** geldig type. Hotfix-*branches* heten `hotfix/*`, maar de
+  commits en PR-titels gebruiken `fix:`.
+- Een lokale git-hook (`.husky/commit-msg`, via husky/commitlint) weigert
+  afwijkende berichten direct bij het committen; CI controleert daarnaast elke
+  PR (titel én alle commits), dus omzeilen met `--no-verify` heeft geen zin.
+- PR-titels volgen dezelfde conventie: feature/hotfix-PR's worden ge-squash-merged,
+  waardoor de PR-titel de commit wordt die de versie bepaalt. Markeer een
+  breaking change daarom in de titel zelf met `!` (bijv. `feat!: …`), niet
+  alleen in een footer.
+- Uitzondering: de promotie-PR's (`development → beta`, `beta → main`) en de
+  automatische `backmerge/*`-PR's worden met een merge commit samengevoegd —
+  hun titel komt nooit in de historie en hoeft dus geen Conventional Commit te
+  zijn (de titel-check slaat ze over).
+
+### Merge-methodes per branch-paar
+
+| PR | Merge-methode |
+|---|---|
+| feature/fix-branch → `development` | **Squash** |
+| `hotfix/*` → `main` | **Squash** |
+| `development` → `beta` en `beta` → `main` | **Merge commit — nooit squashen of rebasen** |
+| back-merge `main` → `development` (na elke stabiele release) | **Merge commit — nooit squashen** |
+
+Squashen van een promotie- of back-merge-PR klapt de release-historie samen tot
+één commit: de versie-bump zou dan door die ene titel bepaald worden en
+`development` verliest de release-tags die het nodig heeft om correcte
+prerelease-versies te berekenen.
