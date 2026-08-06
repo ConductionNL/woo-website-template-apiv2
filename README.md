@@ -22,12 +22,12 @@ volledige werkwijze en de merge-regels per branch.
 
 Docker-images staan op `ghcr.io/conductionnl/woo-website-v2`:
 
-| Image-tag | Betekenis |
-|---|---|
+| Image-tag                    | Betekenis                                                                       |
+| ---------------------------- | ------------------------------------------------------------------------------- |
 | `sha-<volledige commit-sha>` | Onveranderlijk anker per commit — deployments pinnen hierop of op een versietag |
-| `vX.Y.Z` | Stabiele release (main) |
-| `vX.Y.Z-development.N` | Ontwikkel-iteratie N richting versie X.Y.Z |
-| `main` / `development` | **Bewegende** branch-pointers — alleen voor lokaal gemak |
+| `vX.Y.Z`                     | Stabiele release (main)                                                         |
+| `vX.Y.Z-development.N`       | Ontwikkel-iteratie N richting versie X.Y.Z                                      |
+| `main` / `development`       | **Bewegende** branch-pointers — alleen voor lokaal gemak                        |
 
 Pin een omgeving (ook test/acceptatie) altijd op een **volledige versietag of
 sha-tag**, nooit op `development` of `main`: bewegende pointers veranderen bij
@@ -60,12 +60,14 @@ licentierapport van elke build is als artifact te vinden bij de
 "License (npm)"-check in GitHub Actions.
 
 ### Snel starten (Node, zonder Docker)
+
 1. Ga naar de PWA-map: `cd pwa`
 2. Installeer dependencies: `npm ci` (of `npm install`)
 3. Start lokaal: `npm run dev`
 4. Bezoek: `http://localhost:8000`
 
 Let op: de `localhost.json` zet `GATSBY_API_BASE_URL` op `/api` (handig in Docker met NGINX-proxy). In pure Node dev is er geen proxy, dus kies één van deze opties:
+
 - Zet env-mode aan met acceptatie-API: maak `pwa/static/.env.development` en zet `GATSBY_DEV_ENVIRONMENT=true` (zie voorbeeld hieronder)
 - Of wijzig `pwa/static/configFiles/other/localhost/localhost.json` zodat `GATSBY_API_BASE_URL` een absolute URL is
 
@@ -79,6 +81,7 @@ GATSBY_NL_DESIGN_THEME_CLASSNAME=conduction-theme
 ```
 
 ### Snel starten (Docker Compose)
+
 1. Maak in de repo-root een `.env` met minimaal:
 
 ```
@@ -102,15 +105,18 @@ APP_BUILD=dev
 3. Bezoek: `http://localhost:8000`
 
 Opmerking:
+
 - Compose geeft de Gatsby-variabelen mee als build-args; je hebt dan geen `pwa/static/.env.production` nodig.
 - De NGINX-proxy voor `/api` staat in `pwa/docker/default.conf`. De frontend gebruikt óf `API_BASE_URL` uit sessionStorage (gezet via Gatsby env/JSON-config) óf valt terug op `/api`.
 
 ### Waar komen variabelen vandaan?
+
 - Node dev: `pwa/static/.env.development` (optioneel). Als `GATSBY_ENV_VARS_SET` niet "true" is, gebruikt de app JSON-config uit `pwa/static/configFiles/`.
 - Productie build: `pwa/static/.env.production` of build-args tijdens Docker build (via Compose `.env` in de repo-root).
 - Docker Compose: `.env` in de repo-root wordt automatisch ingelezen door Compose en levert de build-args in `docker-compose.yml`.
 
 ### Minimale variabelen (alleen als je env-mode wil gebruiken)
+
 - `GATSBY_ENV_VARS_SET` = `true` om env-mode te forceren (anders JSON-config)
 - `GATSBY_API_BASE_URL` = jouw backend API-base URL
 - `GATSBY_NL_DESIGN_THEME_CLASSNAME` = CSS theme class (bijv. `conduction-theme`)
