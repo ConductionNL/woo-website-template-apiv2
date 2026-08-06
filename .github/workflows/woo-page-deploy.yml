@@ -27,6 +27,10 @@ on:
     branches:
       - main
 
+# The deploy action pushes the build output to the GitHub Pages branch.
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest

@@ -1,6 +1,9 @@
 # Generates SVG files from UML files (for documentation purposes)
 name: generate plantuml
 on: push
+# The plantuml action commits the rendered SVG files back to the repository.
+permissions:
+  contents: write
 jobs:
   generate_plantuml:
     runs-on: ubuntu-latest
