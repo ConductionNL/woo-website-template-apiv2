@@ -15,9 +15,9 @@
     "lodash": "$lodash",
     "path-to-regexp": "0.1.13",
     "serialize-javascript": "^7.0.7",
-    "@ardatan/relay-compiler": {
-      "immutable": "3.8.3"
-    },
+    "@ardatan/relay-compiler": "^12.3.0",
+    "sharp": "^0.35.3",
+    "uuid": "^11.1.1",
     "@parcel/core": "^2.16.4",
     "@parcel/cache": "^2.16.4",
     "@parcel/fs": "^2.16.4",
