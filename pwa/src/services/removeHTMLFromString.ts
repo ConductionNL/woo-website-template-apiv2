@@ -1,5 +1,5 @@
 export const removeHTMLFromString = (html: string) => {
-  let tmp = document.createElement("div");
-  tmp.innerHTML = html;
-  return tmp.textContent || tmp.innerText || "";
+  // DOMParser creates an inert document: nothing is loaded or executed while parsing.
+  const doc = new DOMParser().parseFromString(html, "text/html");
+  return doc.body.textContent || "";
 };

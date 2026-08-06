@@ -94,6 +94,7 @@
     "clsx": "^2.1.0",
     "dateformat": "^5.0.3",
     "dedent": "^1.5.1",
+    "dompurify": "^3.4.13",
     "es-abstract": "^1.23.5",
     "gatsby": "^5.16.1",
     "gatsby-plugin-breadcrumb": "^12.3.2",
