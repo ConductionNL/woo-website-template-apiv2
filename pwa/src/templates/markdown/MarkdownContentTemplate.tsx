@@ -9,6 +9,14 @@ interface MarkdownContentTemplateProps {
   link: string;
 }
 
+const isGitHubUrl = (link: string): boolean => {
+  try {
+    return new URL(link).origin === "https://github.com";
+  } catch {
+    return false;
+  }
+};
+
 export const MarkdownContentTemplate: React.FC<MarkdownContentTemplateProps> = ({ pageSlug, detailPageSlug, link }) => {
   const { getDetailMdLocation } = useMarkdownDirectories();
 
@@ -16,13 +24,13 @@ export const MarkdownContentTemplate: React.FC<MarkdownContentTemplateProps> = (
 
   let content: any;
 
-  if (link.includes("https://github.com/")) {
+  if (isGitHubUrl(link)) {
     const linkHttps = link.replace("https://github.com/", "https://api.github.com/repos/");
     linkHttps.includes("/blob/main/")
       ? (content = useMarkdown().getContent(linkHttps.replace("/blob/main/", "/contents/")))
       : (content = useMarkdown().getContent(linkHttps.replace("/blob/master/", "/contents/")));
   } else {
-    content = useMarkdown().getContent(link.includes("https://api.github.com/repos/") ? link : link);
+    content = useMarkdown().getContent(link);
   }
 
   return <ParsedHTML contentQuery={content} {...{ location }} />;
