@@ -27,9 +27,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
             onClick={() => navigate(request.id.toString())}
             tabIndex={0}
             aria-label={`${removeHTMLFromString(removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id))}, ${
-              request.publicatiedatum
-                ? translateDate(i18n.language, request.publicatiedatum)
-                : t("N/A")
+              request.publicatiedatum ? translateDate(i18n.language, request.publicatiedatum) : t("N/A")
             }, ${removeHTMLFromString(removeHTMLFromString(request.summary ?? request.samenvatting ?? t("No summary available")))} ${
               window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true"
                 ? `,${request.catalog?.organization?.title ?? request.organization?.title ?? t("No municipality available")}`
@@ -49,9 +47,7 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
                 </Heading2>
               </CardHeaderTitle>
               <CardHeaderDate>
-                {request.publicatiedatum
-                  ? translateDate(i18n.language, request.publicatiedatum)
-                  : t("N/A")}
+                {request.publicatiedatum ? translateDate(i18n.language, request.publicatiedatum) : t("N/A")}
               </CardHeaderDate>
             </CardHeader>
 

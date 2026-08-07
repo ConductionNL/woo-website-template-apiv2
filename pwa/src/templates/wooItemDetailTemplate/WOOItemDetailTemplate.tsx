@@ -155,9 +155,9 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
 
     const attachments = attachmentsWithLabelsQuery.data.results;
 
-    let multipleLabels: any[] = [];
-    let singleLabels: any[] = [];
-    let allLabels: any[] = [];
+    const multipleLabels: any[] = [];
+    const singleLabels: any[] = [];
+    const allLabels: any[] = [];
 
     attachments.forEach((attachment: any) => {
       if (attachment.labels?.length > 1) {
@@ -264,13 +264,15 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                   scrollLeftButton: t("Scroll table to the left"),
                   scrollRightButton: t("Scroll table to the right"),
                 }}
-                scrollMode={(window.sessionStorage.getItem("TABLE_SCROLL_MODE") as "buttons" | "scrollbar") || "buttons"}
+                scrollMode={
+                  (window.sessionStorage.getItem("TABLE_SCROLL_MODE") as "buttons" | "scrollbar") || "buttons"
+                }
               >
                 <Table className={styles.table}>
                   <TableBody className={styles.tableBody}>
                     {getItems.data &&
                       Object.entries(orderProperties(getItems.data)).map(([key, value]: [string, any]) => {
-                        if (!!value) {
+                        if (value) {
                           let formattedValue: string;
                           if (
                             !value ||
@@ -396,11 +398,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                               <div id="labelAttachmentsData">
                                 {sortedAttachments.attachments.map((attachment: any, idx: number) => (
                                   <div key={idx}>
-                                    <Link
-                                      href={attachment.accessUrl}
-                                      target="blank"
-                                      onKeyDown={activateLinkOnSpace}
-                                    >
+                                    <Link href={attachment.accessUrl} target="blank" onKeyDown={activateLinkOnSpace}>
                                       {`${attachment.title ?? getPDFName(attachment.accessUrl)}`}
                                     </Link>
                                   </div>
@@ -435,10 +433,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                     )}
 
                     {attachmentsNoLabelsQuery.isSuccess && unsortedAttachments.length > 0 && (
-                      <TableRow
-                        className={styles.tableRow}
-                        aria-labelledby="attachmentsName attachmentsData"
-                      >
+                      <TableRow className={styles.tableRow} aria-labelledby="attachmentsName attachmentsData">
                         <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
                         <TableCell lang={i18n.language || undefined}>
                           <div id="attachmentsData">

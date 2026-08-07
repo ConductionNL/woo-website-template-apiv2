@@ -66,9 +66,7 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
                 tabIndex={0}
                 role="link"
                 aria-label={`${removeHTMLFromString(removeHTMLFromString(request.title ?? request.titel ?? request.name ?? request.naam ?? request.id))},  ${
-                  request.publicatiedatum
-                    ? translateDate(i18n.language, request.publicatiedatum)
-                    : t("N/A")
+                  request.publicatiedatum ? translateDate(i18n.language, request.publicatiedatum) : t("N/A")
                 } ${
                   window.sessionStorage.getItem("SHOW_ORGANIZATION") === "true"
                     ? `,${request["@self"]?.organization?.title ?? request.organization?.title ?? t("No municipality available")}`

@@ -107,8 +107,6 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "baarn.accept.openwoo.app":
       return BaarnAccept;
 
-
-
     case "barendrecht":
     case "open.barendrecht.nl":
     case "barendrecht.openwoo.app":
@@ -161,7 +159,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
       return Dinkelland;
     case "acceptatie-open.dinkelland.nl":
     case "dinkelland.accept.openwoo.app":
-    case "dinkelland.accept.commonground.nu":  
+    case "dinkelland.accept.commonground.nu":
       return DinkellandAccept;
 
     case "epe-theme":
@@ -174,7 +172,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "acceptatie-open.epe.nl":
     case "epe.accept.openwoo.app":
     case "epe.accept.commonground.nu":
-    case "epe-a.accept.commonground.nu":  
+    case "epe-a.accept.commonground.nu":
       return EpeAccept;
 
     case "ede-theme":
@@ -326,17 +324,17 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
       return RotterdamAccept;
 
     case "soest-theme":
-      case "open.soest.nl":
-      case "soest.openwoo.app":
-      case "soest.koophulpje.nl":
-      case "soest.prod.openwoo.app":
-      case "soest.prod.commonground.nu":
-        return Soest;
-      case "acceptatie-open.soest.nl":
-      case "soest.accept.openwoo.app":
-      case "soest-v2.accept.openwoo.app":
-      case "soest.accept.commonground.nu":
-        return SoestAccept;  
+    case "open.soest.nl":
+    case "soest.openwoo.app":
+    case "soest.koophulpje.nl":
+    case "soest.prod.openwoo.app":
+    case "soest.prod.commonground.nu":
+      return Soest;
+    case "acceptatie-open.soest.nl":
+    case "soest.accept.openwoo.app":
+    case "soest-v2.accept.openwoo.app":
+    case "soest.accept.commonground.nu":
+      return SoestAccept;
 
     case "stedebroec":
     case "open.stedebroec.nl":
@@ -348,16 +346,16 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
       return StedeBroecAccept;
 
     case "stichtse-vecht-theme":
-       case "open.stichtsevecht.nl":
-       case "stichtsevecht.openwoo.app":
-       case "stichtsevecht.koophulpje.nl":
-       case "stichtsevecht.prod.openwoo.app":
-       case "stichtsevecht.commonground.nu":
-        return StichtseVecht;
-      case "acceptatie-open.stichtsevecht.nl":
-      case "stichtsevecht.accept.openwoo.app":
-      case "stichtsevecht.accept.commonground.nu":
-        return StichtseVechtAccept;  
+    case "open.stichtsevecht.nl":
+    case "stichtsevecht.openwoo.app":
+    case "stichtsevecht.koophulpje.nl":
+    case "stichtsevecht.prod.openwoo.app":
+    case "stichtsevecht.commonground.nu":
+      return StichtseVecht;
+    case "acceptatie-open.stichtsevecht.nl":
+    case "stichtsevecht.accept.openwoo.app":
+    case "stichtsevecht.accept.commonground.nu":
+      return StichtseVechtAccept;
 
     case "texel":
     case "open.texel.nl":
@@ -372,7 +370,6 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open.tubbergen.nl":
     case "tubbergen.openwoo.app":
     case "tubbergen.koophulpje.nl":
-
     case "tubbergen.prod.commonground.nu":
       return Tubbergen;
     case "acceptatie-open.tubbergen.nl":
@@ -411,9 +408,13 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "bct.accept.openwoo.app":
       return BCTAccept;
 
-
     case "conduction-theme":
     case "open.conduction.nl":
+    // TODO: "conduction.koophulpje.nl" is also listed under BCT above, and that
+    // earlier case wins — this label is currently unreachable. Decide which
+    // theme the domain should get (BCT's entry was likely meant to be
+    // "bct.koophulpje.nl") and remove one of the two.
+    // eslint-disable-next-line no-duplicate-case
     case "conduction.koophulpje.nl":
       return Conduction;
     case "acceptatie-open.conduction.nl":
@@ -425,11 +426,11 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
         return LocalhostNextcloud;
       }
       return Localhost;
-    
+
     case "koophulpje-theme":
     case "open.koophulpje.nl":
     case "koophulpje.openwoo.app":
-    case "koophulpje.opencatalogi.nl": 
+    case "koophulpje.opencatalogi.nl":
       return Koophulpje;
     case "acceptatie-open.koophulpje.nl":
     case "koophulpje.accept.openwoo.app":
@@ -453,7 +454,7 @@ export const getConfig = (themeOrDomainName: string, host: string): Record<strin
     case "open-webconcept.accept.openwoo.app":
       return OpenWebconceptAccept;
 
-    case "odmh-theme":  
+    case "odmh-theme":
     case "open.odmh.nl":
     case "odmh.openwoo.app":
     case "odmh.koophulpje.nl":

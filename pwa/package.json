@@ -5,9 +5,7 @@
   "description": "WOO Website Template (OpenWoo/OpenCatalogi API v2)",
   "license": "EUPL-1.2",
   "author": "Conduction",
-  "keywords": [
-    "gatsby"
-  ],
+  "keywords": ["gatsby"],
   "overrides": {
     "webpack": "^5.105.0",
     "cookie": "^1.1.1",
@@ -39,10 +37,10 @@
     "clean": "gatsby clean",
     "deploy": "gatsby build --prefix-paths && gh-pages -d public",
     "lint": "npm-run-all lint:** ",
-    "lint:eslint": "eslint --ignore-path .eslintignore --ext .js,.ts .",
+    "lint:eslint": "eslint --ignore-path .eslintignore --ext .js,.ts,.tsx .",
     "lint:prettier": "prettier --check .",
     "lint-fix": "npm-run-all lint-fix:**",
-    "lint-fix:eslint": "eslint --fix .",
+    "lint-fix:eslint": "eslint --ignore-path .eslintignore --ext .js,.ts,.tsx --fix .",
     "lint-fix:prettier": "prettier --write \"**/*.+(css|js|json|jsx|scss|ts|tsx)\" .",
     "typecheck": "tsc --noEmit",
     "postinstall": "patch-package",

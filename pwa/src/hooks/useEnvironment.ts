@@ -59,7 +59,9 @@ export const useEnvironment = () => {
       if (!res.ok) {
         try {
           res = await fetch("/runtime.json", { cache: "no-store" });
-        } catch (_) {}
+        } catch (_) {
+          /* fallback location is optional */
+        }
         if (!res.ok) return;
       }
       const cfg = await res.json();
@@ -86,7 +88,9 @@ export const useEnvironment = () => {
       // Apply theme class immediately if provided
       applyThemeClass(window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "");
       updateSessionStorage();
-    } catch (_) {}
+    } catch (_) {
+      /* runtime.json is optional; env defaults apply */
+    }
   };
 
   const initiateFromEnv = async () => {
