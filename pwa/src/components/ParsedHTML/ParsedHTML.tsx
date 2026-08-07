@@ -52,7 +52,7 @@ export const ParsedHTML: React.FC<ParsedHTMLProps> = ({ contentQuery, location, 
             className={styles.backLink}
             href="/"
             onClick={(e: any) => {
-              e.preventDefault(), navigate("/");
+              (e.preventDefault(), navigate("/"));
             }}
             tabIndex={0}
           >
@@ -72,7 +72,7 @@ export const ParsedHTML: React.FC<ParsedHTMLProps> = ({ contentQuery, location, 
           className={styles.backLink}
           href="/"
           onClick={(e: any) => {
-            e.preventDefault(), navigate("/");
+            (e.preventDefault(), navigate("/"));
           }}
           tabIndex={0}
         >

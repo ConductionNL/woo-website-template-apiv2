@@ -43,16 +43,16 @@ export const filtersToUrlQueryParams = (filters: Record<string, any>): string =>
       if (!value) return null;
 
       const formattedValue = Array.isArray(value)
-      ? value.map((v: string) => v.replace(/\s+/g, "_")).join(`&${key}[]=`)
-      : (value as string).replace(/\s+/g, "_");
+        ? value.map((v: string) => v.replace(/\s+/g, "_")).join(`&${key}[]=`)
+        : (value as string).replace(/\s+/g, "_");
 
-    if (key == "publicatiedatum[gte]") return;
-    if (key == "publicatiedatum[lte]")
-      return `year=${
-        generateYearsArray(currentYear - 1995).find((year: any) => {
-          return year.before === value;
-        })?.value
-      }`;
+      if (key == "publicatiedatum[gte]") return;
+      if (key == "publicatiedatum[lte]")
+        return `year=${
+          generateYearsArray(currentYear - 1995).find((year: any) => {
+            return year.before === value;
+          })?.value
+        }`;
       if (key == "@self[schema]") return `categorie=${value.title || value.name || value}`;
 
       return `${Array.isArray(value) ? `${key}[]` : key}=${formattedValue}`;
