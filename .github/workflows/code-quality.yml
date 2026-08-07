@@ -35,10 +35,10 @@ jobs:
       enable-php: false
       frontend-path: pwa
       enable-frontend: true
-      # eslint/stylelint were never enforced in this repo; the lint script
-      # (eslint + prettier) and typecheck can be enabled once the codebase
-      # passes them. stylelint has no npm script here at all.
-      enable-eslint: false
+      # The lint script (eslint + prettier) passes since the TypeScript lint
+      # enablement; the shared workflow runs `npm run lint` with this repo's
+      # own ESLint config. stylelint stays off: no npm script or config here.
+      enable-eslint: true
       enable-stylelint: false
       # The Gatsby production build is this repo's real quality gate — the
       # only thing the legacy pull-request-build-check enforced.
