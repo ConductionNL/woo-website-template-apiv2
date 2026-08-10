@@ -398,7 +398,12 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                               <div id="labelAttachmentsData">
                                 {sortedAttachments.attachments.map((attachment: any, idx: number) => (
                                   <div key={idx}>
-                                    <Link href={attachment.accessUrl} target="blank" onKeyDown={activateLinkOnSpace}>
+                                    <Link
+                                      href={attachment.accessUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      onKeyDown={activateLinkOnSpace}
+                                    >
                                       {`${attachment.title ?? getPDFName(attachment.accessUrl)}`}
                                     </Link>
                                   </div>
@@ -410,7 +415,8 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                             <TableCell lang={i18n.language || undefined}>
                               <Link
                                 href={sortedAttachments.attachments[0].accessUrl}
-                                target="blank"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 onKeyDown={activateLinkOnSpace}
                               >
                                 {`${sortedAttachments.attachments[0].title ?? getPDFName(sortedAttachments.attachments[0].accessUrl)}`}
@@ -446,7 +452,8 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                     <div key={idx}>
                                       <Link
                                         href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
-                                        target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
+                                        target={bijlage.accessUrl?.length !== 0 ? "_blank" : ""}
+                                        rel="noopener noreferrer"
                                         onKeyDown={activateLinkOnSpace}
                                       >
                                         {bijlage.title}

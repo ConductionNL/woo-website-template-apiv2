@@ -176,7 +176,7 @@ export const FooterTemplate: React.FC = () => {
                 variant="footer"
                 onClick={() =>
                   window.sessionStorage.getItem("FOOTER_LOGO_HREF")
-                    ? open(window.sessionStorage.getItem("FOOTER_LOGO_HREF") ?? "")
+                    ? open(window.sessionStorage.getItem("FOOTER_LOGO_HREF") ?? "", "_blank", "noopener,noreferrer")
                     : navigate("/")
                 }
               />
@@ -272,6 +272,7 @@ const WithLoveByConduction: React.FC = () => {
         className={styles.withLoveLink}
         href="https://github.com/ConductionNL/woo-website-template"
         target="_blank"
+        rel="noopener noreferrer"
         aria-label={`${t("Link to github repository")}, ${t("Opens a new window")}`}
       >
         <Icon>
@@ -283,6 +284,7 @@ const WithLoveByConduction: React.FC = () => {
         className={styles.withLoveLink}
         href="https://github.com/ConductionNL/woo-website-template/graphs/contributors"
         target="_blank"
+        rel="noopener noreferrer"
         aria-label={`${t("Link to github contributors page")}, ${t("Opens a new window")}`}
       >
         <Icon>
@@ -294,6 +296,7 @@ const WithLoveByConduction: React.FC = () => {
         className={styles.withLoveLink}
         href="https://conduction.nl"
         target="_blank"
+        rel="noopener noreferrer"
         aria-label={`${t("Link to conduction website")}, ${t("Opens a new window")}`}
       >
         <span className={styles.withLoveConductionLink}> Conduction.</span>
@@ -360,6 +363,7 @@ const ExternalLink: React.FC<LinkComponentProps> = ({ item }) => {
       className={styles.link}
       href={getFullUrl(item.link)}
       target="_blank"
+      rel="noopener noreferrer"
       tabIndex={0}
       aria-label={`${item.ariaLabel}, ${item.value || item.name}, ${t("Opens a new window")}`}
     >
