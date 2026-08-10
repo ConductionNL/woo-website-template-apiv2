@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faWarning } from "@fortawesome/free-solid-svg-icons";
 import { useHtmlParser } from "../../hooks/htmlParser/useHtmlParser";
 import { isHtml } from "../../services/isHtml";
+import { sanitizeHtml } from "../../services/sanitizeHtml";
 import { Link } from "@utrecht/component-library-react/dist/css-module";
 import { navigate } from "gatsby";
 import { useTranslation } from "react-i18next";
@@ -79,7 +80,9 @@ export const ParsedHTML: React.FC<ParsedHTMLProps> = ({ contentQuery, location, 
           <FontAwesomeIcon icon={faArrowLeft} /> <span>{t("Back to homepage")}</span>
         </Link>
       </div>
-      {Parser(htmlContent, options)}
+      {/* showdown's converter output and raw remote HTML are untrusted; showdown
+          itself has unfixed XSS advisories, so sanitize before parsing to React */}
+      {Parser(sanitizeHtml(htmlContent), options)}
     </div>
   );
 };
