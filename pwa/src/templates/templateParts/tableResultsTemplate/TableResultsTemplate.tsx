@@ -31,7 +31,9 @@ export const TableResultsTemplate: React.FC<TableResultsTemplateProps> = ({ requ
       }}
       scrollMode={(window.sessionStorage.getItem("TABLE_SCROLL_MODE") as "buttons" | "scrollbar") || "buttons"}
     >
-      <div aria-label={t("Woo Request")}>
+      {/* Named region landmark, mirroring CardsResultsTemplate — aria-label is
+          only valid here together with the role. */}
+      <div role="region" aria-label={t("Woo Request")}>
         <Table className={styles.table}>
           <TableHeader className={styles.tableHeader}>
             <TableRow>

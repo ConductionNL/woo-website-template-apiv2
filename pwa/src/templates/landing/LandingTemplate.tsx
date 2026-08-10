@@ -85,7 +85,7 @@ export const LandingTemplate: React.FC = () => {
           {getItems.data?.results?.length === 0 && !getItems.isLoading && <span>{t("No results found")}.</span>}
 
           {getItems.data?.results && getItems.data?.results?.length > 0 && (
-            <div id="mainContent">
+            <div>
               {getItems.isFetching ? (
                 <Skeleton height={"200px"} />
               ) : (

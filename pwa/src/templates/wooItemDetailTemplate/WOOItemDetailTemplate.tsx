@@ -253,7 +253,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
             <div className={styles.content} role="region" aria-label={t("Details")}>
               <Heading1
                 className={styles.hyphenated}
-                id="mainContent"
                 aria-label={`${t("Title of woo request")}, ${getItems.data.title ?? getItems.data.titel ?? getItems.data.name ?? getItems.data.naam ?? getItems.data.id}`}
               >
                 {removeHTMLFromString(removeHTMLFromString(getItems.data.titel ?? getItems.data.title))}
@@ -399,6 +398,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                 {sortedAttachments.attachments.map((attachment: any, idx: number) => (
                                   <div key={idx}>
                                     <Link
+                                      className={styles.attachmentLink}
                                       href={attachment.accessUrl}
                                       target="_blank"
                                       rel="noopener noreferrer"
@@ -414,6 +414,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           {sortedAttachments.attachments.length === 1 && (
                             <TableCell lang={i18n.language || undefined}>
                               <Link
+                                className={styles.attachmentLink}
                                 href={sortedAttachments.attachments[0].accessUrl}
                                 target="_blank"
                                 rel="noopener noreferrer"
@@ -446,21 +447,24 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                             {attachmentsNoLabelsQuery.isFetching ? (
                               <Skeleton count={5} />
                             ) : (
-                              unsortedAttachments.map(
-                                (bijlage: any, idx: number) =>
-                                  bijlage.title && (
-                                    <div key={idx}>
-                                      <Link
-                                        href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
-                                        target={bijlage.accessUrl?.length !== 0 ? "_blank" : ""}
-                                        rel="noopener noreferrer"
-                                        onKeyDown={activateLinkOnSpace}
-                                      >
-                                        {bijlage.title}
-                                      </Link>
-                                    </div>
-                                  ),
-                              )
+                              unsortedAttachments.map((bijlage: any, idx: number) => {
+                                if (!bijlage.title) return null;
+                                const isDownloadable = bijlage.accessUrl?.length !== 0;
+
+                                return (
+                                  <div key={idx}>
+                                    <Link
+                                      className={styles.attachmentLink}
+                                      href={isDownloadable ? bijlage.accessUrl : "#"}
+                                      target={isDownloadable ? "_blank" : undefined}
+                                      rel={isDownloadable ? "noopener noreferrer" : undefined}
+                                      onKeyDown={activateLinkOnSpace}
+                                    >
+                                      {bijlage.title}
+                                    </Link>
+                                  </div>
+                                );
+                              })
                             )}
                           </div>
                           <div role="region" aria-label={t("Pagination")} className={styles.pagination}>

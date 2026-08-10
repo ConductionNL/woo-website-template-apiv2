@@ -15,7 +15,11 @@ export const Content: React.FC<ContentProps> = ({ children }) => {
 
       <HeaderTemplate layoutClassName={styles.header} />
 
-      <main className={styles.pageContent}>{children}</main>
+      {/* single target for the #mainContent skip link — defined once here so
+          every page type has it, never in the templates (duplicate ids) */}
+      <main id="mainContent" className={styles.pageContent}>
+        {children}
+      </main>
 
       <FooterTemplate />
     </div>
