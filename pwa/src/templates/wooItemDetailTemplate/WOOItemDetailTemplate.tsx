@@ -297,6 +297,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                     <TableCell>{getName(key)}</TableCell>
                                     <TableCell lang={i18n.language || undefined}>
                                       <Link
+                                        className={styles.attachmentLink}
                                         href={value}
                                         target="_blank"
                                         rel="noopener noreferrer"
