@@ -25,7 +25,7 @@ export const getImage = (props: any) => {
     href: "",
     onClick: (e: MouseEvent) => {
       e.stopPropagation();
-      open(src);
+      open(src, "_blank", "noopener,noreferrer");
     },
   };
   return <Image {...attributes} />;
