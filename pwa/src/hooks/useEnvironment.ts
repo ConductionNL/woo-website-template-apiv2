@@ -73,6 +73,8 @@ export const useEnvironment = () => {
       set("FAVICON_URL", "GATSBY_FAVICON_URL");
       set("ORGANISATION_NAME", "GATSBY_ORGANISATION_NAME");
       set("JUMBOTRON_IMAGE_URL", "GATSBY_JUMBOTRON_IMAGE_URL");
+      set("JUMBOTRON_TITLE", "GATSBY_JUMBOTRON_TITLE");
+      set("JUMBOTRON_SUBTITLE", "GATSBY_JUMBOTRON_SUBTITLE");
       set("FOOTER_LOGO_URL", "GATSBY_FOOTER_LOGO_URL");
       set("FOOTER_LOGO_HREF", "GATSBY_FOOTER_LOGO_HREF");
       set("FOOTER_CONTENT", "GATSBY_FOOTER_CONTENT");
@@ -106,6 +108,8 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("FAVICON_URL", process.env.GATSBY_FAVICON_URL ?? "");
     window.sessionStorage.setItem("ORGANISATION_NAME", process.env.GATSBY_ORGANISATION_NAME ?? "");
     window.sessionStorage.setItem("JUMBOTRON_IMAGE_URL", process.env.GATSBY_JUMBOTRON_IMAGE_URL ?? "");
+    window.sessionStorage.setItem("JUMBOTRON_TITLE", process.env.GATSBY_JUMBOTRON_TITLE ?? "");
+    window.sessionStorage.setItem("JUMBOTRON_SUBTITLE", process.env.GATSBY_JUMBOTRON_SUBTITLE ?? "");
     window.sessionStorage.setItem("FOOTER_LOGO_URL", process.env.GATSBY_FOOTER_LOGO_URL ?? "");
     window.sessionStorage.setItem("FOOTER_LOGO_HREF", process.env.GATSBY_FOOTER_LOGO_HREF ?? "");
     window.sessionStorage.setItem("FOOTER_CONTENT", process.env.GATSBY_FOOTER_CONTENT ?? "");
@@ -146,6 +150,8 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("FAVICON_URL", config.GATSBY_FAVICON_URL ?? "");
     window.sessionStorage.setItem("ORGANISATION_NAME", config.GATSBY_ORGANISATION_NAME ?? "");
     window.sessionStorage.setItem("JUMBOTRON_IMAGE_URL", config.GATSBY_JUMBOTRON_IMAGE_URL ?? "");
+    window.sessionStorage.setItem("JUMBOTRON_TITLE", config.GATSBY_JUMBOTRON_TITLE ?? "");
+    window.sessionStorage.setItem("JUMBOTRON_SUBTITLE", config.GATSBY_JUMBOTRON_SUBTITLE ?? "");
     window.sessionStorage.setItem("FOOTER_LOGO_URL", config.GATSBY_FOOTER_LOGO_URL ?? "");
     window.sessionStorage.setItem("FOOTER_LOGO_HREF", config.GATSBY_FOOTER_LOGO_HREF ?? "");
     window.sessionStorage.setItem("FOOTER_CONTENT", config.GATSBY_FOOTER_CONTENT ?? "");
