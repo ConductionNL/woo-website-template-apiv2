@@ -173,6 +173,19 @@ jobs:
             if curl -fsS -o /dev/null http://localhost:8000/; then ok=1; break; fi
             sleep 2
           done
+          # The security headers come from an envsubst'd nginx include
+          # (docker/security-headers.conf.template). Assert the high-value one
+          # so a template or FRAME_ANCESTORS quoting regression fails here
+          # instead of silently shipping without clickjacking protection.
+          headers_ok=""
+          if [ -n "$ok" ]; then
+            curl -fsS -D headers.txt -o /dev/null http://localhost:8000/
+            if grep -qi "^content-security-policy: frame-ancestors 'none'" headers.txt; then
+              headers_ok=1
+            else
+              echo "--- received headers ---"; cat headers.txt
+            fi
+          fi
           echo "--- docker compose ps ---";   docker compose ps
           echo "--- docker compose logs ---"; docker compose logs
           docker compose down
@@ -180,7 +193,11 @@ jobs:
             echo "Smoke test FAILED: site did not answer on :8000 within 60s" >&2
             exit 1
           fi
-          echo "Smoke test passed"
+          if [ -z "$headers_ok" ]; then
+            echo "Smoke test FAILED: Content-Security-Policy frame-ancestors header missing or wrong on /" >&2
+            exit 1
+          fi
+          echo "Smoke test passed (HTTP 200 + security headers)"
 
       # Same build definition with push: true — every layer is a cache hit
       # from the build step above, so this is assembly + push, not a rebuild.

@@ -241,10 +241,11 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
      */
     <div id="filters" className={styles.container}>
       {/*
-       * role="region" + aria-label turns the form into a named landmark so
-       * screen-reader users can navigate to it directly from the landmarks menu.
+       * A <form> with an accessible name is a named "form" landmark by itself,
+       * so screen-reader users can navigate to it from the landmarks menu.
+       * (role="region" is not allowed on <form> — axe aria-allowed-role.)
        */}
-      <form role="region" aria-label={t("Filters")} onSubmit={handleSubmit(onSubmit)} className={styles.form}>
+      <form aria-label={t("Filters")} onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         {/*
          * Floating-label pattern — same structure for every field:
          *

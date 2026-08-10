@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft, faWarning } from "@fortawesome/free-solid-svg-icons";
 import { useHtmlParser } from "../../hooks/htmlParser/useHtmlParser";
 import { isHtml } from "../../services/isHtml";
+import { sanitizeHtml } from "../../services/sanitizeHtml";
 import { Link } from "@utrecht/component-library-react/dist/css-module";
 import { navigate } from "gatsby";
 import { useTranslation } from "react-i18next";
@@ -23,19 +24,21 @@ interface ParsedHTMLProps {
 export const ParsedHTML: React.FC<ParsedHTMLProps> = ({ contentQuery, location, layoutClassName }) => {
   const { t } = useTranslation();
   const { options } = useHtmlParser(location);
-  let htmlContent;
 
-  showdown.setFlavor("github");
+  // showdown's converter output and raw remote HTML are untrusted; showdown
+  // itself has unfixed XSS advisories, so sanitize before parsing to React.
+  // Memoized: Layout re-renders on every sessionStorageChange and both the
+  // conversion and the DOMPurify pass walk the whole document.
+  const htmlContent = React.useMemo(() => {
+    if (isHtml(contentQuery.data)) return sanitizeHtml(contentQuery.data, { allowSvg: true });
 
-  if (!isHtml(contentQuery.data)) {
-    const converter = new showdown.Converter();
-    htmlContent = `<div><article class="markdown-body entry-content container-lg" itemprop="text">${converter.makeHtml(
-      contentQuery.data,
-    )}</article></div>`;
-  }
-  if (isHtml(contentQuery.data)) {
-    htmlContent = contentQuery.data;
-  }
+    showdown.setFlavor("github");
+    const converted = new showdown.Converter().makeHtml(contentQuery.data);
+    return sanitizeHtml(
+      `<div><article class="markdown-body entry-content container-lg" itemprop="text">${converted}</article></div>`,
+      { allowSvg: true },
+    );
+  }, [contentQuery.data]);
 
   if (contentQuery.isLoading)
     return (

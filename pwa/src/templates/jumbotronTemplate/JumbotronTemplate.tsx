@@ -15,7 +15,10 @@ export const JumbotronTemplate: React.FC = () => {
     >
       <Page>
         <PageContent>
-          <CardWrapper aria-label={t("Jumbotron card")} role="contentinfo" className={styles.card}>
+          {/* Purely presentational wrapper: the Heading1 inside provides the
+              accessible structure. role="contentinfo" would declare a second
+              footer landmark and aria-label is not allowed on a plain div. */}
+          <CardWrapper className={styles.card}>
             <Heading1 className={clsx(styles.title, styles.hyphenated)}>
               {t("Woo-publications of")} {window.sessionStorage.getItem("ORGANISATION_NAME")}
             </Heading1>

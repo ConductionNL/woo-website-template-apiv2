@@ -1,0 +1,25 @@
+# Security headers, defined once and included by default.conf's server{} and
+# by every location{} that declares add_header of its own (nginx discards ALL
+# inherited add_header directives the moment a block adds one).
+#
+# This template lives in templates/includes/ so its output lands in
+# /etc/nginx/conf.d/includes/ — outside the conf.d/*.conf glob nginx.conf
+# auto-includes — and is only pulled in via explicit include directives.
+#
+# - frame-ancestors cannot be set via a <meta> CSP (the app's Head.tsx
+#   policy), so clickjacking protection has to live here. FRAME_ANCESTORS
+#   defaults to 'none' (Dockerfile ENV); a municipality that embeds this site
+#   in a portal iframe overrides it, e.g. "'self' https://portal.example.nl".
+#   No X-Frame-Options: it cannot express allowed ancestors and would
+#   contradict any non-'none' value; frame-ancestors is enforced by every
+#   supported browser.
+# - The full CSP stays in Head.tsx: connect-src depends on per-municipality
+#   runtime config that nginx does not know.
+# - HSTS: TLS terminates at the ingress, but the header is simply passed
+#   through to the browser; on plain-HTTP responses browsers ignore it.
+#   No includeSubDomains: a municipality domain may host unrelated sites.
+add_header Content-Security-Policy "frame-ancestors ${FRAME_ANCESTORS}" always;
+add_header X-Content-Type-Options nosniff always;
+add_header Referrer-Policy strict-origin-when-cross-origin always;
+add_header Permissions-Policy "camera=(), microphone=(), geolocation=()" always;
+add_header Strict-Transport-Security "max-age=31536000" always;

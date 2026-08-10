@@ -18,7 +18,9 @@ export const CardsResultsTemplate: React.FC<CardsResultsTemplateProps> = ({ requ
 
   return (
     <>
-      <div className={styles.componentsGrid} aria-label={t("Woo Request")}>
+      {/* Named region landmark (Siteimprove 2024: all content reachable via
+          landmarks). aria-label is only valid here together with the role. */}
+      <div className={styles.componentsGrid} role="region" aria-label={t("Woo Request")}>
         {requests.map((request) => (
           <CardWrapper
             role="link"

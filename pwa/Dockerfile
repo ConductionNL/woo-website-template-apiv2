@@ -47,6 +47,7 @@ ARG GATSBY_SHOW_ORGANIZATION
 ARG GATSBY_ANALYTICS_URL
 ARG GATSBY_DATE_FULL_MONTH
 ARG GATSBY_TABLE_SCROLL_MODE
+ARG GATSBY_HIDE_LANGUAGE_SWITCH
 # Gatsby spawns one build worker per visible CPU core by default; CI passes
 # a small number here to bound peak memory (the default keeps local builds
 # unchanged). Accepts a number, "logical_cores" or "physical_cores".
@@ -72,6 +73,7 @@ ENV GATSBY_SHOW_ORGANIZATION=$GATSBY_SHOW_ORGANIZATION
 ENV GATSBY_ANALYTICS_URL=$GATSBY_ANALYTICS_URL
 ENV GATSBY_DATE_FULL_MONTH=$GATSBY_DATE_FULL_MONTH
 ENV GATSBY_TABLE_SCROLL_MODE=$GATSBY_TABLE_SCROLL_MODE
+ENV GATSBY_HIDE_LANGUAGE_SWITCH=$GATSBY_HIDE_LANGUAGE_SWITCH
 ENV NODE_ENV=production
 
 RUN npm run build
@@ -88,11 +90,17 @@ RUN chown -R nginx:nginx /usr/share/nginx && chmod -R 755 /usr/share/nginx && \
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/default.conf.template /etc/nginx/templates/default.conf.template
+# templates/includes/ maps to conf.d/includes/ — outside the conf.d/*.conf
+# auto-include glob, pulled in explicitly by default.conf
+COPY docker/security-headers.conf.template /etc/nginx/templates/includes/security-headers.conf.template
 COPY docker/entrypoint.d/30-generate-runtime.sh /docker-entrypoint.d/30-generate-runtime.sh
 COPY docker/runtime.json.template /docker-runtime-templates/runtime.json.template
 RUN chmod +x /docker-entrypoint.d/30-generate-runtime.sh
 ENV NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/conf.d
 ENV NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates
+# Allowed iframe ancestors (CSP frame-ancestors). Override at runtime for
+# municipalities that embed the site in a portal, e.g. "'self' https://portal.example.nl"
+ENV FRAME_ANCESTORS="'none'"
 ENTRYPOINT ["/docker-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
 USER nginx

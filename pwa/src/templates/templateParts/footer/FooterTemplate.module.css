@@ -17,6 +17,10 @@
   max-inline-size: var(--utrecht-page-max-inline-size);
   padding-inline-start: var(--utrecht-page-margin-inline-start);
   padding-inline-end: var(--utrecht-page-margin-inline-end);
+  /* WCAG 1.4.10 (reflow): the utrecht page-footer is a CSS grid; without this
+     the fixed-width logo sets this grid item's min-content width and the page
+     scrolls horizontally at 320px / 400% zoom */
+  min-inline-size: 0;
 }
 
 .container > * {
@@ -42,6 +46,9 @@
 .imageContainer {
   height: var(--utrecht-page-footer-logo-max-height);
   width: var(--utrecht-page-footer-logo-max-width);
+  /* WCAG 1.4.10 (reflow): the fixed logo width must not set the footer's
+     minimum width, or the page scrolls horizontally at 320px / 400% zoom */
+  max-inline-size: 100%;
 }
 
 .image {

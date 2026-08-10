@@ -4,7 +4,7 @@ import clsx from "clsx";
 import { PageHeader, SkipLink, Button } from "@utrecht/component-library-react/dist/css-module";
 import { useTranslation } from "react-i18next";
 import { useGatsbyContext } from "../../../context/gatsby";
-import { navigate } from "gatsby";
+import { navigate, withPrefix } from "gatsby";
 import { Logo } from "@conduction/components";
 import { useMenus } from "../../../hooks/menus";
 import { getMenuFromPosition } from "../../../services/menuUtils";
@@ -30,13 +30,14 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
     <PageHeader className={clsx(layoutClassName && layoutClassName, "ac-header")}>
       <div role="navigation" aria-label="skip" className={styles.container}>
         <div>
-          <SkipLink
-            href="#filters"
-            tabIndex={gatsbyContext.location.pathname === "/" ? 0 : -1}
-            className={styles.skipLink}
-          >
-            {t("Skip to filters")}
-          </SkipLink>
+          {/* Only the homepage has a #filters target; rendering the link elsewhere
+              would leave a skip-link pointing at nothing (WCAG 2.4.1 / axe skip-link) */}
+          {/* withPrefix: the homepage is "/<repo>/" on path-prefixed deploys */}
+          {gatsbyContext.location.pathname === withPrefix("/") && (
+            <SkipLink href="#filters" tabIndex={0} className={styles.skipLink}>
+              {t("Skip to filters")}
+            </SkipLink>
+          )}
           <SkipLink href="#mainContent" tabIndex={0} className={styles.skipLink}>
             {t("Skip to main content")}
           </SkipLink>
@@ -59,7 +60,7 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
                     <Button
                       key={idx}
                       appearance="secondary"
-                      onClick={() => open(href, "_blank")}
+                      onClick={() => open(href, "_blank", "noopener,noreferrer")}
                       tabIndex={0}
                       aria-label={`${t(item?.ariaLabel ?? item?.name ?? "Link")}, ${t("Opens a new window")}`}
                     >
@@ -79,7 +80,11 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
                 })}
               </nav>
             )}
-            {quickLinks?.length === 0 && (
+            {/* GATSBY_HIDE_LANGUAGE_SWITCH: set to "true" to hide the NL/EN switch.
+                Untranslated (Dutch) API content cannot be marked with the correct
+                lang attribute per element, so an all-Dutch page is the way to
+                satisfy WCAG 3.1.2 for municipalities that get audited on it. */}
+            {window.sessionStorage.getItem("HIDE_LANGUAGE_SWITCH") !== "true" && quickLinks?.length === 0 && (
               <nav role="navigation" aria-label={t("Language select")} className={styles.languageSelectContainer}>
                 <span
                   className={clsx(styles.languageSelect, i18n.language === "nl" && styles.languageSelectDisabled)}

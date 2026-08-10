@@ -8,12 +8,16 @@ server {
 
     #access_log  /var/log/nginx/host.access.log  main;
 
+    # Security headers (see security-headers.conf.template for the rationale).
+    # Served on every response ("always" includes error pages). NB nginx: any
+    # add_header inside a location block discards ALL inherited headers, so
+    # locations that add their own headers must repeat this include (see /api/).
+    include /etc/nginx/conf.d/includes/security-headers.conf;
+
     location / {
         root   /usr/share/nginx/html;
         index  index.html index.htm;
         try_files $uri $uri/ /index.html;
-
-        add_header X-Content-Type-Options nosniff;
     }
 
     #error_page  404              /404.html;
@@ -37,6 +41,8 @@ server {
         proxy_redirect off;
         add_header X-Upstream-Status $upstream_status always;
         add_header X-Upstream-URL "${UPSTREAM_BASE}" always;
+        # add_header in this block discards the server-level set — re-include it
+        include /etc/nginx/conf.d/includes/security-headers.conf;
     }
 }
 

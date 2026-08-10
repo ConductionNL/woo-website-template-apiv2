@@ -53,6 +53,17 @@
   border: var(--utrecht-table-body-border);
 }
 
+/* WCAG 2.5.8 (target size minimum): the stacked attachment links must each
+   present a pointer target of at least 24px; inline links render ~20px tall.
+   Centered with padding rather than align-content so the text position does
+   not depend on block-container alignment support. */
+.attachmentLink {
+  display: inline-block;
+  min-block-size: 24px;
+  padding-block: 2px;
+  box-sizing: border-box;
+}
+
 .tableBody > tr > td {
   border-inline-end-width: var(--utrecht-table-cell-border-inline-end-width);
   border-inline-end-style: var(--utrecht-table-cell-border-inline-end-style);

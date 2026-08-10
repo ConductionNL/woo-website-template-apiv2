@@ -16,3 +16,9 @@
   min-height: 100vh;
   margin-block-end: 48px;
 }
+
+/* focused via the skip link (tabindex="-1"); outlining the entire page
+   content is noise — the moved cursor position is the feedback */
+.pageContent:focus {
+  outline: none;
+}

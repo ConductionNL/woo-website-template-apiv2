@@ -3,7 +3,7 @@ import { Image } from "@utrecht/component-library-react/dist/css-module";
 export const getImage = (props: any) => {
   let src = props.src;
 
-  if (!props.src.includes("https://" || "http://")) {
+  if (!/^https?:\/\//i.test(props.src)) {
     const sessionUrl = window.sessionStorage.getItem("GITHUB_REPOSITORY_URL");
     const url = sessionUrl?.replace("https://github.com/", "");
 
@@ -25,7 +25,7 @@ export const getImage = (props: any) => {
     href: "",
     onClick: (e: MouseEvent) => {
       e.stopPropagation();
-      open(src);
+      open(src, "_blank", "noopener,noreferrer");
     },
   };
   return <Image {...attributes} />;

@@ -1,15 +1,24 @@
 name: Code Quality
 
 on:
+  # Only the promoted branches on push — feature/bugfix/hotfix branches are
+  # covered by the pull_request synchronize trigger. Listing them here too
+  # made every push with an open PR fire BOTH events into the same
+  # concurrency group, where cancel-in-progress killed one of the runs and
+  # left the PR's required checks unresolved.
   push:
-    branches: [main, beta, development, feature/**, bugfix/**, hotfix/**]
+    branches: [main, beta, development]
   pull_request:
-    types: [opened, reopened]
+    # synchronize: without it the gates go stale on PR updates
+    types: [opened, reopened, synchronize]
     branches: [main, beta, development]
   workflow_dispatch:
 
+# Event-aware group: a push to development also fires synchronize on an open
+# development → beta promotion PR (same head_ref/ref_name), so without the
+# event_name in the key those two runs would still cancel each other.
 concurrency:
-  group: quality-${{ github.head_ref || github.ref_name }}
+  group: quality-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
   cancel-in-progress: true
 
 # Permission CEILING for the called quality pipeline. GitHub statically
@@ -40,9 +49,10 @@ jobs:
       # own ESLint config. stylelint stays off: no npm script or config here.
       enable-eslint: true
       enable-stylelint: false
-      # The Gatsby production build is this repo's real quality gate — the
-      # only thing the legacy pull-request-build-check enforced.
-      frontend-checks: '["build"]'
+      # The shared workflow's own Frontend Build job already runs `npm run
+      # build` unconditionally under enable-frontend, so only typecheck needs
+      # requesting here — it gates `tsc --noEmit`, which the build never runs.
+      frontend-checks: '["typecheck"]'
       # No openspec/specs and no docs/features.json — the features check
       # would fail on every PR comparing "" against "[]".
       enable-features-extract: false
