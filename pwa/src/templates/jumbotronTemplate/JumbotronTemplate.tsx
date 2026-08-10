@@ -4,21 +4,22 @@ import clsx from "clsx";
 import { Heading1, Paragraph, Page, PageContent } from "@utrecht/component-library-react/dist/css-module";
 import { CardWrapper } from "@conduction/components";
 import { useTranslation } from "react-i18next";
-import { processMenuTemplate } from "../../services/menuUtils";
-
 export const JumbotronTemplate: React.FC = () => {
   const { t } = useTranslation();
 
   const organisation = window.sessionStorage.getItem("ORGANISATION_NAME") ?? "";
-  // JUMBOTRON_TITLE / JUMBOTRON_SUBTITLE support the {ORGANISATION_NAME} placeholder
-  // (same convention as menu titles). Empty/unset falls back to the translated default,
-  // which always includes the organisation name. trim(): a whitespace-only value
-  // must fall back too, or it renders an empty heading (axe empty-heading).
+  // JUMBOTRON_TITLE / JUMBOTRON_SUBTITLE support the {ORGANISATION_NAME}
+  // placeholder; an empty or whitespace-only value falls back to the
+  // translated default with the organisation name.
+  const fillOrganisationName = (text: string): string =>
+    text
+      .replace(/\{\s*ORGANISATION_NAME\s*\}/gi, organisation)
+      .replace(/\$\{\s*ORGANISATION_NAME\s*\}/gi, organisation);
   const title =
-    processMenuTemplate(window.sessionStorage.getItem("JUMBOTRON_TITLE") ?? "").trim() ||
+    fillOrganisationName(window.sessionStorage.getItem("JUMBOTRON_TITLE") ?? "").trim() ||
     `${t("Woo-publications of")} ${organisation}`;
   const subtitle =
-    processMenuTemplate(window.sessionStorage.getItem("JUMBOTRON_SUBTITLE") ?? "").trim() ||
+    fillOrganisationName(window.sessionStorage.getItem("JUMBOTRON_SUBTITLE") ?? "").trim() ||
     `${t("On this page you will find the Woo-publications of")} ${organisation}`;
 
   return (
