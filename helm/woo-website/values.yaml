@@ -10,6 +10,11 @@ pwa:
     host: ""
     base: ""
   runtime: {}
+  # Free-form container environment variables. Notable:
+  #   FRAME_ANCESTORS — CSP frame-ancestors value, defaults to 'none' in the
+  #   image (embedding blocked). To embed the site in a portal iframe:
+  #     env:
+  #       FRAME_ANCESTORS: "'self' https://portal.gemeente.nl"
   env: {}
 
 replicaCount: 2
