@@ -117,10 +117,14 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
       ...Object.keys(getItems.data["@self"].schema.properties).filter((key) => !checkIfVisible(key)),
     ];
 
+    /*
+     * Spread first, then the derived fields: the API may send an explicit
+     * `publicatiedatum: null`, which would otherwise overwrite the fallback.
+     */
     const enrichedData = {
-      publicatiedatum: data.publicatiedatum ?? data["@self"]?.published,
-      categorie: data["@self"]?.schema?.title,
       ...data,
+      publicatiedatum: data.publicatiedatum ?? data["@self"]?.published,
+      categorie: data.categorie ?? data["@self"]?.schema?.title,
     };
 
     return Object.entries(enrichedData)

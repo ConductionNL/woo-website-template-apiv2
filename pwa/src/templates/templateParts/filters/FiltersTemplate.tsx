@@ -175,16 +175,25 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
       console.warn("No facets in response");
     }
 
+    /*
+     * Normalize the two known category-facet payloads to { categorie: buckets }:
+     * the flattened `_schema` shape and the nested `@self.schema` shape that
+     * matches the `_facets[@self][schema]` request in availableFilters.ts.
+     */
     if (facets?._schema?.data?.buckets) {
       facets = { categorie: facets._schema.data?.buckets };
+    } else if (facets?.["@self"]?.schema?.data?.buckets ?? facets?.["@self"]?.schema?.buckets) {
+      facets = { categorie: facets["@self"].schema.data?.buckets ?? facets["@self"].schema.buckets };
     }
 
+    // Only bucket arrays can yield options; unrecognized facet shapes are objects.
     const categoriesWithData = Object.values(facets as Record<string, any>)
-      ?.map((facet: any) =>
+      ?.filter(Array.isArray)
+      .map((facet: any) =>
         facet
           ?.map((category: any) =>
             (() => {
-              const id = category.value;
+              const id = category.value ?? category.key;
               const name = category.label ?? id;
               if (!name) return null;
 
@@ -204,8 +213,8 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
     setCategoryOptions({ options: uniqueOptions });
 
-    const yearBuckets: any[] =
-      response?.facets?.publicatiedatum?.data?.buckets ?? response?.facets?.publicatiedatum?.buckets;
+    // rawFacets already resolves the optional `facets.facets` nesting above.
+    const yearBuckets: any[] = rawFacets?.publicatiedatum?.data?.buckets ?? rawFacets?.publicatiedatum?.buckets;
 
     if (yearBuckets) {
       const availableYears: number[] = (yearBuckets as any[])
