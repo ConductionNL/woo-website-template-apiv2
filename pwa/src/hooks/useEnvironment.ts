@@ -4,9 +4,9 @@ import { uniqueId } from "lodash";
 
 // DEV ONLY: set to a theme class (e.g. "barneveld-theme") to force that theme on every refresh,
 // without editing .env or restarting the dev server. Leave "" for normal (env/domain/config) behavior.
-const DEV_THEME_OVERRIDE = "openwoo-thema";
+const DEV_THEME_OVERRIDE = "";
 
-const DEFAULT_THEME_CLASSNAME = "conduction-theme";
+const DEFAULT_THEME_CLASSNAME = "openwoo-theme";
 
 /**
  * The single place that writes the NL Design System theme class to the DOM.

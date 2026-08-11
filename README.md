@@ -77,7 +77,7 @@ Wil je env-variabelen gebruiken? Maak `pwa/static/.env.development` aan met mini
 GATSBY_ENV_VARS_SET=true
 GATSBY_DEV_ENVIRONMENT=true
 GATSBY_API_BASE_URL=https://jouw-api.example.com
-GATSBY_NL_DESIGN_THEME_CLASSNAME=conduction-theme
+GATSBY_NL_DESIGN_THEME_CLASSNAME=openwoo-theme
 ```
 
 ### Snel starten (Docker Compose)
@@ -87,7 +87,7 @@ GATSBY_NL_DESIGN_THEME_CLASSNAME=conduction-theme
 ```
 # Compose build args → gaan de container build in als Gatsby env
 GATSBY_API_BASE_URL=https://jouw-api.example.com
-GATSBY_NL_DESIGN_THEME_CLASSNAME=conduction-theme
+GATSBY_NL_DESIGN_THEME_CLASSNAME=openwoo-theme
 
 # Image tag/name (lokale waarden zijn prima)
 CONTAINER_REGISTRY_BASE=local
@@ -119,6 +119,6 @@ Opmerking:
 
 - `GATSBY_ENV_VARS_SET` = `true` om env-mode te forceren (anders JSON-config)
 - `GATSBY_API_BASE_URL` = jouw backend API-base URL
-- `GATSBY_NL_DESIGN_THEME_CLASSNAME` = CSS theme class (bijv. `conduction-theme`)
+- `GATSBY_NL_DESIGN_THEME_CLASSNAME` = CSS theme class (bijv. `openwoo-theme`)
 
 Alle overige optionele UI-waarden en security.txt-velden zijn te vinden in de code en kunnen desgewenst worden toegevoegd, maar zijn niet nodig voor een basis-run.
