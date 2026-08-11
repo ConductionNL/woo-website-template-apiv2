@@ -9,7 +9,7 @@ Build-time (Gatsby) – baked into the site at build
 | GATSBY_ENV_VARS_SET | Compose build args, CI | Gatsby code | build | true = use env-only, false = use JSON configs by hostname |
 | GATSBY_API_BASE_URL | Compose build args, CI | Gatsby code | build | If non-empty, frontend calls this URL directly (no proxy). Leave empty to force `/api` proxy |
 | GATSBY_DEV_ENVIRONMENT | Compose build args | Gatsby code | build | Local dev helper; keep false in prod images |
-| GATSBY_NL_DESIGN_THEME_CLASSNAME | Compose build args | UI | build | Theme class (e.g. `conduction-theme`) |
+| GATSBY_NL_DESIGN_THEME_CLASSNAME | Compose build args | UI | build | Theme class (e.g. `openwoo-theme`) |
 | GATSBY_SHOW_THEME_SWITCHER | Compose build args | UI | build | If true, shows theme switcher |
 | GATSBY_CSP_CONNECT_SRC_FULL | Compose build args | Head.tsx | build | Replace connect-src CSP (space-separated hosts) |
 | GATSBY_CSP_CONNECT_SRC_EXTRA | Compose build args | Head.tsx | build | Append hosts to connect-src CSP |
@@ -70,7 +70,7 @@ Where: provided as Docker build args in `docker-compose.yml` (or your CI) and co
 - `GATSBY_DEV_ENVIRONMENT` ("true" | "false")
   - Dev shortcut in code: if true, sets API to an accept URL for local dev. Keep false in production images.
 - `GATSBY_NL_DESIGN_THEME_CLASSNAME` (string)
-  - CSS class for theme (e.g. `conduction-theme`).
+  - CSS class for theme (e.g. `openwoo-theme`).
 - `GATSBY_SHOW_THEME_SWITCHER` ("true" | "false")
   - Optional. If true, shows theme switcher in UI.
 - `GATSBY_CSP_CONNECT_SRC_FULL` (space-separated URLs)
@@ -131,7 +131,7 @@ Minimum useful set to use env-mode with dev proxy:
 GATSBY_ENV_VARS_SET=true
 GATSBY_DEV_ENVIRONMENT=true
 GATSBY_API_BASE_URL=https://opencatalogi.accept.commonground.nu/apps/opencatalogi/api
-GATSBY_NL_DESIGN_THEME_CLASSNAME=conduction-theme
+GATSBY_NL_DESIGN_THEME_CLASSNAME=openwoo-theme
 # DEV_PROXY_TARGET=https://… (optional; dev-only proxy for gatsby develop)
 ```
 
