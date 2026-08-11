@@ -1,5 +1,12 @@
-FROM node:20 AS builder
-# Set working directory
+# Stage 1: build the Gatsby static site
+FROM node:20.19.6-alpine3.23 AS builder
+
+# Skip husky in container (no git context); silence npm noise; production build
+ENV HUSKY=0 \
+    NODE_ENV=production \
+    NPM_CONFIG_FUND=false \
+    NPM_CONFIG_AUDIT=false
+
 WORKDIR /app
 
 # npm log files are the whiteout source on this infra: every npm run writes
@@ -17,12 +24,10 @@ ENV NPM_CONFIG_LOGS_MAX=0
 
 COPY package.json package-lock.json ./
 
-# Copy all files from current directory to working dir in image
-# install node modules and build assets.
-# One RUN on purpose: separate npm layers leave cross-layer whiteouts
-# (rotated npm logs) that kaniko cannot extract from cached layers
-# (".wh.* invalid argument", observed 2026-07-07).
-RUN npm install && npm install @parcel/watcher
+# Reproducible install: lockfile-driven. --include=dev because NODE_ENV=production
+# would otherwise skip the build tooling (@parcel/watcher and friends live in
+# devDependencies).
+RUN npm ci --include=dev
 
 COPY . .
 
@@ -78,11 +83,11 @@ ENV GATSBY_ANALYTICS_URL=$GATSBY_ANALYTICS_URL
 ENV GATSBY_DATE_FULL_MONTH=$GATSBY_DATE_FULL_MONTH
 ENV GATSBY_TABLE_SCROLL_MODE=$GATSBY_TABLE_SCROLL_MODE
 ENV GATSBY_HIDE_LANGUAGE_SWITCH=$GATSBY_HIDE_LANGUAGE_SWITCH
-ENV NODE_ENV=production
 
 RUN npm run build
 
-FROM nginx
+# Stage 2: serve via nginx (alpine — minimal attack surface)
+FROM nginx:1.30.4-alpine3.24
 COPY --from=builder /app/public /usr/share/nginx/html
 
 RUN chown -R nginx:nginx /usr/share/nginx && chmod -R 755 /usr/share/nginx && \
@@ -105,7 +110,12 @@ ENV NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates
 # Allowed iframe ancestors (CSP frame-ancestors). Override at runtime for
 # municipalities that embed the site in a portal, e.g. "'self' https://portal.example.nl"
 ENV FRAME_ANCESTORS="'none'"
-ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["nginx", "-g", "daemon off;"]
+
 USER nginx
 EXPOSE 8080
+
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+  CMD wget -q --spider http://localhost:8080/ || exit 1
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
