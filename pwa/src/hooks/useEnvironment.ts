@@ -6,7 +6,7 @@ import { uniqueId } from "lodash";
 // without editing .env or restarting the dev server. Leave "" for normal (env/domain/config) behavior.
 const DEV_THEME_OVERRIDE = "";
 
-const DEFAULT_THEME_CLASSNAME = "conduction-theme";
+const DEFAULT_THEME_CLASSNAME = "openwoo-theme";
 
 /**
  * The single place that writes the NL Design System theme class to the DOM.
@@ -28,7 +28,25 @@ const DEFAULT_THEME_CLASSNAME = "conduction-theme";
  */
 const applyThemeClass = (themeClass: string) => {
   if (typeof document === "undefined") return;
-  const resolved = DEV_THEME_OVERRIDE || themeClass || DEFAULT_THEME_CLASSNAME;
+  let resolved = DEV_THEME_OVERRIDE || themeClass || DEFAULT_THEME_CLASSNAME;
+
+  // The flash guard in global.css only releases <body> when its class contains "-theme".
+  // A misconfigured value that misses that pattern (e.g. "conduction-thema") would keep the
+  // page invisible forever — fall back to the default theme so the site still renders, and
+  // tell the operator (browser console) what to correct.
+  if (!resolved.includes("-theme")) {
+    // %c renders the first line as a styled banner so the message stands out between other
+    // console noise — this is an operator-facing configuration error, not a code error.
+    console.error(
+      `%c THEME CONFIGURATION ERROR %c\nInvalid theme class "${resolved}": theme classes must contain "-theme" (e.g. "${DEFAULT_THEME_CLASSNAME}"). ` +
+        `Falling back to "${DEFAULT_THEME_CLASSNAME}". Check GATSBY_NL_DESIGN_THEME_CLASSNAME / ` +
+        `NL_DESIGN_THEME_CLASSNAME in the environment, runtime.json or domain config.`,
+      "background: #c00; color: #fff; font-size: 1.5em; font-weight: bold; padding: 4px 8px; border-radius: 4px;",
+      "",
+    );
+    resolved = DEFAULT_THEME_CLASSNAME;
+  }
+
   document.documentElement.className = resolved; // rem base via --conduction-root-font-size
   document.body.className = resolved; // visibility gate + component tokens
 };

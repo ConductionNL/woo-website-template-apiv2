@@ -22,7 +22,7 @@ Wil je env-mode forceren (ipv JSON)? Maak `pwa/static/.env.development` aan:
 ```
 GATSBY_ENV_VARS_SET=true
 GATSBY_API_BASE_URL=https://jouw-api.example.com
-GATSBY_NL_DESIGN_THEME_CLASSNAME=conduction-theme
+GATSBY_NL_DESIGN_THEME_CLASSNAME=openwoo-theme
 GATSBY_DEV_ENVIRONMENT=true
 # Optioneel: expliciet proxy-doel voor /api tijdens gatsby develop
 # DEV_PROXY_TARGET=https://jouw-api.example.com
@@ -36,7 +36,7 @@ Maak in de repo-root een `.env` (voor Compose) met ten minste:
 
 ```
 GATSBY_API_BASE_URL=https://jouw-api.example.com
-GATSBY_NL_DESIGN_THEME_CLASSNAME=conduction-theme
+GATSBY_NL_DESIGN_THEME_CLASSNAME=openwoo-theme
 CONTAINER_REGISTRY_BASE=local
 CONTAINER_PROJECT_NAME=woo-website
 APP_BUILD=dev
@@ -69,7 +69,7 @@ Minimaal:
 ```
 GATSBY_ENV_VARS_SET=true
 GATSBY_API_BASE_URL=...
-GATSBY_NL_DESIGN_THEME_CLASSNAME=conduction-theme
+GATSBY_NL_DESIGN_THEME_CLASSNAME=openwoo-theme
 ```
 
 Overige optionele velden (favicon, footer, security.txt, etc.) kun je later toevoegen indien gewenst.
