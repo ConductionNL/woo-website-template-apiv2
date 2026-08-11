@@ -37,14 +37,14 @@ jobs:
 
     steps:
       - name: Get the WOO Website Template Code
-        uses: actions/checkout@v2
+        uses: actions/checkout@0717577d45739eb3c851188b29f50ed6c0b2194e # v2
         with:
           repository: ConductionNL/woo-website-template-apiv2
           ref: main
 
       # With special thanxs to https://github.com/SpicyPizza/create-envfile
       - name: Make envfile
-        uses: SpicyPizza/create-envfile@v2.0
+        uses: SpicyPizza/create-envfile@ace6d4f5d7802b600276c23ca417e669f1a06f6f # v2.0
         with:
           envkey_GITHUB_REPOSITORY_NAME: ${{ env.GITHUB_REPOSITORY_NAME }}
           envkey_USE_GITHUB_REPOSITORY_NAME_AS_PATH_PREFIX: ${{ env.USE_GITHUB_REPOSITORY_NAME_AS_PATH_PREFIX }}
@@ -68,7 +68,7 @@ jobs:
           sort_keys: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@7c12f8017d5436eb855f1ed4399f037a36fbd9e8 # v2
         with:
           node-version: 20
 
@@ -85,7 +85,7 @@ jobs:
         run: cd pwa && npm run build
 
       - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@4.1.0
+        uses: JamesIves/github-pages-deploy-action@3dbacc7e69578703f91f077118b3475862cb09b8 # 4.1.0
         with:
           branch: ${{ env.GITHUB_PAGES_BRANCH }}
           folder: pwa/public
