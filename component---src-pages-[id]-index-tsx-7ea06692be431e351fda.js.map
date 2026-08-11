@@ -1,0 +1,1 @@
+{"version":3,"file":"component---src-pages-[id]-index-tsx-7ea06692be431e351fda.js","mappings":";;;;;;;;AAAsC;AAEtC,+DAAeA,mDAAU,E","sources":["webpack://woo-website-template-apiv2/./src/pages/[id]/index.tsx"],"sourcesContent":["import DetailPage from \"./detailPage\";\n\nexport default DetailPage;\n"],"names":["DetailPage"],"sourceRoot":""}
