@@ -37,10 +37,6 @@ ingress:
   enabled: true
   className: nginx
   path: /
-  tls:
-    - secretName: woo-pwa-tls
-      hosts:
-        - woo.example.org
 ```
 
 2) Install/upgrade:
@@ -56,6 +52,7 @@ helm uninstall woo-pwa -n woo
 ```
 
 ### Notes
+- **TLS:** `global.tls: true` is all you need — the chart generates the TLS entry (`<release>-frontend-tls`) and the cert-manager annotation itself. Only set `ingress.tls` for a manually managed certificate (bring-your-own, e.g. Sectigo when the domain's CAA record does not allow Let's Encrypt), and never combine it with `global.tls` for the same host: the extra entry points at a secret nobody creates, and nginx then serves its fake default certificate (incident 2026-06-02/03: epe, noorderzijlvest).
 - The image is a static build of Gatsby. Any `GATSBY_*` variables must be set at image build-time. For most cases, you only need to adjust the runtime proxy via `pwa.upstream.*`.
 - If you need a custom theme or other `GATSBY_*` overrides, build your own image from `pwa/Dockerfile` with the appropriate build args, push it, and set `pwa.image.*` to your image and tag.
 
@@ -82,10 +79,6 @@ ingress:
   enabled: true
   className: nginx
   path: /
-  tls:
-    - secretName: woo-pwa-tls
-      hosts:
-        - woo.example.org
 ```
 # Deploying to a Kubernetes Cluster
 

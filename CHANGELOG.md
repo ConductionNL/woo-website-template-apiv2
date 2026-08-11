@@ -1,5 +1,23 @@
 # Changelog
 
+## 2026-06-03 — README: misleidend `ingress.tls`-voorbeeld (`woo-pwa-tls`) verwijderd (fix/readme-remove-woo-pwa-tls-example)
+
+Beide voorbeeld-values in `helm/woo-website/README.md` combineerden
+`global.tls: true` met een extra `ingress.tls`-blok met placeholder-secret
+`woo-pwa-tls`. Het chart-template merget beide: het extra blok wijst naar een
+secret die niemand aanmaakt, waarna nginx-ingress zijn fake default certificate
+serveert. Dit voorbeeld is op 2026-06-02 letterlijk in de Application-values van
+meerdere tenants gekopieerd (epe, noordwijk, noorderzijlvest) en brak
+open.epe.nl en noorderzijlvest (CAA blokkeerde Let's Encrypt, dus de secret
+bleef leeg).
+
+### `helm/woo-website/README.md`
+
+- `ingress.tls`-blok met `woo-pwa-tls` uit beide voorbeelden verwijderd —
+  `global.tls: true` volstaat.
+- Note toegevoegd: `ingress.tls` alleen voor bring-your-own certs (bijv.
+  Sectigo bij restrictieve CAA), nooit naast `global.tls` voor dezelfde host.
+
 ## 2026-06-02 — CLAUDE.md toegevoegd: CI/registry-beleid vastgelegd (feat/workflow-dispatch-image-build)
 
 Repo-`CLAUDE.md` aangemaakt met de besloten registry-strategie en de bekende,
