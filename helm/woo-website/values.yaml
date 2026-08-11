@@ -17,8 +17,12 @@ pwa:
   # Reserved voor toekomstige runtime-config (theming via ConfigMap i.p.v.
   # build-time GATSBY_* args). Op dit moment ongebruikt; zie config-runtime.yaml.
   runtime: {}
-  # Free-form env-vars naar de pod. Gebruikt door 30-generate-runtime.sh
-  # (NL_DESIGN_THEME_CLASSNAME, GATSBY_FAVICON_URL, etc.).
+  # Free-form env-vars naar de pod (o.a. gelezen door 30-generate-runtime.sh:
+  # NL_DESIGN_THEME_CLASSNAME, GATSBY_FAVICON_URL, etc.). Notable:
+  #   FRAME_ANCESTORS — CSP frame-ancestors value, defaults to 'none' in the
+  #   image (embedding blocked). To embed the site in a portal iframe:
+  #     env:
+  #       FRAME_ANCESTORS: "'self' https://portal.gemeente.nl"
   env: {}
 
 replicaCount: 2

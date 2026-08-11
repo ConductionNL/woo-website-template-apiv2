@@ -85,11 +85,15 @@ export const LandingTemplate: React.FC = () => {
           {getItems.data?.results?.length === 0 && !getItems.isLoading && <span>{t("No results found")}.</span>}
 
           {getItems.data?.results && getItems.data?.results?.length > 0 && (
-            <div id="mainContent">
+            <>
               {getItems.isFetching ? (
                 <Skeleton height={"200px"} />
               ) : (
-                <ResultsDisplayTemplate displayKey="landing-results" requests={getItems.data.results} />
+                <ResultsDisplayTemplate
+                  displayKey="landing-results"
+                  requests={getItems.data.results}
+                  schemas={getItems.data["@self"]?.schemas}
+                />
               )}
               <div role="region" aria-label={t("Pagination")} className={styles.pagination}>
                 <Pagination
@@ -105,7 +109,7 @@ export const LandingTemplate: React.FC = () => {
                 />
                 <PaginationLimitSelectComponent queryLimitName={"openWooObjectsQueryLimit"} />
               </div>
-            </div>
+            </>
           )}
           {getItems.isLoading && !getItems.data && <Skeleton height={"200px"} />}
         </PageContent>

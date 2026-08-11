@@ -1,0 +1,309 @@
+# Docker Image CI — restored pre-Codeberg workflow, modernized (2026-08-04).
+#
+# Provenance: this is the workflow that built and pushed images on GitHub
+# before the Codeberg/kaniko migration (baseline: `git show
+# f57767c0~1:.github/workflows/dockerimage.yml`), restored per decision
+# 2026-08-04 and upgraded for semantic versioning (tags come from
+# semantic-release — see release.yml; convention in docs/CONTRIBUTING.md).
+#
+# What was restored from the original:
+#   - GitHub-hosted build that pushes to ghcr
+#   - the runtime SMOKE TEST (compose up → poll HTTP → logs) that the kaniko
+#     flow could not do (no docker daemon on those runners)
+# What was deliberately NOT restored (known bugs in the original):
+#   - date-based releases from APP_VERSION (`success() || failure()` +
+#     continue-on-error created releases even for failed builds, and same-day
+#     merges overwrote each other's image tags). Releases and git tags are
+#     now created ONLY by semantic-release (.github/workflows/release.yml);
+#     this workflow builds images FROM those tags.
+# What was folded in from container.yml (the interim ghcr pipeline,
+# 2026-07-15 → 2026-08-05, REMOVED — reasoning below):
+#   - declarative tags via docker/metadata-action: sha-<full-sha> (immutable
+#     deploy anchor), :main/:development branch pointers (no :latest — there
+#     were once two different "latest" on two registries), semver on v* tags
+#   - buildx + GHA layer cache, GATSBY_* build-args from .env,
+#     provenance: false (pilot decision, besluitregister 2026-07-15 —
+#     reconsider after the pilot)
+#
+# Triggers:
+#   pull_request        build + smoke test only, never pushes (push: false)
+#   push branch         image :development / :main + sha tag
+#   push tag v*.*.*     versioned image :vX.Y.Z[-development.N] + sha tag
+#   workflow_dispatch   invoked BY release.yml with --ref <new tag>, because
+#                       tags created with GITHUB_TOKEN do not fire push
+#                       events (GitHub anti-recursion rule) — dispatch is the
+#                       documented exception that does trigger workflows.
+#
+# The `github.server_url` guard exists because Forgejo/Codeberg also executes
+# files under .github/workflows — that is exactly why this workflow's
+# triggers were removed during the migration. The guard makes it a clean
+# no-op there instead; the Codeberg image build has its own pipeline
+# (.forgejo/workflows/dockerimage.yml).
+#
+# container.yml was DELETED (2026-08-05), not preserved, because this
+# workflow is a strict superset of it (identical tag schema, cache, pins
+# and provenance stance — plus the smoke test, the tag/dispatch triggers
+# and the Forgejo guard). Keeping a runnable near-copy invited manual
+# dispatches that would push images WITHOUT the smoke test, and every
+# build change would need maintaining twice. The backup build role is
+# filled by the Codeberg pipeline, not by a second GitHub workflow.
+# The full file remains in git history:
+#   git log --oneline -- .github/workflows/container.yml
+# The filename dockerimage.yml was kept (over container.yml) to mirror the
+# .forgejo counterpart, keep the 2023-onward history in one path, and match
+# the dispatch reference in release.yml.
+#
+# Actions pinned on commit SHA (supply-chain policy; resolved 2026-08-04,
+# tag in the comment).
+
+name: Docker Image CI
+
+on:
+  pull_request:
+    branches: [main, development]
+  push:
+    branches: [main, development]
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+# Never cancel a branch/tag build (a cancelled tag build = a version without
+# an image); PR builds may be superseded by a newer push.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  build:
+    if: github.server_url == 'https://github.com'
+    runs-on: ubuntu-latest
+    env:
+      # Suppress docker/build-push-action's own "Docker Build summary" job
+      # summary and the .dockerbuild record-archive upload: the summary
+      # embeds Docker-external links (feedback survey) we don't want to
+      # present as ours, and the record archive uploads build internals as
+      # an artifact nobody here consumes. Our own summary step below shows
+      # what we actually care about (tags, digest).
+      DOCKER_BUILD_SUMMARY: "false"
+      DOCKER_BUILD_RECORD_UPLOAD: "false"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          # Full history + tags: the PR version preview below lets
+          # semantic-release analyze commits against existing release tags.
+          fetch-depth: 0
+
+      # GATSBY_*-defaults from .env as build-args (line-based; .env is not
+      # source-able due to unquoted spaces). Only surrounding quotes are
+      # stripped. Tenant config stays runtime (runtime.json overlay) — these
+      # are bake-time defaults only. Same mechanism as the Codeberg flow.
+      - name: GATSBY_* build-args from .env
+        id: buildargs
+        run: |
+          {
+            echo 'args<<BUILDARGS_EOF'
+            grep -E '^GATSBY_[A-Za-z0-9_]+=' .env \
+              | sed -e 's/^\([^=]*\)="\(.*\)"$/\1=\2/' \
+                    -e "s/^\([^=]*\)='\(.*\)'$/\1=\2/"
+            echo 'BUILDARGS_EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Set up Buildx
+        uses: docker/setup-buildx-action@bb05f3f5519dd87d3ba754cc423b652a5edd6d2c # v4.2.0
+
+      - name: Login ghcr
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@af1e73f918a031802d376d3c8bbc3fe56130a9b0 # v4.4.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      # All tag logic lives HERE, declaratively. metadata-action lowercases
+      # the image name itself (ConductionNL → conductionnl) — which is what
+      # keeps it equal to CONTAINER_REGISTRY_BASE/CONTAINER_PROJECT_NAME in
+      # .env, the name docker-compose (and the smoke test) uses.
+      - name: Docker metadata (tags + labels)
+        id: meta
+        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/woo-website-v2
+          tags: |
+            type=sha,format=long
+            type=ref,event=branch
+            type=semver,pattern=v{{version}}
+
+      # Build WITHOUT pushing, loaded into the local daemon so the smoke
+      # test below can actually run the image. The push happens in a
+      # separate step after the smoke test passes — build and push being
+      # separate steps is the visible guarantee that nothing unsmoked is
+      # ever published (same principle as the Codeberg build/push split).
+      - name: Build image (no push)
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: pwa
+          file: pwa/Dockerfile
+          push: false
+          load: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          provenance: false
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            GATSBY_CPU_COUNT=2
+            ${{ steps.buildargs.outputs.args }}
+
+      # Runtime smoke test, restored from the original workflow: start the
+      # freshly built image via docker-compose (which supplies UPSTREAM_*
+      # from .env for the nginx template) and require an HTTP 200 from the
+      # site before anything is pushed. APP_BUILD selects the sha-tag we
+      # just built — the one tag every trigger type produces.
+      - name: Smoke test (compose up + HTTP check)
+        env:
+          APP_BUILD: sha-${{ github.sha }}
+        run: |
+          docker compose up --detach --no-build pwa
+          ok=""
+          for i in $(seq 1 30); do
+            if curl -fsS -o /dev/null http://localhost:8000/; then ok=1; break; fi
+            sleep 2
+          done
+          # The security headers come from an envsubst'd nginx include
+          # (docker/security-headers.conf.template). Assert the high-value one
+          # so a template or FRAME_ANCESTORS quoting regression fails here
+          # instead of silently shipping without clickjacking protection.
+          headers_ok=""
+          if [ -n "$ok" ]; then
+            curl -fsS -D headers.txt -o /dev/null http://localhost:8000/
+            if grep -qi "^content-security-policy: frame-ancestors 'none'" headers.txt; then
+              headers_ok=1
+            else
+              echo "--- received headers ---"; cat headers.txt
+            fi
+          fi
+          echo "--- docker compose ps ---";   docker compose ps
+          echo "--- docker compose logs ---"; docker compose logs
+          docker compose down
+          if [ -z "$ok" ]; then
+            echo "Smoke test FAILED: site did not answer on :8000 within 60s" >&2
+            exit 1
+          fi
+          if [ -z "$headers_ok" ]; then
+            echo "Smoke test FAILED: Content-Security-Policy frame-ancestors header missing or wrong on /" >&2
+            exit 1
+          fi
+          echo "Smoke test passed (HTTP 200 + security headers)"
+
+      # Same build definition with push: true — every layer is a cache hit
+      # from the build step above, so this is assembly + push, not a rebuild.
+      # KEEP THE BUILD ARGS IDENTICAL to the build step: matching args are
+      # what makes the cache keys line up.
+      - name: Push image (branch/tag/dispatch only)
+        if: github.event_name != 'pull_request'
+        id: push
+        uses: docker/build-push-action@53b7df96c91f9c12dcc8a07bcb9ccacbed38856a # v7.3.0
+        with:
+          context: pwa
+          file: pwa/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          provenance: false
+          cache-from: type=gha
+          build-args: |
+            GATSBY_CPU_COUNT=2
+            ${{ steps.buildargs.outputs.args }}
+
+      # PR-only version preview: what would semantic-release create once
+      # this PR lands on its base branch? NOT hardcoded and NOT re-implemented
+      # version math — it is semantic-release itself in dry-run mode, with
+      # only the commit-analyzer plugin (no GitHub API calls, no tags or
+      # releases created). The PR checkout commit is exactly "base + this PR
+      # merged", so running the analysis on a local branch named after the
+      # base branch yields the same computation the real release run will do
+      # post-merge. Node 24: semantic-release 25 requires >=22.14.
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        if: github.event_name == 'pull_request'
+        with:
+          node-version: 24
+
+      - name: Version preview (semantic-release dry-run)
+        if: github.event_name == 'pull_request'
+        id: nextver
+        run: |
+          git checkout -B "${GITHUB_BASE_REF}"
+          npx --yes semantic-release@25.0.8 --dry-run --no-ci \
+            --plugins @semantic-release/commit-analyzer \
+            > "$RUNNER_TEMP/semrel-preview.log" 2>&1 || true
+          NEXT=$(grep -oE 'next release version is [0-9][^ ]*' "$RUNNER_TEMP/semrel-preview.log" \
+            | sed 's/.* //' | tail -n 1)
+          echo "next=${NEXT}" >> "$GITHUB_OUTPUT"
+          # ::notice:: renders as an annotation banner on the job page, the
+          # run summary AND the PR checks tab — visible without expanding
+          # any step (the PR "Details" link lands on the job log view).
+          if [ -n "${NEXT}" ]; then
+            echo "::notice title=Release preview::Merging this PR into ${GITHUB_BASE_REF} releases v${NEXT}"
+          else
+            echo "::notice title=Release preview::Merging this PR into ${GITHUB_BASE_REF} releases nothing (no fix:/feat: changes since the last release)"
+            grep -E 'no relevant changes|no new version' "$RUNNER_TEMP/semrel-preview.log" || tail -n 5 "$RUNNER_TEMP/semrel-preview.log"
+          fi
+
+      # Our own build summary, on EVERY run — including PR builds, so the
+      # tags a merge would publish are visible and checkable beforehand.
+      # The digest (only present after a real push) is the content-addressed
+      # identity of the image — unlike tags it can never be repointed, so it
+      # is the strongest pin a deployment can use (image@sha256:...).
+      # Publishing it is safe: it is a one-way hash, already visible in the
+      # registry to anyone who can see the image, and grants no access.
+      - name: Build result → job summary
+        if: always() && steps.meta.outcome == 'success'
+        env:
+          OWNER: ${{ github.repository_owner }}
+          DIGEST: ${{ steps.push.outputs.digest }}
+          TAGS: ${{ steps.meta.outputs.tags }}
+          NEXT: ${{ steps.nextver.outputs.next }}
+          BASE: ${{ github.base_ref }}
+        run: |
+          {
+            if [ -n "${DIGEST}" ]; then
+              echo "### 📦 Image pushed"
+              echo ""
+              echo "Pin deployments on the digest (strongest, content-addressed):"
+              echo ""
+              echo '```'
+              echo "ghcr.io/${OWNER,,}/woo-website-v2@${DIGEST}"
+              echo '```'
+              echo ""
+              echo "Tags pushed in this run:"
+            else
+              echo "### 🔍 Build check only — nothing was pushed"
+              echo ""
+              if [ -n "${NEXT}" ]; then
+                echo "Merging this PR into \`${BASE}\` would release: **v${NEXT}**"
+              elif [ -n "${BASE}" ]; then
+                echo "Merging this PR into \`${BASE}\` would release: **nothing**" \
+                     "(no \`fix:\`/\`feat:\` changes since the last release)"
+              fi
+              echo ""
+              echo "_Preview via semantic-release dry-run over the commits in this PR —" \
+                   "the same commits the release run analyzes after the merge commit" \
+                   "lands, so this is exact (barring races with other merges)._"
+              echo ""
+              echo "Tags this build would publish (PR check, or the build/smoke stage failed):"
+            fi
+            echo ""
+            echo '```'
+            echo "${TAGS}"
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          # Annotation banner on the job page for push runs (PR runs get
+          # theirs from the version-preview step). Must be OUTSIDE the
+          # summary redirection above or the command is not processed.
+          if [ -n "${DIGEST}" ]; then
+            echo "::notice title=Image pushed::ghcr.io/${OWNER,,}/woo-website-v2@${DIGEST}"
+          fi

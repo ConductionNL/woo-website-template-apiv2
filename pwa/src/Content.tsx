@@ -15,7 +15,13 @@ export const Content: React.FC<ContentProps> = ({ children }) => {
 
       <HeaderTemplate layoutClassName={styles.header} />
 
-      <div className={styles.pageContent}>{children}</div>
+      {/* single target for the #mainContent skip link — defined once here so
+          every page type has it, never in the templates (duplicate ids).
+          tabIndex -1 makes it programmatically focusable so the skip link
+          reliably moves focus (not part of the tab order). */}
+      <main id="mainContent" tabIndex={-1} className={styles.pageContent}>
+        {children}
+      </main>
 
       <FooterTemplate />
     </div>

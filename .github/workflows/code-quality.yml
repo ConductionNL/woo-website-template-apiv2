@@ -1,0 +1,58 @@
+name: Code Quality
+
+on:
+  # Only the promoted branches on push — feature/bugfix/hotfix branches are
+  # covered by the pull_request synchronize trigger. Listing them here too
+  # made every push with an open PR fire BOTH events into the same
+  # concurrency group, where cancel-in-progress killed one of the runs and
+  # left the PR's required checks unresolved.
+  push:
+    branches: [main, beta, development]
+  pull_request:
+    # synchronize: without it the gates go stale on PR updates
+    types: [opened, reopened, synchronize]
+    branches: [main, beta, development]
+  workflow_dispatch:
+
+# Event-aware group: a push to development also fires synchronize on an open
+# development → beta promotion PR (same head_ref/ref_name), so without the
+# event_name in the key those two runs would still cancel each other.
+concurrency:
+  group: quality-${{ github.event_name }}-${{ github.head_ref || github.ref_name }}
+  cancel-in-progress: true
+
+# Permission CEILING for the called quality pipeline. GitHub statically
+# validates the called workflow's declared job permissions against this
+# grant — even for jobs that are disabled — so it must cover the maximum
+# any nested job declares: journeydoc-capture (contents+actions write),
+# update-baseline / features-extract (contents write), and the Quality
+# Report PR comment (issues / pull-requests write).
+permissions:
+  contents: write
+  actions: write
+  issues: write
+  pull-requests: write
+
+jobs:
+  quality:
+    if: github.event_name != 'push' || github.event.created != true
+    uses: ConductionNL/.github/.github/workflows/quality.yml@main
+    with:
+      app-name: woo-website-template-apiv2
+      # Gatsby site living entirely in pwa/ — no root package.json and no
+      # composer.json anywhere.
+      enable-php: false
+      frontend-path: pwa
+      enable-frontend: true
+      # The lint script (eslint + prettier) passes since the TypeScript lint
+      # enablement; the shared workflow runs `npm run lint` with this repo's
+      # own ESLint config. stylelint stays off: no npm script or config here.
+      enable-eslint: true
+      enable-stylelint: false
+      # The shared workflow's own Frontend Build job already runs `npm run
+      # build` unconditionally under enable-frontend, so only typecheck needs
+      # requesting here — it gates `tsc --noEmit`, which the build never runs.
+      frontend-checks: '["typecheck"]'
+      # No openspec/specs and no docs/features.json — the features check
+      # would fail on every PR comparing "" against "[]".
+      enable-features-extract: false

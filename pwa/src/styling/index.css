@@ -1,41 +1,52 @@
 /* Package includes */
 @import "react-loading-skeleton/dist/skeleton.css";
+/* FontAwesome free webfont — provides the "Font Awesome 6 Free" @font-face so CSS
+   content: "\f105" (used by the unordered-list marker) can render the icon glyph. */
+@import "@fortawesome/fontawesome-free/css/all.min.css";
 
 /* Design Tokens maintained by Conduction */
 @import "../../node_modules/@conduction/theme/conduction-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/leiden-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/xxllnc-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/tubbergen-design-tokens/dist/index.css";
+/* Municipalities */
+@import "../../node_modules/@conduction/theme/municipalities/almere-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/baarn-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/beek-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/buren-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/dinkelland-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/ede-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/epe-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/noordwijk-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/noaberkracht-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/rotterdam-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/open-webconcept-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/dimpact-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/commonground-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/opencatalogi-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/zutphen-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/sloterburg-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/gouda-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/zuiddrecht-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/roosendaal-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/gooise-meren-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/moerdijk-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/gouda-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/helmond-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/hof-van-twente-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/lansingerland-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/bct-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/ede-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/leiden-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/midden-delfland-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/moerdijk-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/noordwijk-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/oude-ijsselstreek-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/helmond-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/beek-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/baarn-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/stichtse-vecht-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/roosendaal-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/rotterdam-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/soest-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/buren-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/almere-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/stichtse-vecht-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/tubbergen-design-tokens/dist/index.css";
 @import "../../node_modules/@conduction/theme/municipalities/vaals-design-tokens/dist/index.css";
-@import "../../node_modules/@conduction/theme/municipalities/noorderzijlvest-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/voorschoten-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/wassenaar-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/municipalities/zutphen-design-tokens/dist/index.css";
+/* Partnerships (samenwerkingsverbanden) */
+@import "../../node_modules/@conduction/theme/partnerships/noaberkracht-design-tokens/dist/index.css";
+/* Water authorities (waterschappen) */
+@import "../../node_modules/@conduction/theme/water-authorities/noorderzijlvest-design-tokens/dist/index.css";
+/* Other (non-municipality) themes */
+@import "../../node_modules/@conduction/theme/other/bct-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/other/commonground-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/other/dimpact-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/other/open-webconcept-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/other/opencatalogi-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/other/openwoo-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/other/sloterburg-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/other/xxllnc-design-tokens/dist/index.css";
+@import "../../node_modules/@conduction/theme/other/zuiddrecht-design-tokens/dist/index.css";
 
 /* Design Tokens maintained by Frameless */
 @import "../../node_modules/@utrecht/design-tokens/dist/theme.css";

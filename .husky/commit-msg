@@ -1,0 +1,42 @@
+# Reject commit messages that are not Conventional Commits — commit types
+# drive automated semantic versioning (see docs/CONTRIBUTING.md). CI re-checks
+# every PR (.github/workflows/pr-lint.yml), so bypassing this hook
+# (--no-verify) only postpones the failure.
+#
+# On failure we print a detailed explanation below the raw commitlint output,
+# because commitlint's own errors ("type may not be empty") are too cryptic
+# on their own — and GUI clients like GitKraken show exactly this output in
+# their error dialog, so it must be self-explanatory.
+
+if ! npx --no-install --prefix pwa commitlint --config pwa/commitlint.config.js --edit "$1"; then
+  {
+    echo ""
+    echo "─────────────────────────────────────────────────────────────────────"
+    echo "✖ COMMIT REJECTED — the message is not a Conventional Commit."
+    echo ""
+    echo "  Your message:    $(head -n 1 "$1")"
+    echo ""
+    echo "  Required format: type: description        (or: type(scope): description)"
+    echo ""
+    echo "  The message must START with one of these types, followed by ':'"
+    echo "    fix:       bug fix                        -> patch release (1.0.0 -> 1.0.1)"
+    echo "    feat:      new functionality              -> minor release (1.0.0 -> 1.1.0)"
+    echo "    feat!:     breaking change                -> major release (1.0.0 -> 2.0.0)"
+    echo "    docs: chore: ci: build: refactor: style: test: perf: revert:"
+    echo "               maintenance, no release"
+    echo ""
+    echo "  Examples:"
+    echo "    'updated readme'        ->  docs: update readme"
+    echo "    'fixed the pagination'  ->  fix: correct pagination on search page"
+    echo "    'new filter option'     ->  feat: add filter on publication date"
+    echo ""
+    echo "  Why: the type determines the automatic semantic version of the"
+    echo "  Docker image (semantic-release). A missing/wrong type means a"
+    echo "  missing/wrong version. NB 'hotfix:' is not a type — use 'fix:'."
+    echo ""
+    echo "  Docs: docs/CONTRIBUTING.md (section 'Commit-berichten')"
+    echo "        https://www.conventionalcommits.org"
+    echo "─────────────────────────────────────────────────────────────────────"
+  } >&2
+  exit 1
+fi

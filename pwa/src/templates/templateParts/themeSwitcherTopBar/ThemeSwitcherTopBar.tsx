@@ -6,7 +6,7 @@ import { availableThemes } from "../../../services/getConfig";
 import { useEnvironment } from "../../../hooks/useEnvironment";
 import { navigate } from "gatsby";
 import clsx from "clsx";
-import { Heading3, Paragraph } from "@utrecht/component-library-react";
+import { Heading3, Paragraph } from "@utrecht/component-library-react/dist/css-module";
 import { TSelectOption } from "@conduction/components/lib/components/formFields/select/select";
 
 export const ThemeSwitcherTopBar: React.FC = () => {
@@ -40,7 +40,7 @@ export const ThemeSwitcherTopBar: React.FC = () => {
 
     navigate("/");
 
-    initiateFromJSON(watchTheme.value);
+    initiateFromJSON(watchTheme.value, window.location.host);
   }, [watchTheme]);
 
   if (window.sessionStorage.getItem("SHOW_THEME_SWITCHER") === "true") {

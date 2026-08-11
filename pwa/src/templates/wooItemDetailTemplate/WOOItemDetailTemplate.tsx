@@ -39,7 +39,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const [requestedPage, setRequestedPage] = React.useState<number>(pagination.currentPage);
 
   const attachmentsWithLabelsQuery = useOpenWoo(queryClient).getAttachmentsWithLabels(wooItemId);
-  const attachmentsNoLabelsQuery = useOpenWoo(queryClient).getAttachmentsNoLabels(wooItemId, 10, requestedPage);
+  const attachmentsNoLabelsQuery = useOpenWoo(queryClient).getAttachmentsNoLabels(wooItemId, 50, requestedPage);
 
   const sortAlphaNum = (a: any, b: any) => a.title.localeCompare(b.title, i18n.language, { numeric: true });
 
@@ -117,10 +117,14 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
       ...Object.keys(getItems.data["@self"].schema.properties).filter((key) => !checkIfVisible(key)),
     ];
 
+    /*
+     * Spread first, then the derived fields: the API may send an explicit
+     * `publicatiedatum: null`, which would otherwise overwrite the fallback.
+     */
     const enrichedData = {
-      publicatiedatum: data["@self"]?.published,
-      categorie: data["@self"]?.schema?.title,
       ...data,
+      publicatiedatum: data.publicatiedatum ?? data["@self"]?.published,
+      categorie: data.categorie ?? data["@self"]?.schema?.title,
     };
 
     return Object.entries(enrichedData)
@@ -155,9 +159,9 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
 
     const attachments = attachmentsWithLabelsQuery.data.results;
 
-    let multipleLabels: any[] = [];
-    let singleLabels: any[] = [];
-    let allLabels: any[] = [];
+    const multipleLabels: any[] = [];
+    const singleLabels: any[] = [];
+    const allLabels: any[] = [];
 
     attachments.forEach((attachment: any) => {
       if (attachment.labels?.length > 1) {
@@ -253,7 +257,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
             <div className={styles.content} role="region" aria-label={t("Details")}>
               <Heading1
                 className={styles.hyphenated}
-                id="mainContent"
                 aria-label={`${t("Title of woo request")}, ${getItems.data.title ?? getItems.data.titel ?? getItems.data.name ?? getItems.data.naam ?? getItems.data.id}`}
               >
                 {removeHTMLFromString(removeHTMLFromString(getItems.data.titel ?? getItems.data.title))}
@@ -264,12 +267,15 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                   scrollLeftButton: t("Scroll table to the left"),
                   scrollRightButton: t("Scroll table to the right"),
                 }}
+                scrollMode={
+                  (window.sessionStorage.getItem("TABLE_SCROLL_MODE") as "buttons" | "scrollbar") || "buttons"
+                }
               >
                 <Table className={styles.table}>
                   <TableBody className={styles.tableBody}>
                     {getItems.data &&
                       Object.entries(orderProperties(getItems.data)).map(([key, value]: [string, any]) => {
-                        if (!!value) {
+                        if (value) {
                           let formattedValue: string;
                           if (
                             !value ||
@@ -293,8 +299,9 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                     aria-label={`${getName(key)}, ${value}`}
                                   >
                                     <TableCell>{getName(key)}</TableCell>
-                                    <TableCell>
+                                    <TableCell lang={i18n.language || undefined}>
                                       <Link
+                                        className={styles.attachmentLink}
                                         href={value}
                                         target="_blank"
                                         rel="noopener noreferrer"
@@ -323,7 +330,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                     aria-labelledby={"themesName themesData"}
                                   >
                                     <TableCell id="themesName">{t("Themes")}</TableCell>
-                                    <TableCell id="themesData">
+                                    <TableCell id="themesData" lang={i18n.language || undefined}>
                                       {value.map((theme: any, idx: number) => (
                                         <span key={idx}>
                                           {theme.title ? theme.title + (idx !== value?.length - 1 ? ", " : "") : theme}
@@ -349,7 +356,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                               aria-label={`${getName(key)}, ${formattedValue}`}
                             >
                               <TableCell>{getName(key)}</TableCell>
-                              <TableCell>{formattedValue}</TableCell>
+                              <TableCell lang={i18n.language || undefined}>{formattedValue}</TableCell>
                             </TableRow>
                           );
                         }
@@ -391,13 +398,15 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           <TableCell>{getLabel(sortedAttachments.label)}</TableCell>
 
                           {sortedAttachments.attachments.length > 1 && (
-                            <TableCell>
+                            <TableCell lang={i18n.language || undefined}>
                               <div id="labelAttachmentsData">
                                 {sortedAttachments.attachments.map((attachment: any, idx: number) => (
                                   <div key={idx}>
                                     <Link
+                                      className={styles.attachmentLink}
                                       href={attachment.accessUrl}
-                                      target="blank"
+                                      target="_blank"
+                                      rel="noopener noreferrer"
                                       onKeyDown={activateLinkOnSpace}
                                     >
                                       {`${attachment.title ?? getPDFName(attachment.accessUrl)}`}
@@ -408,10 +417,12 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                             </TableCell>
                           )}
                           {sortedAttachments.attachments.length === 1 && (
-                            <TableCell>
+                            <TableCell lang={i18n.language || undefined}>
                               <Link
+                                className={styles.attachmentLink}
                                 href={sortedAttachments.attachments[0].accessUrl}
-                                target="blank"
+                                target="_blank"
+                                rel="noopener noreferrer"
                                 onKeyDown={activateLinkOnSpace}
                               >
                                 {`${sortedAttachments.attachments[0].title ?? getPDFName(sortedAttachments.attachments[0].accessUrl)}`}
@@ -434,30 +445,31 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                     )}
 
                     {attachmentsNoLabelsQuery.isSuccess && unsortedAttachments.length > 0 && (
-                      <TableRow
-                        className={styles.tableRow}
-                        aria-labelledby="attachmentsName attachmentsData"
-                      >
+                      <TableRow className={styles.tableRow} aria-labelledby="attachmentsName attachmentsData">
                         <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
-                        <TableCell>
+                        <TableCell lang={i18n.language || undefined}>
                           <div id="attachmentsData">
                             {attachmentsNoLabelsQuery.isFetching ? (
                               <Skeleton count={5} />
                             ) : (
-                              unsortedAttachments.map(
-                                (bijlage: any, idx: number) =>
-                                  bijlage.title && (
-                                    <div key={idx}>
-                                      <Link
-                                        href={bijlage.accessUrl?.length !== 0 ? bijlage.accessUrl : "#"}
-                                        target={bijlage.accessUrl?.length !== 0 ? "blank" : ""}
-                                        onKeyDown={activateLinkOnSpace}
-                                      >
-                                        {bijlage.title}
-                                      </Link>
-                                    </div>
-                                  ),
-                              )
+                              unsortedAttachments.map((bijlage: any, idx: number) => {
+                                if (!bijlage.title) return null;
+                                const isDownloadable = bijlage.accessUrl?.length !== 0;
+
+                                return (
+                                  <div key={idx}>
+                                    <Link
+                                      className={styles.attachmentLink}
+                                      href={isDownloadable ? bijlage.accessUrl : "#"}
+                                      target={isDownloadable ? "_blank" : undefined}
+                                      rel={isDownloadable ? "noopener noreferrer" : undefined}
+                                      onKeyDown={activateLinkOnSpace}
+                                    >
+                                      {bijlage.title}
+                                    </Link>
+                                  </div>
+                                );
+                              })
                             )}
                           </div>
                           <div role="region" aria-label={t("Pagination")} className={styles.pagination}>

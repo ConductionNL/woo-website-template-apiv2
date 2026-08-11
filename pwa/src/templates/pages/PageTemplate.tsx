@@ -1,17 +1,15 @@
 import * as React from "react";
 import * as styles from "./PageTemplate.module.css";
 import { Page, PageContent, AccordionProvider } from "@utrecht/component-library-react/dist/css-module";
-import { useTranslation } from "react-i18next";
 import { usePages } from "../../hooks/pages";
 import { sanitizeHtml } from "../../services/sanitizeHtml";
-import { getPagesList, getPageBySlug, getPageHtmlFromContents } from "../../services/pageUtils";
+import { getPagesList, getPageBySlug } from "../../services/pageUtils";
 
 interface PageTemplateProps {
   slug: string;
 }
 
 export const PageTemplate: React.FC<PageTemplateProps> = ({ slug }) => {
-  const { t } = useTranslation();
   const pagesQuery = usePages().getAll();
 
   const page = React.useMemo(() => {

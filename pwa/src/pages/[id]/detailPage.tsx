@@ -1,5 +1,4 @@
 import * as React from "react";
-import _ from "lodash";
 import { PageProps } from "gatsby";
 import { WOOItemDetailTemplate } from "../../templates/wooItemDetailTemplate/WOOItemDetailTemplate";
 import { usePages } from "../../hooks/pages";

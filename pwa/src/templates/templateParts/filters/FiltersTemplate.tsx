@@ -23,6 +23,14 @@ interface FiltersTemplateProps {
   isLoading: boolean;
 }
 
+/**
+ * Turns a category label into its URL-slug form by collapsing every run of whitespace
+ * (spaces, tabs, etc.) into a single underscore. Used on BOTH the write path (label ->
+ * URL) and the read path (matching the URL param back to an option), so the round-trip
+ * stays symmetric even for labels with trailing tabs or repeated spaces.
+ */
+const slugifyLabel = (label?: string): string | undefined => label?.replace(/\s+/g, "_");
+
 export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) => {
   const { t } = useTranslation();
   const { setPagination } = usePaginationContext();
@@ -64,18 +72,38 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
   };
 
   const handleSetSelectFormValues = (params: any): void => {
-    getCategories.isSuccess &&
-      setValue(
-        "category",
-        categoryOptions.options.find((option: any) => option.value === params.categorie?.replace(/_/g, " ")),
-      );
+    if (!getCategories.isSuccess) return;
+
+    /*
+     * The URL carries the category LABEL (written by the navigate effect below as
+     * `?categorie=<label_with_underscores>`), while option.value holds the schema id
+     * ("10") since the facet buckets became { value: <id>, label: <name> }. So restore
+     * by label; the value comparison stays as a fallback for old-style URLs where the
+     * param and the option value were both the name.
+     *
+     * Match by re-slugifying each option label the SAME way the write path does (see
+     * navigate effect below) instead of reversing it. The write transform
+     * (`\s+` -> `_`) is lossy for trailing/repeated whitespace such as a trailing tab
+     * ("...stukken\t") or double spaces, so reversing it (`_` -> " ") would not
+     * reproduce the original label and the round-trip would fail to match.
+     */
+    const target = params.categorie;
+    setValue(
+      "category",
+      categoryOptions.options.find(
+        (option: any) =>
+          slugifyLabel(option.label)?.toLowerCase() === target?.toLowerCase() ||
+          option.value === target ||
+          option.label?.toLowerCase() === target?.replace(/_/g, " ").toLowerCase(),
+      ),
+    );
   };
 
   const onSubmit = (data: any) => {
     setFilters({
       _search: data._search,
-      "@self[published][gte]": data.year?.after,
-      "@self[published][lte]": data.year?.before,
+      "publicatiedatum[gte]": data.year?.after,
+      "publicatiedatum[lte]": data.year?.before,
       "@self[schema]": data.category?.value,
     });
   };
@@ -104,9 +132,9 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
     if (_.isEqual(filters, queryParams)) return;
 
     setQueryParams(filters);
-    const categoryLabel = categoryOptions.options
-      .find((option: any) => option.value === filters["@self[schema]"])
-      ?.label.replace(/\s+/g, "_");
+    const categoryLabel = slugifyLabel(
+      categoryOptions.options.find((option: any) => option.value === filters["@self[schema]"])?.label,
+    );
 
     navigate(`/${filtersToUrlQueryParams({ ...filters, "@self[schema]": categoryLabel })}`);
     setPagination({ currentPage: 1 });
@@ -147,16 +175,25 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
       console.warn("No facets in response");
     }
 
-    if (facets["@self"]?.schema?.buckets) {
-      facets = { categorie: facets["@self"].schema.buckets };
+    /*
+     * Normalize the two known category-facet payloads to { categorie: buckets }:
+     * the flattened `_schema` shape and the nested `@self.schema` shape that
+     * matches the `_facets[@self][schema]` request in availableFilters.ts.
+     */
+    if (facets?._schema?.data?.buckets) {
+      facets = { categorie: facets._schema.data?.buckets };
+    } else if (facets?.["@self"]?.schema?.data?.buckets ?? facets?.["@self"]?.schema?.buckets) {
+      facets = { categorie: facets["@self"].schema.data?.buckets ?? facets["@self"].schema.buckets };
     }
 
+    // Only bucket arrays can yield options; unrecognized facet shapes are objects.
     const categoriesWithData = Object.values(facets as Record<string, any>)
-      ?.map((facet: any) =>
+      ?.filter(Array.isArray)
+      .map((facet: any) =>
         facet
           ?.map((category: any) =>
             (() => {
-              const id = category.key;
+              const id = category.value ?? category.key;
               const name = category.label ?? id;
               if (!name) return null;
 
@@ -176,11 +213,13 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
     setCategoryOptions({ options: uniqueOptions });
 
-    const yearBuckets: any[] =
-      response?.facets?.facets?.["@self"]?.published?.buckets ?? response?.facets?.["@self"]?.published?.buckets;
+    // rawFacets already resolves the optional `facets.facets` nesting above.
+    const yearBuckets: any[] = rawFacets?.publicatiedatum?.data?.buckets ?? rawFacets?.publicatiedatum?.buckets;
 
     if (yearBuckets) {
-      const availableYears: number[] = (yearBuckets as any[]).map((b: any) => Number(b.key)).filter(Boolean);
+      const availableYears: number[] = (yearBuckets as any[])
+        .map((b: any) => parseInt((b.value ?? b.key ?? "").toString().substring(0, 4), 10))
+        .filter(Boolean);
 
       const dynamicYears = availableYears
         .map((year) => ({
@@ -211,11 +250,11 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
      */
     <div id="filters" className={styles.container}>
       {/*
-       * role="region" + aria-label turns the form into a named landmark so
-       * screen-reader users can navigate to it directly from the landmarks menu.
+       * A <form> with an accessible name is a named "form" landmark by itself,
+       * so screen-reader users can navigate to it from the landmarks menu.
+       * (role="region" is not allowed on <form> — axe aria-allowed-role.)
        */}
-      <form role="region" aria-label={t("Filters")} onSubmit={handleSubmit(onSubmit)} className={styles.form}>
-
+      <form aria-label={t("Filters")} onSubmit={handleSubmit(onSubmit)} className={styles.form}>
         {/*
          * Floating-label pattern — same structure for every field:
          *
@@ -251,7 +290,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
           />
         </div>
 
-        <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.year ? ` ${styles.hasValue}` : ""}`}>
+        <div className={`${styles.floatingLabelWrapper}${watcher.year ? ` ${styles.hasValue}` : ""}`}>
           <label htmlFor="year-filter" className={styles.floatingLabel}>
             {t("Year")}
           </label>
@@ -262,9 +301,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
             placeholder=""
             isClearable
             defaultValue={yearOptions.options.find((year: any) => {
-              return (
-                year.after === filters["@self[published][gte]"] && year.before === filters["@self[published][lte]"]
-              );
+              return year.after === filters["publicatiedatum[gte]"] && year.before === filters["publicatiedatum[lte]"];
             })}
             {...{ register, errors, control }}
             ariaLabel={t("Select year")}
@@ -276,7 +313,7 @@ export const FiltersTemplate: React.FC<FiltersTemplateProps> = ({ isLoading }) =
 
         {getCategories.isLoading && <Skeleton height="50px" />}
         {getCategories.isSuccess && (
-          <div className={`${styles.floatingLabelWrapper} ${styles.selectWrapper}${watcher.category ? ` ${styles.hasValue}` : ""}`}>
+          <div className={`${styles.floatingLabelWrapper}${watcher.category ? ` ${styles.hasValue}` : ""}`}>
             <label htmlFor="category-filter" className={styles.floatingLabel}>
               {t("Category")}
             </label>

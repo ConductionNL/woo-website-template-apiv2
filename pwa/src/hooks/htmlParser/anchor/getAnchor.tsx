@@ -41,7 +41,7 @@ export const getAnchor = (
 
     // External Links
     if (conditions.some((substring) => props.href.includes(substring))) {
-      open(props.href);
+      open(props.href, "_blank", "noopener,noreferrer");
 
       return;
     }
@@ -89,7 +89,11 @@ const handleInternalLinks = (props: any, targetFile: string, location: string, d
     if (!directoryFound) {
       const hrefWithLeadingSlash = !props.href.startsWith("/") ? `/${props.href}` : props.href;
 
-      open(`${window.sessionStorage.getItem("GITHUB_REPOSITORY_URL") ?? ""}/blob/master${hrefWithLeadingSlash}`);
+      open(
+        `${window.sessionStorage.getItem("GITHUB_REPOSITORY_URL") ?? ""}/blob/master${hrefWithLeadingSlash}`,
+        "_blank",
+        "noopener,noreferrer",
+      );
     }
 
     return; // ensure no other flow is triggered

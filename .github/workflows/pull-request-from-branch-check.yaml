@@ -6,6 +6,9 @@ on:
       - main
       - beta
 
+# Only inspects github.base_ref/head_ref; no repository content or API access needed.
+permissions: {}
+
 jobs:
   check-branch:
     runs-on: ubuntu-latest
