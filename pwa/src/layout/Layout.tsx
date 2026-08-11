@@ -7,14 +7,12 @@ import { defaultGlobalContext, GlobalProvider, IGlobalContext } from "../context
 import { Head } from "./Head";
 import { Content } from "../Content";
 import { Document, Surface } from "@utrecht/component-library-react/dist/css-module";
-import { Toaster } from "react-hot-toast";
 import { fas } from "@fortawesome/free-solid-svg-icons";
 import { fab } from "@fortawesome/free-brands-svg-icons";
 import { far } from "@fortawesome/free-regular-svg-icons";
 import { IconPack, library } from "@fortawesome/fontawesome-svg-core";
 import { useEnvironment } from "../hooks/useEnvironment";
 import { ToolTip } from "@conduction/components";
-import { Helmet } from "react-helmet";
 import { usePages } from "../hooks/pages";
 import { ErrorBoundary } from "../components/errorBoundary/ErrorBoundary";
 
@@ -62,7 +60,8 @@ const Layout: React.FC<LayoutProps> = ({ children, pageContext, location }) => {
     }));
   }, [pageContext, location]);
 
-  const pagesQuery = usePages().getAll();
+  // Prefetch the pages query so consumers render from the warm cache.
+  usePages().getAll();
 
   if (!globalContext.initiated || !environmentInitialized) return <></>;
 

@@ -138,6 +138,7 @@ export const connectSrcOther = `
 https://conduction.openwoo.app
 https://conduction.nl
 https://conduction.accept.openwoo.app
+https://canary.accept.commonground.nu
 https://koophulpje.openwoo.app
 https://koophulpje.accept.openwoo.app
 https://koophulpje.commonground.nu
@@ -176,5 +177,3 @@ http://localhost:8080
 http://localhost:3000
 http://127.0.0.1:7246
 `;
-
-

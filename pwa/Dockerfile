@@ -1,7 +1,5 @@
-# syntax=docker/dockerfile:1.6
-
 # Stage 1: build the Gatsby static site
-FROM node:18.20.5-alpine3.20 AS builder
+FROM node:20.19.6-alpine3.23 AS builder
 
 # Skip husky in container (no git context); silence npm noise; production build
 ENV HUSKY=0 \
@@ -11,17 +9,29 @@ ENV HUSKY=0 \
 
 WORKDIR /app
 
-# Reproducible install: lockfile-driven. @parcel/watcher zit in devDependencies,
-# dus de aparte install-stap die hier eerder stond is niet meer nodig.
+# npm log files are the whiteout source on this infra: every npm run writes
+# a timestamped log to /root/.npm/_logs and prunes older ones, and deleting
+# a file that came from an EARLIER layer becomes a whiteout entry (.wh.*)
+# in the layer tar. kaniko materializes whiteouts as literal files when it
+# re-extracts CACHED layers, and the CI runners' overlayfs forbids creating
+# ".wh.*" names — so any full cache hit dies with ".wh.* invalid argument"
+# (observed 2026-07-07 between the two npm installs, 2026-07-09 between
+# npm install and npm run build). logs-max=0 stops npm writing log files at
+# all: nothing to rotate, no cross-layer deletes, no whiteouts. Changing
+# this line also changes every cache key, retiring the poisoned cache
+# entries without manual registry cleanup.
+ENV NPM_CONFIG_LOGS_MAX=0
+
 COPY package.json package-lock.json ./
+
+# Reproducible install: lockfile-driven. --include=dev because NODE_ENV=production
+# would otherwise skip the build tooling (@parcel/watcher and friends live in
+# devDependencies).
 RUN npm ci --include=dev
 
-# App-sources na deps zodat de dep-layer cachet
 COPY . .
 
-# Build-time config voor Gatsby. TODO: branding/theming naar runtime.json
-# (zie helm/woo-website/templates/config-runtime.yaml) zodat één image
-# alle tenants kan bedienen i.p.v. per-tenant builds.
+# Build-time configuration for Gatsby (used at build, not runtime)
 ARG GATSBY_ENV_VARS_SET=true
 ARG GATSBY_API_BASE_URL
 ARG GATSBY_DEV_ENVIRONMENT=false
@@ -32,6 +42,8 @@ ARG GATSBY_SHOW_THEME_SWITCHER
 ARG GATSBY_FAVICON_URL
 ARG GATSBY_ORGANISATION_NAME
 ARG GATSBY_JUMBOTRON_IMAGE_URL
+ARG GATSBY_JUMBOTRON_TITLE
+ARG GATSBY_JUMBOTRON_SUBTITLE
 ARG GATSBY_FOOTER_LOGO_URL
 ARG GATSBY_FOOTER_LOGO_HREF
 ARG GATSBY_FOOTER_CONTENT
@@ -41,51 +53,63 @@ ARG GATSBY_SHOW_CATEGORY
 ARG GATSBY_SHOW_ORGANIZATION
 ARG GATSBY_ANALYTICS_URL
 ARG GATSBY_DATE_FULL_MONTH
-ENV GATSBY_ENV_VARS_SET=$GATSBY_ENV_VARS_SET \
-    GATSBY_API_BASE_URL=$GATSBY_API_BASE_URL \
-    GATSBY_DEV_ENVIRONMENT=$GATSBY_DEV_ENVIRONMENT \
-    GATSBY_NL_DESIGN_THEME_CLASSNAME=$GATSBY_NL_DESIGN_THEME_CLASSNAME \
-    GATSBY_CSP_CONNECT_SRC_FULL=$GATSBY_CSP_CONNECT_SRC_FULL \
-    GATSBY_CSP_CONNECT_SRC_EXTRA=$GATSBY_CSP_CONNECT_SRC_EXTRA \
-    GATSBY_SHOW_THEME_SWITCHER=$GATSBY_SHOW_THEME_SWITCHER \
-    GATSBY_FAVICON_URL=$GATSBY_FAVICON_URL \
-    GATSBY_ORGANISATION_NAME=$GATSBY_ORGANISATION_NAME \
-    GATSBY_JUMBOTRON_IMAGE_URL=$GATSBY_JUMBOTRON_IMAGE_URL \
-    GATSBY_FOOTER_LOGO_URL=$GATSBY_FOOTER_LOGO_URL \
-    GATSBY_FOOTER_LOGO_HREF=$GATSBY_FOOTER_LOGO_HREF \
-    GATSBY_FOOTER_CONTENT=$GATSBY_FOOTER_CONTENT \
-    GATSBY_FOOTER_CONTENT_HEADER=$GATSBY_FOOTER_CONTENT_HEADER \
-    GATSBY_OIDN_NUMBER=$GATSBY_OIDN_NUMBER \
-    GATSBY_SHOW_CATEGORY=$GATSBY_SHOW_CATEGORY \
-    GATSBY_SHOW_ORGANIZATION=$GATSBY_SHOW_ORGANIZATION \
-    GATSBY_ANALYTICS_URL=$GATSBY_ANALYTICS_URL \
-    GATSBY_DATE_FULL_MONTH=$GATSBY_DATE_FULL_MONTH
+ARG GATSBY_TABLE_SCROLL_MODE
+ARG GATSBY_HIDE_LANGUAGE_SWITCH
+# Gatsby spawns one build worker per visible CPU core by default; CI passes
+# a small number here to bound peak memory (the default keeps local builds
+# unchanged). Accepts a number, "logical_cores" or "physical_cores".
+ARG GATSBY_CPU_COUNT=logical_cores
+ENV GATSBY_CPU_COUNT=$GATSBY_CPU_COUNT
+ENV GATSBY_ENV_VARS_SET=$GATSBY_ENV_VARS_SET
+ENV GATSBY_API_BASE_URL=$GATSBY_API_BASE_URL
+ENV GATSBY_DEV_ENVIRONMENT=$GATSBY_DEV_ENVIRONMENT
+ENV GATSBY_NL_DESIGN_THEME_CLASSNAME=$GATSBY_NL_DESIGN_THEME_CLASSNAME
+ENV GATSBY_CSP_CONNECT_SRC_FULL=$GATSBY_CSP_CONNECT_SRC_FULL
+ENV GATSBY_CSP_CONNECT_SRC_EXTRA=$GATSBY_CSP_CONNECT_SRC_EXTRA
+ENV GATSBY_SHOW_THEME_SWITCHER=$GATSBY_SHOW_THEME_SWITCHER
+ENV GATSBY_FAVICON_URL=$GATSBY_FAVICON_URL
+ENV GATSBY_ORGANISATION_NAME=$GATSBY_ORGANISATION_NAME
+ENV GATSBY_JUMBOTRON_IMAGE_URL=$GATSBY_JUMBOTRON_IMAGE_URL
+ENV GATSBY_JUMBOTRON_TITLE=$GATSBY_JUMBOTRON_TITLE
+ENV GATSBY_JUMBOTRON_SUBTITLE=$GATSBY_JUMBOTRON_SUBTITLE
+ENV GATSBY_FOOTER_LOGO_URL=$GATSBY_FOOTER_LOGO_URL
+ENV GATSBY_FOOTER_LOGO_HREF=$GATSBY_FOOTER_LOGO_HREF
+ENV GATSBY_FOOTER_CONTENT=$GATSBY_FOOTER_CONTENT
+ENV GATSBY_FOOTER_CONTENT_HEADER=$GATSBY_FOOTER_CONTENT_HEADER
+ENV GATSBY_OIDN_NUMBER=$GATSBY_OIDN_NUMBER
+ENV GATSBY_SHOW_CATEGORY=$GATSBY_SHOW_CATEGORY
+ENV GATSBY_SHOW_ORGANIZATION=$GATSBY_SHOW_ORGANIZATION
+ENV GATSBY_ANALYTICS_URL=$GATSBY_ANALYTICS_URL
+ENV GATSBY_DATE_FULL_MONTH=$GATSBY_DATE_FULL_MONTH
+ENV GATSBY_TABLE_SCROLL_MODE=$GATSBY_TABLE_SCROLL_MODE
+ENV GATSBY_HIDE_LANGUAGE_SWITCH=$GATSBY_HIDE_LANGUAGE_SWITCH
 
 RUN npm run build
 
-# Stage 2: serveer via nginx (alpine — minimal attack surface)
-FROM nginx:1.27.3-alpine
-
+# Stage 2: serve via nginx (alpine — minimal attack surface)
+FROM nginx:1.30.4-alpine3.24
 COPY --from=builder /app/public /usr/share/nginx/html
 
-# nginx-paden writable maken voor non-root nginx-user. Stelt readOnlyRootFilesystem
-# op pod-niveau mogelijk i.c.m. emptyDir voor /var/cache/nginx en /var/run.
-RUN chown -R nginx:nginx /usr/share/nginx \
- && chmod -R 755 /usr/share/nginx \
- && chown -R nginx:nginx /var/cache/nginx \
- && chown -R nginx:nginx /var/log/nginx \
- && chown -R nginx:nginx /etc/nginx/conf.d \
- && touch /var/run/nginx.pid \
- && chown -R nginx:nginx /var/run/nginx.pid
+RUN chown -R nginx:nginx /usr/share/nginx && chmod -R 755 /usr/share/nginx && \
+        chown -R nginx:nginx /var/cache/nginx && \
+        chown -R nginx:nginx /var/log/nginx && \
+        chown -R nginx:nginx /etc/nginx/conf.d
+# NB no pid-file setup here: the pid lives in /tmp (see docker/nginx.conf) —
+# /var/run is on kaniko's ignore list and does not exist during CI builds.
 
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY docker/default.conf.template /etc/nginx/templates/default.conf.template
+# templates/includes/ maps to conf.d/includes/ — outside the conf.d/*.conf
+# auto-include glob, pulled in explicitly by default.conf
+COPY docker/security-headers.conf.template /etc/nginx/templates/includes/security-headers.conf.template
 COPY docker/entrypoint.d/30-generate-runtime.sh /docker-entrypoint.d/30-generate-runtime.sh
 COPY docker/runtime.json.template /docker-runtime-templates/runtime.json.template
 RUN chmod +x /docker-entrypoint.d/30-generate-runtime.sh
-
-ENV NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/conf.d \
-    NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates
+ENV NGINX_ENVSUBST_OUTPUT_DIR=/etc/nginx/conf.d
+ENV NGINX_ENVSUBST_TEMPLATE_DIR=/etc/nginx/templates
+# Allowed iframe ancestors (CSP frame-ancestors). Override at runtime for
+# municipalities that embed the site in a portal, e.g. "'self' https://portal.example.nl"
+ENV FRAME_ANCESTORS="'none'"
 
 USER nginx
 EXPOSE 8080

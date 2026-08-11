@@ -12,7 +12,7 @@ services:
         GATSBY_ENV_VARS_SET: ${GATSBY_ENV_VARS_SET:-true}
         GATSBY_API_BASE_URL: ${GATSBY_API_BASE_URL:-/api}
         GATSBY_DEV_ENVIRONMENT: ${GATSBY_DEV_ENVIRONMENT:-false}
-        GATSBY_NL_DESIGN_THEME_CLASSNAME: ${GATSBY_NL_DESIGN_THEME_CLASSNAME:-conduction-theme}
+        GATSBY_NL_DESIGN_THEME_CLASSNAME: ${GATSBY_NL_DESIGN_THEME_CLASSNAME:-openwoo-theme}
         GATSBY_CSP_CONNECT_SRC_FULL: ${GATSBY_CSP_CONNECT_SRC_FULL:-}
         GATSBY_CSP_CONNECT_SRC_EXTRA: ${GATSBY_CSP_CONNECT_SRC_EXTRA:-}
         GATSBY_SHOW_THEME_SWITCHER: ${GATSBY_SHOW_THEME_SWITCHER:-false}
@@ -20,6 +20,8 @@ services:
         GATSBY_FAVICON_URL: ${GATSBY_FAVICON_URL:-}
         GATSBY_ORGANISATION_NAME: ${GATSBY_ORGANISATION_NAME:-Conduction}
         GATSBY_JUMBOTRON_IMAGE_URL: ${GATSBY_JUMBOTRON_IMAGE_URL:-https://raw.githubusercontent.com/ConductionNL/woo-website-conduction/main/cropped-Conduction_HOME_0000_afb1-1.png}
+        GATSBY_JUMBOTRON_TITLE: ${GATSBY_JUMBOTRON_TITLE:-}
+        GATSBY_JUMBOTRON_SUBTITLE: ${GATSBY_JUMBOTRON_SUBTITLE:-}
         GATSBY_FOOTER_LOGO_URL: ${GATSBY_FOOTER_LOGO_URL:-https://conduction.nl}
         GATSBY_FOOTER_LOGO_HREF: ${GATSBY_FOOTER_LOGO_HREF:-https://conduction.nl/}
         GATSBY_FOOTER_HIDE_LOVE: ${GATSBY_FOOTER_HIDE_LOVE:-false}
@@ -31,6 +33,8 @@ services:
         GATSBY_SHOW_ORGANIZATION: ${GATSBY_SHOW_ORGANIZATION:-}
         GATSBY_ANALYTICS_URL: ${GATSBY_ANALYTICS_URL:-}
         GATSBY_DATE_FULL_MONTH: ${GATSBY_DATE_FULL_MONTH:-false}
+        GATSBY_TABLE_SCROLL_MODE: ${GATSBY_TABLE_SCROLL_MODE:-}
+        GATSBY_HIDE_LANGUAGE_SWITCH: ${GATSBY_HIDE_LANGUAGE_SWITCH:-}
         GATSBY_SECURITY_TXT_INTRO: ${GATSBY_SECURITY_TXT_INTRO:-Information related to reporting security vulnerabilities of this site.}
         GATSBY_SECURITY_TXT_CONTACT: ${GATSBY_SECURITY_TXT_CONTACT:-mailto:info@conduction.nl}
         GATSBY_SECURITY_TXT_EXPIRES: ${GATSBY_SECURITY_TXT_EXPIRES:-2025-12-31T23:00:00.000Z}
@@ -45,6 +49,8 @@ services:
     environment:
       - UPSTREAM_HOST=${UPSTREAM_HOST:-zuiddrecht-drie.accept.commonground.nu}
       - UPSTREAM_BASE=${UPSTREAM_BASE:-https://zuiddrecht-drie.accept.commonground.nu/apps/opencatalogi/api}
+      # CSP frame-ancestors value; default blocks all embedding (see .env.example)
+      - FRAME_ANCESTORS=${FRAME_ANCESTORS:-'none'}
 volumes:
   db-data: {}
   uc-data: {}

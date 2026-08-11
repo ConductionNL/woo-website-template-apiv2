@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Create the Product Page
-        uses: OpenCatalogi/productpage-action@1.0.9
+        uses: OpenCatalogi/productpage-action@ce47927dfa01752f03d71145e5cfc6cf0f451681 # 1.0.9
         with:
           github_repository_name_as_prefix: false
           github_repository_url: https://github.com/ConductionNL/woo-website-template

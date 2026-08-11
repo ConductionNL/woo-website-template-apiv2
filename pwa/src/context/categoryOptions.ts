@@ -15,7 +15,10 @@ export const useCategoriesContext = () => {
   const categoryOptions: ICategoriesContext = globalContext.categoryOptions;
 
   const setCategoryOptions = (newFilters: ICategoriesContext) => {
-    setGlobalContext((context) => ({ ...context, categoryOptions: { ...globalContext.categoryOptions, ...newFilters } }));
+    setGlobalContext((context) => ({
+      ...context,
+      categoryOptions: { ...globalContext.categoryOptions, ...newFilters },
+    }));
   };
 
   return { categoryOptions, setCategoryOptions };

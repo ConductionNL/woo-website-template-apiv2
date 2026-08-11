@@ -39,14 +39,30 @@
   opacity: 50%;
 }
 
+/*
+ * The Logo (conduction component) and the NL/EN language switcher render as bare
+ * focusable elements (div/span with role="button") and ship no focus styling of
+ * their own, so they fall back to the browser default outline. Wire them to the
+ * theme focus tokens (--utrecht-focus-outline-*) so their keyboard focus matches
+ * every other focusable element in the header (skip-link, buttons, links).
+ */
+.logo:focus-visible,
+.languageSelect:focus-visible {
+  outline-style: var(--utrecht-focus-outline-style, revert);
+  outline-color: var(--utrecht-focus-outline-color, revert);
+  outline-width: var(--utrecht-focus-outline-width, revert);
+  outline-offset: var(--utrecht-focus-outline-offset, revert);
+}
+
 .languageSeperator {
   user-select: none;
 }
 
 .skipLink {
-  font-weight: var(--utrecht-skip-link-font-weight);
   width: var(--utrecht-skip-link-width);
+  font-weight: var(--utrecht-skip-link-font-weight);
   font-size: var(--utrecht-skip-link-font-size);
+  font-family: var(--utrecht-skip-link-font-family);
   border-radius: var(--utrecht-skip-link-border-radius);
   border-width: var(--utrecht-skip-link-border-width);
   border-style: var(--utrecht-skip-link-border-style);
@@ -63,12 +79,18 @@
     --utrecht-skip-link-border-bottom-color,
     var(--utrecht-skip-link-border-color)
   );
-  --_utrecht-focus-ring-box-shadow: 0 0 0
-    var(
-      --utrecht-skip-link-box-shadow-width,
-      var(--utrecht-focus-outline-width, 0)
-    )
-    var(--utrecht-focus-inverse-outline-color, transparent) !important;
+  /* Prefer the theme's focus glow (--utrecht-focus-box-shadow, e.g.
+     Midden-Delfland); themes without it keep the solid ring built from the
+     skip-link box-shadow width and the inverse outline color. */
+  --_utrecht-focus-ring-box-shadow: var(
+    --utrecht-focus-box-shadow,
+    0 0 0
+      var(
+        --utrecht-skip-link-box-shadow-width,
+        var(--utrecht-focus-outline-width, 0)
+      )
+      var(--utrecht-focus-inverse-outline-color, transparent)
+  ) !important;
 }
 
 .skipLink:focus {

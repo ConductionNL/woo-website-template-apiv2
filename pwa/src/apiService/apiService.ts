@@ -38,7 +38,9 @@ export default class APIService {
         const method = (config.method ?? "get").toUpperCase();
         // eslint-disable-next-line no-console
         console.info(`[API Request] ${method} ${fullUrl}`);
-      } catch (_) {}
+      } catch (_) {
+        /* logging must never break the request */
+      }
       return config;
     });
     instance.interceptors.response.use((response) => {
@@ -118,12 +120,13 @@ export default class APIService {
     const _payload = JSON.stringify(payload);
 
     switch (method) {
-      case "GET":
+      case "GET": {
         const response = instance.get(endpoint);
 
         response.catch((err) => toast.error(err.message));
 
         return response;
+      }
 
       case "POST":
         return toast.promise(instance.post(endpoint, _payload), {

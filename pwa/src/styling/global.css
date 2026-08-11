@@ -8,9 +8,26 @@
 html,
 body {
   margin: 0;
+  /*
+   * Root/body font-size = the rem base. Set per theme via --conduction-root-font-size
+   * (e.g. .wassenaar-theme = 1.12rem). When a theme does not set it, it falls back to
+   * 1rem, i.e. the user's browser base (16px by default). A relative unit (rem) is used
+   * on purpose so visitors who increase their browser font-size / zoom keep working
+   * (accessibility) — never hard-code a px value here.
+   *
+   * NOTE: this is why the theme class must be applied to <html>, not only <body>. Custom
+   * properties cascade downward only, so --conduction-root-font-size has to be defined ON
+   * <html> for this rule to read it. The class is written to both <html> and <body> in
+   * applyThemeClass() in pwa/src/hooks/useEnvironment.ts — keep them in sync.
+   */
+  font-size: var(--conduction-root-font-size, 1rem);
 }
 
-/* Hide body until ANY theme class (ending with "-theme") is applied */
+/*
+ * Flash guard: keep the page hidden until a theme class ("*-theme") is on <body>, so users
+ * never see an unstyled/default-themed frame before applyThemeClass() runs. This is why the
+ * theme class must also be on <body> (not <html> only) — see useEnvironment.ts.
+ */
 body:not([class*="-theme"]) {
   opacity: 0 !important;
   visibility: hidden !important;

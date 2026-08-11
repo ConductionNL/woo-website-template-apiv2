@@ -12,14 +12,11 @@ export const Head: React.FC = () => {
   const { gatsbyContext } = useGatsbyContext();
   const { t, i18n } = useTranslation();
 
-  const isLocalHost =
-    window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+  const isLocalHost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
   const [connectSrc, setConnectSrc] = React.useState<string>(
     `${connectSrcStandard} ${connectSrcMunicipalities} ${connectSrcOther} ${isLocalHost ? connectSrcLocal : ""}`,
   );
-  const [analyticsUrl, setAnalyticsUrl] = React.useState<string>(
-    window.sessionStorage.getItem("ANALYTICS_URL") ?? "",
-  );
+  const [analyticsUrl, setAnalyticsUrl] = React.useState<string>(window.sessionStorage.getItem("ANALYTICS_URL") ?? "");
 
   const processUrls = (urlString: string): string => {
     if (!urlString) return "";
@@ -68,9 +65,6 @@ export const Head: React.FC = () => {
       htmlAttributes={{
         lang: currentLanguage,
       }}
-      bodyAttributes={{
-        class: window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") || process.env.GATSBY_NL_DESIGN_THEME_CLASSNAME || "conduction-theme",
-      }}
     >
       <meta
         httpEquiv="Content-Security-Policy"
@@ -89,7 +83,11 @@ export const Head: React.FC = () => {
       <title>{`Woo | ${window.sessionStorage.getItem("ORGANISATION_NAME") || process.env.GATSBY_ORGANISATION_NAME || ""} | ${
         getPageTitle(translatedCrumbs, gatsbyContext.location) ?? "Error"
       }`}</title>
-      <link rel="icon" type="svg" href={window.sessionStorage.getItem("FAVICON_URL") || process.env.GATSBY_FAVICON_URL || ""} />
+      <link
+        rel="icon"
+        type="svg"
+        href={window.sessionStorage.getItem("FAVICON_URL") || process.env.GATSBY_FAVICON_URL || ""}
+      />
       {analyticsUrl && <script id="analytics" async src={analyticsUrl} />}
     </Helmet>
   );
