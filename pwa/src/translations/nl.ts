@@ -117,4 +117,6 @@ export const nl = {
   "Over deze website": "Over deze website",
   "Clear selection": "Selectie wissen",
   "About this website": "Over deze website",
+  Notification: "Melding",
+  "Close notification": "Melding sluiten",
 };

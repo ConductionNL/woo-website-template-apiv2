@@ -23,6 +23,8 @@ pwa:
   #   image (embedding blocked). To embed the site in a portal iframe:
   #     env:
   #       FRAME_ANCESTORS: "'self' https://portal.gemeente.nl"
+  #   GATSBY_NOTIFICATION_MESSAGE — site-wide warning banner above the header; empty/absent = no banner.
+  #   Pods roll on sync, no image rebuild needed (see docs/techniek/Melding.md).
   env: {}
 
 replicaCount: 2

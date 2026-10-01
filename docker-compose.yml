@@ -35,6 +35,7 @@ services:
         GATSBY_DATE_FULL_MONTH: ${GATSBY_DATE_FULL_MONTH:-false}
         GATSBY_TABLE_SCROLL_MODE: ${GATSBY_TABLE_SCROLL_MODE:-}
         GATSBY_HIDE_LANGUAGE_SWITCH: ${GATSBY_HIDE_LANGUAGE_SWITCH:-}
+        GATSBY_NOTIFICATION_MESSAGE: ${GATSBY_NOTIFICATION_MESSAGE:-}
         GATSBY_SECURITY_TXT_INTRO: ${GATSBY_SECURITY_TXT_INTRO:-Information related to reporting security vulnerabilities of this site.}
         GATSBY_SECURITY_TXT_CONTACT: ${GATSBY_SECURITY_TXT_CONTACT:-mailto:info@conduction.nl}
         GATSBY_SECURITY_TXT_EXPIRES: ${GATSBY_SECURITY_TXT_EXPIRES:-2025-12-31T23:00:00.000Z}
@@ -51,6 +52,8 @@ services:
       - UPSTREAM_BASE=${UPSTREAM_BASE:-https://zuiddrecht-drie.accept.commonground.nu/apps/opencatalogi/api}
       # CSP frame-ancestors value; default blocks all embedding (see .env.example)
       - FRAME_ANCESTORS=${FRAME_ANCESTORS:-'none'}
+      # Read at container start into runtime.json, which overrides the build arg above
+      - GATSBY_NOTIFICATION_MESSAGE=${GATSBY_NOTIFICATION_MESSAGE:-}
 volumes:
   db-data: {}
   uc-data: {}
