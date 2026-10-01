@@ -20,6 +20,7 @@ Runtime (NGINX proxy) – can change without rebuild
 |---|---|---|---|---|
 | UPSTREAM_HOST | Compose env, Helm values | NGINX template | runtime | Sets Host header for upstream |
 | UPSTREAM_BASE | Compose env, Helm values | NGINX template | runtime | Target base for proxy_pass of `/api/*` |
+| GATSBY_NOTIFICATION_MESSAGE | Compose env, Helm `pwa.env` | runtime.json → UI | runtime | Site-wide warning banner; empty = none. See [docs/techniek/Melding.md](docs/techniek/Melding.md) |
 
 Helm values mapping
 
@@ -95,6 +96,13 @@ Where: container env at runtime (Compose/Helm), rendered into `/etc/nginx/conf.d
 Where defined:
 - Compose: in root `.env` → `docker-compose.yml` → `environment` of service.
 - Helm: `values.yaml` `pwa.upstream.host` and `pwa.upstream.base` → Deployment env.
+
+### Runtime app config (runtime.json)
+Where: container env at runtime (Compose `environment`, Helm `pwa.env`). On container start `pwa/docker/entrypoint.d/30-generate-runtime.sh` writes the variables listed in its `RUNTIME_VARS` into `/config/runtime.json`, and the app fetches that file (no cache) on every full page load when `GATSBY_ENV_VARS_SET == "true"`.
+
+- Changing a value needs a container restart, not an image rebuild.
+- Every key in runtime.json overrides the baked build-time value, including empty ones: in the Docker image an unset runtime variable clears its build arg.
+- `GATSBY_NOTIFICATION_MESSAGE` (plain text) — site-wide warning banner above the header; empty = no banner. Full behaviour and per-deployment setup: [docs/techniek/Melding.md](docs/techniek/Melding.md).
 
 ---
 
