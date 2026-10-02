@@ -33,6 +33,8 @@ export const NotificationBanner: React.FC = () => {
   const dismiss = () => {
     window.sessionStorage.setItem(DISMISSED_KEY, message);
     setDismissed(message);
+    // The close button unmounts; without this, focus would fall back to <body>.
+    document.getElementById("mainContent")?.focus();
   };
 
   return (
