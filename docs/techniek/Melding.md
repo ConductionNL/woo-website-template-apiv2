@@ -16,7 +16,7 @@ Met de instelling `GATSBY_NOTIFICATION_MESSAGE` toont de OpenWoo-website een mel
 - De tekst is **platte tekst**. HTML of Markdown wordt niet geïnterpreteerd; e-mailadressen en URL's (`https://…`) in de tekst worden automatisch klikbare links (e-mailadressen als `mailto:`-link).
 - Bezoekers kunnen de melding sluiten met de sluitknop. Dat wordt onthouden zolang het browsertabblad open is (sessionStorage); in een nieuw tabblad of een nieuwe browsersessie verschijnt de melding opnieuw.
 - Wordt de tekst gewijzigd, dan verschijnt de melding ook opnieuw voor bezoekers die de vorige tekst al hadden gesloten.
-- Toegankelijkheid: de melding is voor schermlezers vindbaar als regio "Melding" en de sluitknop heet "Melding sluiten". De melding wordt niet bij elke pagina actief voorgelezen (`role="status"` in plaats van `alert`). Voor toetsenbordgebruikers is de sluitknop het eerste element, vóór de skiplinks.
+- Toegankelijkheid: de melding is voor schermlezers vindbaar als regio "Melding" en de sluitknop heet "Melding sluiten". De melding wordt niet bij elke pagina actief voorgelezen (`role="status"` in plaats van `alert`). Voor toetsenbordgebruikers komen de skiplinks eerst, daarna de links in de melding en de sluitknop. Na het sluiten gaat de focus naar de hoofdinhoud van de pagina.
 - De tekst wordt **niet vertaald** door de NL/EN-taalswitch, net als de jumbotron-teksten. Combineer zo nodig met `GATSBY_HIDE_LANGUAGE_SWITCH` (zie [Installatie](./Installatie.md#configuratie), WCAG 3.1.2).
 
 ## Instellen, wijzigen en verwijderen
@@ -56,6 +56,9 @@ env:
 ```
 
 Na het opslaan bouwt de workflow de website opnieuw en staat de melding live zodra de actie "Deploy the WOO Page to GitHub Pages" klaar is. Verwijderen doe je door de waarde weer leeg te maken (`""`).
+
+> **Let op**
+> De workflow schrijft de waarde ongequote naar een `.env`-bestand. Gebruik daarom geen `#` (de rest van de tekst kan dan als commentaar wegvallen) en geen regeleinden in de melding.
 
 ### Domeinconfiguratie (JSON-modus)
 

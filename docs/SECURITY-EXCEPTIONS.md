@@ -1,6 +1,6 @@
 # Accepted security exceptions
 
-Known, deliberately accepted `npm audit` findings. Re-evaluate on every major
+Known, deliberately accepted `npm audit` findings. Finding counts are `npm audit` package entries, so they add up to its `moderate` total. Re-evaluate on every major
 release and whenever one of the listed conditions changes.
 
 ## 1. `file-type` ≤ 21.3.0 via `gatsby-core-utils` (17 moderate findings)
@@ -30,7 +30,7 @@ release and whenever one of the listed conditions changes.
 - **Why acceptable:** Gatsby imports `query-string` only in its development-mode 404 page (`internal-plugins/dev-404-page`). It is not part of the production bundle, so it only runs on a local `gatsby develop` server.
 - **Re-evaluate when:** Gatsby moves to a newer `query-string`, or the project moves off Gatsby.
 
-## 3. `showdown` 2.1.0 (3 moderate findings)
+## 3. `showdown` 2.1.0 (1 moderate finding, 3 advisories)
 
 - **Advisories:**
   [GHSA-cr32-g25g-vxjj](https://github.com/advisories/GHSA-cr32-g25g-vxjj)
@@ -47,4 +47,4 @@ release and whenever one of the listed conditions changes.
   slows down that docs page in the visitor's browser.
 - **Planned fix:** replace showdown with a maintained GitHub-flavored
   markdown parser (`marked` or `markdown-it`) in a post-1.0.0 release, which
-  removes these three findings entirely.
+  removes this finding entirely.
