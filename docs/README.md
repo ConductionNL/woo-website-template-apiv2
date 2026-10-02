@@ -14,6 +14,7 @@
   - [Installatie](/docs/techniek/Installatie.md)
   - [Integratie](/docs/techniek/Integratie.md)
   - [Configuratie](/docs/techniek/Configuratie.md)
+  - [Websitebrede melding](/docs/techniek/Melding.md)
   - [Testscenario's](/docs/techniek/Tests.md)
 
 - Overige documenten

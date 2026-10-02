@@ -106,6 +106,7 @@ export const useEnvironment = () => {
       set("DATE_FULL_MONTH", "GATSBY_DATE_FULL_MONTH");
       set("TABLE_SCROLL_MODE", "GATSBY_TABLE_SCROLL_MODE");
       set("HIDE_LANGUAGE_SWITCH", "GATSBY_HIDE_LANGUAGE_SWITCH");
+      set("NOTIFICATION_MESSAGE", "GATSBY_NOTIFICATION_MESSAGE");
       // Apply theme class immediately if provided
       applyThemeClass(window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "");
       updateSessionStorage();
@@ -141,6 +142,7 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("DATE_FULL_MONTH", process.env.GATSBY_DATE_FULL_MONTH ?? "");
     window.sessionStorage.setItem("TABLE_SCROLL_MODE", process.env.GATSBY_TABLE_SCROLL_MODE ?? "");
     window.sessionStorage.setItem("HIDE_LANGUAGE_SWITCH", process.env.GATSBY_HIDE_LANGUAGE_SWITCH ?? "");
+    window.sessionStorage.setItem("NOTIFICATION_MESSAGE", process.env.GATSBY_NOTIFICATION_MESSAGE ?? "");
     // CSP overrides (optional)
     window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL", process.env.GATSBY_CSP_CONNECT_SRC_FULL ?? "");
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", process.env.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");
@@ -183,6 +185,7 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("DATE_FULL_MONTH", config.GATSBY_DATE_FULL_MONTH ?? "");
     window.sessionStorage.setItem("TABLE_SCROLL_MODE", config.GATSBY_TABLE_SCROLL_MODE ?? "");
     window.sessionStorage.setItem("HIDE_LANGUAGE_SWITCH", config.GATSBY_HIDE_LANGUAGE_SWITCH ?? "");
+    window.sessionStorage.setItem("NOTIFICATION_MESSAGE", config.GATSBY_NOTIFICATION_MESSAGE ?? "");
     // CSP overrides (optional)
     window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL", config.GATSBY_CSP_CONNECT_SRC_FULL ?? "");
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", config.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");
