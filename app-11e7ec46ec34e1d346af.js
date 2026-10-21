@@ -11521,7 +11521,7 @@ module.exports=[{plugin:__webpack_require__(987),options:{"plugins":[],"componen
 /***/ 20:
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-const plugins=__webpack_require__(9377);const{getResourceURLsForPathname,loadPage,loadPageSync}=(__webpack_require__(6814)/* .publicLoader */ .Zf);exports.N=function(api,args,defaultReturn,argTransform){if(args===void 0){args={};}// Hooks for gatsby-cypress's API handler
+const plugins=__webpack_require__(9377);const{getResourceURLsForPathname,loadPage,loadPageSync}=(__webpack_require__(6814)/* .publicLoader */ .Zf);exports.N=(api,args={},defaultReturn,argTransform)=>{// Hooks for gatsby-cypress's API handler
 if(false)// removed by dead control flow
 {}let results=plugins.map(plugin=>{if(!plugin.plugin[api]){return undefined;}args.getResourceURLsForPathname=getResourceURLsForPathname;args.loadPage=loadPage;args.loadPageSync=loadPageSync;const result=plugin.plugin[api](args,plugin.options);if(result&&argTransform){args=argTransform({args,result,plugin});}return result;});// Filter out undefined results.
 results=results.filter(result=>typeof result!==`undefined`);if(results.length>0){return results;}else if(defaultReturn){return[defaultReturn];}else{return[];}};exports.v=(api,args,defaultReturn)=>plugins.reduce((previous,next)=>next.plugin[api]?previous.then(()=>next.plugin[api](args,next.options)):previous,Promise.resolve());
@@ -11658,7 +11658,7 @@ return new URL(path,window.location.href+(window.location.href.endsWith(`/`)?``:
  *
  * @param {string} rawPathname A raw pathname
  * @return {string|null}
- */const findMatchPath=rawPathname=>{const trimmedPathname=cleanPath(rawPathname);const pickPaths=matchPaths.map(_ref=>{let{path,matchPath}=_ref;return{path:matchPath,originalPath:path};});const path=(0,index_modern.pick)(pickPaths,trimmedPathname);if(path){return normalize_page_path(path.route.originalPath);}return null;};/**
+ */const findMatchPath=rawPathname=>{const trimmedPathname=cleanPath(rawPathname);const pickPaths=matchPaths.map(({path,matchPath})=>{return{path:matchPath,originalPath:path};});const path=(0,index_modern.pick)(pickPaths,trimmedPathname);if(path){return normalize_page_path(path.route.originalPath);}return null;};/**
  * Return a matchpath params from reach/router rules
  * if `match-paths.json` contains `{ ":bar/*foo" }`, and the path is /baz/zaz/zoo
  * then it returns
@@ -11666,7 +11666,7 @@ return new URL(path,window.location.href+(window.location.href.endsWith(`/`)?``:
  *
  * @param {string} rawPathname A raw pathname
  * @return {object}
- */const grabMatchParams=rawPathname=>{const trimmedPathname=cleanPath(rawPathname);const pickPaths=matchPaths.map(_ref2=>{let{path,matchPath}=_ref2;return{path:matchPath,originalPath:path};});const path=(0,index_modern.pick)(pickPaths,trimmedPathname);if(path){return path.params;}return{};};// Given a raw URL path, returns the cleaned version of it (trim off
+ */const grabMatchParams=rawPathname=>{const trimmedPathname=cleanPath(rawPathname);const pickPaths=matchPaths.map(({path,matchPath})=>{return{path:matchPath,originalPath:path};});const path=(0,index_modern.pick)(pickPaths,trimmedPathname);if(path){return path.params;}return{};};// Given a raw URL path, returns the cleaned version of it (trim off
 // `#` and query params), or if it matches an entry in
 // `match-paths.json`, its matched path is returned
 //
@@ -11716,7 +11716,7 @@ var create_content_digest_browser_shim = __webpack_require__(700);
 var context = __webpack_require__(2024);
 ;// ./.cache/slice/server-slice-renderer.js
 /* unused harmony import specifier */ var React;
-const ServerSliceRenderer=_ref=>{let{sliceId,children}=_ref;const contents=[/*#__PURE__*/React.createElement(`slice-start`,{id:`${sliceId}-1`}),/*#__PURE__*/React.createElement(`slice-end`,{id:`${sliceId}-1`})];if(children){// if children exist, we split the slice into a before and after piece
+const ServerSliceRenderer=({sliceId,children})=>{const contents=[/*#__PURE__*/React.createElement(`slice-start`,{id:`${sliceId}-1`}),/*#__PURE__*/React.createElement(`slice-end`,{id:`${sliceId}-1`})];if(children){// if children exist, we split the slice into a before and after piece
 // see renderSlices in render-html
 contents.push(children);contents.push(/*#__PURE__*/React.createElement(`slice-start`,{id:`${sliceId}-2`}),/*#__PURE__*/React.createElement(`slice-end`,{id:`${sliceId}-2`}));}return contents;};
 // EXTERNAL MODULE: ./node_modules/react/jsx-runtime.js
@@ -11728,14 +11728,14 @@ var jsx_runtime = __webpack_require__(4848);
 /* unused harmony import specifier */ var SlicesPropsContext;
 /* unused harmony import specifier */ var server_slice_ServerSliceRenderer;
 /* unused harmony import specifier */ var _jsx;
-const getSliceId=(sliceName,sliceProps)=>{if(!Object.keys(sliceProps).length){return sliceName;}const propsString=createContentDigest(sliceProps);return`${sliceName}-${propsString}`;};const ServerSlice=_ref=>{let{sliceName,allowEmpty,children,...sliceProps}=_ref;const slicesMap=useContext(SlicesMapContext);const slicesProps=useContext(SlicesPropsContext);const concreteSliceName=slicesMap[sliceName];if(!concreteSliceName){if(allowEmpty){return null;}else{throw new Error(`Slice "${concreteSliceName}" for "${sliceName}" slot not found`);}}const sliceId=getSliceId(concreteSliceName,sliceProps);// set props on context object for static-entry to return
+const getSliceId=(sliceName,sliceProps)=>{if(!Object.keys(sliceProps).length){return sliceName;}const propsString=createContentDigest(sliceProps);return`${sliceName}-${propsString}`;};const ServerSlice=({sliceName,allowEmpty,children,...sliceProps})=>{const slicesMap=useContext(SlicesMapContext);const slicesProps=useContext(SlicesPropsContext);const concreteSliceName=slicesMap[sliceName];if(!concreteSliceName){if(allowEmpty){return null;}else{throw new Error(`Slice "${concreteSliceName}" for "${sliceName}" slot not found`);}}const sliceId=getSliceId(concreteSliceName,sliceProps);// set props on context object for static-entry to return
 let sliceUsage=slicesProps[sliceId];if(!sliceUsage){slicesProps[sliceId]=sliceUsage={props:sliceProps,sliceName:concreteSliceName,hasChildren:!!children};}else{if(children){sliceUsage.hasChildren=true;}}return/*#__PURE__*/_jsx(server_slice_ServerSliceRenderer,{sliceId:sliceId,children:children});};
 ;// ./.cache/slice/inline-slice.js
 /* unused harmony import specifier */ var inline_slice_useContext;
 /* unused harmony import specifier */ var inline_slice_SlicesMapContext;
 /* unused harmony import specifier */ var SlicesResultsContext;
 /* unused harmony import specifier */ var inline_slice_jsx;
-const InlineSlice=_ref=>{let{sliceName,allowEmpty,children,...sliceProps}=_ref;const slicesMap=inline_slice_useContext(inline_slice_SlicesMapContext);const slicesResultsMap=inline_slice_useContext(SlicesResultsContext);const concreteSliceName=slicesMap[sliceName];const slice=slicesResultsMap.get(concreteSliceName);if(!slice){if(allowEmpty){return null;}else{throw new Error(`Slice "${concreteSliceName}" for "${sliceName}" slot not found`);}}return/*#__PURE__*/inline_slice_jsx(slice.component,{sliceContext:slice.sliceContext,data:slice.data,...sliceProps,children:children});};
+const InlineSlice=({sliceName,allowEmpty,children,...sliceProps})=>{const slicesMap=inline_slice_useContext(inline_slice_SlicesMapContext);const slicesResultsMap=inline_slice_useContext(SlicesResultsContext);const concreteSliceName=slicesMap[sliceName];const slice=slicesResultsMap.get(concreteSliceName);if(!slice){if(allowEmpty){return null;}else{throw new Error(`Slice "${concreteSliceName}" for "${sliceName}" slot not found`);}}return/*#__PURE__*/inline_slice_jsx(slice.component,{sliceContext:slice.sliceContext,data:slice.data,...sliceProps,children:children});};
 ;// ./.cache/slice.js
 /* unused harmony import specifier */ var _inheritsLoose;
 /* unused harmony import specifier */ var _wrapNativeSuper;
@@ -11754,13 +11754,13 @@ let additionalContextMessage=``;// just in case generating additional contextual
 // and not show another cryptic error message
 try{additionalContextMessage=`\n\nSlice component "${slicesContext.sliceRoot.name}" (${slicesContext.sliceRoot.componentPath}) tried to render <Slice alias="${props.alias}"/>`;}catch{// don't need to handle it, we will just skip the additional context message if we fail to generate it
 }throw new Error(`Nested slices are not supported.${additionalContextMessage}\n\nSee https://gatsbyjs.com/docs/reference/built-in-components/gatsby-slice#nested-slices`);}else{throw new Error(`Slice context "${slicesContext.renderEnvironment}" is not supported.`);}}else// removed by dead control flow
-{}}let SlicePropsError=/*#__PURE__*/(/* unused pure expression or super */ null && (function(_Error){function SlicePropsError(inBrowser,sliceName,propErrors,renderedByLocation){var _this;const errors=Object.entries(propErrors).map(_ref=>{let[key,value]=_ref;return`not serializable "${value}" type passed to "${key}" prop`;}).join(`, `);const name=`SlicePropsError`;let stack=``;let message=``;if(inBrowser){var _React$__SECRET_INTER,_React$__SECRET_INTER2;let fullStack=``;// React 19+ uses captureOwnerStack, React 18 uses ReactDebugCurrentFrame.getCurrentStack
+{}}let SlicePropsError=/*#__PURE__*/(/* unused pure expression or super */ null && (function(_Error){function SlicePropsError(inBrowser,sliceName,propErrors,renderedByLocation){var _this;const errors=Object.entries(propErrors).map(([key,value])=>`not serializable "${value}" type passed to "${key}" prop`).join(`, `);const name=`SlicePropsError`;let stack=``;let message=``;if(inBrowser){var _React$__SECRET_INTER,_React$__SECRET_INTER2;let fullStack=``;// React 19+ uses captureOwnerStack, React 18 uses ReactDebugCurrentFrame.getCurrentStack
 if(slice_React.captureOwnerStack){// React 19+ approach
 const ownerStack=slice_React.captureOwnerStack();const currentStack=new Error().stack||``;fullStack=ownerStack?`${currentStack}\n${ownerStack}`:currentStack;}else if((_React$__SECRET_INTER=slice_React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED)!==null&&_React$__SECRET_INTER!==void 0&&(_React$__SECRET_INTER2=_React$__SECRET_INTER.ReactDebugCurrentFrame)!==null&&_React$__SECRET_INTER2!==void 0&&_React$__SECRET_INTER2.getCurrentStack){// React 18 approach
 fullStack=slice_React.__SECRET_INTERNALS_DO_NOT_USE_OR_YOU_WILL_BE_FIRED.ReactDebugCurrentFrame.getCurrentStack();}else{// Fallback if neither API is available
 fullStack=new Error().stack||``;}// remove the first line of the stack trace
 const stackLines=fullStack.trim().split(`\n`).slice(1);if(stackLines.length>0){stackLines[0]=stackLines[0].trim();stack=`\n`+stackLines.join(`\n`);}message=`Slice "${sliceName}" was passed props that are not serializable (${errors}).`;}else{// we can't really grab any extra info outside of the browser, so just print what we can
-message=`${name}: Slice "${sliceName}" was passed props that are not serializable (${errors}).`;const stackLines=new Error().stack.trim().split(`\n`).slice(2);stack=`${message}\n${stackLines.join(`\n`)}`;}_this=_Error.call(this,message)||this;_this.name=name;if(stack){_this.stack=stack;}else{Error.captureStackTrace(_this,SlicePropsError);}if(renderedByLocation){_this.forcedLocation={...renderedByLocation,functionName:`Slice`};}return _this;}_inheritsLoose(SlicePropsError,_Error);return SlicePropsError;}(/*#__PURE__*/_wrapNativeSuper(Error))));const validateSliceProps=function(props,errors,seenObjects,path){if(errors===void 0){errors={};}if(seenObjects===void 0){seenObjects=[];}if(path===void 0){path=null;}// recursively validate all props
+message=`${name}: Slice "${sliceName}" was passed props that are not serializable (${errors}).`;const stackLines=new Error().stack.trim().split(`\n`).slice(2);stack=`${message}\n${stackLines.join(`\n`)}`;}_this=_Error.call(this,message)||this;_this.name=name;if(stack){_this.stack=stack;}else{Error.captureStackTrace(_this,SlicePropsError);}if(renderedByLocation){_this.forcedLocation={...renderedByLocation,functionName:`Slice`};}return _this;}_inheritsLoose(SlicePropsError,_Error);return SlicePropsError;}(/*#__PURE__*/_wrapNativeSuper(Error))));const validateSliceProps=(props,errors={},seenObjects=[],path=null)=>{// recursively validate all props
 for(const[name,value]of Object.entries(props)){if(value===undefined||value===null||!path&&name===`children`){continue;}const propPath=path?`${path}.${name}`:name;if(typeof value===`function`){errors[propPath]=typeof value;}else if(typeof value===`object`&&seenObjects.indexOf(value)<=0){seenObjects.push(value);validateSliceProps(value,errors,seenObjects,propPath);}}return errors;};
 ;// ./.cache/gatsby-browser-entry.js
 const prefetchPathname=loader/* default */.Ay.enqueue;function graphql(){throw new Error(`It appears like Gatsby is misconfigured. Gatsby related \`graphql\` calls `+`are supposed to only be evaluated at compile time, and then compiled away. `+`Unfortunately, something went wrong and the query was left in the compiled code.\n\n`+`Unless your site has a complex or custom babel/Gatsby configuration this is likely a bug in Gatsby.`);}
@@ -11806,8 +11806,8 @@ var find_path = __webpack_require__(8990);
    */Success:`success`};const preferDefault=m=>m&&m.default||m;const stripSurroundingSlashes=s=>{s=s[0]===`/`?s.slice(1):s;s=s.endsWith(`/`)?s.slice(0,-1):s;return s;};const createPageDataUrl=rawPath=>{const[path,maybeSearch]=rawPath.split(`?`);const fixedPath=path===`/`?`index`:stripSurroundingSlashes(path);return`${"/woo-website-template-apiv2"}/page-data/${fixedPath}/page-data.json${maybeSearch?`?${maybeSearch}`:``}`;};/**
  * Utility to check the path that goes into doFetch for e.g. potential malicious intentions.
  * It checks for "//" because with this you could do a fetch request to a different domain.
- */const shouldAbortFetch=rawPath=>rawPath.startsWith(`//`);function doFetch(url,method){if(method===void 0){method=`GET`;}return new Promise(resolve=>{const req=new XMLHttpRequest();req.open(method,url,true);req.onreadystatechange=()=>{if(req.readyState==4){resolve(req);}};req.send(null);});}const doesConnectionSupportPrefetch=()=>{if(`connection`in navigator&&typeof navigator.connection!==`undefined`){if((navigator.connection.effectiveType||``).includes(`2g`)){return false;}if(navigator.connection.saveData){return false;}}return true;};// Regex that matches common search crawlers
-const BOT_REGEX=/bot|crawler|spider|crawling/i;const toPageResources=function(pageData,component,head){var _pageData$slicesMap;if(component===void 0){component=null;}const page={componentChunkName:pageData.componentChunkName,path:pageData.path,webpackCompilationHash:pageData.webpackCompilationHash,matchPath:pageData.matchPath,staticQueryHashes:pageData.staticQueryHashes,getServerDataError:pageData.getServerDataError,slicesMap:(_pageData$slicesMap=pageData.slicesMap)!==null&&_pageData$slicesMap!==void 0?_pageData$slicesMap:{}};return{component,head,json:pageData.result,page};};function waitForResponse(response){return new Promise(resolve=>{try{const result=response.readRoot();resolve(result);}catch(err){if(Object.hasOwnProperty.call(err,`_response`)&&Object.hasOwnProperty.call(err,`_status`)){setTimeout(()=>{waitForResponse(response).then(resolve);},200);}else{throw err;}}});}let BaseLoader=/*#__PURE__*/function(){function BaseLoader(loadComponent,matchPaths){this.inFlightNetworkRequests=new Map();// Map of pagePath -> Page. Where Page is an object with: {
+ */const shouldAbortFetch=rawPath=>rawPath.startsWith(`//`);function doFetch(url,method=`GET`){return new Promise(resolve=>{const req=new XMLHttpRequest();req.open(method,url,true);req.onreadystatechange=()=>{if(req.readyState==4){resolve(req);}};req.send(null);});}const doesConnectionSupportPrefetch=()=>{if(`connection`in navigator&&typeof navigator.connection!==`undefined`){if((navigator.connection.effectiveType||``).includes(`2g`)){return false;}if(navigator.connection.saveData){return false;}}return true;};// Regex that matches common search crawlers
+const BOT_REGEX=/bot|crawler|spider|crawling/i;const toPageResources=(pageData,component=null,head)=>{var _pageData$slicesMap;const page={componentChunkName:pageData.componentChunkName,path:pageData.path,webpackCompilationHash:pageData.webpackCompilationHash,matchPath:pageData.matchPath,staticQueryHashes:pageData.staticQueryHashes,getServerDataError:pageData.getServerDataError,slicesMap:(_pageData$slicesMap=pageData.slicesMap)!==null&&_pageData$slicesMap!==void 0?_pageData$slicesMap:{}};return{component,head,json:pageData.result,page};};function waitForResponse(response){return new Promise(resolve=>{try{const result=response.readRoot();resolve(result);}catch(err){if(Object.hasOwnProperty.call(err,`_response`)&&Object.hasOwnProperty.call(err,`_status`)){setTimeout(()=>{waitForResponse(response).then(resolve);},200);}else{throw err;}}});}let BaseLoader=/*#__PURE__*/function(){function BaseLoader(loadComponent,matchPaths){this.inFlightNetworkRequests=new Map();// Map of pagePath -> Page. Where Page is an object with: {
 //   status: PageResourceStatus.Success || PageResourceStatus.Error,
 //   payload: PageResources, // undefined if PageResourceStatus.Error
 // }
@@ -11851,25 +11851,25 @@ return Object.assign(loadObj,{status:PageResourceStatus.Error});});};_proto.load
 // get list of components to get
 const componentChunkPromises=Promise.all(loadChunkPromises).then(components=>{const[sliceComponents,headComponent,pageComponent]=components;finalResult.createdAt=new Date();for(const sliceComponent of sliceComponents){if(!sliceComponent||sliceComponent instanceof Error){finalResult.status=PageResourceStatus.Error;finalResult.error=sliceComponent;}}if( true&&(!pageComponent||pageComponent instanceof Error)){finalResult.status=PageResourceStatus.Error;finalResult.error=pageComponent;}let pageResources;if(finalResult.status!==PageResourceStatus.Error){finalResult.status=PageResourceStatus.Success;if(pageDataResponse.notFound===true||(rscDataResponse===null||rscDataResponse===void 0?void 0:rscDataResponse.notFound)===true){finalResult.notFound=true;}pageData=Object.assign(pageData,{webpackCompilationHash:appDataResponse?appDataResponse.webpackCompilationHash:``});if(typeof(rscDataResponse===null||rscDataResponse===void 0?void 0:rscDataResponse.payload)===`string`){pageResources=toPageResources(pageData,null,headComponent);pageResources.partialHydration=rscDataResponse.payload;const readableStream=new ReadableStream({start(controller){const te=new TextEncoder();controller.enqueue(te.encode(rscDataResponse.payload));},pull(controller){// close on next read when queue is empty
 controller.close();},cancel(){}});// Only load this experimental module if opting in to experimental Partial Hydration
-return __webpack_require__.e(/* import() */ 454).then(__webpack_require__.t.bind(__webpack_require__, 6454, 23)).then(_ref=>{let{createFromReadableStream}=_ref;return waitForResponse(createFromReadableStream(readableStream));}).then(result=>{pageResources.partialHydration=result;return pageResources;});}else{pageResources=toPageResources(pageData,pageComponent,headComponent);}}// undefined if final result is an error
+return __webpack_require__.e(/* import() */ 454).then(__webpack_require__.t.bind(__webpack_require__, 6454, 23)).then(({createFromReadableStream})=>waitForResponse(createFromReadableStream(readableStream))).then(result=>{pageResources.partialHydration=result;return pageResources;});}else{pageResources=toPageResources(pageData,pageComponent,headComponent);}}// undefined if final result is an error
 return pageResources;});// get list of static queries to get
 const staticQueryBatchPromise=Promise.all(dedupedStaticQueryHashes.map(staticQueryHash=>{// Check for cache in case this static query result has already been loaded
-if(this.staticQueryDb[staticQueryHash]){const jsonPayload=this.staticQueryDb[staticQueryHash];return{staticQueryHash,jsonPayload};}return this.memoizedGet(`${"/woo-website-template-apiv2"}/page-data/sq/d/${staticQueryHash}.json`).then(req=>{const jsonPayload=JSON.parse(req.responseText);return{staticQueryHash,jsonPayload};}).catch(()=>{throw new Error(`We couldn't load "${"/woo-website-template-apiv2"}/page-data/sq/d/${staticQueryHash}.json"`);});})).then(staticQueryResults=>{const staticQueryResultsMap={};staticQueryResults.forEach(_ref2=>{let{staticQueryHash,jsonPayload}=_ref2;staticQueryResultsMap[staticQueryHash]=jsonPayload;this.staticQueryDb[staticQueryHash]=jsonPayload;});return staticQueryResultsMap;});return Promise.all([componentChunkPromises,staticQueryBatchPromise]).then(_ref3=>{let[pageResources,staticQueryResults]=_ref3;let payload;if(pageResources){payload={...pageResources,staticQueryResults};finalResult.payload=payload;emitter/* default */.A.emit(`onPostLoadPageResources`,{page:payload,pageResources:payload});}this.pageDb.set(pagePath,finalResult);if(finalResult.error){return{error:finalResult.error,status:finalResult.status};}return payload;})// when static-query fail to load we throw a better error
+if(this.staticQueryDb[staticQueryHash]){const jsonPayload=this.staticQueryDb[staticQueryHash];return{staticQueryHash,jsonPayload};}return this.memoizedGet(`${"/woo-website-template-apiv2"}/page-data/sq/d/${staticQueryHash}.json`).then(req=>{const jsonPayload=JSON.parse(req.responseText);return{staticQueryHash,jsonPayload};}).catch(()=>{throw new Error(`We couldn't load "${"/woo-website-template-apiv2"}/page-data/sq/d/${staticQueryHash}.json"`);});})).then(staticQueryResults=>{const staticQueryResultsMap={};staticQueryResults.forEach(({staticQueryHash,jsonPayload})=>{staticQueryResultsMap[staticQueryHash]=jsonPayload;this.staticQueryDb[staticQueryHash]=jsonPayload;});return staticQueryResultsMap;});return Promise.all([componentChunkPromises,staticQueryBatchPromise]).then(([pageResources,staticQueryResults])=>{let payload;if(pageResources){payload={...pageResources,staticQueryResults};finalResult.payload=payload;emitter/* default */.A.emit(`onPostLoadPageResources`,{page:payload,pageResources:payload});}this.pageDb.set(pagePath,finalResult);if(finalResult.error){return{error:finalResult.error,status:finalResult.status};}return payload;})// when static-query fail to load we throw a better error
 .catch(err=>{return{error:err,status:PageResourceStatus.Error};});});});inFlightPromise.then(()=>{this.inFlightDb.delete(pagePath);}).catch(error=>{this.inFlightDb.delete(pagePath);throw error;});this.inFlightDb.set(pagePath,inFlightPromise);return inFlightPromise;}// returns undefined if the page does not exists in cache
-;_proto.loadPageSync=function loadPageSync(rawPath,options){if(options===void 0){options={};}const pagePath=(0,find_path/* findPath */.Hh)(rawPath);if(this.pageDb.has(pagePath)){var _options;const pageData=this.pageDb.get(pagePath);if(pageData.payload){return pageData.payload;}if((_options=options)!==null&&_options!==void 0&&_options.withErrorDetails){return{error:pageData.error,status:pageData.status};}}return undefined;};_proto.shouldPrefetch=function shouldPrefetch(pagePath){// Skip prefetching if we know user is on slow or constrained connection
+;_proto.loadPageSync=function loadPageSync(rawPath,options={}){const pagePath=(0,find_path/* findPath */.Hh)(rawPath);if(this.pageDb.has(pagePath)){const pageData=this.pageDb.get(pagePath);if(pageData.payload){return pageData.payload;}if(options!==null&&options!==void 0&&options.withErrorDetails){return{error:pageData.error,status:pageData.status};}}return undefined;};_proto.shouldPrefetch=function shouldPrefetch(pagePath){// Skip prefetching if we know user is on slow or constrained connection
 if(!doesConnectionSupportPrefetch()){return false;}// Don't prefetch if this is a crawler bot
 if(navigator.userAgent&&BOT_REGEX.test(navigator.userAgent)){return false;}// Check if the page exists.
-if(this.pageDb.has(pagePath)){return false;}return true;};_proto.prefetch=function prefetch(pagePath){if(!this.shouldPrefetch(pagePath)){return{then:resolve=>resolve(false),abort:()=>{}};}if(this.prefetchTriggered.has(pagePath)){return{then:resolve=>resolve(true),abort:()=>{}};}const defer={resolve:null,reject:null,promise:null};defer.promise=new Promise((resolve,reject)=>{defer.resolve=resolve;defer.reject=reject;});this.prefetchQueued.push([pagePath,defer]);const abortC=new AbortController();abortC.signal.addEventListener(`abort`,()=>{const index=this.prefetchQueued.findIndex(_ref4=>{let[p]=_ref4;return p===pagePath;});// remove from the queue
-if(index!==-1){this.prefetchQueued.splice(index,1);}});if(!this.isPrefetchQueueRunning){this.isPrefetchQueueRunning=true;setTimeout(()=>{this._processNextPrefetchBatch();},3000);}return{then:(resolve,reject)=>defer.promise.then(resolve,reject),abort:abortC.abort.bind(abortC)};};_proto._processNextPrefetchBatch=function _processNextPrefetchBatch(){const idleCallback=window.requestIdleCallback||(cb=>setTimeout(cb,0));idleCallback(()=>{const toPrefetch=this.prefetchQueued.splice(0,4);const prefetches=Promise.all(toPrefetch.map(_ref5=>{let[pagePath,dPromise]=_ref5;// Tell plugins with custom prefetching logic that they should start
+if(this.pageDb.has(pagePath)){return false;}return true;};_proto.prefetch=function prefetch(pagePath){if(!this.shouldPrefetch(pagePath)){return{then:resolve=>resolve(false),abort:()=>{}};}if(this.prefetchTriggered.has(pagePath)){return{then:resolve=>resolve(true),abort:()=>{}};}const defer={resolve:null,reject:null,promise:null};defer.promise=new Promise((resolve,reject)=>{defer.resolve=resolve;defer.reject=reject;});this.prefetchQueued.push([pagePath,defer]);const abortC=new AbortController();abortC.signal.addEventListener(`abort`,()=>{const index=this.prefetchQueued.findIndex(([p])=>p===pagePath);// remove from the queue
+if(index!==-1){this.prefetchQueued.splice(index,1);}});if(!this.isPrefetchQueueRunning){this.isPrefetchQueueRunning=true;setTimeout(()=>{this._processNextPrefetchBatch();},3000);}return{then:(resolve,reject)=>defer.promise.then(resolve,reject),abort:abortC.abort.bind(abortC)};};_proto._processNextPrefetchBatch=function _processNextPrefetchBatch(){const idleCallback=window.requestIdleCallback||(cb=>setTimeout(cb,0));idleCallback(()=>{const toPrefetch=this.prefetchQueued.splice(0,4);const prefetches=Promise.all(toPrefetch.map(([pagePath,dPromise])=>{// Tell plugins with custom prefetching logic that they should start
 // prefetching this path.
 if(!this.prefetchTriggered.has(pagePath)){this.apiRunner(`onPrefetchPathname`,{pathname:pagePath});this.prefetchTriggered.add(pagePath);}// If a plugin has disabled core prefetching, stop now.
 if(this.prefetchDisabled){return dPromise.resolve(false);}return this.doPrefetch((0,find_path/* findPath */.Hh)(pagePath)).then(()=>{if(!this.prefetchCompleted.has(pagePath)){this.apiRunner(`onPostPrefetchPathname`,{pathname:pagePath});this.prefetchCompleted.add(pagePath);}dPromise.resolve(true);});}));if(this.prefetchQueued.length){prefetches.then(()=>{setTimeout(()=>{this._processNextPrefetchBatch();},3000);});}else{this.isPrefetchQueueRunning=false;}});};_proto.doPrefetch=function doPrefetch(pagePath){const pageDataUrl=createPageDataUrl(pagePath);if(false)// removed by dead control flow
 {}else{return _cache_prefetch(pageDataUrl,{crossOrigin:`anonymous`,as:`fetch`}).then(()=>// This was just prefetched, so will return a response from
 // the cache instead of making another request to the server
-this.loadPageDataJson(pagePath));}};_proto.hovering=function hovering(rawPath){this.loadPage(rawPath);};_proto.getResourceURLsForPathname=function getResourceURLsForPathname(rawPath){const pagePath=(0,find_path/* findPath */.Hh)(rawPath);const page=this.pageDataDb.get(pagePath);if(page){const pageResources=toPageResources(page.payload);return[].concat((0,toConsumableArray/* default */.A)(createComponentUrls(pageResources.page.componentChunkName)),[createPageDataUrl(pagePath)]);}else{return null;}};_proto.isPageNotFound=function isPageNotFound(rawPath){const pagePath=(0,find_path/* findPath */.Hh)(rawPath);const page=this.pageDb.get(pagePath);return!page||page.notFound;};_proto.loadAppData=function loadAppData(retries){if(retries===void 0){retries=0;}return this.memoizedGet(`${"/woo-website-template-apiv2"}/page-data/app-data.json`).then(req=>{const{status,responseText}=req;let appData;if(status!==200&&retries<3){// Retry 3 times incase of non-200 responses
+this.loadPageDataJson(pagePath));}};_proto.hovering=function hovering(rawPath){this.loadPage(rawPath);};_proto.getResourceURLsForPathname=function getResourceURLsForPathname(rawPath){const pagePath=(0,find_path/* findPath */.Hh)(rawPath);const page=this.pageDataDb.get(pagePath);if(page){const pageResources=toPageResources(page.payload);return[].concat((0,toConsumableArray/* default */.A)(createComponentUrls(pageResources.page.componentChunkName)),[createPageDataUrl(pagePath)]);}else{return null;}};_proto.isPageNotFound=function isPageNotFound(rawPath){const pagePath=(0,find_path/* findPath */.Hh)(rawPath);const page=this.pageDb.get(pagePath);return!page||page.notFound;};_proto.loadAppData=function loadAppData(retries=0){return this.memoizedGet(`${"/woo-website-template-apiv2"}/page-data/app-data.json`).then(req=>{const{status,responseText}=req;let appData;if(status!==200&&retries<3){// Retry 3 times incase of non-200 responses
 return this.loadAppData(retries+1);}// Handle 200
 if(status===200){try{const jsonPayload=JSON.parse(responseText);if(jsonPayload.webpackCompilationHash===undefined){throw new Error(`not a valid app-data response`);}appData=jsonPayload;}catch(err){// continue regardless of error
-}}return appData;});};return BaseLoader;}();const createComponentUrls=componentChunkName=>(window.___chunkMapping[componentChunkName]||[]).map(chunk=>"/woo-website-template-apiv2"+chunk);let ProdLoader=/*#__PURE__*/function(_BaseLoader2){function ProdLoader(asyncRequires,matchPaths,pageData){var _this;const loadComponent=function(chunkName,exportType){if(exportType===void 0){exportType=`components`;}if(true){exportType=`components`;}if(!asyncRequires[exportType][chunkName]){throw new Error(`We couldn't find the correct component chunk with the name "${chunkName}"`);}return asyncRequires[exportType][chunkName]()// loader will handle the case when component is error
+}}return appData;});};return BaseLoader;}();const createComponentUrls=componentChunkName=>(window.___chunkMapping[componentChunkName]||[]).map(chunk=>"/woo-website-template-apiv2"+chunk);let ProdLoader=/*#__PURE__*/function(_BaseLoader2){function ProdLoader(asyncRequires,matchPaths,pageData){var _this;const loadComponent=(chunkName,exportType=`components`)=>{if(true){exportType=`components`;}if(!asyncRequires[exportType][chunkName]){throw new Error(`We couldn't find the correct component chunk with the name "${chunkName}"`);}return asyncRequires[exportType][chunkName]()// loader will handle the case when component is error
 .catch(err=>err);};_this=_BaseLoader2.call(this,loadComponent,matchPaths)||this;if(pageData){_this.pageDataDb.set((0,find_path/* findPath */.Hh)(pageData.path),{pagePath:pageData.path,payload:pageData,status:`success`});}return _this;}(0,inheritsLoose/* default */.A)(ProdLoader,_BaseLoader2);var _proto2=ProdLoader.prototype;_proto2.doPrefetch=function doPrefetch(pagePath){return _BaseLoader2.prototype.doPrefetch.call(this,pagePath).then(result=>{if(result.status!==PageResourceStatus.Success){return Promise.resolve();}const pageData=result.payload;const chunkName=pageData.componentChunkName;const componentUrls=createComponentUrls(chunkName);return Promise.all(componentUrls.map(_cache_prefetch)).then(()=>pageData);});};_proto2.loadPageDataJson=function loadPageDataJson(rawPath){return _BaseLoader2.prototype.loadPageDataJson.call(this,rawPath).then(data=>{if(data.notFound){if(shouldAbortFetch(rawPath)){return data;}// check if html file exist using HEAD request:
 // if it does we should navigate to it instead of showing 404
 return doFetch(rawPath,`HEAD`).then(req=>{if(req.status===200){// page (.html file) actually exist (or we asked for 404 )
@@ -11886,7 +11886,7 @@ return{status:PageResourceStatus.Error};}// if HEAD request wasn't 200, return n
 // and show 404 page
 return data;});}return data;});};return ProdLoader;}(BaseLoader);let instance;const setLoader=_loader=>{instance=_loader;};const publicLoader={enqueue:rawPath=>instance.prefetch(rawPath),// Real methods
 getResourceURLsForPathname:rawPath=>instance.getResourceURLsForPathname(rawPath),loadPage:rawPath=>instance.loadPage(rawPath),// TODO add deprecation to v4 so people use withErrorDetails and then we can remove in v5 and change default behaviour
-loadPageSync:function(rawPath,options){if(options===void 0){options={};}return instance.loadPageSync(rawPath,options);},prefetch:rawPath=>instance.prefetch(rawPath),isPageNotFound:rawPath=>instance.isPageNotFound(rawPath),hovering:rawPath=>instance.hovering(rawPath),loadAppData:()=>instance.loadAppData()};/* harmony default export */ var loader = (publicLoader);function getStaticQueryResults(){if(instance){return instance.staticQueryDb;}else{return{};}}function getSliceResults(){if(instance){return instance.slicesDb;}else{return{};}}
+loadPageSync:(rawPath,options={})=>instance.loadPageSync(rawPath,options),prefetch:rawPath=>instance.prefetch(rawPath),isPageNotFound:rawPath=>instance.isPageNotFound(rawPath),hovering:rawPath=>instance.hovering(rawPath),loadAppData:()=>instance.loadAppData()};/* harmony default export */ var loader = (publicLoader);function getStaticQueryResults(){if(instance){return instance.staticQueryDb;}else{return{};}}function getSliceResults(){if(instance){return instance.slicesDb;}else{return{};}}
 
 /***/ }),
 
@@ -11920,7 +11920,7 @@ var react_dom_utils = __webpack_require__(9732);
 ;// ./.cache/head/components/fire-callback-in-effect.js
 /*
  * Calls callback in an effect and renders children
- */function FireCallbackInEffect(_ref){let{children,callback}=_ref;(0,react.useEffect)(()=>{callback();});return children;}
+ */function FireCallbackInEffect({children,callback}){(0,react.useEffect)(()=>{callback();});return children;}
 ;// ./.cache/head/constants.js
 const VALID_NODE_NAMES=[`link`,`meta`,`style`,`title`,`base`,`noscript`,`script`,`html`,`body`];const ITEM_PROP_WORKAROUND_KEY=`itemProp`;const ITEM_PROP_WORKAROUND_VALUE=`gatsby-do-not-hoist-me-react`;const HTML_BODY_ORIGINAL_TAG_ATTRIBUTE_KEY=`data-original-tag`;
 ;// ./.cache/head/components/head-components.js
@@ -11969,9 +11969,9 @@ const replacement=nodeName===`html`||nodeName===`body`?htmlOrBodyComponentFactor
  * https://bugs.chromium.org/p/chromium/issues/detail?id=1211471#c12
  */function isEqualNode(oldTag,newTag){if(oldTag instanceof HTMLElement&&newTag instanceof HTMLElement){const nonce=newTag.getAttribute(`nonce`);// Only strip the nonce if `oldTag` has had it stripped. An element's nonce attribute will not
 // be stripped if there is no content security policy response header that includes a nonce.
-if(nonce&&!oldTag.getAttribute(`nonce`)){const cloneTag=newTag.cloneNode(true);cloneTag.setAttribute(`nonce`,``);cloneTag.nonce=nonce;return nonce===oldTag.nonce&&oldTag.isEqualNode(cloneTag);}}return oldTag.isEqualNode(newTag);}function diffNodes(_ref){let{oldNodes,newNodes,onStale,onNew}=_ref;for(const existingHeadElement of oldNodes){const indexInNewNodes=newNodes.findIndex(e=>isEqualNode(e,existingHeadElement));if(indexInNewNodes===-1){onStale(existingHeadElement);}else{// this node is re-created as-is, so we keep old node, and remove it from list of new nodes (as we handled it already here)
+if(nonce&&!oldTag.getAttribute(`nonce`)){const cloneTag=newTag.cloneNode(true);cloneTag.setAttribute(`nonce`,``);cloneTag.nonce=nonce;return nonce===oldTag.nonce&&oldTag.isEqualNode(cloneTag);}}return oldTag.isEqualNode(newTag);}function diffNodes({oldNodes,newNodes,onStale,onNew}){for(const existingHeadElement of oldNodes){const indexInNewNodes=newNodes.findIndex(e=>isEqualNode(e,existingHeadElement));if(indexInNewNodes===-1){onStale(existingHeadElement);}else{// this node is re-created as-is, so we keep old node, and remove it from list of new nodes (as we handled it already here)
 newNodes.splice(indexInNewNodes,1);}}// remaing new nodes didn't have matching old node, so need to be added
-for(const newNode of newNodes){onNew(newNode);}}function getValidHeadNodesAndAttributes(rootNode,htmlAndBodyAttributes){if(htmlAndBodyAttributes===void 0){htmlAndBodyAttributes={html:{},body:{}};}const seenIds=new Map();const validHeadNodes=[];for(const node of rootNode.childNodes){var _node$attributes$getN,_node$attributes,_node$attributes$getN2,_node$attributes2,_node$attributes2$id;// Filter out non-element nodes before looping since we don't care about them
+for(const newNode of newNodes){onNew(newNode);}}function getValidHeadNodesAndAttributes(rootNode,htmlAndBodyAttributes={html:{},body:{}}){const seenIds=new Map();const validHeadNodes=[];for(const node of rootNode.childNodes){var _node$attributes$getN,_node$attributes,_node$attributes$getN2,_node$attributes2,_node$attributes2$id;// Filter out non-element nodes before looping since we don't care about them
 if(!isElementType(node))continue;const nodeName=(_node$attributes$getN=(_node$attributes=node.attributes)===null||_node$attributes===void 0?void 0:(_node$attributes$getN2=_node$attributes.getNamedItem(HTML_BODY_ORIGINAL_TAG_ATTRIBUTE_KEY))===null||_node$attributes$getN2===void 0?void 0:_node$attributes$getN2.value)!==null&&_node$attributes$getN!==void 0?_node$attributes$getN:node.nodeName.toLowerCase();const id=(_node$attributes2=node.attributes)===null||_node$attributes2===void 0?void 0:(_node$attributes2$id=_node$attributes2.id)===null||_node$attributes2$id===void 0?void 0:_node$attributes2$id.value;if(isValidNodeName(nodeName)){// <html> and <body> tags are treated differently, in that we don't render them, we only extract the attributes and apply them separetely
 if(nodeName===`html`||nodeName===`body`){for(const attribute of node.attributes){if(attribute.name===HTML_BODY_ORIGINAL_TAG_ATTRIBUTE_KEY)continue;const isStyleAttribute=attribute.name===`style`;// Merge attributes for same nodeName from previous loop iteration
 htmlAndBodyAttributes[nodeName]={...htmlAndBodyAttributes[nodeName]};if(!isStyleAttribute){htmlAndBodyAttributes[nodeName][attribute.name]=attribute.value;}// If there is already a style attribute, we need to merge them as otherwise the last one will "win"
@@ -11987,7 +11987,7 @@ if(id){if(!seenIds.has(id)){validHeadNodes.push(clonedNode);seenIds.set(id,valid
  * For Node type, see https://developer.mozilla.org/en-US/docs/Web/API/Node/nodeType
  */function isElementType(node){return node.nodeType===1;}/**
  * Removes all the head elements that were added by `Head`
- */function removePrevHeadElements(){const prevHeadNodes=document.querySelectorAll(`[data-gatsby-head]`);for(const node of prevHeadNodes){node.parentNode.removeChild(node);}}function applyHtmlAndBodyAttributes(htmlAndBodyAttributes){if(!htmlAndBodyAttributes)return;const{html,body}=htmlAndBodyAttributes;const htmlElement=document.querySelector(`html`);if(htmlElement){Object.entries(html).forEach(_ref2=>{let[attributeName,attributeValue]=_ref2;htmlElement.setAttribute(attributeName,attributeValue);});}const bodyElement=document.querySelector(`body`);if(bodyElement){Object.entries(body).forEach(_ref3=>{let[attributeName,attributeValue]=_ref3;bodyElement.setAttribute(attributeName,attributeValue);});}}function removeHtmlAndBodyAttributes(htmlAndBodyattributeList){if(!htmlAndBodyattributeList)return;const{html,body}=htmlAndBodyattributeList;if(html){const htmlElement=document.querySelector(`html`);html.forEach(attributeName=>{if(htmlElement){htmlElement.removeAttribute(attributeName);}});}if(body){const bodyElement=document.querySelector(`body`);body.forEach(attributeName=>{if(bodyElement){bodyElement.removeAttribute(attributeName);}});}}
+ */function removePrevHeadElements(){const prevHeadNodes=document.querySelectorAll(`[data-gatsby-head]`);for(const node of prevHeadNodes){node.parentNode.removeChild(node);}}function applyHtmlAndBodyAttributes(htmlAndBodyAttributes){if(!htmlAndBodyAttributes)return;const{html,body}=htmlAndBodyAttributes;const htmlElement=document.querySelector(`html`);if(htmlElement){Object.entries(html).forEach(([attributeName,attributeValue])=>{htmlElement.setAttribute(attributeName,attributeValue);});}const bodyElement=document.querySelector(`body`);if(bodyElement){Object.entries(body).forEach(([attributeName,attributeValue])=>{bodyElement.setAttribute(attributeName,attributeValue);});}}function removeHtmlAndBodyAttributes(htmlAndBodyattributeList){if(!htmlAndBodyattributeList)return;const{html,body}=htmlAndBodyattributeList;if(html){const htmlElement=document.querySelector(`html`);html.forEach(attributeName=>{if(htmlElement){htmlElement.removeAttribute(attributeName);}});}if(body){const bodyElement=document.querySelector(`body`);body.forEach(attributeName=>{if(bodyElement){bodyElement.removeAttribute(attributeName);}});}}
 // EXTERNAL MODULE: ./node_modules/react/jsx-runtime.js
 var jsx_runtime = __webpack_require__(4848);
 ;// ./.cache/head/head-export-handler-for-browser.js
@@ -12010,13 +12010,13 @@ const hiddenRoot=document.createElement(`div`);const keysOfHtmlAndBodyAttributes
 // https://github.com/facebook/react/blob/50e7ec8a694072fd6fcd52182df8a75211bf084d/packages/react-dom-bindings/src/client/ReactFiberConfigDOM.js#L5824
 // we later will remove this attribute if it has our custom value before appending to real head.
 // De-risk monkey patch by only applying it when needed (React 19+, not React 18)
-const reactMajor=parseInt(react.version.split(`.`)[0],10);if(reactMajor!==18&&!react.createElement.headPatched){const originalCreateElement=react.createElement;const validHeadComponentReplacements=getValidHeadComponentReplacements(originalCreateElement,false);react.createElement=function patchedCreateElement(type,props){const headReplacement=validHeadComponentReplacements.get(type);if(headReplacement){type=headReplacement;}for(var _len2=arguments.length,rest=new Array(_len2>2?_len2-2:0),_key2=2;_key2<_len2;_key2++){rest[_key2-2]=arguments[_key2];}return originalCreateElement.call.apply(originalCreateElement,[react,type,props].concat(rest));};react.createElement.headPatched=true;}function headHandlerForBrowser(_ref){let{pageComponent,staticQueryResults,pageComponentProps}=_ref;(0,react.useEffect)(()=>{if(pageComponent!==null&&pageComponent!==void 0&&pageComponent.Head){headExportValidator(pageComponent.Head);const{render}=(0,react_dom_utils/* reactDOMUtils */.n)();const HeadElement=/*#__PURE__*/(0,jsx_runtime.jsx)(pageComponent.Head,{...filterHeadProps(pageComponentProps)});const WrapHeadElement=(0,api_runner_browser/* apiRunner */.N)(`wrapRootElement`,{element:HeadElement},HeadElement,_ref2=>{let{result}=_ref2;return{element:result};}).pop();render(/*#__PURE__*/// just a hack to call the callback after react has done first render
+const reactMajor=parseInt(react.version.split(`.`)[0],10);if(reactMajor!==18&&!react.createElement.headPatched){const originalCreateElement=react.createElement;const validHeadComponentReplacements=getValidHeadComponentReplacements(originalCreateElement,false);react.createElement=function patchedCreateElement(type,props,...rest){const headReplacement=validHeadComponentReplacements.get(type);if(headReplacement){type=headReplacement;}return originalCreateElement.call.apply(originalCreateElement,[react,type,props].concat(rest));};react.createElement.headPatched=true;}function headHandlerForBrowser({pageComponent,staticQueryResults,pageComponentProps}){(0,react.useEffect)(()=>{if(pageComponent!==null&&pageComponent!==void 0&&pageComponent.Head){headExportValidator(pageComponent.Head);const{render}=(0,react_dom_utils/* reactDOMUtils */.n)();const HeadElement=/*#__PURE__*/(0,jsx_runtime.jsx)(pageComponent.Head,{...filterHeadProps(pageComponentProps)});const WrapHeadElement=(0,api_runner_browser/* apiRunner */.N)(`wrapRootElement`,{element:HeadElement},HeadElement,({result})=>{return{element:result};}).pop();render(/*#__PURE__*/// just a hack to call the callback after react has done first render
 // Note: In dev, we call onHeadRendered twice( in FireCallbackInEffect and after mutualution observer dectects initail render into hiddenRoot) this is for hot reloading
 // In Prod we only call onHeadRendered in FireCallbackInEffect to render to head
 (0,jsx_runtime.jsx)(FireCallbackInEffect,{callback:onHeadRendered,children:/*#__PURE__*/(0,jsx_runtime.jsx)(IsHeadRenderContext.Provider,{value:true,children:/*#__PURE__*/(0,jsx_runtime.jsx)(gatsby_browser_entry/* StaticQueryContext */.G.Provider,{value:staticQueryResults,children:/*#__PURE__*/(0,jsx_runtime.jsx)(index_modern.LocationProvider,{children:WrapHeadElement})})})}),hiddenRoot);}return()=>{removePrevHeadElements();removeHtmlAndBodyAttributes(keysOfHtmlAndBodyAttributes);};});}
 ;// ./.cache/page-renderer.js
 // Renders page
-function PageRenderer(props){const pageComponentProps={...props,params:{...(0,find_path/* grabMatchParams */.UA)(props.location.pathname),...props.pageResources.json.pageContext.__params}};const preferDefault=m=>m&&m.default||m;let pageElement;if(props.pageResources.partialHydration){pageElement=props.pageResources.partialHydration;}else{pageElement=/*#__PURE__*/(0,react.createElement)(preferDefault(props.pageResources.component),{...pageComponentProps,key:props.path||props.pageResources.page.path});}const pageComponent=props.pageResources.head;headHandlerForBrowser({pageComponent,staticQueryResults:props.pageResources.staticQueryResults,pageComponentProps});const wrappedPage=(0,api_runner_browser/* apiRunner */.N)(`wrapPageElement`,{element:pageElement,props:pageComponentProps},pageElement,_ref=>{let{result}=_ref;return{element:result,props:pageComponentProps};}).pop();return wrappedPage;}PageRenderer.propTypes={location:(prop_types_default()).object.isRequired,pageResources:(prop_types_default()).object.isRequired,data:(prop_types_default()).object,pageContext:(prop_types_default()).object.isRequired};/* harmony default export */ var page_renderer = (PageRenderer);
+function PageRenderer(props){const pageComponentProps={...props,params:{...(0,find_path/* grabMatchParams */.UA)(props.location.pathname),...props.pageResources.json.pageContext.__params}};const preferDefault=m=>m&&m.default||m;let pageElement;if(props.pageResources.partialHydration){pageElement=props.pageResources.partialHydration;}else{pageElement=/*#__PURE__*/(0,react.createElement)(preferDefault(props.pageResources.component),{...pageComponentProps,key:props.path||props.pageResources.page.path});}const pageComponent=props.pageResources.head;headHandlerForBrowser({pageComponent,staticQueryResults:props.pageResources.staticQueryResults,pageComponentProps});const wrappedPage=(0,api_runner_browser/* apiRunner */.N)(`wrapPageElement`,{element:pageElement,props:pageComponentProps},pageElement,({result})=>{return{element:result,props:pageComponentProps};}).pop();return wrappedPage;}PageRenderer.propTypes={location:(prop_types_default()).object.isRequired,pageResources:(prop_types_default()).object.isRequired,data:(prop_types_default()).object,pageContext:(prop_types_default()).object.isRequired};/* harmony default export */ var page_renderer = (PageRenderer);
 
 /***/ }),
 
@@ -12056,7 +12056,7 @@ var jsx_runtime = __webpack_require__(4848);
 ;// ./.cache/navigation.js
 function maybeRedirect(pathname){const redirect=(0,redirect_utils/* maybeGetBrowserRedirect */.X)(pathname);const{hash,search}=window.location;if(redirect!=null){window.___replace(redirect.toPath+search+hash);return true;}else{return false;}}// Catch unhandled chunk loading errors and force a restart of the app.
 let nextRoute=``;window.addEventListener(`unhandledrejection`,event=>{if(/loading chunk \d* failed./i.test(event.reason)){if(nextRoute){window.location.pathname=nextRoute;}}});const onPreRouteUpdate=(location,prevLocation)=>{if(!maybeRedirect(location.pathname)){nextRoute=location.pathname;(0,api_runner_browser/* apiRunner */.N)(`onPreRouteUpdate`,{location,prevLocation});}};const onRouteUpdate=(location,prevLocation)=>{if(!maybeRedirect(location.pathname)){(0,api_runner_browser/* apiRunner */.N)(`onRouteUpdate`,{location,prevLocation});if(false)// removed by dead control flow
-{}}};const navigation_navigate=function(to,options){if(options===void 0){options={};}// Support forward/backward navigation with numbers
+{}}};const navigation_navigate=(to,options={})=>{// Support forward/backward navigation with numbers
 // navigate(-2) (jumps back 2 history steps)
 // navigate(2)  (jumps forward 2 history steps)
 if(typeof to===`number`){index_modern.globalHistory.navigate(to);return;}const{pathname,search,hash}=(0,dist_index_modern/* parsePath */.Rr)(to);const redirect=(0,redirect_utils/* maybeGetBrowserRedirect */.X)(pathname);// If we're redirecting, just replace the passed in pathname
@@ -12074,7 +12074,7 @@ const timeoutId=setTimeout(()=>{emitter/* default */.A.emit(`onDelayedLoadPageRe
 if(!pageResources||pageResources.status===loader/* PageResourceStatus */.Wi.Error){window.history.replaceState({},``,location.href);window.location=pathname;clearTimeout(timeoutId);return;}// If the loaded page has a different compilation hash to the
 // window, then a rebuild has occurred on the server. Reload.
 if( true&&pageResources){if(pageResources.page.webpackCompilationHash!==window.___webpackCompilationHash){// Purge plugin-offline cache
-if(`serviceWorker`in navigator&&navigator.serviceWorker.controller!==null&&navigator.serviceWorker.controller.state===`activated`){navigator.serviceWorker.controller.postMessage({gatsbyApi:`clearPathResources`});}window.location=pathname+search+hash;}}(0,index_modern.navigate)(to,options);clearTimeout(timeoutId);});};function shouldUpdateScroll(prevRouterProps,_ref){let{location}=_ref;const{pathname,hash}=location;const results=(0,api_runner_browser/* apiRunner */.N)(`shouldUpdateScroll`,{prevRouterProps,// `pathname` for backwards compatibility
+if(`serviceWorker`in navigator&&navigator.serviceWorker.controller!==null&&navigator.serviceWorker.controller.state===`activated`){navigator.serviceWorker.controller.postMessage({gatsbyApi:`clearPathResources`});}window.location=pathname+search+hash;}}(0,index_modern.navigate)(to,options);clearTimeout(timeoutId);});};function shouldUpdateScroll(prevRouterProps,{location}){const{pathname,hash}=location;const results=(0,api_runner_browser/* apiRunner */.N)(`shouldUpdateScroll`,{prevRouterProps,// `pathname` for backwards compatibility
 pathname,routerProps:{location},getSavedScrollPosition:args=>[0,// FIXME this is actually a big code smell, we should fix this
 // eslint-disable-next-line @babel/no-invalid-this
 this._stateStorage.read(args,args.key)]});if(results.length>0){// Use the latest registered shouldUpdateScroll result, this allows users to override plugin's configuration
@@ -12105,7 +12105,7 @@ function shallowDiffers(a, b) {
 });
 (Object.getOwnPropertyDescriptor(es, "name") || {}).writable || Object.defineProperty(es, "name", { value: "default", configurable: true });
 ;// ./.cache/ensure-resources.js
-let EnsureResources=/*#__PURE__*/function(_React$Component){function EnsureResources(props){var _this;_this=_React$Component.call(this)||this;const{location,pageResources}=props;_this.state={location:{...location},pageResources:pageResources||loader/* default */.Ay.loadPageSync(location.pathname+location.search,{withErrorDetails:true})};return _this;}(0,inheritsLoose/* default */.A)(EnsureResources,_React$Component);EnsureResources.getDerivedStateFromProps=function getDerivedStateFromProps(_ref,prevState){let{location}=_ref;if(prevState.location.href!==location.href){const pageResources=loader/* default */.Ay.loadPageSync(location.pathname+location.search,{withErrorDetails:true});return{pageResources,location:{...location}};}return{location:{...location}};};var _proto=EnsureResources.prototype;_proto.loadResources=function loadResources(rawPath){loader/* default */.Ay.loadPage(rawPath).then(pageResources=>{if(pageResources&&pageResources.status!==loader/* PageResourceStatus */.Wi.Error){this.setState({location:{...window.location},pageResources});}else{window.history.replaceState({},``,location.href);window.location=rawPath;}});};_proto.shouldComponentUpdate=function shouldComponentUpdate(nextProps,nextState){// Always return false if we're missing resources.
+let EnsureResources=/*#__PURE__*/function(_React$Component){function EnsureResources(props){var _this;_this=_React$Component.call(this)||this;const{location,pageResources}=props;_this.state={location:{...location},pageResources:pageResources||loader/* default */.Ay.loadPageSync(location.pathname+location.search,{withErrorDetails:true})};return _this;}(0,inheritsLoose/* default */.A)(EnsureResources,_React$Component);EnsureResources.getDerivedStateFromProps=function getDerivedStateFromProps({location},prevState){if(prevState.location.href!==location.href){const pageResources=loader/* default */.Ay.loadPageSync(location.pathname+location.search,{withErrorDetails:true});return{pageResources,location:{...location}};}return{location:{...location}};};var _proto=EnsureResources.prototype;_proto.loadResources=function loadResources(rawPath){loader/* default */.Ay.loadPage(rawPath).then(pageResources=>{if(pageResources&&pageResources.status!==loader/* PageResourceStatus */.Wi.Error){this.setState({location:{...window.location},pageResources});}else{window.history.replaceState({},``,location.href);window.location=rawPath;}});};_proto.shouldComponentUpdate=function shouldComponentUpdate(nextProps,nextState){// Always return false if we're missing resources.
 if(!nextState.pageResources){this.loadResources(nextProps.location.pathname+nextProps.location.search);return false;}if(false)// removed by dead control flow
 {}// Check if the component or json have changed.
 if(this.state.pageResources!==nextState.pageResources){return true;}if(this.state.pageResources.component!==nextState.pageResources.component){return true;}if(this.state.pageResources.json!==nextState.pageResources.json){return true;}// Check if location has changed on a page using internal routing
@@ -12130,7 +12130,7 @@ if((0,api_runner_browser/* apiRunner */.N)(`registerServiceWorker`).filter(Boole
 // Resetting `basepath`/`baseuri` keeps current behaviour
 // to not introduce breaking change.
 // Remove this in v3
-const RouteHandler=props=>/*#__PURE__*/(0,jsx_runtime.jsx)(index_modern.BaseContext.Provider,{value:{baseuri:`/`,basepath:`/`},children:/*#__PURE__*/(0,jsx_runtime.jsx)(page_renderer/* default */.A,{...props})});const DataContext=/*#__PURE__*/react.createContext({});const slicesContext={renderEnvironment:`browser`};let GatsbyRoot=/*#__PURE__*/function(_React$Component){function GatsbyRoot(){return _React$Component.apply(this,arguments)||this;}(0,inheritsLoose/* default */.A)(GatsbyRoot,_React$Component);var _proto=GatsbyRoot.prototype;_proto.render=function render(){const{children}=this.props;return/*#__PURE__*/(0,jsx_runtime.jsx)(index_modern.Location,{children:_ref=>{let{location}=_ref;return/*#__PURE__*/(0,jsx_runtime.jsx)(ensure_resources,{location:location,children:_ref2=>{let{pageResources,location}=_ref2;const staticQueryResults=(0,loader/* getStaticQueryResults */.LE)();const sliceResults=(0,loader/* getSliceResults */.Rh)();return/*#__PURE__*/(0,jsx_runtime.jsx)(static_query/* StaticQueryContext */.G.Provider,{value:staticQueryResults,children:/*#__PURE__*/(0,jsx_runtime.jsx)(context/* SlicesContext */.j$.Provider,{value:slicesContext,children:/*#__PURE__*/(0,jsx_runtime.jsx)(context/* SlicesResultsContext */.dd.Provider,{value:sliceResults,children:/*#__PURE__*/(0,jsx_runtime.jsx)(context/* SlicesMapContext */.Jr.Provider,{value:pageResources.page.slicesMap,children:/*#__PURE__*/(0,jsx_runtime.jsx)(DataContext.Provider,{value:{pageResources,location},children:children})})})})});}});}});};return GatsbyRoot;}(react.Component);let LocationHandler=/*#__PURE__*/function(_React$Component2){function LocationHandler(){return _React$Component2.apply(this,arguments)||this;}(0,inheritsLoose/* default */.A)(LocationHandler,_React$Component2);var _proto2=LocationHandler.prototype;_proto2.render=function render(){return/*#__PURE__*/(0,jsx_runtime.jsx)(DataContext.Consumer,{children:_ref3=>{let{pageResources,location}=_ref3;return/*#__PURE__*/(0,jsx_runtime.jsx)(RouteUpdates,{location:location,children:/*#__PURE__*/(0,jsx_runtime.jsx)(gatsby_react_router_scroll/* ScrollContext */.z_,{location:location,shouldUpdateScroll:shouldUpdateScroll,children:/*#__PURE__*/(0,jsx_runtime.jsx)(index_modern.Router,{basepath:"/woo-website-template-apiv2",location:location,id:"gatsby-focus-wrapper",children:/*#__PURE__*/(0,jsx_runtime.jsx)(RouteHandler,{path:pageResources.page.path===`/404.html`||pageResources.page.path===`/500.html`?(0,strip_prefix/* default */.A)(location.pathname,"/woo-website-template-apiv2"):encodeURI((pageResources.page.matchPath||pageResources.page.path).split(`?`)[0]),...this.props,location:location,pageResources:pageResources,...pageResources.json})})})});}});};return LocationHandler;}(react.Component);const{pagePath,location:browserLoc}=window;// Explicitly call navigate if the canonical path (window.pagePath)
+const RouteHandler=props=>/*#__PURE__*/(0,jsx_runtime.jsx)(index_modern.BaseContext.Provider,{value:{baseuri:`/`,basepath:`/`},children:/*#__PURE__*/(0,jsx_runtime.jsx)(page_renderer/* default */.A,{...props})});const DataContext=/*#__PURE__*/react.createContext({});const slicesContext={renderEnvironment:`browser`};let GatsbyRoot=/*#__PURE__*/function(_React$Component){function GatsbyRoot(){return _React$Component.apply(this,arguments)||this;}(0,inheritsLoose/* default */.A)(GatsbyRoot,_React$Component);var _proto=GatsbyRoot.prototype;_proto.render=function render(){const{children}=this.props;return/*#__PURE__*/(0,jsx_runtime.jsx)(index_modern.Location,{children:({location})=>/*#__PURE__*/(0,jsx_runtime.jsx)(ensure_resources,{location:location,children:({pageResources,location})=>{const staticQueryResults=(0,loader/* getStaticQueryResults */.LE)();const sliceResults=(0,loader/* getSliceResults */.Rh)();return/*#__PURE__*/(0,jsx_runtime.jsx)(static_query/* StaticQueryContext */.G.Provider,{value:staticQueryResults,children:/*#__PURE__*/(0,jsx_runtime.jsx)(context/* SlicesContext */.j$.Provider,{value:slicesContext,children:/*#__PURE__*/(0,jsx_runtime.jsx)(context/* SlicesResultsContext */.dd.Provider,{value:sliceResults,children:/*#__PURE__*/(0,jsx_runtime.jsx)(context/* SlicesMapContext */.Jr.Provider,{value:pageResources.page.slicesMap,children:/*#__PURE__*/(0,jsx_runtime.jsx)(DataContext.Provider,{value:{pageResources,location},children:children})})})})});}})});};return GatsbyRoot;}(react.Component);let LocationHandler=/*#__PURE__*/function(_React$Component2){function LocationHandler(){return _React$Component2.apply(this,arguments)||this;}(0,inheritsLoose/* default */.A)(LocationHandler,_React$Component2);var _proto2=LocationHandler.prototype;_proto2.render=function render(){return/*#__PURE__*/(0,jsx_runtime.jsx)(DataContext.Consumer,{children:({pageResources,location})=>/*#__PURE__*/(0,jsx_runtime.jsx)(RouteUpdates,{location:location,children:/*#__PURE__*/(0,jsx_runtime.jsx)(gatsby_react_router_scroll/* ScrollContext */.z_,{location:location,shouldUpdateScroll:shouldUpdateScroll,children:/*#__PURE__*/(0,jsx_runtime.jsx)(index_modern.Router,{basepath:"/woo-website-template-apiv2",location:location,id:"gatsby-focus-wrapper",children:/*#__PURE__*/(0,jsx_runtime.jsx)(RouteHandler,{path:pageResources.page.path===`/404.html`||pageResources.page.path===`/500.html`?(0,strip_prefix/* default */.A)(location.pathname,"/woo-website-template-apiv2"):encodeURI((pageResources.page.matchPath||pageResources.page.path).split(`?`)[0]),...this.props,location:location,pageResources:pageResources,...pageResources.json})})})})});};return LocationHandler;}(react.Component);const{pagePath,location:browserLoc}=window;// Explicitly call navigate if the canonical path (window.pagePath)
 // is different to the browser path (window.location.pathname). SSR
 // page paths might include search params, while SSG and DSG won't.
 // If page path include search params we also compare query params.
@@ -12149,7 +12149,7 @@ if(`serviceWorker`in navigator&&navigator.serviceWorker.controller!==null&&navig
 // when reload doesn't fix it (possibly broken deploy) so we don't end up in infinite reload loop
 if(sessionStorage){const isReloaded=sessionStorage.getItem(reloadStorageKey)===`1`;if(!isReloaded){sessionStorage.setItem(reloadStorageKey,`1`);window.location.reload(true);return;}}}if(sessionStorage){sessionStorage.removeItem(reloadStorageKey);}if(!page||page.status===loader/* PageResourceStatus */.Wi.Error){const message=`page resources for ${browserLoc.pathname} not found. Not rendering React`;// if the chunk throws an error we want to capture the real error
 // This should help with https://github.com/gatsbyjs/gatsby/issues/19618
-if(page&&page.error){console.error(message);throw page.error;}throw new Error(message);}const SiteRoot=(0,api_runner_browser/* apiRunner */.N)(`wrapRootElement`,{element:/*#__PURE__*/(0,jsx_runtime.jsx)(LocationHandler,{})},/*#__PURE__*/(0,jsx_runtime.jsx)(LocationHandler,{}),_ref4=>{let{result}=_ref4;return{element:result};}).pop();const App=function App(){const onClientEntryRanRef=react.useRef(false);react.useEffect(()=>{if(!onClientEntryRanRef.current){onClientEntryRanRef.current=true;if(performance.mark){performance.mark(`onInitialClientRender`);}(0,api_runner_browser/* apiRunner */.N)(`onInitialClientRender`);}},[]);return/*#__PURE__*/(0,jsx_runtime.jsx)(GatsbyRoot,{children:SiteRoot});};const focusEl=document.getElementById(`gatsby-focus-wrapper`);// Client only pages have any empty body so we just do a normal
+if(page&&page.error){console.error(message);throw page.error;}throw new Error(message);}const SiteRoot=(0,api_runner_browser/* apiRunner */.N)(`wrapRootElement`,{element:/*#__PURE__*/(0,jsx_runtime.jsx)(LocationHandler,{})},/*#__PURE__*/(0,jsx_runtime.jsx)(LocationHandler,{}),({result})=>{return{element:result};}).pop();const App=function App(){const onClientEntryRanRef=react.useRef(false);react.useEffect(()=>{if(!onClientEntryRanRef.current){onClientEntryRanRef.current=true;if(performance.mark){performance.mark(`onInitialClientRender`);}(0,api_runner_browser/* apiRunner */.N)(`onInitialClientRender`);}},[]);return/*#__PURE__*/(0,jsx_runtime.jsx)(GatsbyRoot,{children:SiteRoot});};const focusEl=document.getElementById(`gatsby-focus-wrapper`);// Client only pages have any empty body so we just do a normal
 // render to avoid React complaining about hydration mis-matches.
 let defaultRenderer=(Component,el)=>render(Component,el,{onUncaughtError:handleUncaughtError,onCaughtError:handleCaughtError});if(focusEl&&focusEl.children.length){defaultRenderer=(Component,el)=>hydrate(Component,el,{onUncaughtError:handleUncaughtError,onCaughtError:handleCaughtError});}const renderer=(0,api_runner_browser/* apiRunner */.N)(`replaceHydrateFunction`,undefined,defaultRenderer)[0]||defaultRenderer;function runRender(){const rootElement=typeof window!==`undefined`?document.getElementById(`___gatsby`):null;renderer(/*#__PURE__*/(0,jsx_runtime.jsx)(App,{}),rootElement);}// https://github.com/madrobby/zepto/blob/b5ed8d607f67724788ec9ff492be297f64d47dfc/src/zepto.js#L439-L450
 // TODO remove IE 10 support
@@ -12165,7 +12165,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6540);
 /* harmony import */ var _loader__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(6814);
 /* harmony import */ var _page_renderer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(8428);
-const ProdPageRenderer=_ref=>{let{location}=_ref;const pageResources=_loader__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Ay.loadPageSync(location.pathname);if(!pageResources){return null;}return/*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_page_renderer__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A,{location,pageResources,...pageResources.json});};/* harmony default export */ __webpack_exports__["default"] = (ProdPageRenderer);
+const ProdPageRenderer=({location})=>{const pageResources=_loader__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .Ay.loadPageSync(location.pathname);if(!pageResources){return null;}return/*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createElement(_page_renderer__WEBPACK_IMPORTED_MODULE_2__/* ["default"] */ .A,{location,pageResources,...pageResources.json});};/* harmony default export */ __webpack_exports__["default"] = (ProdPageRenderer);
 
 /***/ }),
 
@@ -12185,8 +12185,8 @@ const preferDefault=m=>m&&m.default||m;if(false)// removed by dead control flow
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   n: function() { return /* binding */ reactDOMUtils; }
 /* harmony export */ });
-const map=new WeakMap();function reactDOMUtils(){const reactDomClient=__webpack_require__(5338);const render=function(Component,el,options){if(options===void 0){options={};}let root=map.get(el);if(!root){// Only pass options if React 19 error handling options are provided
-const rootOptions=options.onUncaughtError||options.onCaughtError?{onUncaughtError:options.onUncaughtError,onCaughtError:options.onCaughtError}:undefined;map.set(el,root=reactDomClient.createRoot(el,rootOptions));}root.render(Component);};const hydrate=function(Component,el,options){if(options===void 0){options={};}// Only pass options if React 19 error handling options are provided
+const map=new WeakMap();function reactDOMUtils(){const reactDomClient=__webpack_require__(5338);const render=(Component,el,options={})=>{let root=map.get(el);if(!root){// Only pass options if React 19 error handling options are provided
+const rootOptions=options.onUncaughtError||options.onCaughtError?{onUncaughtError:options.onUncaughtError,onCaughtError:options.onCaughtError}:undefined;map.set(el,root=reactDomClient.createRoot(el,rootOptions));}root.render(Component);};const hydrate=(Component,el,options={})=>{// Only pass options if React 19 error handling options are provided
 const hydrateOptions=options.onUncaughtError||options.onCaughtError?{onUncaughtError:options.onUncaughtError,onCaughtError:options.onCaughtError}:undefined;const root=reactDomClient.hydrateRoot(el,Component,hydrateOptions);return root;};return{render,hydrate};}
 
 /***/ }),
@@ -12263,14 +12263,14 @@ var react = __webpack_require__(6540);
 ;// ./.cache/context-utils.js
 // Ensure serverContext is not created more than once as React will throw when creating it more than once
 // https://github.com/facebook/react/blob/dd2d6522754f52c70d02c51db25eb7cbd5d1c8eb/packages/react/src/ReactServerContext.js#L101
-const createServerContext=function(name,defaultValue){if(defaultValue===void 0){defaultValue=null;}/* eslint-disable no-undef */if(!globalThis.__SERVER_CONTEXT){globalThis.__SERVER_CONTEXT={};}if(!globalThis.__SERVER_CONTEXT[name]){globalThis.__SERVER_CONTEXT[name]=react.createServerContext(name,defaultValue);}return globalThis.__SERVER_CONTEXT[name];};function createServerOrClientContext(name,defaultValue){if(react.createServerContext){return createServerContext(name,defaultValue);}return/*#__PURE__*/react.createContext(defaultValue);}
+const createServerContext=(name,defaultValue=null)=>{/* eslint-disable no-undef */if(!globalThis.__SERVER_CONTEXT){globalThis.__SERVER_CONTEXT={};}if(!globalThis.__SERVER_CONTEXT[name]){globalThis.__SERVER_CONTEXT[name]=react.createServerContext(name,defaultValue);}return globalThis.__SERVER_CONTEXT[name];};function createServerOrClientContext(name,defaultValue){if(react.createServerContext){return createServerContext(name,defaultValue);}return/*#__PURE__*/react.createContext(defaultValue);}
 // EXTERNAL MODULE: ./node_modules/react/jsx-runtime.js
 var jsx_runtime = __webpack_require__(4848);
 ;// ./.cache/static-query.js
 /* unused harmony import specifier */ var React;
 /* unused harmony import specifier */ var _jsxs;
 /* unused harmony import specifier */ var _jsx;
-const StaticQueryContext=createServerOrClientContext(`StaticQuery`,{});function StaticQueryDataRenderer(_ref){let{staticQueryData,data,query,render}=_ref;const finalData=data?data.data:staticQueryData[query]&&staticQueryData[query].data;return/*#__PURE__*/_jsxs(React.Fragment,{children:[finalData&&render(finalData),!finalData&&/*#__PURE__*/_jsx("div",{children:"Loading (StaticQuery)"})]});}let warnedAboutStaticQuery=false;// TODO(v6): Remove completely
+const StaticQueryContext=createServerOrClientContext(`StaticQuery`,{});function StaticQueryDataRenderer({staticQueryData,data,query,render}){const finalData=data?data.data:staticQueryData[query]&&staticQueryData[query].data;return/*#__PURE__*/_jsxs(React.Fragment,{children:[finalData&&render(finalData),!finalData&&/*#__PURE__*/_jsx("div",{children:"Loading (StaticQuery)"})]});}let warnedAboutStaticQuery=false;// TODO(v6): Remove completely
 const StaticQuery=props=>{const{data,query,render,children}=props;if(false)// removed by dead control flow
 {}return/*#__PURE__*/_jsx(StaticQueryContext.Consumer,{children:staticQueryData=>/*#__PURE__*/_jsx(StaticQueryDataRenderer,{data:data,query:query,render:render||children,staticQueryData:staticQueryData})});};const useStaticQuery=query=>{var _context$query;if(typeof React.useContext!==`function`&&"production"===`development`)// removed by dead control flow
 {}const context=React.useContext(StaticQueryContext);// query is a stringified number like `3303882` when wrapped with graphql, If a user forgets
@@ -12295,7 +12295,7 @@ useStaticQuery(graphql\`${query}\`);
 /**
  * Remove a prefix from a string. Return the input string if the given prefix
  * isn't found.
- */function stripPrefix(str,prefix){if(prefix===void 0){prefix=``;}if(!prefix){return str;}if(str===prefix){return`/`;}if(str.startsWith(`${prefix}/`)){return str.slice(prefix.length);}return str;}
+ */function stripPrefix(str,prefix=``){if(!prefix){return str;}if(str===prefix){return`/`;}if(str.startsWith(`${prefix}/`)){return str.slice(prefix.length);}return str;}
 
 /***/ }),
 
@@ -12312,7 +12312,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react_query_devtools__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(376);
 /* harmony import */ var react_query_devtools__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(react_query_devtools__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(4848);
-const wrapRootElement=_ref=>{let{element}=_ref;const queryClient=new react_query__WEBPACK_IMPORTED_MODULE_1__.QueryClient({defaultOptions:{queries:{refetchOnWindowFocus:false,refetchOnmount:false,refetchOnReconnect:false,retry:1,retryDelay:2000,staleTime:1000*60*60// one hour
+const wrapRootElement=({element})=>{const queryClient=new react_query__WEBPACK_IMPORTED_MODULE_1__.QueryClient({defaultOptions:{queries:{refetchOnWindowFocus:false,refetchOnmount:false,refetchOnReconnect:false,retry:1,retryDelay:2000,staleTime:1000*60*60// one hour
 }}});return/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsxs)(react_query__WEBPACK_IMPORTED_MODULE_1__.QueryClientProvider,{client:queryClient,children:[element,/*#__PURE__*/(0,react_jsx_runtime__WEBPACK_IMPORTED_MODULE_3__.jsx)(react_query_devtools__WEBPACK_IMPORTED_MODULE_2__.ReactQueryDevtools,{})]});};
 
 /***/ }),
@@ -12365,7 +12365,7 @@ exports.wrapPageElement = __webpack_require__(572);
 /***/ (function(module, __unused_webpack_exports, __webpack_require__) {
 
 "use strict";
-var React=__webpack_require__(6540);var preferDefault=function preferDefault(m){return m&&m.default||m;};var Layout;try{Layout=preferDefault(__webpack_require__(9644));}catch(e){if(e.toString().indexOf("Error: Cannot find module")!==-1){throw new Error("Couldn't find layout component at \""+"/home/runner/work/woo-website-template-apiv2/woo-website-template-apiv2/pwa/src/layout/Layout.tsx"+".\n\n"+"Please create layout component in that location or specify path to layout component in gatsby-config.js");}else{// Logging the error for debugging older browsers as there is no way
+var React=__webpack_require__(6540);var preferDefault=function preferDefault(m){return m&&m.default||m;};var Layout;try{Layout=preferDefault(__webpack_require__(5953));}catch(e){if(e.toString().indexOf("Error: Cannot find module")!==-1){throw new Error("Couldn't find layout component at \""+"/home/runner/work/woo-website-template-apiv2/woo-website-template-apiv2/pwa/src/layout/Layout.tsx"+".\n\n"+"Please create layout component in that location or specify path to layout component in gatsby-config.js");}else{// Logging the error for debugging older browsers as there is no way
 // to wrap the thrown error in a try/catch.
 console.error(e);throw e;}}// eslint-disable-next-line react/prop-types,react/display-name
 module.exports=function(_ref){var element=_ref.element,props=_ref.props;return/*#__PURE__*/React.createElement(Layout,props,element);};
@@ -12380,12 +12380,12 @@ module.exports=function(_ref){var element=_ref.element,props=_ref.props;return/*
 /* harmony export */   c: function() { return /* binding */ APIProvider; }
 /* harmony export */ });
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(6540);
-/* harmony import */ var _apiService__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(5968);
+/* harmony import */ var _apiService__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(193);
 const APIContext=/*#__PURE__*/react__WEBPACK_IMPORTED_MODULE_0__.createContext(new _apiService__WEBPACK_IMPORTED_MODULE_1__/* ["default"] */ .A());const APIProvider=APIContext.Provider;/* harmony default export */ __webpack_exports__.A = (APIContext);
 
 /***/ }),
 
-/***/ 5968:
+/***/ 193:
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -12634,12 +12634,65 @@ const utils_hasOwnProperty = (
     hasOwnProperty.call(obj, prop)
 )(Object.prototype);
 
+const isUnsafeObjectKey = (prop) =>
+  typeof prop === 'string' &&
+  (prop === '__proto__' || prop === 'constructor' || prop === 'prototype');
+
 /**
- * Walk the prototype chain (excluding the shared Object.prototype) looking for
- * an own `prop`. This distinguishes genuine own/inherited members — including
- * class accessors and template prototypes — from members injected via
- * Object.prototype pollution (e.g. `Object.prototype.username = '...'`), which
- * live on Object.prototype itself and are therefore never matched.
+ * Determine whether an inherited object must be treated as a shared-prototype
+ * boundary. Cross-realm Object.prototype objects cannot be distinguished
+ * reliably from application-created null-prototype objects because their
+ * properties are mutable, so all inherited terminal prototypes are excluded
+ * as a fail-closed boundary. A null-prototype source still keeps its own
+ * properties, as produced by mergeConfig and other safe materialization paths.
+ *
+ * @param {*} obj The object to inspect
+ * @param {*} prototype The object's prototype
+ * @param {boolean} source Whether obj is the original traversal source
+ *
+ * @returns {boolean} True when obj is a safe prototype traversal boundary
+ */
+const isPrototypeBoundary = (obj, prototype, source) =>
+  obj === Object.prototype || (!source && prototype === null);
+
+/**
+ * Determine whether an object can retain its identity through code paths that
+ * add, replace, and remove config properties without bypassing unsafe-key
+ * filtering. Immutable objects, unsafe-key-bearing objects, and objects with
+ * accessor or restricted data properties must be materialized instead.
+ *
+ * @param {*} obj The object to inspect
+ *
+ * @returns {boolean} True when every own property is safe and fully mutable
+ */
+const isSafeAndFullyMutable = (obj) => {
+  if (!Object.isExtensible(obj)) {
+    return false;
+  }
+
+  const props = Object.getOwnPropertyNames(obj);
+
+  if (Object.getOwnPropertySymbols) {
+    props.push(...Object.getOwnPropertySymbols(obj));
+  }
+
+  return props.every((prop) => {
+    if (isUnsafeObjectKey(prop)) {
+      return false;
+    }
+
+    const descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+
+    return !!descriptor && descriptor.configurable && descriptor.writable === true;
+  });
+};
+
+/**
+ * Walk the prototype chain (excluding the source realm's Object.prototype)
+ * looking for an own `prop`. This distinguishes genuine own/inherited members
+ * — including class accessors and template prototypes — from members injected
+ * via Object.prototype pollution (e.g. `Object.prototype.username = '...'`),
+ * which live on Object.prototype itself and are therefore never matched.
  *
  * @param {*} thing The value whose chain to inspect
  * @param {string|symbol} prop The property key to look for
@@ -12650,16 +12703,22 @@ const hasOwnInPrototypeChain = (thing, prop) => {
   let obj = thing;
   const seen = [];
 
-  while (obj != null && obj !== Object.prototype) {
+  while (obj != null) {
     if (seen.indexOf(obj) !== -1) {
       return false;
     }
     seen.push(obj);
 
+    const prototype = getPrototypeOf(obj);
+
+    if (isPrototypeBoundary(obj, prototype, obj === thing)) {
+      return false;
+    }
+
     if (utils_hasOwnProperty(obj, prop)) {
       return true;
     }
-    obj = getPrototypeOf(obj);
+    obj = prototype;
   }
   return false;
 };
@@ -12677,6 +12736,69 @@ const hasOwnInPrototypeChain = (thing, prop) => {
  */
 const getSafeProp = (obj, prop) =>
   obj != null && hasOwnInPrototypeChain(obj, prop) ? obj[prop] : undefined;
+
+/**
+ * Flatten an object and its application-defined prototype chain into a
+ * null-prototype object. Members inherited only from the source realm's
+ * Object.prototype are deliberately excluded, while class/template members
+ * below that boundary are preserved.
+ *
+ * @param {*} thing The value to flatten
+ *
+ * @returns {*} A null-prototype copy, or the original value when it is already
+ * structurally safe or is not an object
+ */
+const toSafeFlatObject = (thing) => {
+  if (thing == null || (typeof thing !== 'object' && typeof thing !== 'function')) {
+    return thing;
+  }
+
+  const sourcePrototype = getPrototypeOf(thing);
+
+  if (sourcePrototype === null && isSafeAndFullyMutable(thing)) {
+    return thing;
+  }
+
+  const result = Object.create(null);
+  const merged = Object.create(null);
+  const seen = [];
+  let current = thing;
+
+  while (current != null) {
+    if (seen.indexOf(current) !== -1) {
+      break;
+    }
+
+    seen.push(current);
+
+    const prototype = current === thing ? sourcePrototype : getPrototypeOf(current);
+
+    if (isPrototypeBoundary(current, prototype, current === thing)) {
+      break;
+    }
+
+    const props = Object.getOwnPropertyNames(current);
+
+    if (Object.getOwnPropertySymbols) {
+      props.push(...Object.getOwnPropertySymbols(current));
+    }
+
+    for (const prop of props) {
+      if (isUnsafeObjectKey(prop)) {
+        continue;
+      }
+
+      if (!utils_hasOwnProperty(merged, prop)) {
+        result[prop] = thing[prop];
+        merged[prop] = true;
+      }
+    }
+
+    current = prototype;
+  }
+
+  return result;
+};
 
 const kindOf = ((cache) => (thing) => {
   const str = utils_toString.call(thing);
@@ -12809,12 +12931,10 @@ const isPlainObject = (val) => {
 
   const prototype = getPrototypeOf(val);
   return (
-    (prototype === null ||
-      prototype === Object.prototype ||
-      getPrototypeOf(prototype) === null) &&
-    // Treat any genuine (non-Object.prototype-polluted) Symbol.toStringTag or
-    // Symbol.iterator as evidence the value is a tagged/iterable type rather
-    // than a plain object, while ignoring keys injected onto Object.prototype.
+    (prototype === null || prototype === Object.prototype || getPrototypeOf(prototype) === null) &&
+    // Treat safe own/inherited Symbol.toStringTag or Symbol.iterator members as
+    // evidence the value is tagged/iterable, while ignoring members reachable
+    // only through shared or terminal prototype boundaries.
     !hasOwnInPrototypeChain(val, toStringTag) &&
     !hasOwnInPrototypeChain(val, iterator)
   );
@@ -12901,6 +13021,7 @@ const isBlob = kindOfTest('Blob');
  * @returns {boolean} True if value is a FileList, otherwise false
  */
 const isFileList = kindOfTest('FileList');
+const isSet = kindOfTest('Set');
 
 /**
  * Determine if a value is a Stream
@@ -13466,12 +13587,23 @@ const toJSONObject = (obj) => {
       if (!('toJSON' in source)) {
         // add-on descent / delete-on-ascent: preserves path semantics, so DAG nodes serialise at every occurrence (see #7230).
         visited.add(source);
-        const target = isArray(source) ? [] : {};
 
-        forEach(source, (value, key) => {
-          const reducedValue = visit(value);
-          !isUndefined(reducedValue) && (target[key] = reducedValue);
-        });
+        let target;
+
+        if (isSet(source)) {
+          target = [];
+          for (const value of source) {
+            const reducedValue = visit(value);
+            !isUndefined(reducedValue) && target.push(reducedValue);
+          }
+        } else {
+          target = isArray(source) ? [] : {};
+
+          forEach(source, (value, key) => {
+            const reducedValue = visit(value);
+            !isUndefined(reducedValue) && (target[key] = reducedValue);
+          });
+        }
 
         visited.delete(source);
 
@@ -13616,6 +13748,7 @@ const isSafeIterable = (thing) =>
   hasOwnProp: utils_hasOwnProperty, // an alias to avoid ESLint no-prototype-builtins detection
   hasOwnInPrototypeChain,
   getSafeProp,
+  toSafeFlatObject,
   reduceDescriptors,
   freezeMethods,
   toObjectSet,
@@ -13688,18 +13821,20 @@ const ignoreDuplicateOf = utils.toObjectSet([
       key = line.substring(0, i).trim().toLowerCase();
       val = line.substring(i + 1).trim();
 
-      if (!key || (parsed[key] && ignoreDuplicateOf[key])) {
+      const hasKey = utils.hasOwnProp(parsed, key);
+
+      if (!key || (hasKey && utils.hasOwnProp(ignoreDuplicateOf, key))) {
         return;
       }
 
       if (key === 'set-cookie') {
-        if (parsed[key]) {
+        if (hasKey) {
           parsed[key].push(val);
         } else {
           parsed[key] = [val];
         }
       } else {
-        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+        parsed[key] = hasKey ? parsed[key] + ', ' + val : val;
       }
     });
 
@@ -13800,6 +13935,124 @@ function parseTokens(str) {
   }
 
   return tokens;
+}
+
+const parameterNameRE = /^[!#$%&'*+\-.^_`|~0-9A-Za-z]+$/;
+
+function trimOWS(value) {
+  let start = 0;
+  let end = value.length;
+
+  while (start < end) {
+    const code = value.charCodeAt(start);
+
+    if (code !== 0x09 && code !== 0x20) {
+      break;
+    }
+
+    start += 1;
+  }
+
+  while (end > start) {
+    const code = value.charCodeAt(end - 1);
+
+    if (code !== 0x09 && code !== 0x20) {
+      break;
+    }
+
+    end -= 1;
+  }
+
+  return start === 0 && end === value.length ? value : value.slice(start, end);
+}
+
+function decodeQuotedString(value) {
+  const last = value.length - 1;
+
+  if (last < 1 || value.charCodeAt(0) !== 0x22 || value.charCodeAt(last) !== 0x22) {
+    return value;
+  }
+
+  let decoded = '';
+
+  for (let i = 1; i < last; i++) {
+    const code = value.charCodeAt(i);
+
+    if (code === 0x22) {
+      return value;
+    }
+
+    if (code === 0x5c) {
+      i += 1;
+
+      if (i >= last) {
+        return value;
+      }
+    }
+
+    decoded += value[i];
+  }
+
+  return decoded;
+}
+
+function parseParameters(value) {
+  const parameters = Object.create(null);
+  const str = String(value);
+  let start = 0;
+  let quoted = false;
+  let escaped = false;
+
+  function parseParameter(end) {
+    const part = trimOWS(str.slice(start, end));
+    const equals = part.indexOf('=');
+
+    if (equals < 1) {
+      return;
+    }
+
+    const name = trimOWS(part.slice(0, equals));
+
+    if (!parameterNameRE.test(name)) {
+      return;
+    }
+
+    const normalizedName = name.toLowerCase();
+
+    if (
+      normalizedName === '__proto__' ||
+      normalizedName === 'constructor' ||
+      normalizedName === 'prototype'
+    ) {
+      return;
+    }
+
+    const parameterValue = trimOWS(part.slice(equals + 1));
+    parameters[normalizedName] = decodeQuotedString(parameterValue);
+  }
+
+  for (let i = 0; i < str.length; i++) {
+    const code = str.charCodeAt(i);
+
+    if (quoted) {
+      if (escaped) {
+        escaped = false;
+      } else if (code === 0x5c) {
+        escaped = true;
+      } else if (code === 0x22) {
+        quoted = false;
+      }
+    } else if (code === 0x22) {
+      quoted = true;
+    } else if (code === 0x2c || code === 0x3b) {
+      parseParameter(i);
+      start = i + 1;
+    }
+  }
+
+  parseParameter(str.length);
+
+  return parameters;
 }
 
 const isValidHeaderName = (str) => /^[-_a-zA-Z0-9^`|~,!#$%&'*+.]+$/.test(str.trim());
@@ -14053,7 +14306,8 @@ class AxiosHeaders {
   }
 
   getSetCookie() {
-    return this.get('set-cookie') || [];
+    const value = this.get('set-cookie');
+    return utils.isArray(value) ? value : value == null || value === false ? [] : [value];
   }
 
   get [Symbol.toStringTag]() {
@@ -14062,6 +14316,10 @@ class AxiosHeaders {
 
   static from(thing) {
     return thing instanceof this ? thing : new this(thing);
+  }
+
+  static parseParameters(value) {
+    return parseParameters(value);
   }
 
   static concat(first, ...targets) {
@@ -14197,9 +14455,40 @@ function redactConfig(config, redactKeys) {
   return visit(config);
 }
 
+function stringifySafely(value) {
+  try {
+    return String(value);
+  } catch (err) {
+    return '';
+  }
+}
+
+function aggregateErrorMessage(error) {
+  const message = error.errors
+    .map((entry) => {
+      try {
+        return entry && entry.message ? stringifySafely(entry.message) : stringifySafely(entry);
+      } catch (err) {
+        return '';
+      }
+    })
+    .filter(Boolean)
+    .join('; ');
+
+  return message || error.name || 'AggregateError';
+}
+
 class AxiosError extends Error {
   static from(error, code, config, request, response, customProps) {
-    const axiosError = new AxiosError(error.message, code || error.code, config, request, response);
+    // `AggregateError` (thrown by Node on dual-stack/Happy-Eyeballs connection
+    // failures) has an empty `message`; its detail lives in `errors[]`. Without
+    // this, the wrapped error surfaces with a blank message (see #6721).
+    let message = error.message;
+    if (!message && utils.isArray(error.errors) && error.errors.length) {
+      message = aggregateErrorMessage(error);
+    }
+
+    const axiosError = new AxiosError(message, code || error.code, config, request, response);
     // Match native `Error` `cause` semantics: non-enumerable. The wrapped
     // error often carries circular internals (sockets, requests, agents), so
     // an enumerable `cause` makes structured loggers (pino/winston) and any
@@ -14324,6 +14613,7 @@ AxiosError.ERR_FORM_DATA_DEPTH_EXCEEDED = 'ERR_FORM_DATA_DEPTH_EXCEEDED';
 // temporary hotfix to avoid circular references until AxiosURLSearchParams is refactored
 
 
+
 // Default nesting limit shared with the inverse transform (formDataToJSON) so
 // the FormData <-> JSON round-trip stays symmetric.
 const DEFAULT_FORM_DATA_MAX_DEPTH = 100;
@@ -14417,28 +14707,18 @@ function toFormData(obj, formData, options) {
   // eslint-disable-next-line no-param-reassign
   formData = formData || new (helpers_null || FormData)();
 
-  // eslint-disable-next-line no-param-reassign
-  options = utils.toFlatObject(
-    options,
-    {
-      metaTokens: true,
-      dots: false,
-      indexes: false,
-    },
-    false,
-    function defined(option, source) {
-      // eslint-disable-next-line no-eq-null,eqeqeq
-      return !utils.isUndefined(source[option]);
-    }
-  );
+  const option = (name, fallback) => {
+    const value = utils.getSafeProp(options, name);
+    return utils.isUndefined(value) ? fallback : value;
+  };
 
-  const metaTokens = options.metaTokens;
+  const metaTokens = option('metaTokens', true);
   // eslint-disable-next-line no-use-before-define
-  const visitor = options.visitor || defaultVisitor;
-  const dots = options.dots;
-  const indexes = options.indexes;
-  const _Blob = options.Blob || (typeof Blob !== 'undefined' && Blob);
-  const maxDepth = options.maxDepth === undefined ? DEFAULT_FORM_DATA_MAX_DEPTH : options.maxDepth;
+  const visitor = option('visitor') || defaultVisitor;
+  const dots = option('dots', false);
+  const indexes = option('indexes', false);
+  const _Blob = option('Blob') || (typeof Blob !== 'undefined' && Blob);
+  const maxDepth = option('maxDepth', DEFAULT_FORM_DATA_MAX_DEPTH);
   const useBlob = _Blob && utils.isSpecCompliantForm(formData);
   const stack = [];
 
@@ -14465,10 +14745,13 @@ function toFormData(obj, formData, options) {
       if (useBlob && typeof _Blob === 'function') {
         return new _Blob([value]);
       }
-      if (typeof Buffer !== 'undefined') {
-        return Buffer.from(value);
+      if (helpers_null && helpers_null.isBufferAvailable()) {
+        return helpers_null.from(value);
       }
-      throw new core_AxiosError('Blob is not supported. Use a Buffer instead.', core_AxiosError.ERR_NOT_SUPPORT);
+      throw new core_AxiosError(
+        'Blob is not supported. Use a Buffer instead.',
+        core_AxiosError.ERR_NOT_SUPPORT
+      );
     }
 
     return value;
@@ -14740,9 +15023,57 @@ function buildURL(url, params, options) {
 
 
 
+const InterceptorManager_$internals = Symbol('internals');
+
+// `handlers` is public and may be replaced with a nullish value by user code;
+// `clear()` has always tolerated that. Treat it as an empty stack rather than
+// dereferencing it.
+function countHandlers(handlers) {
+  return handlers ? handlers.length : 0;
+}
+
+function trimHandlers(handlers) {
+  if (!handlers) {
+    return;
+  }
+
+  while (handlers.length && handlers[handlers.length - 1] === null) {
+    handlers.pop();
+  }
+}
+
+function syncHandlerEntries(manager, internals) {
+  const handlers = manager.handlers;
+  const length = countHandlers(handlers);
+
+  if (handlers !== internals.handlersRef) {
+    internals.handlersRef = handlers;
+    internals.handlerEntries.clear();
+  } else if (length !== internals.handlersLength) {
+    if (!length) {
+      internals.handlerEntries.clear();
+    } else {
+      internals.handlerEntries.forEach(function removeStaleEntry(entry, id) {
+        if (handlers[entry.index] !== entry.handler) {
+          internals.handlerEntries.delete(id);
+        }
+      });
+    }
+  }
+
+  internals.handlersLength = length;
+}
+
 class InterceptorManager {
   constructor() {
     this.handlers = [];
+    this[InterceptorManager_$internals] = {
+      handlersRef: this.handlers,
+      handlersLength: this.handlers.length,
+      handlerEntries: new Map(),
+      iterationDepth: 0,
+      nextId: 0,
+    };
   }
 
   /**
@@ -14755,13 +15086,30 @@ class InterceptorManager {
    * @return {Number} An ID used to remove interceptor later
    */
   use(fulfilled, rejected, options) {
-    this.handlers.push({
+    const handler = {
       fulfilled,
       rejected,
       synchronous: options ? options.synchronous : false,
       runWhen: options ? options.runWhen : null,
+    };
+    const internals = this[InterceptorManager_$internals];
+
+    if (this.handlers == null) {
+      this.handlers = [];
+    }
+
+    syncHandlerEntries(this, internals);
+
+    const id = internals.nextId++;
+
+    this.handlers.push(handler);
+    internals.handlerEntries.set(id, {
+      handler,
+      index: this.handlers.length - 1,
     });
-    return this.handlers.length - 1;
+    internals.handlersLength = this.handlers.length;
+
+    return id;
   }
 
   /**
@@ -14772,8 +15120,27 @@ class InterceptorManager {
    * @returns {void}
    */
   eject(id) {
-    if (this.handlers[id]) {
-      this.handlers[id] = null;
+    const internals = this[InterceptorManager_$internals];
+
+    syncHandlerEntries(this, internals);
+
+    const entry = internals.handlerEntries.get(id);
+
+    if (entry) {
+      internals.handlerEntries.delete(id);
+
+      // Ignore IDs invalidated by clear or direct replacement of handlers.
+      if (this.handlers[entry.index] !== entry.handler) {
+        return;
+      }
+
+      this.handlers[entry.index] = null;
+
+      // Do not reuse an index while forEach is walking its length snapshot.
+      if (!internals.iterationDepth) {
+        trimHandlers(this.handlers);
+        internals.handlersLength = this.handlers.length;
+      }
     }
   }
 
@@ -14785,6 +15152,7 @@ class InterceptorManager {
   clear() {
     if (this.handlers) {
       this.handlers = [];
+      syncHandlerEntries(this, this[InterceptorManager_$internals]);
     }
   }
 
@@ -14799,11 +15167,25 @@ class InterceptorManager {
    * @returns {void}
    */
   forEach(fn) {
-    utils.forEach(this.handlers, function forEachHandler(h) {
-      if (h !== null) {
-        fn(h);
+    const internals = this[InterceptorManager_$internals];
+
+    syncHandlerEntries(this, internals);
+
+    internals.iterationDepth++;
+
+    try {
+      utils.forEach(this.handlers, function forEachHandler(h) {
+        if (h !== null) {
+          fn(h);
+        }
+      });
+    } finally {
+      if (!--internals.iterationDepth) {
+        syncHandlerEntries(this, internals);
+        trimHandlers(this.handlers);
+        internals.handlersLength = countHandlers(this.handlers);
       }
-    });
+    }
   }
 }
 
@@ -14956,12 +15338,18 @@ function throwIfDepthExceeded(index) {
  * @returns An array of strings.
  */
 function parsePropPath(name) {
-  // foo[x][y][z]
-  // foo.x.y.z
-  // foo-x-y-z
-  // foo x y z
+  // foo[x][y][z] -> ['foo', 'x', 'y', 'z']
+  // foo.x.y.z    -> ['foo', 'x', 'y', 'z']
+  // A path is split on `.` and on `[...]` groups. A segment — whether written
+  // in dot notation or captured inside brackets — may contain any character
+  // except `.`, `[` and `]`, so a key like `user-name` or `user name` is kept
+  // literal instead of being split (#5402). `.`, `[` and `]` keep their existing
+  // meaning, e.g. `foo[bar.baz]` -> ['foo', 'bar', 'baz'] and `[]` is an array push.
+  // Excluding `[` from the bracket group also makes the match fail fast at the
+  // next `[`, so a malformed name cannot rescan to the end of the string from
+  // every unmatched `[` — parsing stays linear in the length of the name.
   const path = [];
-  const pattern = /\w+|\[(\w*)]/g;
+  const pattern = /[^.[\]]+|\[([^.[\]]*)]/g;
   let match;
 
   while ((match = pattern.exec(name)) !== null) {
@@ -15051,7 +15439,27 @@ function formDataToJSON(formData) {
 
 /* harmony default export */ var helpers_formDataToJSON = (formDataToJSON);
 
+;// ./node_modules/axios/lib/core/methodList.js
+
+
+const methodList = Object.freeze([
+  'get',
+  'delete',
+  'head',
+  'options',
+  'post',
+  'put',
+  'patch',
+  'purge',
+  'link',
+  'unlink',
+  'query',
+]);
+
+/* harmony default export */ var core_methodList = (methodList);
+
 ;// ./node_modules/axios/lib/defaults/index.js
+
 
 
 
@@ -15074,7 +15482,7 @@ const own = (obj, key) => (obj != null && utils.hasOwnProp(obj, key) ? obj[key] 
  *
  * @returns {string} A stringified version of the rawValue.
  */
-function stringifySafely(rawValue, parser, encoder) {
+function defaults_stringifySafely(rawValue, parser, encoder) {
   if (utils.isString(rawValue)) {
     try {
       (parser || JSON.parse)(rawValue);
@@ -15153,7 +15561,7 @@ const defaults = {
 
       if (isObjectPayload || hasJSONContentType) {
         headers.setContentType('application/json', false);
-        return stringifySafely(data);
+        return defaults_stringifySafely(data);
       }
 
       return data;
@@ -15224,7 +15632,7 @@ const defaults = {
   },
 };
 
-utils.forEach(['delete', 'get', 'head', 'post', 'put', 'patch', 'query'], (method) => {
+utils.forEach(core_methodList, (method) => {
   defaults.headers[method] = {};
 });
 
@@ -15320,6 +15728,32 @@ function settle(resolve, reject, response) {
   }
 }
 
+;// ./node_modules/axios/lib/helpers/normalizeURLForProtocolCheck.js
+
+
+const urlParserControlCharacters = /[\t\n\r]/g;
+
+/**
+ * Match WHATWG URL preprocessing before checking a URL's protocol.
+ *
+ * @param {string} url
+ *
+ * @returns {string}
+ */
+function normalizeURLForProtocolCheck(url) {
+  if (typeof url !== 'string') {
+    return url;
+  }
+
+  let start = 0;
+
+  while (start < url.length && url.charCodeAt(start) <= 0x20) {
+    start++;
+  }
+
+  return url.slice(start).replace(urlParserControlCharacters, '');
+}
+
 ;// ./node_modules/axios/lib/helpers/parseProtocol.js
 
 
@@ -15390,7 +15824,7 @@ function speedometer(samplesCount, min) {
  * Throttle decorator
  * @param {Function} fn
  * @param {Number} freq
- * @return {Function}
+ * @return {Array<Function>}
  */
 function throttle(fn, freq) {
   let timestamp = 0;
@@ -15425,8 +15859,9 @@ function throttle(fn, freq) {
   };
 
   const flush = () => lastArgs && invoke(lastArgs);
+  const flushWith = (...args) => invoke(args);
 
-  return [throttled, flush];
+  return [throttled, flush, flushWith];
 }
 
 /* harmony default export */ var helpers_throttle = (throttle);
@@ -15441,12 +15876,12 @@ const progressEventReducer = (listener, isDownloadStream, freq = 3) => {
   const _speedometer = helpers_speedometer(50, 250);
 
   return helpers_throttle((e) => {
-    if (!e || typeof e.loaded !== 'number') {
+    if (!e || !utils.isNumber(e.loaded)) {
       return;
     }
     const rawLoaded = e.loaded;
     const total = e.lengthComputable ? e.total : undefined;
-    const loaded = total != null ? Math.min(rawLoaded, total) : rawLoaded;
+    const loaded = Math.max(0, total != null ? Math.min(rawLoaded, total) : rawLoaded);
     const progressBytes = Math.max(0, loaded - bytesNotified);
     const rate = _speedometer(progressBytes);
 
@@ -15483,9 +15918,9 @@ const progressEventDecorator = (total, throttled) => {
 };
 
 const asyncDecorator =
-  (fn) =>
+  (fn, scheduler = utils.asap) =>
   (...args) =>
-    utils.asap(() => fn(...args));
+    scheduler(() => fn(...args));
 
 ;// ./node_modules/axios/lib/helpers/isURLSameOrigin.js
 
@@ -15604,9 +16039,17 @@ function isAbsoluteURL(url) {
  * @returns {string} The combined URL
  */
 function combineURLs(baseURL, relativeURL) {
-  return relativeURL
-    ? baseURL.replace(/\/?\/$/, '') + '/' + relativeURL.replace(/^\/+/, '')
-    : baseURL;
+  if (!relativeURL) {
+    return baseURL;
+  }
+
+  let end = baseURL.length;
+
+  while (end > 0 && baseURL.charCodeAt(end - 1) === 47) {
+    end--;
+  }
+
+  return baseURL.slice(0, end) + '/' + relativeURL.replace(/^\/+/, '');
 }
 
 ;// ./node_modules/axios/lib/core/buildFullPath.js
@@ -15616,28 +16059,54 @@ function combineURLs(baseURL, relativeURL) {
 
 
 
-const malformedHttpProtocol = /^https?:(?!\/\/)/i;
-const httpProtocolControlCharacters = /[\t\n\r]/g;
 
-function stripLeadingC0ControlOrSpace(url) {
-  let i = 0;
-  while (i < url.length && url.charCodeAt(i) <= 0x20) {
-    i++;
+const malformedHttpProtocol = /^https?:(?!\/\/)/i;
+
+// Redact the parts of a URL that can carry secrets before it is embedded in an
+// error message. AxiosError.toJSON() serializes `message` verbatim and errors
+// are commonly logged, while the opt-in `config.redact` model only cleans
+// config keys — it cannot reach the message. Redact only the genuinely
+// sensitive substrings — userinfo (credentials), query parameter values and
+// fragment contents — with the same REDACTED marker the config redaction uses,
+// while keeping the scheme, host, path and parameter names so the offending
+// request stays accurately identifiable.
+function redactFragment(fragment) {
+  if (!fragment) {
+    return fragment;
   }
-  return url.slice(i);
+
+  return fragment.replace(/(^|&)([^=&]*=)?[^&]+/g, (match, separator, parameterName = '') => {
+    return `${separator}${parameterName}${REDACTED}`;
+  });
 }
 
-function normalizeURLForProtocolCheck(url) {
-  return stripLeadingC0ControlOrSpace(url).replace(httpProtocolControlCharacters, '');
+function redactSensitiveURLParts(url) {
+  const redactedURL = url.replace(/^(https?:\/{0,2})[^/?#]*@/i, `$1${REDACTED}@`);
+  const fragmentIndex = redactedURL.indexOf('#');
+  const urlWithoutFragment =
+    fragmentIndex === -1 ? redactedURL : redactedURL.slice(0, fragmentIndex);
+  const redactedURLWithoutFragment = urlWithoutFragment.replace(
+    /([?&][^=&#]*=)[^&#]*/g,
+    `$1${REDACTED}`
+  );
+
+  if (fragmentIndex === -1) {
+    return redactedURLWithoutFragment;
+  }
+
+  return `${redactedURLWithoutFragment}#${redactFragment(redactedURL.slice(fragmentIndex + 1))}`;
 }
 
 function assertValidHttpProtocolURL(url, config) {
-  if (typeof url === 'string' && malformedHttpProtocol.test(normalizeURLForProtocolCheck(url))) {
-    throw new core_AxiosError(
-      'Invalid URL: missing "//" after protocol',
-      core_AxiosError.ERR_INVALID_URL,
-      config
-    );
+  if (typeof url === 'string') {
+    const normalizedURL = normalizeURLForProtocolCheck(url);
+    if (malformedHttpProtocol.test(normalizedURL)) {
+      throw new core_AxiosError(
+        `Invalid URL ${JSON.stringify(redactSensitiveURLParts(normalizedURL))}: missing "//" after protocol`,
+        core_AxiosError.ERR_INVALID_URL,
+        config
+      );
+    }
   }
 }
 
@@ -15668,6 +16137,17 @@ function buildFullPath(baseURL, requestedURL, allowAbsoluteUrls, config) {
 
 
 const headersToObject = (thing) => (thing instanceof core_AxiosHeaders ? { ...thing } : thing);
+
+const ownEnumerableKeys = (thing) => {
+  if (Object.getOwnPropertySymbols && Object.getOwnPropertyDescriptor) {
+    return Object.keys(thing).concat(
+      Object.getOwnPropertySymbols(thing).filter(
+        (symbol) => Object.getOwnPropertyDescriptor(thing, symbol).enumerable
+      )
+    );
+  }
+  return Object.keys(thing);
+};
 
 /**
  * Config-specific merge-function which creates a new config-object
@@ -15734,7 +16214,9 @@ function mergeConfig(config1, config2) {
   }
 
   function getMergedTransitionalOption(prop) {
-    const transitional2 = utils.hasOwnProp(config2, 'transitional') ? config2.transitional : undefined;
+    const transitional2 = utils.hasOwnProp(config2, 'transitional')
+      ? config2.transitional
+      : undefined;
 
     if (!utils.isUndefined(transitional2)) {
       if (utils.isPlainObject(transitional2)) {
@@ -15746,7 +16228,9 @@ function mergeConfig(config1, config2) {
       }
     }
 
-    const transitional1 = utils.hasOwnProp(config1, 'transitional') ? config1.transitional : undefined;
+    const transitional1 = utils.hasOwnProp(config1, 'transitional')
+      ? config1.transitional
+      : undefined;
 
     if (utils.isPlainObject(transitional1) && utils.hasOwnProp(transitional1, prop)) {
       return transitional1[prop];
@@ -15773,7 +16257,7 @@ function mergeConfig(config1, config2) {
     transformResponse: defaultToConfig2,
     paramsSerializer: defaultToConfig2,
     timeout: defaultToConfig2,
-    timeoutMessage: defaultToConfig2,
+    timeoutErrorMessage: defaultToConfig2,
     withCredentials: defaultToConfig2,
     withXSRFToken: defaultToConfig2,
     adapter: defaultToConfig2,
@@ -15798,7 +16282,7 @@ function mergeConfig(config1, config2) {
       mergeDeepProperties(headersToObject(a), headersToObject(b), prop, true),
   };
 
-  utils.forEach(Object.keys({ ...config1, ...config2 }), function computeConfigValue(prop) {
+  utils.forEach(ownEnumerableKeys({ ...config1, ...config2 }), function computeConfigValue(prop) {
     if (prop === '__proto__' || prop === 'constructor' || prop === 'prototype') return;
     const merge = utils.hasOwnProp(mergeMap, prop) ? mergeMap[prop] : mergeDeepProperties;
     const a = utils.hasOwnProp(config1, prop) ? config1[prop] : undefined;
@@ -15822,19 +16306,22 @@ function mergeConfig(config1, config2) {
   return config;
 }
 
-;// ./node_modules/axios/lib/helpers/resolveConfig.js
-
-
-
-
-
-
-
-
+;// ./node_modules/axios/lib/core/setFormDataHeaders.js
 
 
 const FORM_DATA_CONTENT_HEADERS = ['content-type', 'content-length'];
 
+/**
+ * Apply the headers generated by a FormData implementation to the request headers,
+ * honoring the `formDataHeaderPolicy` option: with 'content-only', copy only the
+ * content-* headers; otherwise merge all of them.
+ *
+ * @param {AxiosHeaders} headers - the request headers to mutate
+ * @param {Object | null | undefined} formHeaders - headers produced by the FormData implementation
+ * @param {String} [policy] - the resolved `formDataHeaderPolicy` config value
+ *
+ * @returns {void}
+ */
 function setFormDataHeaders(headers, formHeaders, policy) {
   if (policy !== 'content-only') {
     headers.set(formHeaders);
@@ -15847,6 +16334,18 @@ function setFormDataHeaders(headers, formHeaders, policy) {
     }
   });
 }
+
+;// ./node_modules/axios/lib/helpers/resolveConfig.js
+
+
+
+
+
+
+
+
+
+
 
 /**
  * Encode a UTF-8 string to a Latin-1 byte string for use with btoa().
@@ -15902,15 +16401,17 @@ function resolveConfig(config) {
   }
 
   if (utils.isFormData(data)) {
+    const getHeaders = utils.getSafeProp(data, 'getHeaders');
+
     if (
       platform.hasStandardBrowserEnv ||
       platform.hasStandardBrowserWebWorkerEnv ||
       utils.isReactNative(data)
     ) {
       headers.setContentType(undefined); // browser/web worker/RN handles it
-    } else if (utils.isFunction(data.getHeaders)) {
+    } else if (utils.isFunction(getHeaders)) {
       // Node.js FormData (like form-data package)
-      setFormDataHeaders(headers, data.getHeaders(), own('formDataHeaderPolicy'));
+      setFormDataHeaders(headers, getHeaders.call(data), own('formDataHeaderPolicy'));
     }
   }
 
@@ -15956,6 +16457,7 @@ function resolveConfig(config) {
 
 
 
+
 const isXHRAdapterSupported = typeof XMLHttpRequest !== 'undefined';
 
 /* harmony default export */ var xhr = (isXHRAdapterSupported &&
@@ -15967,7 +16469,7 @@ const isXHRAdapterSupported = typeof XMLHttpRequest !== 'undefined';
       let { responseType, onUploadProgress, onDownloadProgress } = _config;
       let onCanceled;
       let uploadThrottled, downloadThrottled;
-      let flushUpload, flushDownload;
+      let flushUpload, flushDownload, flushDownloadWithEvent;
 
       function done() {
         flushUpload && flushUpload(); // flush events
@@ -15985,10 +16487,55 @@ const isXHRAdapterSupported = typeof XMLHttpRequest !== 'undefined';
       // Set the request timeout in MS
       request.timeout = _config.timeout;
 
-      function onloadend() {
+      function onloadend(event) {
         if (!request) {
           return;
         }
+
+        // Status 0 means no response was received, which onerror and onabort normally
+        // reject before this runs. Firefox 152 fires only readystatechange and loadend for
+        // navigation-canceled requests (https://bugzilla.mozilla.org/show_bug.cgi?id=1505389),
+        // leaving settle() to resolve them as an empty success. ECONNABORTED is the error
+        // onabort raised on Firefox 151. Reads over file:, which some environments report as
+        // status 0 on success, are excluded by the request URL's scheme after browser-style
+        // preprocessing, by the page origin's scheme for relative URLs (which inherit it), or
+        // by responseURL where implemented.
+        if (
+          request.status === 0 &&
+          (parseProtocol(normalizeURLForProtocolCheck(_config.url)) ||
+            parseProtocol(platform.origin)) !== 'file' &&
+          !(request.responseURL && request.responseURL.startsWith('file:'))
+        ) {
+          reject(new core_AxiosError('Request aborted', core_AxiosError.ECONNABORTED, config, request));
+          done();
+
+          // Clean up request
+          request = null;
+          return;
+        }
+
+        // When loadend is still dispatching, flushing with it gives progress
+        // listeners a final delivery whose event has a live target. The legacy
+        // ready-state fallback has no event, so replay its pending progress.
+        // A throwing listener must not block settlement; rethrow asynchronously,
+        // matching how listener errors surface on the throttle timer path.
+        try {
+          if (event) {
+            flushDownloadWithEvent && flushDownloadWithEvent(event);
+          } else {
+            flushDownload && flushDownload();
+          }
+        } catch (err) {
+          setTimeout(() => {
+            throw err;
+          });
+        }
+
+        // A final progress callback can cancel the request synchronously.
+        if (!request) {
+          return;
+        }
+
         // Prepare the response
         const responseHeaders = core_AxiosHeaders.from(
           'getAllResponseHeaders' in request && request.getAllResponseHeaders()
@@ -16120,7 +16667,10 @@ const isXHRAdapterSupported = typeof XMLHttpRequest !== 'undefined';
 
       // Handle progress if needed
       if (onDownloadProgress) {
-        [downloadThrottled, flushDownload] = progressEventReducer(onDownloadProgress, true);
+        [downloadThrottled, flushDownload, flushDownloadWithEvent] = progressEventReducer(
+          onDownloadProgress,
+          true
+        );
         request.addEventListener('progress', downloadThrottled);
       }
 
@@ -16221,7 +16771,18 @@ const composeSignals = (signals, timeout) => {
     signals = null;
   };
 
-  signals.forEach((signal) => signal.addEventListener('abort', onabort, { once: true }));
+  signals.forEach((signal) => {
+    if (aborted) {
+      return;
+    }
+
+    if (signal.aborted) {
+      onabort.call(signal);
+      return;
+    }
+
+    signal.addEventListener('abort', onabort, { once: true });
+  });
 
   const { signal } = controller;
 
@@ -16325,13 +16886,11 @@ const trackStream = (stream, chunkSize, onProgress, onFinish) => {
 
 ;// ./node_modules/axios/lib/helpers/estimateDataURLDecodedBytes.js
 /**
- * Estimate decoded byte length of a data:// URL *without* allocating large buffers.
- * - For base64: compute exact decoded size using length and padding;
- *               handle %XX at the character-count level (no string allocation).
- * - For non-base64: compute the exact percent-decoded UTF-8 byte length.
- *
- * @param {string} url
- * @returns {number}
+ * Estimate data: URL byte lengths *without* allocating large buffers.
+ * - Fetch percent-decodes a base64 body before decoding it.
+ * - Node's Buffer.from(body, 'base64') sizes its backing allocation from the
+ *   raw body, including ignored characters and content after padding.
+ * - Non-base64 data is percent-decoded and then encoded as UTF-8.
  */
 const isHexDigit = (charCode) =>
   (charCode >= 48 && charCode <= 57) ||
@@ -16341,7 +16900,89 @@ const isHexDigit = (charCode) =>
 const isPercentEncodedByte = (str, i, len) =>
   i + 2 < len && isHexDigit(str.charCodeAt(i + 1)) && isHexDigit(str.charCodeAt(i + 2));
 
-function estimateDataURLDecodedBytes(url) {
+const hexValue = (charCode) => (charCode <= 57 ? charCode - 48 : (charCode & 0xdf) - 55);
+
+const isBase64Char = (charCode) =>
+  (charCode >= 65 && charCode <= 90) || // A-Z
+  (charCode >= 97 && charCode <= 122) || // a-z
+  (charCode >= 48 && charCode <= 57) || // 0-9
+  charCode === 43 || // +
+  charCode === 47 || // /
+  charCode === 45 || // - (base64url)
+  charCode === 95; // _ (base64url)
+
+const isBase64Whitespace = (charCode) =>
+  charCode === 9 || charCode === 10 || charCode === 12 || charCode === 13 || charCode === 32;
+
+const base64Bytes = (significant) => {
+  const groups = Math.floor(significant / 4);
+  const remainder = significant % 4;
+  return groups * 3 + (remainder === 2 ? 1 : remainder === 3 ? 2 : 0);
+};
+
+// Buffer.byteLength(body, 'base64') uses the raw string length as an allocation
+// upper bound even when Buffer.from later ignores characters or stops at '='.
+const estimateBase64BufferAllocation = (body) => {
+  const len = body.length;
+  let padding = 0;
+
+  if (len > 0 && body.charCodeAt(len - 1) === 61 /* '=' */) {
+    padding++;
+
+    if (len > 1 && body.charCodeAt(len - 2) === 61 /* '=' */) {
+      padding++;
+    }
+  }
+
+  return Math.floor(((len - padding) * 3) / 4);
+};
+
+const estimatePercentDecodedBase64Bytes = (body) => {
+  const len = body.length;
+  let significant = 0;
+  let padding = 0;
+  let invalid = false;
+
+  for (let i = 0; i < len; i++) {
+    let code = body.charCodeAt(i);
+
+    if (code === 37 /* '%' */ && isPercentEncodedByte(body, i, len)) {
+      code = hexValue(body.charCodeAt(i + 1)) * 16 + hexValue(body.charCodeAt(i + 2));
+      i += 2;
+    }
+
+    if (isBase64Whitespace(code)) {
+      continue;
+    }
+
+    if (code === 61 /* '=' */) {
+      padding++;
+      continue;
+    }
+
+    if (!isBase64Char(code) || padding > 0) {
+      invalid = true;
+      continue;
+    }
+
+    significant++;
+  }
+
+  // Fetch rejects malformed forgiving-base64 input. Returning the raw-size
+  // allocation bound keeps that invalid input from becoming a pre-check bypass.
+  if (
+    invalid ||
+    padding > 2 ||
+    (padding > 0 && (significant + padding) % 4 !== 0) ||
+    significant % 4 === 1
+  ) {
+    return estimateBase64BufferAllocation(body);
+  }
+
+  return base64Bytes(significant);
+};
+
+const estimateDataURLBytes = (url, estimateBase64) => {
   if (!url || typeof url !== 'string') return 0;
   if (!url.startsWith('data:')) return 0;
 
@@ -16353,52 +16994,7 @@ function estimateDataURLDecodedBytes(url) {
   const isBase64 = /;base64/i.test(meta);
 
   if (isBase64) {
-    let effectiveLen = body.length;
-    const len = body.length; // cache length
-
-    for (let i = 0; i < len; i++) {
-      if (body.charCodeAt(i) === 37 /* '%' */ && i + 2 < len) {
-        const a = body.charCodeAt(i + 1);
-        const b = body.charCodeAt(i + 2);
-        const isHex = isHexDigit(a) && isHexDigit(b);
-
-        if (isHex) {
-          effectiveLen -= 2;
-          i += 2;
-        }
-      }
-    }
-
-    let pad = 0;
-    let idx = len - 1;
-
-    const tailIsPct3D = (j) =>
-      j >= 2 &&
-      body.charCodeAt(j - 2) === 37 && // '%'
-      body.charCodeAt(j - 1) === 51 && // '3'
-      (body.charCodeAt(j) === 68 || body.charCodeAt(j) === 100); // 'D' or 'd'
-
-    if (idx >= 0) {
-      if (body.charCodeAt(idx) === 61 /* '=' */) {
-        pad++;
-        idx--;
-      } else if (tailIsPct3D(idx)) {
-        pad++;
-        idx -= 3;
-      }
-    }
-
-    if (pad === 1 && idx >= 0) {
-      if (body.charCodeAt(idx) === 61 /* '=' */) {
-        pad++;
-      } else if (tailIsPct3D(idx)) {
-        pad++;
-      }
-    }
-
-    const groups = Math.floor(effectiveLen / 4);
-    const bytes = groups * 3 - (pad || 0);
-    return bytes > 0 ? bytes : 0;
+    return estimateBase64(body);
   }
 
   // Compute UTF-8 byte length directly from UTF-16 code units without allocating
@@ -16428,10 +17024,36 @@ function estimateDataURLDecodedBytes(url) {
     }
   }
   return bytes;
+};
+
+/**
+ * Estimate the percent-decoded payload size used by Fetch data: URLs.
+ *
+ * @param {string} url
+ * @returns {number}
+ */
+function estimateDataURLDecodedBytes(url) {
+  // Fetch removes URL fragments before processing a data: URL.
+  const fragmentIndex = typeof url === 'string' ? url.indexOf('#') : -1;
+
+  return estimateDataURLBytes(
+    fragmentIndex === -1 ? url : url.slice(0, fragmentIndex),
+    estimatePercentDecodedBase64Bytes
+  );
+}
+
+/**
+ * Estimate the Buffer backing allocation used by Node's raw base64 decoder.
+ *
+ * @param {string} url
+ * @returns {number}
+ */
+function estimateDataURLBufferAllocation(url) {
+  return estimateDataURLBytes(url, estimateBase64BufferAllocation);
 }
 
 ;// ./node_modules/axios/lib/env/data.js
-const VERSION = "1.18.1";
+const VERSION = "1.20.0";
 ;// ./node_modules/axios/lib/adapters/fetch.js
 
 
@@ -16447,6 +17069,18 @@ const VERSION = "1.18.1";
 
 
 const DEFAULT_CHUNK_SIZE = 64 * 1024;
+
+const DEFAULT_REQUEST_OPTIONS = {
+  cache: 'default',
+  redirect: 'follow',
+  referrer: 'about:client',
+  referrerPolicy: '',
+  mode: 'cors',
+  integrity: '',
+  keepalive: false,
+  priority: 'auto',
+  window: null,
+};
 
 const { isFunction: fetch_isFunction } = utils;
 
@@ -16498,9 +17132,7 @@ const maybeWithAuthCredentials = (url) => {
 
 const factory = (env) => {
   const globalObject =
-    utils.global !== undefined && utils.global !== null
-      ? utils.global
-      : globalThis;
+    utils.global !== undefined && utils.global !== null ? utils.global : globalThis;
   const { ReadableStream, TextEncoder } = globalObject;
 
   env = utils.merge.call(
@@ -16639,6 +17271,7 @@ const factory = (env) => {
       fetchOptions,
       maxContentLength,
       maxBodyLength,
+      maxRedirects,
     } = helpers_resolveConfig(config);
 
     const hasMaxContentLength = utils.isNumber(maxContentLength) && maxContentLength > -1;
@@ -16689,7 +17322,7 @@ const factory = (env) => {
         const password = utils.getSafeProp(configAuth, 'password') || '';
         auth = {
           username,
-          password
+          password,
         };
       }
 
@@ -16701,7 +17334,7 @@ const factory = (env) => {
           const urlPassword = decodeURIComponentSafe(parsedURL.password);
           auth = {
             username: urlUsername,
-            password: urlPassword
+            password: urlPassword,
           };
         }
 
@@ -16775,7 +17408,9 @@ const factory = (env) => {
         (onUploadProgress || mustEnforceStreamBody)
       ) {
         requestContentLength =
-          requestContentLength == null ? await resolveBodyLength(headers, data) : requestContentLength;
+          requestContentLength == null
+            ? await resolveBodyLength(headers, data)
+            : requestContentLength;
 
         // A declared length of 0 is only trusted to skip the wrap when we are
         // not enforcing a stream limit (which must not rely on that header).
@@ -16788,7 +17423,10 @@ const factory = (env) => {
 
           let contentTypeHeader;
 
-          if (utils.isFormData(data) && (contentTypeHeader = _request.headers.get('content-type'))) {
+          if (
+            utils.isFormData(data) &&
+            (contentTypeHeader = _request.headers.get('content-type'))
+          ) {
             headers.setContentType(contentTypeHeader);
           }
 
@@ -16851,20 +17489,57 @@ const factory = (env) => {
       // Set User-Agent header if not already set (fetch defaults to 'node' in Node.js)
       headers.set('User-Agent', 'axios/' + VERSION, false);
 
-      const resolvedOptions = {
-        ...fetchOptions,
+      const safeFetchOptions =
+        fetchOptions == null ? fetchOptions : Object.assign(Object.create(null), fetchOptions);
+
+      if (safeFetchOptions) {
+        // These options are owned by Axios and are already reflected in the
+        // resolved Request passed to fetch.
+        delete safeFetchOptions.body;
+        delete safeFetchOptions.headers;
+        delete safeFetchOptions.method;
+        delete safeFetchOptions.signal;
+        delete safeFetchOptions.duplex;
+        delete safeFetchOptions.credentials;
+      }
+
+      const resolvedOptions = Object.assign(Object.create(null), safeFetchOptions, {
         signal: composedSignal,
         method: method.toUpperCase(),
         headers: toByteStringHeaderObject(headers.normalize()),
         body: data,
         duplex: 'half',
         credentials: isCredentialsSupported ? withCredentials : undefined,
-      };
+      });
+
+      if (isRequestSupported) {
+        utils.forEach(DEFAULT_REQUEST_OPTIONS, (value, key) => {
+          if (resolvedOptions[key] === undefined) {
+            resolvedOptions[key] = value;
+          }
+        });
+
+        if (resolvedOptions.signal === undefined) {
+          resolvedOptions.signal = null;
+        }
+
+        if (resolvedOptions.body === undefined) {
+          resolvedOptions.body = null;
+        }
+      }
+
+      if (maxRedirects === 0) {
+        resolvedOptions.redirect = 'manual';
+
+        if (safeFetchOptions) {
+          safeFetchOptions.redirect = 'manual';
+        }
+      }
 
       request = isRequestSupported && new Request(url, resolvedOptions);
 
       let response = await (isRequestSupported
-        ? _fetch(request, fetchOptions)
+        ? _fetch(request, safeFetchOptions)
         : _fetch(url, resolvedOptions));
 
       const responseHeaders = core_AxiosHeaders.from(response.headers);
@@ -17217,6 +17892,7 @@ function getAdapter(adapters, config) {
 
 
 
+
 /**
  * Throws a `CanceledError` if cancellation has been requested.
  *
@@ -17241,10 +17917,15 @@ function throwIfCancellationRequested(config) {
  *
  * @returns {Promise} The Promise to be fulfilled
  */
-function dispatchRequest(config) {
+function dispatchRequest(_config) {
+  // Interceptors may replace the merged config with an ordinary object. Flatten
+  // it at the dispatch boundary so shared prototype members cannot become
+  // request behavior, while preserving intentional template/class members.
+  const config = utils.toSafeFlatObject(_config);
+
   throwIfCancellationRequested(config);
 
-  config.headers = core_AxiosHeaders.from(config.headers);
+  config.headers = core_AxiosHeaders.from(utils.getSafeProp(config, 'headers'));
 
   // Transform request data
   config.data = transformData.call(config, config.transformRequest);
@@ -17425,6 +18106,7 @@ function assertOptions(options, schema, allowUnknown) {
 
 
 
+
 const Axios_validators = validator.validators;
 
 /**
@@ -17456,21 +18138,21 @@ class Axios {
       return await this._request(configOrUrl, config);
     } catch (err) {
       if (err instanceof Error) {
-        let dummy = {};
+        try {
+          let dummy = {};
 
-        Error.captureStackTrace ? Error.captureStackTrace(dummy) : (dummy = new Error());
+          Error.captureStackTrace ? Error.captureStackTrace(dummy) : (dummy = new Error());
 
-        // slice off the Error: ... line
-        const stack = (() => {
-          if (!dummy.stack) {
-            return '';
+          const dummyStack = dummy.stack;
+          let stack = '';
+
+          // slice off the Error: ... line
+          if (typeof dummyStack === 'string') {
+            const firstNewlineIndex = dummyStack.indexOf('\n');
+
+            stack = firstNewlineIndex === -1 ? '' : dummyStack.slice(firstNewlineIndex + 1);
           }
 
-          const firstNewlineIndex = dummy.stack.indexOf('\n');
-
-          return firstNewlineIndex === -1 ? '' : dummy.stack.slice(firstNewlineIndex + 1);
-        })();
-        try {
           if (!err.stack) {
             err.stack = stack;
             // match without the 2 top stack lines
@@ -17486,7 +18168,7 @@ class Axios {
             }
           }
         } catch (e) {
-          // ignore the case where "stack" is an un-writable property
+          // Ignore failures from custom stack hooks or un-writable stack properties.
         }
       }
 
@@ -17559,13 +18241,17 @@ class Axios {
     );
 
     // Set config.method
-    config.method = (config.method || this.defaults.method || 'get').toLowerCase();
+    config.method = (
+      utils.getSafeProp(config, 'method') ||
+      utils.getSafeProp(this.defaults, 'method') ||
+      'get'
+    ).toLowerCase();
 
     // Flatten headers
     let contextHeaders = headers && utils.merge(headers.common, headers[config.method]);
 
     headers &&
-      utils.forEach(['delete', 'get', 'head', 'post', 'put', 'patch', 'query', 'common'], (method) => {
+      utils.forEach(core_methodList.concat('common'), (method) => {
         delete headers[method];
       });
 
@@ -17624,17 +18310,35 @@ class Axios {
       const onFulfilled = requestInterceptorChain[i++];
       const onRejected = requestInterceptorChain[i++];
       try {
-        newConfig = onFulfilled(newConfig);
+        newConfig = onFulfilled ? onFulfilled(newConfig) : newConfig;
       } catch (error) {
-        onRejected.call(this, error);
+        if (!onRejected) {
+          promise = Promise.reject(error);
+          break;
+        }
+
+        try {
+          const rejectedResult = onRejected.call(this, error);
+
+          if (utils.isThenable(rejectedResult)) {
+            promise = Promise.resolve(rejectedResult).then(() =>
+              dispatchRequest.call(this, newConfig)
+            );
+          }
+        } catch (rejectedError) {
+          promise = Promise.reject(rejectedError);
+        }
+
         break;
       }
     }
 
-    try {
-      promise = dispatchRequest.call(this, newConfig);
-    } catch (error) {
-      return Promise.reject(error);
+    if (!promise) {
+      try {
+        promise = dispatchRequest.call(this, newConfig);
+      } catch (error) {
+        promise = Promise.reject(error);
+      }
     }
 
     i = 0;
@@ -17918,14 +18622,22 @@ const HttpStatusCode = {
   Gone: 410,
   LengthRequired: 411,
   PreconditionFailed: 412,
+  /**
+   * @deprecated Use `ContentTooLarge` instead.
+   */
   PayloadTooLarge: 413,
+  ContentTooLarge: 413,
   UriTooLong: 414,
   UnsupportedMediaType: 415,
   RangeNotSatisfiable: 416,
   ExpectationFailed: 417,
   ImATeapot: 418,
   MisdirectedRequest: 421,
+  /**
+   * @deprecated Use `UnprocessableContent` instead.
+   */
   UnprocessableEntity: 422,
+  UnprocessableContent: 422,
   Locked: 423,
   FailedDependency: 424,
   TooEarly: 425,
@@ -17945,6 +18657,7 @@ const HttpStatusCode = {
   LoopDetected: 508,
   NotExtended: 510,
   NetworkAuthenticationRequired: 511,
+  WebServerReturnsAnUnknownError: 520,
   WebServerIsDown: 521,
   ConnectionTimedOut: 522,
   OriginIsUnreachable: 523,
@@ -17954,7 +18667,9 @@ const HttpStatusCode = {
 };
 
 Object.entries(HttpStatusCode).forEach(([key, value]) => {
-  HttpStatusCode[value] = key;
+  if (HttpStatusCode[value] === undefined) {
+    HttpStatusCode[value] = key;
+  }
 });
 
 /* harmony default export */ var helpers_HttpStatusCode = (HttpStatusCode);
@@ -18054,14 +18769,58 @@ axios.default = axios;
 var FileNameFromUrl = __webpack_require__(2209);
 // EXTERNAL MODULE: ./src/templates/templateParts/footer/FooterTemplate.tsx + 2 modules
 var FooterTemplate = __webpack_require__(8514);
+;// ./node_modules/axios/index.js
+
+
+// This module is intended to unwrap Axios default export as named.
+// Keep top-level export same with static properties
+// so that it can keep same with es module or cjs
+const {
+  Axios: axios_Axios,
+  AxiosError: axios_AxiosError,
+  CanceledError: axios_CanceledError,
+  isCancel: axios_isCancel,
+  CancelToken: axios_CancelToken,
+  VERSION: axios_VERSION,
+  all: axios_all,
+  Cancel,
+  isAxiosError: axios_isAxiosError,
+  spread: axios_spread,
+  toFormData: axios_toFormData,
+  AxiosHeaders: axios_AxiosHeaders,
+  HttpStatusCode: axios_HttpStatusCode,
+  formToJSON,
+  getAdapter: axios_getAdapter,
+  mergeConfig: axios_mergeConfig,
+  create,
+} = lib_axios;
+
+
+
+// EXTERNAL MODULE: ./.cache/gatsby-browser-entry.js + 4 modules
+var gatsby_browser_entry = __webpack_require__(4810);
+;// ./src/services/apiAvailability.ts
+// Statuses that mean the backend itself is gone (shut down or not reachable),
+// as opposed to a single failing request. 504 is left out on purpose: one slow
+// query timing out must not take the visitor off the site.
+const UNAVAILABLE_STATUSES=[502,503];const FALLBACK_PAGE="/maintenance.html";let fallbackShown=false;// Replace the whole document with the neutral static fallback page, at the current
+// URL: a reload then simply tries the real site again. Only if that page cannot be
+// fetched either, navigate to it.
+const showFallbackPage=async()=>{try{const response=await fetch((0,gatsby_browser_entry/* withPrefix */.Fe)(FALLBACK_PAGE),{cache:"no-store"});if(!response.ok)throw new Error(`HTTP ${response.status}`);const page=new DOMParser().parseFromString(await response.text(),"text/html");document.replaceChild(document.adoptNode(page.documentElement),document.documentElement);}catch(_){window.location.replace((0,gatsby_browser_entry/* withPrefix */.Fe)(FALLBACK_PAGE));}};// Called from the API clients' response interceptor. An unreachable backend shows
+// the neutral static fallback page (static/maintenance.html), the same page nginx
+// and Cloudflare serve when the site itself is down.
+const reportApiError=error=>{var _error$response,_error$response$data,_error$response$statu,_error$response2;if(fallbackShown||error.code===axios_AxiosError.ERR_CANCELED)return;// Maintenance mode: the themed maintenance screen is already showing, and nginx
+// answers the closed proxy with a 503 marked {"maintenance": true}.
+if(window.sessionStorage.getItem("MAINTENANCE_MODE")==="true")return;if(((_error$response=error.response)===null||_error$response===void 0?void 0:(_error$response$data=_error$response.data)===null||_error$response$data===void 0?void 0:_error$response$data.maintenance)===true)return;const unreachable=!error.response;// network error, DNS, CORS on a dead ingress
+if(!unreachable&&!UNAVAILABLE_STATUSES.includes((_error$response$statu=(_error$response2=error.response)===null||_error$response2===void 0?void 0:_error$response2.status)!==null&&_error$response$statu!==void 0?_error$response$statu:0))return;fallbackShown=true;void showFallbackPage();};
 // EXTERNAL MODULE: ./src/services/filtersToQueryParams.ts + 1 modules
 var filtersToQueryParams = __webpack_require__(5343);
 ;// ./src/apiService/resources/openWoo.ts
-const OPEN_WOO_LIMIT=6;let OpenWoo=function OpenWoo(_instance,send){var _this=this;this.getAll=async(filters,currentPage,limit)=>{const endpoint=`/publications?_limit=${limit}&_page=${currentPage}&_order[publicatiedatum]=desc${(0,filtersToQueryParams/* filtersToQueryParams */.d)(filters)}`;// TODO: Uncomment this when filtering on oin is available in the API
+const OPEN_WOO_LIMIT=6;let OpenWoo=function OpenWoo(_instance,send){this.getAll=async(filters,currentPage,limit)=>{const endpoint=`/publications?_limit=${limit}&_page=${currentPage}&_order[publicatiedatum]=desc${(0,filtersToQueryParams/* filtersToQueryParams */.d)(filters)}`;// TODO: Uncomment this when filtering on oin is available in the API
 // if (window.sessionStorage.getItem("OIDN_NUMBER")) {
 //   endpoint += `&organization.oin=${window.sessionStorage.getItem("OIDN_NUMBER")}`;
 // }
-const{data}=await this._send(this._instance,"GET",endpoint);return data;};this.getOne=async id=>{const{data}=await this._send(this._instance,"GET",`/publications/${id}?extend[]=themes&extend[]=@self.schema`);return data;};this.getAttachments=async id=>{const{data}=await this._send(this._instance,"GET",`/publications/${id}/attachments?_limit=500`);return data;};this.getAttachmentsWithLabels=async function(id,limit){if(limit===void 0){limit=500;}const{data}=await _this._send(_this._instance,"GET",`/publications/${id}/attachments?_hasLabels=true&_limit=${limit}`);return data;};this.getAttachmentsNoLabels=async(id,limit,currentPage)=>{const{data}=await this._send(this._instance,"GET",`/publications/${id}/attachments?_noLabels=true&_limit=${limit}&_page=${currentPage}`);return data;};this._instance=_instance;this._send=send;};
+const{data}=await this._send(this._instance,"GET",endpoint);return data;};this.getOne=async id=>{const{data}=await this._send(this._instance,"GET",`/publications/${id}?extend[]=themes&extend[]=@self.schema`);return data;};this.getAttachments=async id=>{const{data}=await this._send(this._instance,"GET",`/publications/${id}/attachments?_limit=500`);return data;};this.getAttachmentsWithLabels=async(id,limit=500)=>{const{data}=await this._send(this._instance,"GET",`/publications/${id}/attachments?_hasLabels=true&_limit=${limit}`);return data;};this.getAttachmentsNoLabels=async(id,limit,currentPage)=>{const{data}=await this._send(this._instance,"GET",`/publications/${id}/attachments?_noLabels=true&_limit=${limit}&_page=${currentPage}`);return data;};this._instance=_instance;this._send=send;};
 ;// ./src/apiService/resources/footerContent.ts
 let FooterContent=function FooterContent(_instance,send){this.getContent=async fileName=>{const{data}=await this._send(this._instance,"GET",fileName);return data;};this._instance=_instance;this._send=send;};
 ;// ./src/apiService/resources/markdown.ts
@@ -18077,7 +18836,9 @@ let PagesApi=function PagesApi(_instance,send){this.getAll=async()=>{const{data}
 let APIService=/*#__PURE__*/function(){function APIService(){// Send method
 this.Send=(instance,method,endpoint,payload,promiseMessage)=>{var _promiseMessage$loadi,_promiseMessage$succe,_promiseMessage$loadi2,_promiseMessage$succe2,_promiseMessage$loadi3,_promiseMessage$succe3;const _payload=JSON.stringify(payload);switch(method){case"GET":{const response=instance.get(endpoint);response.catch(err=>zt.error(err.message));return response;}case"POST":return zt.promise(instance.post(endpoint,_payload),{loading:(_promiseMessage$loadi=promiseMessage===null||promiseMessage===void 0?void 0:promiseMessage.loading)!==null&&_promiseMessage$loadi!==void 0?_promiseMessage$loadi:"Creating item...",success:(_promiseMessage$succe=promiseMessage===null||promiseMessage===void 0?void 0:promiseMessage.success)!==null&&_promiseMessage$succe!==void 0?_promiseMessage$succe:"Succesfully created item",error:err=>err.message});case"PUT":return zt.promise(instance.put(endpoint,_payload),{loading:(_promiseMessage$loadi2=promiseMessage===null||promiseMessage===void 0?void 0:promiseMessage.loading)!==null&&_promiseMessage$loadi2!==void 0?_promiseMessage$loadi2:"Updating item...",success:(_promiseMessage$succe2=promiseMessage===null||promiseMessage===void 0?void 0:promiseMessage.success)!==null&&_promiseMessage$succe2!==void 0?_promiseMessage$succe2:"Succesfully updated item",error:err=>err.message});case"DELETE":return zt.promise(instance.delete(endpoint),{loading:(_promiseMessage$loadi3=promiseMessage===null||promiseMessage===void 0?void 0:promiseMessage.loading)!==null&&_promiseMessage$loadi3!==void 0?_promiseMessage$loadi3:"Deleting item...",success:(_promiseMessage$succe3=promiseMessage===null||promiseMessage===void 0?void 0:promiseMessage.success)!==null&&_promiseMessage$succe3!==void 0?_promiseMessage$succe3:"Succesfully deleted item",error:err=>err.message});}};}var _proto=APIService.prototype;_proto.getApiBaseUrl=function getApiBaseUrl(){var _window$sessionStorag;const fromSession=(_window$sessionStorag=window.sessionStorage.getItem("API_BASE_URL"))!==null&&_window$sessionStorag!==void 0?_window$sessionStorag:"";return fromSession&&fromSession.trim().length>0?fromSession:"/api";};_proto.attachLogging=function attachLogging(instance){instance.interceptors.request.use(config=>{try{var _config$baseURL,_config$url,_config$method;const base=(_config$baseURL=config.baseURL)!==null&&_config$baseURL!==void 0?_config$baseURL:window.location.origin;const fullUrl=new URL((_config$url=config.url)!==null&&_config$url!==void 0?_config$url:"",base).toString();const method=((_config$method=config.method)!==null&&_config$method!==void 0?_config$method:"get").toUpperCase();// eslint-disable-next-line no-console
 console.info(`[API Request] ${method} ${fullUrl}`);}catch(_){/* logging must never break the request */}return config;});instance.interceptors.response.use(response=>{var _response$headers,_response$headers2;const upstreamUrl=(_response$headers=response.headers)===null||_response$headers===void 0?void 0:_response$headers["x-upstream-url"];const upstreamStatus=(_response$headers2=response.headers)===null||_response$headers2===void 0?void 0:_response$headers2["x-upstream-status"];if(upstreamUrl||upstreamStatus){// eslint-disable-next-line no-console
-console.info(`[API Upstream] url=${upstreamUrl!==null&&upstreamUrl!==void 0?upstreamUrl:"-"} status=${upstreamStatus!==null&&upstreamStatus!==void 0?upstreamStatus:String(response.status)}`);}return response;});return instance;};return (0,createClass/* default */.A)(APIService,[{key:"BaseClient",get:function(){const instance=lib_axios.create({baseURL:this.getApiBaseUrl(),headers:{Accept:"application/json","Content-Type":"application/json"}});return this.attachLogging(instance);}},{key:"AvailableFiltersClient",get:function(){const instance=lib_axios.create({baseURL:this.getApiBaseUrl(),headers:{Accept:"application/json+aggregations","Content-Type":"application/json"}});return this.attachLogging(instance);}},{key:"FooterContentClient",get:function(){var _window$sessionStorag2;return lib_axios.create({baseURL:(0,FileNameFromUrl/* removeFileNameFromUrl */.z)((_window$sessionStorag2=window.sessionStorage.getItem("FOOTER_CONTENT"))!==null&&_window$sessionStorag2!==void 0?_window$sessionStorag2:FooterTemplate/* DEFAULT_FOOTER_CONTENT_URL */.E)});}},{key:"MarkdownClient",get:function(){var _window$sessionStorag3;return lib_axios.create({baseURL:(_window$sessionStorag3=window.sessionStorage.getItem("BASE_URL"))!==null&&_window$sessionStorag3!==void 0?_window$sessionStorag3:undefined,headers:{Accept:"application/vnd.github.html"}});}},{key:"OpenWoo",get:function(){return new OpenWoo(this.BaseClient,this.Send);}},{key:"AvailableFilters",get:function(){return new AvailableFilters(this.AvailableFiltersClient,this.Send);}},{key:"FooterContent",get:function(){return new FooterContent(this.FooterContentClient,this.Send);}},{key:"Markdown",get:function(){return new Markdown(this.MarkdownClient,this.Send);}},{key:"Menus",get:function(){return new MenusApi(this.BaseClient,this.Send);}},{key:"Pages",get:function(){return new PagesApi(this.BaseClient,this.Send);}}]);}();
+console.info(`[API Upstream] url=${upstreamUrl!==null&&upstreamUrl!==void 0?upstreamUrl:"-"} status=${upstreamStatus!==null&&upstreamStatus!==void 0?upstreamStatus:String(response.status)}`);}return response;});return instance;}// Only the clients that talk to the Woo API: an unreachable backend replaces
+// the site with the static fallback page (see services/apiAvailability.ts).
+;_proto.attachAvailabilityCheck=function attachAvailabilityCheck(instance){instance.interceptors.response.use(undefined,error=>{reportApiError(error);return Promise.reject(error);});return instance;};return (0,createClass/* default */.A)(APIService,[{key:"BaseClient",get:function(){const instance=lib_axios.create({baseURL:this.getApiBaseUrl(),headers:{Accept:"application/json","Content-Type":"application/json"}});return this.attachAvailabilityCheck(this.attachLogging(instance));}},{key:"AvailableFiltersClient",get:function(){const instance=lib_axios.create({baseURL:this.getApiBaseUrl(),headers:{Accept:"application/json+aggregations","Content-Type":"application/json"}});return this.attachAvailabilityCheck(this.attachLogging(instance));}},{key:"FooterContentClient",get:function(){var _window$sessionStorag2;return lib_axios.create({baseURL:(0,FileNameFromUrl/* removeFileNameFromUrl */.z)((_window$sessionStorag2=window.sessionStorage.getItem("FOOTER_CONTENT"))!==null&&_window$sessionStorag2!==void 0?_window$sessionStorag2:FooterTemplate/* DEFAULT_FOOTER_CONTENT_URL */.E)});}},{key:"MarkdownClient",get:function(){var _window$sessionStorag3;return lib_axios.create({baseURL:(_window$sessionStorag3=window.sessionStorage.getItem("BASE_URL"))!==null&&_window$sessionStorag3!==void 0?_window$sessionStorag3:undefined,headers:{Accept:"application/vnd.github.html"}});}},{key:"OpenWoo",get:function(){return new OpenWoo(this.BaseClient,this.Send);}},{key:"AvailableFilters",get:function(){return new AvailableFilters(this.AvailableFiltersClient,this.Send);}},{key:"FooterContent",get:function(){return new FooterContent(this.FooterContentClient,this.Send);}},{key:"Markdown",get:function(){return new Markdown(this.MarkdownClient,this.Send);}},{key:"Menus",get:function(){return new MenusApi(this.BaseClient,this.Send);}},{key:"Pages",get:function(){return new PagesApi(this.BaseClient,this.Send);}}]);}();
 
 /***/ }),
 
@@ -18229,7 +18990,7 @@ const usePages=()=>{const API=react__WEBPACK_IMPORTED_MODULE_0__.useContext(_api
 
 /***/ }),
 
-/***/ 9644:
+/***/ 5953:
 /***/ (function(__unused_webpack_module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -18254,16 +19015,16 @@ var i18next = __webpack_require__(2635);
 // EXTERNAL MODULE: ./node_modules/react-i18next/dist/es/index.js + 15 modules
 var es = __webpack_require__(2389);
 ;// ./src/translations/nl.ts
-const nl={Search:"Zoeken",Year:"Jaar",Category:"Categorie",Cards:"Tegels",Table:"Tabel",Feature:"Kenmerk",Reference:"Referentie",Summary:"Samenvatting",Description:"Beschrijving",Themes:"Thema's",Attachments:"Bijlagen",Decision:"Besluit",Subject:"Onderwerp",Address:"Adres",Page:"Pagina",Jumbotron:"Jumbotron",Limit:"Limiet",Municipality:"Gemeente",Filters:"Filters",View:"Weergave",Pagination:"Paginering",Details:"Details",Judgement:"Oordeel",Client:"Opdrachtgever",Behavior:"Gedraging",Findings:"Bevindingen",Conclusions:"Conclusies",Showing:"Tonen",Result:"Resultaat",Results:"Resultaten",to:"tot en met",of:"van",Toegankelijkheid:"Toegankelijkheid",Bezoekadres:"Bezoekadres",Algemeen:"Algemeen",Error:"Fout","Jumbotron card":"Jumbotron tegel","N/A":"N.v.t","Details page":"Detailpagina","Back to homepage":"Terug naar home","Woo-publications of":"Woo-publicaties van","On this page you will find the Woo-publications of":"Op deze pagina vindt u de Woo-publicaties van","Information request":"Informatieverzoek","Inventory list":"Inventarisatielijst","Exceeding the term":"Termijnoverschrijding","Publication date":"Publicatiedatum","Registration date":"Registratiedatum","Decision date":"Besluitdatum","Cards view":"Tegelweergave","Table view":"Tabelweergave","Link to github repository":"Link naar github repository","Link to github contributors page":"Link naar github bijdragers pagina","Link to conduction website":"Link naar conduction website","No title available":"Geen titel beschikbaar","No subject available":"Geen onderwerp beschikbaar","No publication date available":"Geen publicatiedatum beschikbaar","No summary available":"Geen samenvatting beschikbaar","Navbar-Logo":"Navigatie-Logo","Opens a new window":"Opent een nieuw venster","Translate page to Dutch":"Vertaal pagina naar het Nederlands","Translate page to English":"Vertaal pagina naar het Engels","Skip to filters":"Ga naar de filters","Skip to main content":"Ga naar de hoofdinhoud","Skip to footer content":"Ga naar de voettekst","Phone number":"Telefoonnummer","Email address":"E-mailadres","Select year":"Selecteer jaar","Select category":"Selecteer categorie","Previous page":"Vorige pagina","Next page":"Volgende pagina","Can open a new window":"Kan een nieuw venster openen","No results found":"Geen resultaten gevonden","Loading results":"Resultaten laden","Attachments are being loaded":"Bijlagen worden geladen","Attachments with label":"Bijlagen met label","Attachments with label are being loaded":"Bijlagen met label worden geladen","result found":"resultaat gevonden","results found":"resultaten gevonden","Showing multiple":"Resultaten","on page":"op pagina","Enter search query":"Voer zoekopdracht in","Results per page":"Resultaten per pagina","Select result limit":"Selecteer resultaten limiet","Scroll table to the left":"Scroll tabel naar links","Scroll table to the right":"Scroll tabel naar rechts","No category available":"Geen categorie beschikbaar","No municipality available":"Geen gemeente beschikbaar","Woo Request":"Woo Verzoek","Language select":"Taal kiezen","Details table":"Detail tabel","Title of woo request":"Titel van Woo verzoek","There are":"Er zijn","With the label":"Met het label","These are":"Dit zijn","Job title":"Functiebenaming","Part of task":"Onderdeel taak","Organizational unit":"Organisatieonderdeel","something went wrong":"er is iets misgegaan","We encountered an error while loading the data from the municipality. This might be due to incorrect or incomplete data.":"Er is een fout opgetreden bij het laden van de gegevens van de gemeente. Dit kan komen door onjuiste of incomplete gegevens.","Error details":"Foutdetails","Hide technical details":"Verberg technische details","Show technical details":"Toon technische details","This page is temporarily unavailable":"Informatie tijdelijk niet beschikbaar","Refresh the page to try again.":"Vernieuw de pagina om het opnieuw te proberen.","The requested government information cannot currently be displayed.":"De gevraagde overheidsinformatie kan momenteel niet worden weergegeven.","Check if you have an active internet connection.":"Controleer ook of u een actieve internetverbinding heeft.","If the problem persists, please contact the municipality.":"Blijft het probleem zich voordoen, neem dan contact op met de gemeente.","Stack trace":"Stack trace","Scroll left":"Scroll naar links","Scroll right":"Scroll naar rechts","Contact met de gemeente":"Contact met de gemeente","Neem contact op":"Neem contact op","Over deze website":"Over deze website","Clear selection":"Selectie wissen","About this website":"Over deze website"};
+const nl={Search:"Zoeken",Year:"Jaar",Category:"Categorie",Cards:"Tegels",Table:"Tabel",Feature:"Kenmerk",Reference:"Referentie",Summary:"Samenvatting",Description:"Beschrijving",Themes:"Thema's",Attachments:"Bijlagen",Decision:"Besluit",Subject:"Onderwerp",Address:"Adres",Page:"Pagina",Jumbotron:"Jumbotron",Limit:"Limiet",Municipality:"Gemeente",Filters:"Filters",View:"Weergave",Pagination:"Paginering",Details:"Details",Judgement:"Oordeel",Client:"Opdrachtgever",Behavior:"Gedraging",Findings:"Bevindingen",Conclusions:"Conclusies",Showing:"Tonen",Result:"Resultaat",Results:"Resultaten",to:"tot en met",of:"van",Toegankelijkheid:"Toegankelijkheid",Bezoekadres:"Bezoekadres",Algemeen:"Algemeen",Error:"Fout","Jumbotron card":"Jumbotron tegel","N/A":"N.v.t","Details page":"Detailpagina","Back to homepage":"Terug naar home","Woo-publications of":"Woo-publicaties van","On this page you will find the Woo-publications of":"Op deze pagina vindt u de Woo-publicaties van","Information request":"Informatieverzoek","Inventory list":"Inventarisatielijst","Exceeding the term":"Termijnoverschrijding","Publication date":"Publicatiedatum","Registration date":"Registratiedatum","Decision date":"Besluitdatum","Cards view":"Tegelweergave","Table view":"Tabelweergave","Link to github repository":"Link naar github repository","Link to github contributors page":"Link naar github bijdragers pagina","Link to conduction website":"Link naar conduction website","No title available":"Geen titel beschikbaar","No subject available":"Geen onderwerp beschikbaar","No publication date available":"Geen publicatiedatum beschikbaar","No summary available":"Geen samenvatting beschikbaar","Navbar-Logo":"Navigatie-Logo","Opens a new window":"Opent een nieuw venster","Translate page to Dutch":"Vertaal pagina naar het Nederlands","Translate page to English":"Vertaal pagina naar het Engels","Skip to filters":"Ga naar de filters","Skip to main content":"Ga naar de hoofdinhoud","Skip to footer content":"Ga naar de voettekst","Phone number":"Telefoonnummer","Email address":"E-mailadres","Select year":"Selecteer jaar","Select category":"Selecteer categorie","Previous page":"Vorige pagina","Next page":"Volgende pagina","Can open a new window":"Kan een nieuw venster openen","No results found":"Geen resultaten gevonden","Loading results":"Resultaten laden","Attachments are being loaded":"Bijlagen worden geladen","Attachments with label":"Bijlagen met label","Attachments with label are being loaded":"Bijlagen met label worden geladen","result found":"resultaat gevonden","results found":"resultaten gevonden","Showing multiple":"Resultaten","on page":"op pagina","Enter search query":"Voer zoekopdracht in","Results per page":"Resultaten per pagina","Select result limit":"Selecteer resultaten limiet","Scroll table to the left":"Scroll tabel naar links","Scroll table to the right":"Scroll tabel naar rechts","No category available":"Geen categorie beschikbaar","No municipality available":"Geen gemeente beschikbaar","Woo Request":"Woo Verzoek","Language select":"Taal kiezen","Details table":"Detail tabel","Title of woo request":"Titel van Woo verzoek","There are":"Er zijn","With the label":"Met het label","These are":"Dit zijn","Job title":"Functiebenaming","Part of task":"Onderdeel taak","Organizational unit":"Organisatieonderdeel","something went wrong":"er is iets misgegaan","We encountered an error while loading the data from the municipality. This might be due to incorrect or incomplete data.":"Er is een fout opgetreden bij het laden van de gegevens van de gemeente. Dit kan komen door onjuiste of incomplete gegevens.","Error details":"Foutdetails","Hide technical details":"Verberg technische details","Show technical details":"Toon technische details","This page is temporarily unavailable":"Informatie tijdelijk niet beschikbaar","Refresh the page to try again.":"Vernieuw de pagina om het opnieuw te proberen.","The requested government information cannot currently be displayed.":"De gevraagde overheidsinformatie kan momenteel niet worden weergegeven.","Check if you have an active internet connection.":"Controleer ook of u een actieve internetverbinding heeft.","If the problem persists, please contact the municipality.":"Blijft het probleem zich voordoen, neem dan contact op met de gemeente.","Stack trace":"Stack trace","Scroll left":"Scroll naar links","Scroll right":"Scroll naar rechts","Contact met de gemeente":"Contact met de gemeente","Neem contact op":"Neem contact op","Over deze website":"Over deze website","Clear selection":"Selectie wissen","About this website":"Over deze website","This website is temporarily unavailable":"Deze website is tijdelijk niet beschikbaar","We are working to make it available again as soon as possible.":"We werken eraan om de website zo snel mogelijk weer beschikbaar te maken.","Please try again later.":"Probeer het later opnieuw.","We apologise for the inconvenience.":"Onze excuses voor het ongemak."};
 ;// ./src/translations/en.ts
-const en={Search:"Search",Year:"Year",Category:"Category",Cards:"Cards",Table:"Table",Feature:"Feature",Reference:"Reference",Summary:"Summary",Description:"Description",Themes:"Themes",Attachments:"Attachments",Decision:"Decision",Subject:"Subject",Address:"Address",Page:"Page",Jumbotron:"Jumbotron",Limit:"Limit",Municipality:"Municipality",Filters:"Filters",View:"View",Pagination:"Pagination",Details:"Details",Judgement:"Judgement",Client:"Client",Findings:"Findings",Conclusions:"Conclusions",Behavior:"Behavior",Showing:"Showing",Result:"Result",Results:"Results",to:"to",of:"of",Toegankelijkheid:"Accessibility",Bezoekadres:"Visiting address",Algemeen:"General",Error:"Error","Jumbotron card":"Jumbotron card","N/A":"N/A","Details page":"Details page","Back to homepage":"Back to homepage","Woo-publications of":"Woo-publications of","On this page you will find the Woo-publications of":"On this page you will find the Woo-publications of","Information request":"Information request","Inventory list":"Inventory list","Exceeding the term":"Exceeding the term","Publication date":"Publication date","Registration date":"Registration date","Decision date":"Decision date","Cards view":"Cards view","Table view":"Table view","Link to github repository":"Link to github repository","Link to github contributors page":"Link to github contributors page","Link to conduction website":"Link to conduction website","No title available":"No title available","No subject available":"No subject available","No publication date available":"No publication date available","No summary available":"No summary available","Navbar-Logo":"Navbar-Logo","Opens a new window":"Opens a new window","Translate page to Dutch":"Translate page to Dutch","Translate page to English":"Translate page to English","Skip to filters":"Skip to filters","Skip to main content":"Skip to main content","Skip to footer content":"Skip to footer content","Phone number":"Phone number","Email address":"Email address","Select year":"Select year","Select category":"Select category","Previous page":"Previous page","Next page":"Next page","Can open a new window":"Can open a new window","No results found":"No results found","Loading results":"Loading results","Attachments are being loaded":"Attachments are being loaded","Attachments with label":"Attachments with label","Attachments with label are being loaded":"Attachments with label are being loaded","result found":"result found","results found":"results found","Showing multiple":"Results","on page":"on page","Enter search query":"Enter search query","Results per page":"Results per page","Select result limit":"Select result limit","Scroll table to the left":"Scroll table to the left","Scroll table to the right":"Scroll table to the right","No category available":"No category available","No municipality available":"No municipality available","Woo Request":"Woo Request","Language select":"Language select","Details table":"Details table","Title of woo request":"Title of woo request","There are":"There are","With the label":"With the label","These are":"These are","Job title":"Job title","Part of task":"Part of task","Organizational unit":"Organizational unit","something went wrong":"something went wrong","We encountered an error while loading the data from the municipality. This might be due to incorrect or incomplete data.":"We encountered an error while loading the data from the municipality. This might be due to incorrect or incomplete data.","Error details":"Error details","Hide technical details":"Hide technical details","Show technical details":"Show technical details","This page is temporarily unavailable":"This page is temporarily unavailable","Refresh the page to try again.":"Refresh the page to try again.","The requested government information cannot currently be displayed.":"The requested government information cannot currently be displayed.","Check if you have an active internet connection.":"Check if you have an active internet connection.","If the problem persists, please contact the municipality.":"If the problem persists, please contact the municipality.","Stack trace":"Stack trace","Scroll left":"Scroll left","Scroll right":"Scroll right","Contact met de gemeente":"Contact with the municipality","Neem contact op":"Contact us","Over deze website":"About this website","Clear selection":"Clear selection","About this website":"About this website"};
+const en={Search:"Search",Year:"Year",Category:"Category",Cards:"Cards",Table:"Table",Feature:"Feature",Reference:"Reference",Summary:"Summary",Description:"Description",Themes:"Themes",Attachments:"Attachments",Decision:"Decision",Subject:"Subject",Address:"Address",Page:"Page",Jumbotron:"Jumbotron",Limit:"Limit",Municipality:"Municipality",Filters:"Filters",View:"View",Pagination:"Pagination",Details:"Details",Judgement:"Judgement",Client:"Client",Findings:"Findings",Conclusions:"Conclusions",Behavior:"Behavior",Showing:"Showing",Result:"Result",Results:"Results",to:"to",of:"of",Toegankelijkheid:"Accessibility",Bezoekadres:"Visiting address",Algemeen:"General",Error:"Error","Jumbotron card":"Jumbotron card","N/A":"N/A","Details page":"Details page","Back to homepage":"Back to homepage","Woo-publications of":"Woo-publications of","On this page you will find the Woo-publications of":"On this page you will find the Woo-publications of","Information request":"Information request","Inventory list":"Inventory list","Exceeding the term":"Exceeding the term","Publication date":"Publication date","Registration date":"Registration date","Decision date":"Decision date","Cards view":"Cards view","Table view":"Table view","Link to github repository":"Link to github repository","Link to github contributors page":"Link to github contributors page","Link to conduction website":"Link to conduction website","No title available":"No title available","No subject available":"No subject available","No publication date available":"No publication date available","No summary available":"No summary available","Navbar-Logo":"Navbar-Logo","Opens a new window":"Opens a new window","Translate page to Dutch":"Translate page to Dutch","Translate page to English":"Translate page to English","Skip to filters":"Skip to filters","Skip to main content":"Skip to main content","Skip to footer content":"Skip to footer content","Phone number":"Phone number","Email address":"Email address","Select year":"Select year","Select category":"Select category","Previous page":"Previous page","Next page":"Next page","Can open a new window":"Can open a new window","No results found":"No results found","Loading results":"Loading results","Attachments are being loaded":"Attachments are being loaded","Attachments with label":"Attachments with label","Attachments with label are being loaded":"Attachments with label are being loaded","result found":"result found","results found":"results found","Showing multiple":"Results","on page":"on page","Enter search query":"Enter search query","Results per page":"Results per page","Select result limit":"Select result limit","Scroll table to the left":"Scroll table to the left","Scroll table to the right":"Scroll table to the right","No category available":"No category available","No municipality available":"No municipality available","Woo Request":"Woo Request","Language select":"Language select","Details table":"Details table","Title of woo request":"Title of woo request","There are":"There are","With the label":"With the label","These are":"These are","Job title":"Job title","Part of task":"Part of task","Organizational unit":"Organizational unit","something went wrong":"something went wrong","We encountered an error while loading the data from the municipality. This might be due to incorrect or incomplete data.":"We encountered an error while loading the data from the municipality. This might be due to incorrect or incomplete data.","Error details":"Error details","Hide technical details":"Hide technical details","Show technical details":"Show technical details","This page is temporarily unavailable":"This page is temporarily unavailable","Refresh the page to try again.":"Refresh the page to try again.","The requested government information cannot currently be displayed.":"The requested government information cannot currently be displayed.","Check if you have an active internet connection.":"Check if you have an active internet connection.","If the problem persists, please contact the municipality.":"If the problem persists, please contact the municipality.","Stack trace":"Stack trace","Scroll left":"Scroll left","Scroll right":"Scroll right","Contact met de gemeente":"Contact with the municipality","Neem contact op":"Contact us","Over deze website":"About this website","Clear selection":"Clear selection","About this website":"About this website","This website is temporarily unavailable":"This website is temporarily unavailable","We are working to make it available again as soon as possible.":"We are working to make it available again as soon as possible.","Please try again later.":"Please try again later.","We apologise for the inconvenience.":"We apologise for the inconvenience."};
 ;// ./src/translations/i18n.ts
 /* unused harmony import specifier */ var i18n;
 const resources={en:{translation:en},nl:{translation:nl}};i18next/* default.use */.Ay.use(es/* initReactI18next */.r9).init({resources,lng:"nl",interpolation:{escapeValue:false}});/* harmony default export */ var translations_i18n = ((/* unused pure expression or super */ null && (i18n)));
 // EXTERNAL MODULE: ./src/apiService/apiContext.ts
 var apiContext = __webpack_require__(7453);
-// EXTERNAL MODULE: ./src/apiService/apiService.ts + 59 modules
-var apiService = __webpack_require__(5968);
+// EXTERNAL MODULE: ./src/apiService/apiService.ts + 64 modules
+var apiService = __webpack_require__(193);
 // EXTERNAL MODULE: ./src/context/global.ts
 var global = __webpack_require__(3195);
 // EXTERNAL MODULE: ./node_modules/lodash/upperFirst.js
@@ -18505,7 +19266,7 @@ var menus = __webpack_require__(5473);
 // EXTERNAL MODULE: ./src/services/menuUtils.ts
 var menuUtils = __webpack_require__(2659);
 ;// ./src/templates/templateParts/header/HeaderTemplate.tsx
-const HeaderTemplate=_ref=>{var _window$sessionStorag;let{layoutClassName}=_ref;const{t,i18n}=(0,es/* useTranslation */.Bd)();const{gatsbyContext}=(0,gatsby/* useGatsbyContext */.J)();const menusQuery=(0,menus/* useMenus */.y)().getAll();const allMenus=react.useMemo(()=>{const data=menusQuery===null||menusQuery===void 0?void 0:menusQuery.data;return Array.isArray(data===null||data===void 0?void 0:data.results)?data.results:Array.isArray(data)?data:[];},[menusQuery===null||menusQuery===void 0?void 0:menusQuery.data]);const menuNavigation=react.useMemo(()=>(0,menuUtils/* getMenuFromPosition */.Lk)(allMenus,1),[allMenus]);const quickLinks=react.useMemo(()=>{var _menuNavigation$items;return((_menuNavigation$items=menuNavigation===null||menuNavigation===void 0?void 0:menuNavigation.items)!==null&&_menuNavigation$items!==void 0?_menuNavigation$items:[]).slice(0,4);},[menuNavigation===null||menuNavigation===void 0?void 0:menuNavigation.items]);return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* PageHeader */.zY,{className:(0,clsx/* default */.A)(layoutClassName&&layoutClassName,"ac-header"),children:/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{role:"navigation","aria-label":"skip",className:HeaderTemplate_module_container,children:[/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{children:[gatsbyContext.location.pathname===(0,gatsby_browser_entry/* withPrefix */.Fe)("/")&&/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* SkipLink */.q1,{href:"#filters",tabIndex:0,className:skipLink,children:t("Skip to filters")}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* SkipLink */.q1,{href:"#mainContent",tabIndex:0,className:skipLink,children:t("Skip to main content")})]}),/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:navContainer,children:[/*#__PURE__*/(0,jsx_runtime.jsx)(lib/* Logo */.gu,{onClick:()=>(0,gatsby_browser_entry/* navigate */.oo)("/"),ariaLabel:"Logo "+((_window$sessionStorag=window.sessionStorage.getItem("ORGANISATION_NAME"))!==null&&_window$sessionStorag!==void 0?_window$sessionStorag:""),layoutClassName:logo}),/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{children:[(quickLinks===null||quickLinks===void 0?void 0:quickLinks.length)>0&&/*#__PURE__*/(0,jsx_runtime.jsx)("nav",{role:"navigation","aria-label":t("Quick links"),className:HeaderTemplate_module_quickLinks,children:quickLinks.map((item,idx)=>{var _ref2,_item$ariaLabel,_item$name,_ref3,_item$ariaLabel2,_item$name2;const isExternal=typeof(item===null||item===void 0?void 0:item.link)==="string"&&(/^https?:\/\//i.test(item.link)||/^www\./i.test(item.link));const href=isExternal&&/^www\./i.test(item.link)?`https://${item.link}`:item.link;return isExternal?/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Button */.$n,{appearance:"secondary",onClick:()=>open(href,"_blank","noopener,noreferrer"),tabIndex:0,"aria-label":`${t((_ref2=(_item$ariaLabel=item===null||item===void 0?void 0:item.ariaLabel)!==null&&_item$ariaLabel!==void 0?_item$ariaLabel:item===null||item===void 0?void 0:item.name)!==null&&_ref2!==void 0?_ref2:"Link")}, ${t("Opens a new window")}`,children:t((_item$name=item===null||item===void 0?void 0:item.name)!==null&&_item$name!==void 0?_item$name:"")},idx):/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Button */.$n,{appearance:"secondary",onClick:()=>{var _item$link;return (0,gatsby_browser_entry/* navigate */.oo)((_item$link=item===null||item===void 0?void 0:item.link)!==null&&_item$link!==void 0?_item$link:"/");},tabIndex:0,"aria-label":t((_ref3=(_item$ariaLabel2=item===null||item===void 0?void 0:item.ariaLabel)!==null&&_item$ariaLabel2!==void 0?_item$ariaLabel2:item===null||item===void 0?void 0:item.name)!==null&&_ref3!==void 0?_ref3:"Link"),children:t((_item$name2=item===null||item===void 0?void 0:item.name)!==null&&_item$name2!==void 0?_item$name2:"")},idx);})}),window.sessionStorage.getItem("HIDE_LANGUAGE_SWITCH")!=="true"&&(quickLinks===null||quickLinks===void 0?void 0:quickLinks.length)===0&&/*#__PURE__*/(0,jsx_runtime.jsxs)("nav",{role:"navigation","aria-label":t("Language select"),className:languageSelectContainer,children:[/*#__PURE__*/(0,jsx_runtime.jsx)("span",{className:(0,clsx/* default */.A)(languageSelect,i18n.language==="nl"&&languageSelectDisabled),onClick:()=>i18n.changeLanguage("nl"),onKeyDown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();i18n.changeLanguage("nl");}},tabIndex:0,"aria-label":t("Translate page to Dutch"),role:"button","aria-pressed":i18n.language==="nl"?true:false,"aria-disabled":i18n.language==="nl"?true:false,children:"NL"}),/*#__PURE__*/(0,jsx_runtime.jsxs)("span",{className:languageSeperator,"aria-hidden":"true",children:[" ","/"," "]}),/*#__PURE__*/(0,jsx_runtime.jsx)("span",{className:(0,clsx/* default */.A)(languageSelect,i18n.language==="en"&&languageSelectDisabled),onClick:()=>i18n.changeLanguage("en"),onKeyDown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();i18n.changeLanguage("en");}},tabIndex:0,"aria-label":t("Translate page to English"),role:"button","aria-pressed":i18n.language==="en"?true:false,"aria-disabled":i18n.language==="en"?true:false,children:"EN"})]})]})]})]})});};
+const HeaderTemplate=({layoutClassName})=>{var _window$sessionStorag;const{t,i18n}=(0,es/* useTranslation */.Bd)();const{gatsbyContext}=(0,gatsby/* useGatsbyContext */.J)();const menusQuery=(0,menus/* useMenus */.y)().getAll();const allMenus=react.useMemo(()=>{const data=menusQuery===null||menusQuery===void 0?void 0:menusQuery.data;return Array.isArray(data===null||data===void 0?void 0:data.results)?data.results:Array.isArray(data)?data:[];},[menusQuery===null||menusQuery===void 0?void 0:menusQuery.data]);const menuNavigation=react.useMemo(()=>(0,menuUtils/* getMenuFromPosition */.Lk)(allMenus,1),[allMenus]);const quickLinks=react.useMemo(()=>{var _menuNavigation$items;return((_menuNavigation$items=menuNavigation===null||menuNavigation===void 0?void 0:menuNavigation.items)!==null&&_menuNavigation$items!==void 0?_menuNavigation$items:[]).slice(0,4);},[menuNavigation===null||menuNavigation===void 0?void 0:menuNavigation.items]);return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* PageHeader */.zY,{className:(0,clsx/* default */.A)(layoutClassName&&layoutClassName,"ac-header"),children:/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{role:"navigation","aria-label":"skip",className:HeaderTemplate_module_container,children:[/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{children:[gatsbyContext.location.pathname===(0,gatsby_browser_entry/* withPrefix */.Fe)("/")&&/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* SkipLink */.q1,{href:"#filters",tabIndex:0,className:skipLink,children:t("Skip to filters")}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* SkipLink */.q1,{href:"#mainContent",tabIndex:0,className:skipLink,children:t("Skip to main content")})]}),/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:navContainer,children:[/*#__PURE__*/(0,jsx_runtime.jsx)(lib/* Logo */.gu,{onClick:()=>(0,gatsby_browser_entry/* navigate */.oo)("/"),ariaLabel:"Logo "+((_window$sessionStorag=window.sessionStorage.getItem("ORGANISATION_NAME"))!==null&&_window$sessionStorag!==void 0?_window$sessionStorag:""),layoutClassName:logo}),/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{children:[(quickLinks===null||quickLinks===void 0?void 0:quickLinks.length)>0&&/*#__PURE__*/(0,jsx_runtime.jsx)("nav",{role:"navigation","aria-label":t("Quick links"),className:HeaderTemplate_module_quickLinks,children:quickLinks.map((item,idx)=>{var _ref,_item$ariaLabel,_item$name,_ref2,_item$ariaLabel2,_item$name2;const isExternal=typeof(item===null||item===void 0?void 0:item.link)==="string"&&(/^https?:\/\//i.test(item.link)||/^www\./i.test(item.link));const href=isExternal&&/^www\./i.test(item.link)?`https://${item.link}`:item.link;return isExternal?/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Button */.$n,{appearance:"secondary",onClick:()=>open(href,"_blank","noopener,noreferrer"),tabIndex:0,"aria-label":`${t((_ref=(_item$ariaLabel=item===null||item===void 0?void 0:item.ariaLabel)!==null&&_item$ariaLabel!==void 0?_item$ariaLabel:item===null||item===void 0?void 0:item.name)!==null&&_ref!==void 0?_ref:"Link")}, ${t("Opens a new window")}`,children:t((_item$name=item===null||item===void 0?void 0:item.name)!==null&&_item$name!==void 0?_item$name:"")},idx):/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Button */.$n,{appearance:"secondary",onClick:()=>{var _item$link;return (0,gatsby_browser_entry/* navigate */.oo)((_item$link=item===null||item===void 0?void 0:item.link)!==null&&_item$link!==void 0?_item$link:"/");},tabIndex:0,"aria-label":t((_ref2=(_item$ariaLabel2=item===null||item===void 0?void 0:item.ariaLabel)!==null&&_item$ariaLabel2!==void 0?_item$ariaLabel2:item===null||item===void 0?void 0:item.name)!==null&&_ref2!==void 0?_ref2:"Link"),children:t((_item$name2=item===null||item===void 0?void 0:item.name)!==null&&_item$name2!==void 0?_item$name2:"")},idx);})}),window.sessionStorage.getItem("HIDE_LANGUAGE_SWITCH")!=="true"&&(quickLinks===null||quickLinks===void 0?void 0:quickLinks.length)===0&&/*#__PURE__*/(0,jsx_runtime.jsxs)("nav",{role:"navigation","aria-label":t("Language select"),className:languageSelectContainer,children:[/*#__PURE__*/(0,jsx_runtime.jsx)("span",{className:(0,clsx/* default */.A)(languageSelect,i18n.language==="nl"&&languageSelectDisabled),onClick:()=>i18n.changeLanguage("nl"),onKeyDown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();i18n.changeLanguage("nl");}},tabIndex:0,"aria-label":t("Translate page to Dutch"),role:"button","aria-pressed":i18n.language==="nl"?true:false,"aria-disabled":i18n.language==="nl"?true:false,children:"NL"}),/*#__PURE__*/(0,jsx_runtime.jsxs)("span",{className:languageSeperator,"aria-hidden":"true",children:[" ","/"," "]}),/*#__PURE__*/(0,jsx_runtime.jsx)("span",{className:(0,clsx/* default */.A)(languageSelect,i18n.language==="en"&&languageSelectDisabled),onClick:()=>i18n.changeLanguage("en"),onKeyDown:e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();i18n.changeLanguage("en");}},tabIndex:0,"aria-label":t("Translate page to English"),role:"button","aria-pressed":i18n.language==="en"?true:false,"aria-disabled":i18n.language==="en"?true:false,children:"EN"})]})]})]})]})});};
 ;// ./src/templates/templateParts/themeSwitcherTopBar/ThemeSwitcherTopBar.module.css
 // extracted by mini-css-extract-plugin
 var ThemeSwitcherTopBar_module_container = "ThemeSwitcherTopBar-module--container--73d0b";
@@ -18693,7 +19454,7 @@ var uniqueId_default = /*#__PURE__*/__webpack_require__.n(uniqueId);
 ;// ./src/hooks/useEnvironment.ts
 // DEV ONLY: set to a theme class (e.g. "barneveld-theme") to force that theme on every refresh,
 // without editing .env or restarting the dev server. Leave "" for normal (env/domain/config) behavior.
-const DEV_THEME_OVERRIDE="";const DEFAULT_THEME_CLASSNAME="openwoo-theme";/**
+const DEV_THEME_OVERRIDE="openwoo-theme";const DEFAULT_THEME_CLASSNAME="openwoo-theme";/**
  * The single place that writes the NL Design System theme class to the DOM.
  *
  * The class is intentionally set on BOTH <html> and <body> — each element needs it for a
@@ -18718,11 +19479,11 @@ if(!resolved.includes("-theme")){// %c renders the first line as a styled banner
 // console noise — this is an operator-facing configuration error, not a code error.
 console.error(`%c THEME CONFIGURATION ERROR %c\nInvalid theme class "${resolved}": theme classes must contain "-theme" (e.g. "${DEFAULT_THEME_CLASSNAME}"). `+`Falling back to "${DEFAULT_THEME_CLASSNAME}". Check GATSBY_NL_DESIGN_THEME_CLASSNAME / `+`NL_DESIGN_THEME_CLASSNAME in the environment, runtime.json or domain config.`,"background: #c00; color: #fff; font-size: 1.5em; font-weight: bold; padding: 4px 8px; border-radius: 4px;","");resolved=DEFAULT_THEME_CLASSNAME;}document.documentElement.className=resolved;// rem base via --conduction-root-font-size
 document.body.className=resolved;// visibility gate + component tokens
-};const useEnvironment=()=>{const[,setSessionStorageUpdatedId]=react.useState("-1");const handleStorageChange=()=>{setSessionStorageUpdatedId(uniqueId_default()());themeSwitcherMiddleware();};const updateSessionStorage=()=>{window.dispatchEvent(new Event("sessionStorageChange"));};react.useEffect(()=>{window.addEventListener("sessionStorageChange",handleStorageChange);return()=>{window.removeEventListener("sessionStorageChange",handleStorageChange);};},[]);const overlayFromRuntimeJson=async()=>{try{var _window$sessionStorag;let res=await fetch("/config/runtime.json",{cache:"no-store"});if(!res.ok){try{res=await fetch("/runtime.json",{cache:"no-store"});}catch(_){/* fallback location is optional */}if(!res.ok)return;}const cfg=await res.json();const set=(k,envKey)=>{var _cfg$k;const v=(_cfg$k=cfg[k])!==null&&_cfg$k!==void 0?_cfg$k:envKey?cfg[envKey]:undefined;if(typeof v==="string")window.sessionStorage.setItem(k,v);};set("NL_DESIGN_THEME_CLASSNAME","GATSBY_NL_DESIGN_THEME_CLASSNAME");set("FAVICON_URL","GATSBY_FAVICON_URL");set("ORGANISATION_NAME","GATSBY_ORGANISATION_NAME");set("JUMBOTRON_IMAGE_URL","GATSBY_JUMBOTRON_IMAGE_URL");set("JUMBOTRON_TITLE","GATSBY_JUMBOTRON_TITLE");set("JUMBOTRON_SUBTITLE","GATSBY_JUMBOTRON_SUBTITLE");set("FOOTER_LOGO_URL","GATSBY_FOOTER_LOGO_URL");set("FOOTER_LOGO_HREF","GATSBY_FOOTER_LOGO_HREF");set("FOOTER_CONTENT","GATSBY_FOOTER_CONTENT");set("FOOTER_CONTENT_HEADER","GATSBY_FOOTER_CONTENT_HEADER");set("FOOTER_HIDE_LOVE","GATSBY_FOOTER_HIDE_LOVE");set("FOOTER_HIDE_LOGO","GATSBY_FOOTER_HIDE_LOGO");set("OIDN_NUMBER","GATSBY_OIDN_NUMBER");set("SHOW_CATEGORY","GATSBY_SHOW_CATEGORY");set("SHOW_ORGANIZATION","GATSBY_SHOW_ORGANIZATION");set("ANALYTICS_URL","GATSBY_ANALYTICS_URL");set("DATE_FULL_MONTH","GATSBY_DATE_FULL_MONTH");set("TABLE_SCROLL_MODE","GATSBY_TABLE_SCROLL_MODE");set("HIDE_LANGUAGE_SWITCH","GATSBY_HIDE_LANGUAGE_SWITCH");// Apply theme class immediately if provided
-applyThemeClass((_window$sessionStorag=window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME"))!==null&&_window$sessionStorag!==void 0?_window$sessionStorag:"");updateSessionStorage();}catch(_){/* runtime.json is optional; env defaults apply */}};const initiateFromEnv=async()=>{var _process$env$GATSBY_S,_process$env$GATSBY_A,_process$env$GATSBY_N,_process$env$GATSBY_F,_process$env$GATSBY_O,_process$env$GATSBY_J,_process$env$GATSBY_J2,_process$env$GATSBY_J3,_process$env$GATSBY_F2,_process$env$GATSBY_F3,_process$env$GATSBY_F4,_process$env$GATSBY_F5,_process$env$GATSBY_F6,_process$env$GATSBY_F7,_process$env$GATSBY_O2,_process$env$GATSBY_S2,_process$env$GATSBY_S3,_process$env$GATSBY_A2,_process$env$GATSBY_D,_process$env$GATSBY_T,_process$env$GATSBY_H,_process$env$GATSBY_C,_process$env$GATSBY_C2,_process$env$GATSBY_N2;window.sessionStorage.setItem("SHOW_THEME_SWITCHER",(_process$env$GATSBY_S="false")!==null&&_process$env$GATSBY_S!==void 0?_process$env$GATSBY_S:"");window.sessionStorage.setItem("API_BASE_URL", false?0:(_process$env$GATSBY_A="/api")!==null&&_process$env$GATSBY_A!==void 0?_process$env$GATSBY_A:"");window.sessionStorage.setItem("NL_DESIGN_THEME_CLASSNAME",(_process$env$GATSBY_N="conduction-theme")!==null&&_process$env$GATSBY_N!==void 0?_process$env$GATSBY_N:"");window.sessionStorage.setItem("FAVICON_URL",(_process$env$GATSBY_F="data:image/svg+xml,%3Csvg id='Laag_1' data-name='Laag 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 259.81 300'%3E%3Cpath d='M129.9,0,0,75V225l129.9,75,129.91-75V75Zm96.8,205.89-96.8,55.88L33.1,205.89V94.11l96.8-55.89,96.8,55.89Z' style='fill:%234376fc'/%3E%3Cpolygon points='129.59 112.23 160.01 129.79 195.41 109.35 129.59 71.35 61.47 110.67 61.47 189.33 129.59 228.65 195.41 190.65 160.01 170.21 129.59 187.77 96.88 168.88 96.88 131.12 129.59 112.23' style='fill:%234376fc'/%3E%3C/svg%3E")!==null&&_process$env$GATSBY_F!==void 0?_process$env$GATSBY_F:"");window.sessionStorage.setItem("ORGANISATION_NAME",(_process$env$GATSBY_O="Conduction")!==null&&_process$env$GATSBY_O!==void 0?_process$env$GATSBY_O:"");window.sessionStorage.setItem("JUMBOTRON_IMAGE_URL",(_process$env$GATSBY_J="https://raw.githubusercontent.com/ConductionNL/woo-website-conduction/main/cropped-Conduction_HOME_0000_afb1-1.png")!==null&&_process$env$GATSBY_J!==void 0?_process$env$GATSBY_J:"");window.sessionStorage.setItem("JUMBOTRON_TITLE",(_process$env$GATSBY_J2=({}).GATSBY_JUMBOTRON_TITLE)!==null&&_process$env$GATSBY_J2!==void 0?_process$env$GATSBY_J2:"");window.sessionStorage.setItem("JUMBOTRON_SUBTITLE",(_process$env$GATSBY_J3=({}).GATSBY_JUMBOTRON_SUBTITLE)!==null&&_process$env$GATSBY_J3!==void 0?_process$env$GATSBY_J3:"");window.sessionStorage.setItem("FOOTER_LOGO_URL",(_process$env$GATSBY_F2="https://conduction.nl")!==null&&_process$env$GATSBY_F2!==void 0?_process$env$GATSBY_F2:"");window.sessionStorage.setItem("FOOTER_LOGO_HREF",(_process$env$GATSBY_F3="https://conduction.nl/")!==null&&_process$env$GATSBY_F3!==void 0?_process$env$GATSBY_F3:"");window.sessionStorage.setItem("FOOTER_CONTENT",(_process$env$GATSBY_F4="")!==null&&_process$env$GATSBY_F4!==void 0?_process$env$GATSBY_F4:"");window.sessionStorage.setItem("FOOTER_CONTENT_HEADER",(_process$env$GATSBY_F5="heading-4")!==null&&_process$env$GATSBY_F5!==void 0?_process$env$GATSBY_F5:"");window.sessionStorage.setItem("FOOTER_HIDE_LOVE",(_process$env$GATSBY_F6="")!==null&&_process$env$GATSBY_F6!==void 0?_process$env$GATSBY_F6:"");window.sessionStorage.setItem("FOOTER_HIDE_LOGO",(_process$env$GATSBY_F7="")!==null&&_process$env$GATSBY_F7!==void 0?_process$env$GATSBY_F7:"");window.sessionStorage.setItem("OIDN_NUMBER",(_process$env$GATSBY_O2="00000001809245206000")!==null&&_process$env$GATSBY_O2!==void 0?_process$env$GATSBY_O2:"");window.sessionStorage.setItem("SHOW_CATEGORY",(_process$env$GATSBY_S2="true")!==null&&_process$env$GATSBY_S2!==void 0?_process$env$GATSBY_S2:"");window.sessionStorage.setItem("SHOW_ORGANIZATION",(_process$env$GATSBY_S3="")!==null&&_process$env$GATSBY_S3!==void 0?_process$env$GATSBY_S3:"");window.sessionStorage.setItem("ANALYTICS_URL",(_process$env$GATSBY_A2="")!==null&&_process$env$GATSBY_A2!==void 0?_process$env$GATSBY_A2:"");window.sessionStorage.setItem("DATE_FULL_MONTH",(_process$env$GATSBY_D="false")!==null&&_process$env$GATSBY_D!==void 0?_process$env$GATSBY_D:"");window.sessionStorage.setItem("TABLE_SCROLL_MODE",(_process$env$GATSBY_T="")!==null&&_process$env$GATSBY_T!==void 0?_process$env$GATSBY_T:"");window.sessionStorage.setItem("HIDE_LANGUAGE_SWITCH",(_process$env$GATSBY_H=({}).GATSBY_HIDE_LANGUAGE_SWITCH)!==null&&_process$env$GATSBY_H!==void 0?_process$env$GATSBY_H:"");// CSP overrides (optional)
+};const useEnvironment=()=>{const[,setSessionStorageUpdatedId]=react.useState("-1");const handleStorageChange=()=>{setSessionStorageUpdatedId(uniqueId_default()());themeSwitcherMiddleware();};const updateSessionStorage=()=>{window.dispatchEvent(new Event("sessionStorageChange"));};react.useEffect(()=>{window.addEventListener("sessionStorageChange",handleStorageChange);return()=>{window.removeEventListener("sessionStorageChange",handleStorageChange);};},[]);const overlayFromRuntimeJson=async()=>{try{var _window$sessionStorag;let res=await fetch("/config/runtime.json",{cache:"no-store"});if(!res.ok){try{res=await fetch("/runtime.json",{cache:"no-store"});}catch(_){/* fallback location is optional */}if(!res.ok)return;}const cfg=await res.json();const set=(k,envKey)=>{var _cfg$k;const v=(_cfg$k=cfg[k])!==null&&_cfg$k!==void 0?_cfg$k:envKey?cfg[envKey]:undefined;if(typeof v==="string")window.sessionStorage.setItem(k,v);};set("NL_DESIGN_THEME_CLASSNAME","GATSBY_NL_DESIGN_THEME_CLASSNAME");set("FAVICON_URL","GATSBY_FAVICON_URL");set("ORGANISATION_NAME","GATSBY_ORGANISATION_NAME");set("JUMBOTRON_IMAGE_URL","GATSBY_JUMBOTRON_IMAGE_URL");set("JUMBOTRON_TITLE","GATSBY_JUMBOTRON_TITLE");set("JUMBOTRON_SUBTITLE","GATSBY_JUMBOTRON_SUBTITLE");set("FOOTER_LOGO_URL","GATSBY_FOOTER_LOGO_URL");set("FOOTER_LOGO_HREF","GATSBY_FOOTER_LOGO_HREF");set("FOOTER_CONTENT","GATSBY_FOOTER_CONTENT");set("FOOTER_CONTENT_HEADER","GATSBY_FOOTER_CONTENT_HEADER");set("FOOTER_HIDE_LOVE","GATSBY_FOOTER_HIDE_LOVE");set("FOOTER_HIDE_LOGO","GATSBY_FOOTER_HIDE_LOGO");set("OIDN_NUMBER","GATSBY_OIDN_NUMBER");set("SHOW_CATEGORY","GATSBY_SHOW_CATEGORY");set("SHOW_ORGANIZATION","GATSBY_SHOW_ORGANIZATION");set("ANALYTICS_URL","GATSBY_ANALYTICS_URL");set("DATE_FULL_MONTH","GATSBY_DATE_FULL_MONTH");set("TABLE_SCROLL_MODE","GATSBY_TABLE_SCROLL_MODE");set("HIDE_LANGUAGE_SWITCH","GATSBY_HIDE_LANGUAGE_SWITCH");set("MAINTENANCE_MODE","GATSBY_MAINTENANCE_MODE");set("MAINTENANCE_TITLE_NL","GATSBY_MAINTENANCE_TITLE_NL");set("MAINTENANCE_MESSAGE_NL","GATSBY_MAINTENANCE_MESSAGE_NL");set("MAINTENANCE_TITLE_EN","GATSBY_MAINTENANCE_TITLE_EN");set("MAINTENANCE_MESSAGE_EN","GATSBY_MAINTENANCE_MESSAGE_EN");// Apply theme class immediately if provided
+applyThemeClass((_window$sessionStorag=window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME"))!==null&&_window$sessionStorag!==void 0?_window$sessionStorag:"");updateSessionStorage();}catch(_){/* runtime.json is optional; env defaults apply */}};const initiateFromEnv=async()=>{var _process$env$GATSBY_S,_process$env$GATSBY_A,_process$env$GATSBY_N,_process$env$GATSBY_F,_process$env$GATSBY_O,_process$env$GATSBY_J,_process$env$GATSBY_J2,_process$env$GATSBY_J3,_process$env$GATSBY_F2,_process$env$GATSBY_F3,_process$env$GATSBY_F4,_process$env$GATSBY_F5,_process$env$GATSBY_F6,_process$env$GATSBY_F7,_process$env$GATSBY_O2,_process$env$GATSBY_S2,_process$env$GATSBY_S3,_process$env$GATSBY_A2,_process$env$GATSBY_D,_process$env$GATSBY_T,_process$env$GATSBY_H,_process$env$GATSBY_M,_process$env$GATSBY_M2,_process$env$GATSBY_M3,_process$env$GATSBY_M4,_process$env$GATSBY_M5,_process$env$GATSBY_C,_process$env$GATSBY_C2,_process$env$GATSBY_N2;window.sessionStorage.setItem("SHOW_THEME_SWITCHER",(_process$env$GATSBY_S="false")!==null&&_process$env$GATSBY_S!==void 0?_process$env$GATSBY_S:"");window.sessionStorage.setItem("API_BASE_URL", false?0:(_process$env$GATSBY_A="/api")!==null&&_process$env$GATSBY_A!==void 0?_process$env$GATSBY_A:"");window.sessionStorage.setItem("NL_DESIGN_THEME_CLASSNAME",(_process$env$GATSBY_N="conduction-theme")!==null&&_process$env$GATSBY_N!==void 0?_process$env$GATSBY_N:"");window.sessionStorage.setItem("FAVICON_URL",(_process$env$GATSBY_F="data:image/svg+xml,%3Csvg id='Laag_1' data-name='Laag 1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 259.81 300'%3E%3Cpath d='M129.9,0,0,75V225l129.9,75,129.91-75V75Zm96.8,205.89-96.8,55.88L33.1,205.89V94.11l96.8-55.89,96.8,55.89Z' style='fill:%234376fc'/%3E%3Cpolygon points='129.59 112.23 160.01 129.79 195.41 109.35 129.59 71.35 61.47 110.67 61.47 189.33 129.59 228.65 195.41 190.65 160.01 170.21 129.59 187.77 96.88 168.88 96.88 131.12 129.59 112.23' style='fill:%234376fc'/%3E%3C/svg%3E")!==null&&_process$env$GATSBY_F!==void 0?_process$env$GATSBY_F:"");window.sessionStorage.setItem("ORGANISATION_NAME",(_process$env$GATSBY_O="Conduction")!==null&&_process$env$GATSBY_O!==void 0?_process$env$GATSBY_O:"");window.sessionStorage.setItem("JUMBOTRON_IMAGE_URL",(_process$env$GATSBY_J="https://raw.githubusercontent.com/ConductionNL/woo-website-conduction/main/cropped-Conduction_HOME_0000_afb1-1.png")!==null&&_process$env$GATSBY_J!==void 0?_process$env$GATSBY_J:"");window.sessionStorage.setItem("JUMBOTRON_TITLE",(_process$env$GATSBY_J2="")!==null&&_process$env$GATSBY_J2!==void 0?_process$env$GATSBY_J2:"");window.sessionStorage.setItem("JUMBOTRON_SUBTITLE",(_process$env$GATSBY_J3="")!==null&&_process$env$GATSBY_J3!==void 0?_process$env$GATSBY_J3:"");window.sessionStorage.setItem("FOOTER_LOGO_URL",(_process$env$GATSBY_F2="https://conduction.nl")!==null&&_process$env$GATSBY_F2!==void 0?_process$env$GATSBY_F2:"");window.sessionStorage.setItem("FOOTER_LOGO_HREF",(_process$env$GATSBY_F3="https://conduction.nl/")!==null&&_process$env$GATSBY_F3!==void 0?_process$env$GATSBY_F3:"");window.sessionStorage.setItem("FOOTER_CONTENT",(_process$env$GATSBY_F4="")!==null&&_process$env$GATSBY_F4!==void 0?_process$env$GATSBY_F4:"");window.sessionStorage.setItem("FOOTER_CONTENT_HEADER",(_process$env$GATSBY_F5="heading-4")!==null&&_process$env$GATSBY_F5!==void 0?_process$env$GATSBY_F5:"");window.sessionStorage.setItem("FOOTER_HIDE_LOVE",(_process$env$GATSBY_F6="")!==null&&_process$env$GATSBY_F6!==void 0?_process$env$GATSBY_F6:"");window.sessionStorage.setItem("FOOTER_HIDE_LOGO",(_process$env$GATSBY_F7="")!==null&&_process$env$GATSBY_F7!==void 0?_process$env$GATSBY_F7:"");window.sessionStorage.setItem("OIDN_NUMBER",(_process$env$GATSBY_O2="00000001809245206000")!==null&&_process$env$GATSBY_O2!==void 0?_process$env$GATSBY_O2:"");window.sessionStorage.setItem("SHOW_CATEGORY",(_process$env$GATSBY_S2="true")!==null&&_process$env$GATSBY_S2!==void 0?_process$env$GATSBY_S2:"");window.sessionStorage.setItem("SHOW_ORGANIZATION",(_process$env$GATSBY_S3="")!==null&&_process$env$GATSBY_S3!==void 0?_process$env$GATSBY_S3:"");window.sessionStorage.setItem("ANALYTICS_URL",(_process$env$GATSBY_A2="")!==null&&_process$env$GATSBY_A2!==void 0?_process$env$GATSBY_A2:"");window.sessionStorage.setItem("DATE_FULL_MONTH",(_process$env$GATSBY_D="false")!==null&&_process$env$GATSBY_D!==void 0?_process$env$GATSBY_D:"");window.sessionStorage.setItem("TABLE_SCROLL_MODE",(_process$env$GATSBY_T="")!==null&&_process$env$GATSBY_T!==void 0?_process$env$GATSBY_T:"");window.sessionStorage.setItem("HIDE_LANGUAGE_SWITCH",(_process$env$GATSBY_H="")!==null&&_process$env$GATSBY_H!==void 0?_process$env$GATSBY_H:"");window.sessionStorage.setItem("MAINTENANCE_MODE",(_process$env$GATSBY_M="")!==null&&_process$env$GATSBY_M!==void 0?_process$env$GATSBY_M:"");window.sessionStorage.setItem("MAINTENANCE_TITLE_NL",(_process$env$GATSBY_M2="")!==null&&_process$env$GATSBY_M2!==void 0?_process$env$GATSBY_M2:"");window.sessionStorage.setItem("MAINTENANCE_MESSAGE_NL",(_process$env$GATSBY_M3="")!==null&&_process$env$GATSBY_M3!==void 0?_process$env$GATSBY_M3:"");window.sessionStorage.setItem("MAINTENANCE_TITLE_EN",(_process$env$GATSBY_M4="")!==null&&_process$env$GATSBY_M4!==void 0?_process$env$GATSBY_M4:"");window.sessionStorage.setItem("MAINTENANCE_MESSAGE_EN",(_process$env$GATSBY_M5="")!==null&&_process$env$GATSBY_M5!==void 0?_process$env$GATSBY_M5:"");// CSP overrides (optional)
 window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL",(_process$env$GATSBY_C="")!==null&&_process$env$GATSBY_C!==void 0?_process$env$GATSBY_C:"");window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA",(_process$env$GATSBY_C2="")!==null&&_process$env$GATSBY_C2!==void 0?_process$env$GATSBY_C2:"");// Apply theme class immediately to prevent flash
-applyThemeClass((_process$env$GATSBY_N2="conduction-theme")!==null&&_process$env$GATSBY_N2!==void 0?_process$env$GATSBY_N2:"");updateSessionStorage();await overlayFromRuntimeJson();};const initiateFromJSON=(themeOrDomainName,host)=>{var _config$GATSBY_SHOW_T,_config$GATSBY_API_BA,_config$GATSBY_NL_DES,_config$GATSBY_FAVICO,_config$GATSBY_ORGANI,_config$GATSBY_JUMBOT,_config$GATSBY_JUMBOT2,_config$GATSBY_JUMBOT3,_config$GATSBY_FOOTER,_config$GATSBY_FOOTER2,_config$GATSBY_FOOTER3,_config$GATSBY_FOOTER4,_config$GATSBY_FOOTER5,_config$GATSBY_FOOTER6,_config$GATSBY_OIDN_N,_config$GATSBY_SHOW_C,_config$GATSBY_SHOW_O,_config$GATSBY_ANALYT,_config$GATSBY_DATE_F,_config$GATSBY_TABLE_,_config$GATSBY_HIDE_L,_config$GATSBY_CSP_CO,_config$GATSBY_CSP_CO2,_config$GATSBY_NL_DES2;const config=getConfig(themeOrDomainName,host);if(!config)return;// no config found, nothing else to do
-window.sessionStorage.setItem("SHOW_THEME_SWITCHER",(_config$GATSBY_SHOW_T=config.GATSBY_SHOW_THEME_SWITCHER)!==null&&_config$GATSBY_SHOW_T!==void 0?_config$GATSBY_SHOW_T:"");window.sessionStorage.setItem("API_BASE_URL", false?0:(_config$GATSBY_API_BA=config.GATSBY_API_BASE_URL)!==null&&_config$GATSBY_API_BA!==void 0?_config$GATSBY_API_BA:"");window.sessionStorage.setItem("NL_DESIGN_THEME_CLASSNAME",(_config$GATSBY_NL_DES=config.GATSBY_NL_DESIGN_THEME_CLASSNAME)!==null&&_config$GATSBY_NL_DES!==void 0?_config$GATSBY_NL_DES:"");window.sessionStorage.setItem("FAVICON_URL",(_config$GATSBY_FAVICO=config.GATSBY_FAVICON_URL)!==null&&_config$GATSBY_FAVICO!==void 0?_config$GATSBY_FAVICO:"");window.sessionStorage.setItem("ORGANISATION_NAME",(_config$GATSBY_ORGANI=config.GATSBY_ORGANISATION_NAME)!==null&&_config$GATSBY_ORGANI!==void 0?_config$GATSBY_ORGANI:"");window.sessionStorage.setItem("JUMBOTRON_IMAGE_URL",(_config$GATSBY_JUMBOT=config.GATSBY_JUMBOTRON_IMAGE_URL)!==null&&_config$GATSBY_JUMBOT!==void 0?_config$GATSBY_JUMBOT:"");window.sessionStorage.setItem("JUMBOTRON_TITLE",(_config$GATSBY_JUMBOT2=config.GATSBY_JUMBOTRON_TITLE)!==null&&_config$GATSBY_JUMBOT2!==void 0?_config$GATSBY_JUMBOT2:"");window.sessionStorage.setItem("JUMBOTRON_SUBTITLE",(_config$GATSBY_JUMBOT3=config.GATSBY_JUMBOTRON_SUBTITLE)!==null&&_config$GATSBY_JUMBOT3!==void 0?_config$GATSBY_JUMBOT3:"");window.sessionStorage.setItem("FOOTER_LOGO_URL",(_config$GATSBY_FOOTER=config.GATSBY_FOOTER_LOGO_URL)!==null&&_config$GATSBY_FOOTER!==void 0?_config$GATSBY_FOOTER:"");window.sessionStorage.setItem("FOOTER_LOGO_HREF",(_config$GATSBY_FOOTER2=config.GATSBY_FOOTER_LOGO_HREF)!==null&&_config$GATSBY_FOOTER2!==void 0?_config$GATSBY_FOOTER2:"");window.sessionStorage.setItem("FOOTER_CONTENT",(_config$GATSBY_FOOTER3=config.GATSBY_FOOTER_CONTENT)!==null&&_config$GATSBY_FOOTER3!==void 0?_config$GATSBY_FOOTER3:"");window.sessionStorage.setItem("FOOTER_CONTENT_HEADER",(_config$GATSBY_FOOTER4=config.GATSBY_FOOTER_CONTENT_HEADER)!==null&&_config$GATSBY_FOOTER4!==void 0?_config$GATSBY_FOOTER4:"");window.sessionStorage.setItem("FOOTER_HIDE_LOVE",(_config$GATSBY_FOOTER5=config.GATSBY_FOOTER_HIDE_LOVE)!==null&&_config$GATSBY_FOOTER5!==void 0?_config$GATSBY_FOOTER5:"");window.sessionStorage.setItem("FOOTER_HIDE_LOGO",(_config$GATSBY_FOOTER6=config.GATSBY_FOOTER_HIDE_LOGO)!==null&&_config$GATSBY_FOOTER6!==void 0?_config$GATSBY_FOOTER6:"");window.sessionStorage.setItem("OIDN_NUMBER",(_config$GATSBY_OIDN_N=config.GATSBY_OIDN_NUMBER)!==null&&_config$GATSBY_OIDN_N!==void 0?_config$GATSBY_OIDN_N:"");window.sessionStorage.setItem("SHOW_CATEGORY",(_config$GATSBY_SHOW_C=config.GATSBY_SHOW_CATEGORY)!==null&&_config$GATSBY_SHOW_C!==void 0?_config$GATSBY_SHOW_C:"");window.sessionStorage.setItem("SHOW_ORGANIZATION",(_config$GATSBY_SHOW_O=config.GATSBY_SHOW_ORGANIZATION)!==null&&_config$GATSBY_SHOW_O!==void 0?_config$GATSBY_SHOW_O:"");window.sessionStorage.setItem("ANALYTICS_URL",(_config$GATSBY_ANALYT=config.GATSBY_ANALYTICS_URL)!==null&&_config$GATSBY_ANALYT!==void 0?_config$GATSBY_ANALYT:"");window.sessionStorage.setItem("DATE_FULL_MONTH",(_config$GATSBY_DATE_F=config.GATSBY_DATE_FULL_MONTH)!==null&&_config$GATSBY_DATE_F!==void 0?_config$GATSBY_DATE_F:"");window.sessionStorage.setItem("TABLE_SCROLL_MODE",(_config$GATSBY_TABLE_=config.GATSBY_TABLE_SCROLL_MODE)!==null&&_config$GATSBY_TABLE_!==void 0?_config$GATSBY_TABLE_:"");window.sessionStorage.setItem("HIDE_LANGUAGE_SWITCH",(_config$GATSBY_HIDE_L=config.GATSBY_HIDE_LANGUAGE_SWITCH)!==null&&_config$GATSBY_HIDE_L!==void 0?_config$GATSBY_HIDE_L:"");// CSP overrides (optional)
+applyThemeClass((_process$env$GATSBY_N2="conduction-theme")!==null&&_process$env$GATSBY_N2!==void 0?_process$env$GATSBY_N2:"");updateSessionStorage();await overlayFromRuntimeJson();};const initiateFromJSON=(themeOrDomainName,host)=>{var _config$GATSBY_SHOW_T,_config$GATSBY_API_BA,_config$GATSBY_NL_DES,_config$GATSBY_FAVICO,_config$GATSBY_ORGANI,_config$GATSBY_JUMBOT,_config$GATSBY_JUMBOT2,_config$GATSBY_JUMBOT3,_config$GATSBY_FOOTER,_config$GATSBY_FOOTER2,_config$GATSBY_FOOTER3,_config$GATSBY_FOOTER4,_config$GATSBY_FOOTER5,_config$GATSBY_FOOTER6,_config$GATSBY_OIDN_N,_config$GATSBY_SHOW_C,_config$GATSBY_SHOW_O,_config$GATSBY_ANALYT,_config$GATSBY_DATE_F,_config$GATSBY_TABLE_,_config$GATSBY_HIDE_L,_config$GATSBY_MAINTE,_config$GATSBY_MAINTE2,_config$GATSBY_MAINTE3,_config$GATSBY_MAINTE4,_config$GATSBY_MAINTE5,_config$GATSBY_CSP_CO,_config$GATSBY_CSP_CO2,_config$GATSBY_NL_DES2;const config=getConfig(themeOrDomainName,host);if(!config)return;// no config found, nothing else to do
+window.sessionStorage.setItem("SHOW_THEME_SWITCHER",(_config$GATSBY_SHOW_T=config.GATSBY_SHOW_THEME_SWITCHER)!==null&&_config$GATSBY_SHOW_T!==void 0?_config$GATSBY_SHOW_T:"");window.sessionStorage.setItem("API_BASE_URL", false?0:(_config$GATSBY_API_BA=config.GATSBY_API_BASE_URL)!==null&&_config$GATSBY_API_BA!==void 0?_config$GATSBY_API_BA:"");window.sessionStorage.setItem("NL_DESIGN_THEME_CLASSNAME",(_config$GATSBY_NL_DES=config.GATSBY_NL_DESIGN_THEME_CLASSNAME)!==null&&_config$GATSBY_NL_DES!==void 0?_config$GATSBY_NL_DES:"");window.sessionStorage.setItem("FAVICON_URL",(_config$GATSBY_FAVICO=config.GATSBY_FAVICON_URL)!==null&&_config$GATSBY_FAVICO!==void 0?_config$GATSBY_FAVICO:"");window.sessionStorage.setItem("ORGANISATION_NAME",(_config$GATSBY_ORGANI=config.GATSBY_ORGANISATION_NAME)!==null&&_config$GATSBY_ORGANI!==void 0?_config$GATSBY_ORGANI:"");window.sessionStorage.setItem("JUMBOTRON_IMAGE_URL",(_config$GATSBY_JUMBOT=config.GATSBY_JUMBOTRON_IMAGE_URL)!==null&&_config$GATSBY_JUMBOT!==void 0?_config$GATSBY_JUMBOT:"");window.sessionStorage.setItem("JUMBOTRON_TITLE",(_config$GATSBY_JUMBOT2=config.GATSBY_JUMBOTRON_TITLE)!==null&&_config$GATSBY_JUMBOT2!==void 0?_config$GATSBY_JUMBOT2:"");window.sessionStorage.setItem("JUMBOTRON_SUBTITLE",(_config$GATSBY_JUMBOT3=config.GATSBY_JUMBOTRON_SUBTITLE)!==null&&_config$GATSBY_JUMBOT3!==void 0?_config$GATSBY_JUMBOT3:"");window.sessionStorage.setItem("FOOTER_LOGO_URL",(_config$GATSBY_FOOTER=config.GATSBY_FOOTER_LOGO_URL)!==null&&_config$GATSBY_FOOTER!==void 0?_config$GATSBY_FOOTER:"");window.sessionStorage.setItem("FOOTER_LOGO_HREF",(_config$GATSBY_FOOTER2=config.GATSBY_FOOTER_LOGO_HREF)!==null&&_config$GATSBY_FOOTER2!==void 0?_config$GATSBY_FOOTER2:"");window.sessionStorage.setItem("FOOTER_CONTENT",(_config$GATSBY_FOOTER3=config.GATSBY_FOOTER_CONTENT)!==null&&_config$GATSBY_FOOTER3!==void 0?_config$GATSBY_FOOTER3:"");window.sessionStorage.setItem("FOOTER_CONTENT_HEADER",(_config$GATSBY_FOOTER4=config.GATSBY_FOOTER_CONTENT_HEADER)!==null&&_config$GATSBY_FOOTER4!==void 0?_config$GATSBY_FOOTER4:"");window.sessionStorage.setItem("FOOTER_HIDE_LOVE",(_config$GATSBY_FOOTER5=config.GATSBY_FOOTER_HIDE_LOVE)!==null&&_config$GATSBY_FOOTER5!==void 0?_config$GATSBY_FOOTER5:"");window.sessionStorage.setItem("FOOTER_HIDE_LOGO",(_config$GATSBY_FOOTER6=config.GATSBY_FOOTER_HIDE_LOGO)!==null&&_config$GATSBY_FOOTER6!==void 0?_config$GATSBY_FOOTER6:"");window.sessionStorage.setItem("OIDN_NUMBER",(_config$GATSBY_OIDN_N=config.GATSBY_OIDN_NUMBER)!==null&&_config$GATSBY_OIDN_N!==void 0?_config$GATSBY_OIDN_N:"");window.sessionStorage.setItem("SHOW_CATEGORY",(_config$GATSBY_SHOW_C=config.GATSBY_SHOW_CATEGORY)!==null&&_config$GATSBY_SHOW_C!==void 0?_config$GATSBY_SHOW_C:"");window.sessionStorage.setItem("SHOW_ORGANIZATION",(_config$GATSBY_SHOW_O=config.GATSBY_SHOW_ORGANIZATION)!==null&&_config$GATSBY_SHOW_O!==void 0?_config$GATSBY_SHOW_O:"");window.sessionStorage.setItem("ANALYTICS_URL",(_config$GATSBY_ANALYT=config.GATSBY_ANALYTICS_URL)!==null&&_config$GATSBY_ANALYT!==void 0?_config$GATSBY_ANALYT:"");window.sessionStorage.setItem("DATE_FULL_MONTH",(_config$GATSBY_DATE_F=config.GATSBY_DATE_FULL_MONTH)!==null&&_config$GATSBY_DATE_F!==void 0?_config$GATSBY_DATE_F:"");window.sessionStorage.setItem("TABLE_SCROLL_MODE",(_config$GATSBY_TABLE_=config.GATSBY_TABLE_SCROLL_MODE)!==null&&_config$GATSBY_TABLE_!==void 0?_config$GATSBY_TABLE_:"");window.sessionStorage.setItem("HIDE_LANGUAGE_SWITCH",(_config$GATSBY_HIDE_L=config.GATSBY_HIDE_LANGUAGE_SWITCH)!==null&&_config$GATSBY_HIDE_L!==void 0?_config$GATSBY_HIDE_L:"");window.sessionStorage.setItem("MAINTENANCE_MODE",(_config$GATSBY_MAINTE=config.GATSBY_MAINTENANCE_MODE)!==null&&_config$GATSBY_MAINTE!==void 0?_config$GATSBY_MAINTE:"");window.sessionStorage.setItem("MAINTENANCE_TITLE_NL",(_config$GATSBY_MAINTE2=config.GATSBY_MAINTENANCE_TITLE_NL)!==null&&_config$GATSBY_MAINTE2!==void 0?_config$GATSBY_MAINTE2:"");window.sessionStorage.setItem("MAINTENANCE_MESSAGE_NL",(_config$GATSBY_MAINTE3=config.GATSBY_MAINTENANCE_MESSAGE_NL)!==null&&_config$GATSBY_MAINTE3!==void 0?_config$GATSBY_MAINTE3:"");window.sessionStorage.setItem("MAINTENANCE_TITLE_EN",(_config$GATSBY_MAINTE4=config.GATSBY_MAINTENANCE_TITLE_EN)!==null&&_config$GATSBY_MAINTE4!==void 0?_config$GATSBY_MAINTE4:"");window.sessionStorage.setItem("MAINTENANCE_MESSAGE_EN",(_config$GATSBY_MAINTE5=config.GATSBY_MAINTENANCE_MESSAGE_EN)!==null&&_config$GATSBY_MAINTE5!==void 0?_config$GATSBY_MAINTE5:"");// CSP overrides (optional)
 window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL",(_config$GATSBY_CSP_CO=config.GATSBY_CSP_CONNECT_SRC_FULL)!==null&&_config$GATSBY_CSP_CO!==void 0?_config$GATSBY_CSP_CO:"");window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA",(_config$GATSBY_CSP_CO2=config.GATSBY_CSP_CONNECT_SRC_EXTRA)!==null&&_config$GATSBY_CSP_CO2!==void 0?_config$GATSBY_CSP_CO2:"");// Apply theme class immediately (this path previously relied on Head.tsx to set it)
 applyThemeClass((_config$GATSBY_NL_DES2=config.GATSBY_NL_DESIGN_THEME_CLASSNAME)!==null&&_config$GATSBY_NL_DES2!==void 0?_config$GATSBY_NL_DES2:"");updateSessionStorage();};const themeSwitcherMiddleware=()=>{switch(window.location.hostname){case"koophulpje.nl":// case "localhost": // development purposes
 window.sessionStorage.setItem("SHOW_THEME_SWITCHER","true");break;}switch(window.location.pathname){case"/woo-website-template-apiv2/":window.sessionStorage.setItem("SHOW_THEME_SWITCHER","true");break;}if(false)// removed by dead control flow
@@ -18731,7 +19492,7 @@ window.sessionStorage.setItem("SHOW_THEME_SWITCHER","true");break;}switch(window
 const ThemeSwitcherTopBar=()=>{const{initiateFromJSON}=useEnvironment();const{control,register,formState:{errors},watch,setValue}=(0,index_esm/* useForm */.mN)();const watchTheme=watch("theme");react.useEffect(()=>{if(watchTheme)return;const themeOptions=availableThemes.flatMap(group=>group.options);setValue("theme",themeOptions.find(theme=>theme.value===window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME")));// init select field based on domain name
 },[]);react.useEffect(()=>{if(!watchTheme)return;if(window.sessionStorage.getItem("SHOW_THEME_SWITCHER")!=="true")return;(0,gatsby_browser_entry/* navigate */.oo)("/");initiateFromJSON(watchTheme.value,window.location.host);},[watchTheme]);if(window.sessionStorage.getItem("SHOW_THEME_SWITCHER")==="true"){return/*#__PURE__*/(0,jsx_runtime.jsxs)("section",{className:(0,clsx/* default */.A)(ThemeSwitcherTopBar_module_container,"open-webconcept-theme"),children:[/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading3 */._B,{children:"Koophulpje"}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Paragraph */.fz,{children:"Bekijk de Woo-berichten van verschillende gemeenten"})]}),/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Paragraph */.fz,{className:label,children:"Selecteer een gemeente"}),/*#__PURE__*/(0,jsx_runtime.jsx)(lib/* SelectSingle */.L9,{options:availableThemes,name:"theme",ariaLabel:"Theme selector",register,errors,control})]})]});}return/*#__PURE__*/(0,jsx_runtime.jsx)(jsx_runtime.Fragment,{});};
 ;// ./src/Content.tsx
-const Content=_ref=>{let{children}=_ref;return/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:Content_module_container,children:[/*#__PURE__*/(0,jsx_runtime.jsx)(ThemeSwitcherTopBar,{}),/*#__PURE__*/(0,jsx_runtime.jsx)(HeaderTemplate,{layoutClassName:header}),/*#__PURE__*/(0,jsx_runtime.jsx)("main",{id:"mainContent",tabIndex:-1,className:Content_module_pageContent,children:children}),/*#__PURE__*/(0,jsx_runtime.jsx)(FooterTemplate/* FooterTemplate */.c,{})]});};
+const Content=({children})=>{return/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:Content_module_container,children:[/*#__PURE__*/(0,jsx_runtime.jsx)(ThemeSwitcherTopBar,{}),/*#__PURE__*/(0,jsx_runtime.jsx)(HeaderTemplate,{layoutClassName:header}),/*#__PURE__*/(0,jsx_runtime.jsx)("main",{id:"mainContent",tabIndex:-1,className:Content_module_pageContent,children:children}),/*#__PURE__*/(0,jsx_runtime.jsx)(FooterTemplate/* FooterTemplate */.c,{})]});};
 // EXTERNAL MODULE: ./node_modules/@fortawesome/free-solid-svg-icons/index.mjs
 var free_solid_svg_icons = __webpack_require__(6188);
 // EXTERNAL MODULE: ./node_modules/@fortawesome/free-brands-svg-icons/index.mjs
@@ -19930,14 +20691,35 @@ var wrapper = "ErrorScreen-module--wrapper--1acab";
 // EXTERNAL MODULE: ./node_modules/@fortawesome/react-fontawesome/index.es.js
 var index_es = __webpack_require__(6784);
 ;// ./src/components/errorScreen/ErrorScreen.tsx
-const ErrorScreen=_ref=>{let{error,errorInfo}=_ref;const{t}=(0,es/* useTranslation */.Bd)();const[showDetails,setShowDetails]=react.useState(false);const isHomePage=typeof window!=="undefined"&&window.location.pathname==="/";return/*#__PURE__*/(0,jsx_runtime.jsx)("div",{className:wrapper,children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Page */.YW,{children:/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* PageContent */.TK,{className:ErrorScreen_module_container,children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading1 */._,{className:title,children:t("This page is temporarily unavailable")}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Paragraph */.fz,{children:t("The requested government information cannot currently be displayed.")}),/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* OrderedList */._J,{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* OrderedListItem */.RW,{children:t("Refresh the page to try again.")}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* OrderedListItem */.RW,{children:t("Check if you have an active internet connection.")}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* OrderedListItem */.RW,{children:t("If the problem persists, please contact the municipality.")})]}),error&&/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* Alert */.Fc,{className:ErrorScreen_module_error,icon:/*#__PURE__*/(0,jsx_runtime.jsx)(index_es/* FontAwesomeIcon */.g,{icon:free_solid_svg_icons/* faWarning */.QJT}),type:"error",children:[/*#__PURE__*/(0,jsx_runtime.jsxs)("strong",{children:[t("Error")," ",error.name,":"]})," ",error.message]}),!isHomePage&&/*#__PURE__*/(0,jsx_runtime.jsx)("div",{className:homeButtonWrapper,children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Button */.$n,{appearance:"primary-action-button",onClick:()=>(0,gatsby_browser_entry/* navigate */.oo)("/"),children:t("Back to homepage")})}),errorInfo&&/*#__PURE__*/(0,jsx_runtime.jsxs)(jsx_runtime.Fragment,{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Separator */.wv,{}),/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:detailsSection,children:[/*#__PURE__*/(0,jsx_runtime.jsx)("div",{className:toggleButtonWrapper,children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Button */.$n,{appearance:"secondary-action-button","aria-expanded":showDetails,"aria-controls":"error-technical-details",onClick:()=>setShowDetails(!showDetails),children:showDetails?t("Hide technical details"):t("Show technical details")})}),showDetails&&/*#__PURE__*/(0,jsx_runtime.jsx)("div",{id:"error-technical-details",children:(error===null||error===void 0?void 0:error.stack)&&/*#__PURE__*/(0,jsx_runtime.jsxs)(jsx_runtime.Fragment,{children:[/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* Heading2 */.fV,{children:[t("Stack trace"),":"]}),/*#__PURE__*/(0,jsx_runtime.jsx)(lib/* HorizontalOverflowWrapper */.ax,{ariaLabels:{scrollLeftButton:t("Scroll left"),scrollRightButton:t("Scroll right")},children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* CodeBlock */.NG,{className:codeBlock,children:error.stack})})]})})]})]})]})})});};
+const ErrorScreen=({error,errorInfo})=>{const{t}=(0,es/* useTranslation */.Bd)();const[showDetails,setShowDetails]=react.useState(false);const isHomePage=typeof window!=="undefined"&&window.location.pathname==="/";return/*#__PURE__*/(0,jsx_runtime.jsx)("div",{className:wrapper,children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Page */.YW,{children:/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* PageContent */.TK,{className:ErrorScreen_module_container,children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading1 */._,{className:title,children:t("This page is temporarily unavailable")}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Paragraph */.fz,{children:t("The requested government information cannot currently be displayed.")}),/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* OrderedList */._J,{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* OrderedListItem */.RW,{children:t("Refresh the page to try again.")}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* OrderedListItem */.RW,{children:t("Check if you have an active internet connection.")}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* OrderedListItem */.RW,{children:t("If the problem persists, please contact the municipality.")})]}),error&&/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* Alert */.Fc,{className:ErrorScreen_module_error,icon:/*#__PURE__*/(0,jsx_runtime.jsx)(index_es/* FontAwesomeIcon */.g,{icon:free_solid_svg_icons/* faWarning */.QJT}),type:"error",children:[/*#__PURE__*/(0,jsx_runtime.jsxs)("strong",{children:[t("Error")," ",error.name,":"]})," ",error.message]}),!isHomePage&&/*#__PURE__*/(0,jsx_runtime.jsx)("div",{className:homeButtonWrapper,children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Button */.$n,{appearance:"primary-action-button",onClick:()=>(0,gatsby_browser_entry/* navigate */.oo)("/"),children:t("Back to homepage")})}),errorInfo&&/*#__PURE__*/(0,jsx_runtime.jsxs)(jsx_runtime.Fragment,{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Separator */.wv,{}),/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:detailsSection,children:[/*#__PURE__*/(0,jsx_runtime.jsx)("div",{className:toggleButtonWrapper,children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Button */.$n,{appearance:"secondary-action-button","aria-expanded":showDetails,"aria-controls":"error-technical-details",onClick:()=>setShowDetails(!showDetails),children:showDetails?t("Hide technical details"):t("Show technical details")})}),showDetails&&/*#__PURE__*/(0,jsx_runtime.jsx)("div",{id:"error-technical-details",children:(error===null||error===void 0?void 0:error.stack)&&/*#__PURE__*/(0,jsx_runtime.jsxs)(jsx_runtime.Fragment,{children:[/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* Heading2 */.fV,{children:[t("Stack trace"),":"]}),/*#__PURE__*/(0,jsx_runtime.jsx)(lib/* HorizontalOverflowWrapper */.ax,{ariaLabels:{scrollLeftButton:t("Scroll left"),scrollRightButton:t("Scroll right")},children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* CodeBlock */.NG,{className:codeBlock,children:error.stack})})]})})]})]})]})})});};
 ;// ./src/components/errorBoundary/ErrorBoundary.tsx
 let ErrorBoundary=/*#__PURE__*/function(_React$Component){function ErrorBoundary(props){var _this;_this=_React$Component.call(this,props)||this;_this.state={hasError:false,error:null,errorInfo:null};return _this;}(0,inheritsLoose/* default */.A)(ErrorBoundary,_React$Component);ErrorBoundary.getDerivedStateFromError=function getDerivedStateFromError(error){return{hasError:true,error};};var _proto=ErrorBoundary.prototype;_proto.componentDidCatch=function componentDidCatch(error,errorInfo){console.error("ErrorBoundary caught an error:",error,errorInfo);this.setState({error,errorInfo});};_proto.render=function render(){if(this.state.hasError){return/*#__PURE__*/(0,jsx_runtime.jsx)(ErrorScreen,{error:this.state.error,errorInfo:this.state.errorInfo});}return this.props.children;};return ErrorBoundary;}(react.Component);
+;// ./src/components/maintenanceScreen/MaintenanceScreen.module.css
+// extracted by mini-css-extract-plugin
+var content = "MaintenanceScreen-module--content--3fc4b";
+var MaintenanceScreen_module_message = "MaintenanceScreen-module--message--b97c2";
+var section = "MaintenanceScreen-module--section--f5c8a";
+var separator = "MaintenanceScreen-module--separator--df1d1";
+;// ./src/components/maintenanceScreen/MaintenanceScreen.tsx
+// Configured texts replace the defaults per language; plain text, shown as written
+const configured=key=>{var _window$sessionStorag;return((_window$sessionStorag=window.sessionStorage.getItem(key))===null||_window$sessionStorag===void 0?void 0:_window$sessionStorag.trim())||undefined;};const MaintenanceScreen=()=>{var _configured,_configured2;const{i18n}=(0,es/* useTranslation */.Bd)();// The screen has no language switch, so it always shows both languages:
+// Dutch first, then English, each marked with its own lang attribute (WCAG 3.1.2).
+const tNl=i18n.getFixedT("nl");const tEn=i18n.getFixedT("en");return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Page */.YW,{children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* PageContent */.TK,{children:/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:content,children:[/*#__PURE__*/(0,jsx_runtime.jsxs)("section",{lang:"nl",className:section,children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading1 */._,{children:(_configured=configured("MAINTENANCE_TITLE_NL"))!==null&&_configured!==void 0?_configured:tNl("This website is temporarily unavailable")}),/*#__PURE__*/(0,jsx_runtime.jsx)(MaintenanceMessage,{message:configured("MAINTENANCE_MESSAGE_NL"),t:tNl})]}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Separator */.wv,{className:separator}),/*#__PURE__*/(0,jsx_runtime.jsxs)("section",{lang:"en",className:section,children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading2 */.fV,{children:(_configured2=configured("MAINTENANCE_TITLE_EN"))!==null&&_configured2!==void 0?_configured2:tEn("This website is temporarily unavailable")}),/*#__PURE__*/(0,jsx_runtime.jsx)(MaintenanceMessage,{message:configured("MAINTENANCE_MESSAGE_EN"),t:tEn})]})]})})});};const MaintenanceMessage=({message,t})=>{if(message)return/*#__PURE__*/(0,jsx_runtime.jsx)("div",{className:MaintenanceScreen_module_message,children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Paragraph */.fz,{children:message})});// Default text follows Dutch government outage notices (Belastingdienst, CIBG
+// error-page pattern): what is wrong, what you can do, apology last. Same text as
+// the neutral static fallback page (static/maintenance.html); keep them in sync.
+return/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:MaintenanceScreen_module_message,children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Paragraph */.fz,{children:t("We are working to make it available again as soon as possible.")}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Paragraph */.fz,{children:t("Please try again later.")}),/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Paragraph */.fz,{children:t("We apologise for the inconvenience.")})]});};
+;// ./src/hooks/useMaintenance.ts
+/**
+ * True when maintenance mode is switched on in the configuration (MAINTENANCE_MODE):
+ * the themed maintenance screen then replaces the site. An unreachable backend is not
+ * handled here; that sends the visitor to the neutral static fallback page instead
+ * (see services/apiAvailability.ts).
+ */const useMaintenance=()=>typeof window!=="undefined"&&window.sessionStorage.getItem("MAINTENANCE_MODE")==="true";
 ;// ./src/layout/Layout.tsx
-const TOOLTIP_ID="cb8f47c3-7151-4a46-954d-784a531b01e6";const Layout=_ref=>{let{children,pageContext,location}=_ref;const[API,setAPI]=react.useState(react.useContext(apiContext/* default */.A));const[globalContext,setGlobalContext]=react.useState(global/* defaultGlobalContext */.gx);const{initiateFromEnv,initiateFromJSON}=useEnvironment();const[environmentInitialized,setEnvironmentInitialized]=react.useState(false);fontawesome_svg_core/* library */.Yv.add(free_solid_svg_icons/* fas */.X7I,free_brands_svg_icons/* fab */.Cvc,icons);// Initialize environment synchronously before first render
+const TOOLTIP_ID="cb8f47c3-7151-4a46-954d-784a531b01e6";const Layout=({children,pageContext,location})=>{const[API,setAPI]=react.useState(react.useContext(apiContext/* default */.A));const[globalContext,setGlobalContext]=react.useState(global/* defaultGlobalContext */.gx);const{initiateFromEnv,initiateFromJSON}=useEnvironment();const[environmentInitialized,setEnvironmentInitialized]=react.useState(false);fontawesome_svg_core/* library */.Yv.add(free_solid_svg_icons/* fas */.X7I,free_brands_svg_icons/* fab */.Cvc,icons);// Initialize environment synchronously before first render
 react.useLayoutEffect(()=>{const initEnvironment=async()=>{if(true){await initiateFromEnv();}else// removed by dead control flow
 {}setEnvironmentInitialized(true);};initEnvironment();},[]);react.useEffect(()=>{setAPI(new apiService/* default */.A());},[pageContext]);react.useEffect(()=>{setGlobalContext(context=>({...context,initiated:true,gatsby:{...{pageContext,location,previousPath:location.pathname}}}));},[pageContext,location]);// Prefetch the pages query so consumers render from the warm cache.
-(0,pages/* usePages */.Q)().getAll();if(!globalContext.initiated||!environmentInitialized)return/*#__PURE__*/(0,jsx_runtime.jsx)(jsx_runtime.Fragment,{});return/*#__PURE__*/(0,jsx_runtime.jsx)(jsx_runtime.Fragment,{children:/*#__PURE__*/(0,jsx_runtime.jsxs)(global/* GlobalProvider */.D2,{value:[globalContext,setGlobalContext],children:[/*#__PURE__*/(0,jsx_runtime.jsx)(Head,{}),/*#__PURE__*/(0,jsx_runtime.jsx)(apiContext/* APIProvider */.c,{value:API,children:/*#__PURE__*/(0,jsx_runtime.jsx)(ErrorBoundary,{children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Surface */.ui,{children:/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* Document */.yo,{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(lib/* ToolTip */.wV,{id:TOOLTIP_ID}),/*#__PURE__*/(0,jsx_runtime.jsx)("div",{className:container,children:/*#__PURE__*/(0,jsx_runtime.jsx)(Content,{children})})]})})})})]})});};/* harmony default export */ var layout_Layout = (Layout);
+(0,pages/* usePages */.Q)().getAll();const maintenance=useMaintenance();if(!globalContext.initiated||!environmentInitialized)return/*#__PURE__*/(0,jsx_runtime.jsx)(jsx_runtime.Fragment,{});return/*#__PURE__*/(0,jsx_runtime.jsx)(jsx_runtime.Fragment,{children:/*#__PURE__*/(0,jsx_runtime.jsxs)(global/* GlobalProvider */.D2,{value:[globalContext,setGlobalContext],children:[/*#__PURE__*/(0,jsx_runtime.jsx)(Head,{}),/*#__PURE__*/(0,jsx_runtime.jsx)(apiContext/* APIProvider */.c,{value:API,children:/*#__PURE__*/(0,jsx_runtime.jsx)(ErrorBoundary,{children:maintenance?/*#__PURE__*/(0,jsx_runtime.jsx)(MaintenanceScreen,{}):/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Surface */.ui,{children:/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* Document */.yo,{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(lib/* ToolTip */.wV,{id:TOOLTIP_ID}),/*#__PURE__*/(0,jsx_runtime.jsx)("div",{className:container,children:/*#__PURE__*/(0,jsx_runtime.jsx)(Content,{children})})]})})})})]})});};/* harmony default export */ var layout_Layout = (Layout);
 
 /***/ }),
 
@@ -19967,7 +20749,7 @@ __webpack_require__.d(__webpack_exports__, {
 ;// ./src/data/years.ts
 const generateYearsArray=amountOfYears=>{const currentYear=new Date().getFullYear();const yearsArray=[];for(let i=0;i<amountOfYears;i++){const year=currentYear-i;const beforeDate=`${year+1}-01-01T00:00:00Z`;const afterDate=`${year-1}-12-31T23:59:59Z`;yearsArray.push({label:`${year}`,value:`${year}`,before:beforeDate,after:afterDate});}return yearsArray;};
 ;// ./src/services/filtersToQueryParams.ts
-const filtersToQueryParams=filters=>{const cleanedFilters=Object.fromEntries(Object.entries(filters).filter(_ref=>{let[key]=_ref;return!filterKeysToRemove.includes(key);}));const params=Object.entries(cleanedFilters).map(_ref2=>{let[key,value]=_ref2;if(!value)return null;if(typeof value==="string"){switch(key){case"categorie":return`@self[schema]=${value}`;default:return`${key}=${value}`;}}const formattedValue=Array.isArray(value)?value.map(v=>v.replace(/\s+/g,"_")).join(`&${key}[]=`):value;return`${Array.isArray(value)?`${key}[]`:key}=${formattedValue}`;}).filter(Boolean).join("&");return params?`&${params}`:"";};const filtersToUrlQueryParams=filters=>{const today=new Date();const currentYear=today.getFullYear();const cleanedFilters=Object.fromEntries(Object.entries(filters).filter(_ref3=>{let[key]=_ref3;return!filterKeysToRemove.includes(key);}));const params=Object.entries(cleanedFilters).map(_ref4=>{var _generateYearsArray$f;let[key,value]=_ref4;if(!value)return null;const formattedValue=Array.isArray(value)?value.map(v=>v.replace(/\s+/g,"_")).join(`&${key}[]=`):value.replace(/\s+/g,"_");if(key=="publicatiedatum[gte]")return;if(key=="publicatiedatum[lte]")return`year=${(_generateYearsArray$f=generateYearsArray(currentYear-1995).find(year=>{return year.before===value;}))===null||_generateYearsArray$f===void 0?void 0:_generateYearsArray$f.value}`;if(key=="@self[schema]")return`categorie=${value.title||value.name||value}`;return`${Array.isArray(value)?`${key}[]`:key}=${formattedValue}`;}).filter(Boolean).join("&");return params?`?${params}`:"";};const filterKeysToRemove=[];
+const filtersToQueryParams=filters=>{const cleanedFilters=Object.fromEntries(Object.entries(filters).filter(([key])=>!filterKeysToRemove.includes(key)));const params=Object.entries(cleanedFilters).map(([key,value])=>{if(!value)return null;if(typeof value==="string"){switch(key){case"categorie":return`@self[schema]=${value}`;default:return`${key}=${value}`;}}const formattedValue=Array.isArray(value)?value.map(v=>v.replace(/\s+/g,"_")).join(`&${key}[]=`):value;return`${Array.isArray(value)?`${key}[]`:key}=${formattedValue}`;}).filter(Boolean).join("&");return params?`&${params}`:"";};const filtersToUrlQueryParams=filters=>{const today=new Date();const currentYear=today.getFullYear();const cleanedFilters=Object.fromEntries(Object.entries(filters).filter(([key])=>!filterKeysToRemove.includes(key)));const params=Object.entries(cleanedFilters).map(([key,value])=>{var _generateYearsArray$f;if(!value)return null;const formattedValue=Array.isArray(value)?value.map(v=>v.replace(/\s+/g,"_")).join(`&${key}[]=`):value.replace(/\s+/g,"_");if(key=="publicatiedatum[gte]")return;if(key=="publicatiedatum[lte]")return`year=${(_generateYearsArray$f=generateYearsArray(currentYear-1995).find(year=>{return year.before===value;}))===null||_generateYearsArray$f===void 0?void 0:_generateYearsArray$f.value}`;if(key=="@self[schema]")return`categorie=${value.title||value.name||value}`;return`${Array.isArray(value)?`${key}[]`:key}=${formattedValue}`;}).filter(Boolean).join("&");return params?`?${params}`:"";};const filterKeysToRemove=[];
 
 /***/ }),
 
@@ -19981,11 +20763,11 @@ const filtersToQueryParams=filters=>{const cleanedFilters=Object.fromEntries(Obj
 /* harmony export */   T8: function() { return /* binding */ getMenusFromPositions; }
 /* harmony export */ });
 /* unused harmony exports processMenuTemplate, filterMenuItemsByVisibility, getTopRightMenu */
-const isEntityVisibleForUser=(entity,userIsAuthenticated,userGroups)=>{var _ref,_entity$authRequired;if(!entity)return false;const requiresAuth=Boolean((_ref=(_entity$authRequired=entity===null||entity===void 0?void 0:entity.authRequired)!==null&&_entity$authRequired!==void 0?_entity$authRequired:entity===null||entity===void 0?void 0:entity.requiresAuth)!==null&&_ref!==void 0?_ref:entity===null||entity===void 0?void 0:entity.protected);if(requiresAuth&&!userIsAuthenticated)return false;const allowedGroups=Array.isArray(entity===null||entity===void 0?void 0:entity.groups)&&entity.groups||Array.isArray(entity===null||entity===void 0?void 0:entity.roles)&&entity.roles||Array.isArray(entity===null||entity===void 0?void 0:entity.allowedGroups)&&entity.allowedGroups||[];if(allowedGroups.length>0){const hasIntersection=userGroups.some(g=>allowedGroups.includes(g));if(!hasIntersection)return false;}return true;};const processMenuTemplate=text=>{var _window$sessionStorag;if(typeof text!=="string")return"";const organisation=(_window$sessionStorag=window.sessionStorage.getItem("ORGANISATION_NAME"))!==null&&_window$sessionStorag!==void 0?_window$sessionStorag:"";const year=String(new Date().getFullYear());return text.replace(/\{\s*ORGANISATION_NAME\s*\}/gi,organisation).replace(/\{\s*YEAR\s*\}/gi,year).replace(/\$\{\s*ORGANISATION_NAME\s*\}/gi,organisation).replace(/\$\{\s*YEAR\s*\}/gi,year);};const filterMenuItemsByVisibility=function(items,userIsAuthenticated,userGroups){if(items===void 0){items=[];}return items.filter(item=>isEntityVisibleForUser(item,userIsAuthenticated,userGroups)).map(item=>{var _ref2,_item$name,_ref3,_ref4,_item$link,_item$link2;const name=processMenuTemplate((_ref2=(_item$name=item===null||item===void 0?void 0:item.name)!==null&&_item$name!==void 0?_item$name:item===null||item===void 0?void 0:item.title)!==null&&_ref2!==void 0?_ref2:"");const hasLink=Boolean((_ref3=(_ref4=(_item$link=item===null||item===void 0?void 0:item.link)!==null&&_item$link!==void 0?_item$link:item===null||item===void 0?void 0:item.href)!==null&&_ref4!==void 0?_ref4:item===null||item===void 0?void 0:item.url)!==null&&_ref3!==void 0?_ref3:item===null||item===void 0?void 0:item.path);const slug=item===null||item===void 0?void 0:item.slug;const fallbackLink=!hasLink&&typeof slug==="string"&&slug.length>0?`/${slug}`:undefined;return{...item,name,link:(_item$link2=item===null||item===void 0?void 0:item.link)!==null&&_item$link2!==void 0?_item$link2:fallbackLink};});};const getMenusFromPositions=function(items,positions,userIsAuthenticated,userGroups){if(userIsAuthenticated===void 0){userIsAuthenticated=false;}if(userGroups===void 0){userGroups=[];}if(!Array.isArray(items)||items.length===0)return[];const menusAtPositions=items.map((m,index)=>({...m,_originalIndex:index})).filter(m=>{var _m$position;return m&&positions.includes(Number((_m$position=m===null||m===void 0?void 0:m.position)!==null&&_m$position!==void 0?_m$position:m===null||m===void 0?void 0:m.pos));});return menusAtPositions.filter(menu=>isEntityVisibleForUser(menu,userIsAuthenticated,userGroups)).sort((a,b)=>{var _a$position,_b$position;const posA=Number((_a$position=a===null||a===void 0?void 0:a.position)!==null&&_a$position!==void 0?_a$position:a===null||a===void 0?void 0:a.pos);const posB=Number((_b$position=b===null||b===void 0?void 0:b.position)!==null&&_b$position!==void 0?_b$position:b===null||b===void 0?void 0:b.pos);// Sort by position first (3, 4, 5)
+const isEntityVisibleForUser=(entity,userIsAuthenticated,userGroups)=>{var _ref,_entity$authRequired;if(!entity)return false;const requiresAuth=Boolean((_ref=(_entity$authRequired=entity===null||entity===void 0?void 0:entity.authRequired)!==null&&_entity$authRequired!==void 0?_entity$authRequired:entity===null||entity===void 0?void 0:entity.requiresAuth)!==null&&_ref!==void 0?_ref:entity===null||entity===void 0?void 0:entity.protected);if(requiresAuth&&!userIsAuthenticated)return false;const allowedGroups=Array.isArray(entity===null||entity===void 0?void 0:entity.groups)&&entity.groups||Array.isArray(entity===null||entity===void 0?void 0:entity.roles)&&entity.roles||Array.isArray(entity===null||entity===void 0?void 0:entity.allowedGroups)&&entity.allowedGroups||[];if(allowedGroups.length>0){const hasIntersection=userGroups.some(g=>allowedGroups.includes(g));if(!hasIntersection)return false;}return true;};const processMenuTemplate=text=>{var _window$sessionStorag;if(typeof text!=="string")return"";const organisation=(_window$sessionStorag=window.sessionStorage.getItem("ORGANISATION_NAME"))!==null&&_window$sessionStorag!==void 0?_window$sessionStorag:"";const year=String(new Date().getFullYear());return text.replace(/\{\s*ORGANISATION_NAME\s*\}/gi,organisation).replace(/\{\s*YEAR\s*\}/gi,year).replace(/\$\{\s*ORGANISATION_NAME\s*\}/gi,organisation).replace(/\$\{\s*YEAR\s*\}/gi,year);};const filterMenuItemsByVisibility=(items=[],userIsAuthenticated,userGroups)=>items.filter(item=>isEntityVisibleForUser(item,userIsAuthenticated,userGroups)).map(item=>{var _ref2,_item$name,_ref3,_ref4,_item$link,_item$link2;const name=processMenuTemplate((_ref2=(_item$name=item===null||item===void 0?void 0:item.name)!==null&&_item$name!==void 0?_item$name:item===null||item===void 0?void 0:item.title)!==null&&_ref2!==void 0?_ref2:"");const hasLink=Boolean((_ref3=(_ref4=(_item$link=item===null||item===void 0?void 0:item.link)!==null&&_item$link!==void 0?_item$link:item===null||item===void 0?void 0:item.href)!==null&&_ref4!==void 0?_ref4:item===null||item===void 0?void 0:item.url)!==null&&_ref3!==void 0?_ref3:item===null||item===void 0?void 0:item.path);const slug=item===null||item===void 0?void 0:item.slug;const fallbackLink=!hasLink&&typeof slug==="string"&&slug.length>0?`/${slug}`:undefined;return{...item,name,link:(_item$link2=item===null||item===void 0?void 0:item.link)!==null&&_item$link2!==void 0?_item$link2:fallbackLink};});const getMenusFromPositions=(items,positions,userIsAuthenticated=false,userGroups=[])=>{if(!Array.isArray(items)||items.length===0)return[];const menusAtPositions=items.map((m,index)=>({...m,_originalIndex:index})).filter(m=>{var _m$position;return m&&positions.includes(Number((_m$position=m===null||m===void 0?void 0:m.position)!==null&&_m$position!==void 0?_m$position:m===null||m===void 0?void 0:m.pos));});return menusAtPositions.filter(menu=>isEntityVisibleForUser(menu,userIsAuthenticated,userGroups)).sort((a,b)=>{var _a$position,_b$position;const posA=Number((_a$position=a===null||a===void 0?void 0:a.position)!==null&&_a$position!==void 0?_a$position:a===null||a===void 0?void 0:a.pos);const posB=Number((_b$position=b===null||b===void 0?void 0:b.position)!==null&&_b$position!==void 0?_b$position:b===null||b===void 0?void 0:b.pos);// Sort by position first (3, 4, 5)
 if(posA!==posB)return posA-posB;// If same position, maintain original order (left to right)
-return a._originalIndex-b._originalIndex;}).map(menu=>{var _ref5,_menu$name,_ref6,_ref7,_menu$items;return{...menu,name:processMenuTemplate((_ref5=(_menu$name=menu===null||menu===void 0?void 0:menu.name)!==null&&_menu$name!==void 0?_menu$name:menu===null||menu===void 0?void 0:menu.title)!==null&&_ref5!==void 0?_ref5:""),items:filterMenuItemsByVisibility((_ref6=(_ref7=(_menu$items=menu===null||menu===void 0?void 0:menu.items)!==null&&_menu$items!==void 0?_menu$items:menu===null||menu===void 0?void 0:menu.links)!==null&&_ref7!==void 0?_ref7:menu===null||menu===void 0?void 0:menu.children)!==null&&_ref6!==void 0?_ref6:[],userIsAuthenticated,userGroups)};});};const getMenuFromPosition=function(items,position,userIsAuthenticated,userGroups){var _getMenusFromPosition;if(userIsAuthenticated===void 0){userIsAuthenticated=false;}if(userGroups===void 0){userGroups=[];}return(_getMenusFromPosition=getMenusFromPositions(items,[position],userIsAuthenticated,userGroups)[0])!==null&&_getMenusFromPosition!==void 0?_getMenusFromPosition:null;};// Specific selection logic for position 1 (top-right):
+return a._originalIndex-b._originalIndex;}).map(menu=>{var _ref5,_menu$name,_ref6,_ref7,_menu$items;return{...menu,name:processMenuTemplate((_ref5=(_menu$name=menu===null||menu===void 0?void 0:menu.name)!==null&&_menu$name!==void 0?_menu$name:menu===null||menu===void 0?void 0:menu.title)!==null&&_ref5!==void 0?_ref5:""),items:filterMenuItemsByVisibility((_ref6=(_ref7=(_menu$items=menu===null||menu===void 0?void 0:menu.items)!==null&&_menu$items!==void 0?_menu$items:menu===null||menu===void 0?void 0:menu.links)!==null&&_ref7!==void 0?_ref7:menu===null||menu===void 0?void 0:menu.children)!==null&&_ref6!==void 0?_ref6:[],userIsAuthenticated,userGroups)};});};const getMenuFromPosition=(items,position,userIsAuthenticated=false,userGroups=[])=>{var _getMenusFromPosition;return(_getMenusFromPosition=getMenusFromPositions(items,[position],userIsAuthenticated,userGroups)[0])!==null&&_getMenusFromPosition!==void 0?_getMenusFromPosition:null;};// Specific selection logic for position 1 (top-right):
 // pick the first menu with position 1 where hideBeforeLogin === false (supports hidebeforeLogin casing too)
-const getTopRightMenu=function(items,userIsAuthenticated,userGroups){var _ref8,_selected$name,_ref9,_ref0,_selected$items;if(userIsAuthenticated===void 0){userIsAuthenticated=false;}if(userGroups===void 0){userGroups=[];}if(!Array.isArray(items)||items.length===0)return null;const menusAtPosition=items.filter(m=>{var _m$position2;return Number((_m$position2=m===null||m===void 0?void 0:m.position)!==null&&_m$position2!==void 0?_m$position2:m===null||m===void 0?void 0:m.pos)===1;});if(menusAtPosition.length===0)return null;const pickFirstVisible=menusAtPosition.find(m=>{var _m$hideBeforeLogin;return Boolean((_m$hideBeforeLogin=m===null||m===void 0?void 0:m.hideBeforeLogin)!==null&&_m$hideBeforeLogin!==void 0?_m$hideBeforeLogin:m===null||m===void 0?void 0:m.hidebeforeLogin)===false;});const selected=pickFirstVisible!==null&&pickFirstVisible!==void 0?pickFirstVisible:null;if(!selected)return null;return{...selected,name:processMenuTemplate((_ref8=(_selected$name=selected===null||selected===void 0?void 0:selected.name)!==null&&_selected$name!==void 0?_selected$name:selected===null||selected===void 0?void 0:selected.title)!==null&&_ref8!==void 0?_ref8:""),items:filterMenuItemsByVisibility((_ref9=(_ref0=(_selected$items=selected===null||selected===void 0?void 0:selected.items)!==null&&_selected$items!==void 0?_selected$items:selected===null||selected===void 0?void 0:selected.links)!==null&&_ref0!==void 0?_ref0:selected===null||selected===void 0?void 0:selected.children)!==null&&_ref9!==void 0?_ref9:[],userIsAuthenticated,userGroups)};};
+const getTopRightMenu=(items,userIsAuthenticated=false,userGroups=[])=>{var _ref8,_selected$name,_ref9,_ref0,_selected$items;if(!Array.isArray(items)||items.length===0)return null;const menusAtPosition=items.filter(m=>{var _m$position2;return Number((_m$position2=m===null||m===void 0?void 0:m.position)!==null&&_m$position2!==void 0?_m$position2:m===null||m===void 0?void 0:m.pos)===1;});if(menusAtPosition.length===0)return null;const pickFirstVisible=menusAtPosition.find(m=>{var _m$hideBeforeLogin;return Boolean((_m$hideBeforeLogin=m===null||m===void 0?void 0:m.hideBeforeLogin)!==null&&_m$hideBeforeLogin!==void 0?_m$hideBeforeLogin:m===null||m===void 0?void 0:m.hidebeforeLogin)===false;});const selected=pickFirstVisible!==null&&pickFirstVisible!==void 0?pickFirstVisible:null;if(!selected)return null;return{...selected,name:processMenuTemplate((_ref8=(_selected$name=selected===null||selected===void 0?void 0:selected.name)!==null&&_selected$name!==void 0?_selected$name:selected===null||selected===void 0?void 0:selected.title)!==null&&_ref8!==void 0?_ref8:""),items:filterMenuItemsByVisibility((_ref9=(_ref0=(_selected$items=selected===null||selected===void 0?void 0:selected.items)!==null&&_selected$items!==void 0?_selected$items:selected===null||selected===void 0?void 0:selected.links)!==null&&_ref0!==void 0?_ref0:selected===null||selected===void 0?void 0:selected.children)!==null&&_ref9!==void 0?_ref9:[],userIsAuthenticated,userGroups)};};
 
 /***/ }),
 
@@ -20072,8 +20854,8 @@ const orderedSections=react.useMemo(()=>{if(!sectionsToRender)return[];// Group 
 const left=[];const center=[];const right=[];sectionsToRender.forEach(section=>{var _position;const position=(_position=section===null||section===void 0?void 0:section.position)!==null&&_position!==void 0?_position:section===null||section===void 0?void 0:section.pos;const posNum=Number(position);if(posNum===3){left.push(section);}else if(posNum===4){center.push(section);}else if(posNum===5){right.push(section);}});// Interleave sections row by row with empty placeholders
 const result=[];const maxRows=Math.max(left.length,center.length,right.length);for(let row=0;row<maxRows;row++){var _left$row,_center$row,_right$row;const leftItem=(_left$row=left[row])!==null&&_left$row!==void 0?_left$row:null;const centerItem=(_center$row=center[row])!==null&&_center$row!==void 0?_center$row:null;const rightItem=(_right$row=right[row])!==null&&_right$row!==void 0?_right$row:null;// Find the rightmost non-null item in this row
 const hasRight=rightItem!==null;const hasCenter=centerItem!==null;const hasLeft=leftItem!==null;// Add items up to and including the rightmost non-null item
-if(hasRight){result.push(leftItem,centerItem,rightItem);}else if(hasCenter){result.push(leftItem,centerItem);}else if(hasLeft){result.push(leftItem);}}return result;},[sectionsToRender]);return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* PageFooter */.FM,{className:footer,children:/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:container,children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading2 */.fV,{className:visuallyHidden,children:t("About this website")}),/*#__PURE__*/(0,jsx_runtime.jsx)("div",{className:contentGrid,lang:"nl",children:orderedSections.map((content,idx)=>content?/*#__PURE__*/(0,jsx_runtime.jsx)(DynamicSection,{content},idx):/*#__PURE__*/(0,jsx_runtime.jsx)("div",{},`empty-${idx}`))}),/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:logoAndConduction,children:[window.sessionStorage.getItem("FOOTER_HIDE_LOGO")!=="true"&&/* @deprecated: setting GATSBY_FOOTER_LOGO_URL to "false" to hide the logo is deprecated, use GATSBY_FOOTER_HIDE_LOGO="true" instead */window.sessionStorage.getItem("FOOTER_LOGO_URL")!=="false"&&/*#__PURE__*/(0,jsx_runtime.jsx)(lib/* Logo */.gu,{variant:"footer",onClick:()=>{var _window$sessionStorag;return window.sessionStorage.getItem("FOOTER_LOGO_HREF")?open((_window$sessionStorag=window.sessionStorage.getItem("FOOTER_LOGO_HREF"))!==null&&_window$sessionStorag!==void 0?_window$sessionStorag:"","_blank","noopener,noreferrer"):(0,index_modern/* navigate */.oo)("/");}}),window.sessionStorage.getItem("FOOTER_HIDE_LOVE")!=="true"&&/*#__PURE__*/(0,jsx_runtime.jsx)(WithLoveByConduction,{})]})]})});};const DynamicSection=_ref=>{var _window$sessionStorag2;let{content}=_ref;return/*#__PURE__*/(0,jsx_runtime.jsxs)("section",{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(DynamicSectionHeading,{heading:(_window$sessionStorag2=window.sessionStorage.getItem("FOOTER_CONTENT_HEADER"))!==null&&_window$sessionStorag2!==void 0?_window$sessionStorag2:"",content}),content.items.map((item,idx)=>{var _window$sessionStorag3,_item$value;return/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:dynamicSectionContent,children:[item.valueMode==="title"&&/*#__PURE__*/(0,jsx_runtime.jsx)(DynamicItemHeading,{heading:(_window$sessionStorag3=window.sessionStorage.getItem("FOOTER_CONTENT_HEADER"))!==null&&_window$sessionStorag3!==void 0?_window$sessionStorag3:"",title:(_item$value=item.value)!==null&&_item$value!==void 0?_item$value:item.name}),item.label&&/*#__PURE__*/(0,jsx_runtime.jsx)("strong",{children:item.label}),(item.linkMode==="link"||!item.linkMode&&item.link)&&item.link&&item.link!=="no-link"&&(/^https?:\/\//i.test(item.link)||/^www\./i.test(item.link))&&/*#__PURE__*/(0,jsx_runtime.jsx)(ExternalLink,{item}),(item.linkMode==="link"||!item.linkMode&&item.link)&&item.valueMode!=="multiRow"&&item.valueMode!=="title"&&item.link&&item.link!=="no-link"&&!(/^https?:\/\//i.test(item.link)||/^www\./i.test(item.link))&&/*#__PURE__*/(0,jsx_runtime.jsx)(InternalLink,{item}),item.valueMode==="multiRow"&&/*#__PURE__*/(0,jsx_runtime.jsx)(MultiRow,{item}),(!item.link||item.link==="no-link")&&item.valueMode!=="multiRow"&&/*#__PURE__*/(0,jsx_runtime.jsx)(NoLink,{item})]},idx);})]});};const DynamicSectionHeading=_ref2=>{let{content,heading}=_ref2;switch(heading){case"heading-1":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading1 */._,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel1),children:(0,i18next.t)(content.title)});case"heading-2":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading2 */.fV,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel2),children:(0,i18next.t)(content.title)});case"heading-3":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading3 */._B,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel3),children:(0,i18next.t)(content.title)});case"heading-4":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading4 */.f_,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel4),children:(0,i18next.t)(content.title)});case"heading-5":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading5 */.mM,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel5),children:(0,i18next.t)(content.title)});default:return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading3 */._B,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel3),children:(0,i18next.t)(content.title)});}};const DynamicItemHeading=_ref3=>{let{title,heading}=_ref3;switch(heading){case"heading-1":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading1 */._,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel1),children:(0,i18next.t)(title)});case"heading-2":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading2 */.fV,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel2),children:(0,i18next.t)(title)});case"heading-3":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading3 */._B,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel3),children:(0,i18next.t)(title)});case"heading-4":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading4 */.f_,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel4),children:(0,i18next.t)(title)});case"heading-5":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading5 */.mM,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel5),children:(0,i18next.t)(title)});default:return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading3 */._B,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel3),children:(0,i18next.t)(title)});}};const WithLoveByConduction=()=>{const{t}=(0,es/* useTranslation */.Bd)();return/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Link */.N_,{className:withLoveLink,href:"https://github.com/ConductionNL/woo-website-template",target:"_blank",rel:"noopener noreferrer","aria-label":`${t("Link to github repository")}, ${t("Opens a new window")}`,children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Icon */.In,{children:/*#__PURE__*/(0,jsx_runtime.jsx)(index_es/* FontAwesomeIcon */.g,{icon:free_solid_svg_icons/* faCode */.jTw})})})," ","with"," ",/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Link */.N_,{className:withLoveLink,href:"https://github.com/ConductionNL/woo-website-template/graphs/contributors",target:"_blank",rel:"noopener noreferrer","aria-label":`${t("Link to github contributors page")}, ${t("Opens a new window")}`,children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Icon */.In,{children:/*#__PURE__*/(0,jsx_runtime.jsx)(index_es/* FontAwesomeIcon */.g,{icon:free_solid_svg_icons/* faHeart */.qcK})})})," ","by"," ",/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Link */.N_,{className:withLoveLink,href:"https://conduction.nl",target:"_blank",rel:"noopener noreferrer","aria-label":`${t("Link to conduction website")}, ${t("Opens a new window")}`,children:/*#__PURE__*/(0,jsx_runtime.jsx)("span",{className:withLoveConductionLink,children:" Conduction."})})]});};const renderIcon=(item,side)=>{try{const mode=typeof(item===null||item===void 0?void 0:item.iconMode)==="string"?item.iconMode:item!==null&&item!==void 0&&item.customIcon?"custom":item!==null&&item!==void 0&&item.icon?"standard":undefined;const className=side==="left"?iconLeft:iconRight;if(mode==="custom"){var _item$customIcon;if(typeof(item===null||item===void 0?void 0:item.customIcon)==="string"){if(item.iconPlacement===side)return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Icon */.In,{className:className,children:(0,esm/* default */.Ay)(item.customIcon)});return null;}if(item!==null&&item!==void 0&&(_item$customIcon=item.customIcon)!==null&&_item$customIcon!==void 0&&_item$customIcon.icon){var _item$customIcon$plac;const placement=(_item$customIcon$plac=item.customIcon.placement)!==null&&_item$customIcon$plac!==void 0?_item$customIcon$plac:item.iconPlacement;if(placement===side)return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Icon */.In,{className:className,children:(0,esm/* default */.Ay)(item.customIcon.icon)});return null;}return null;}if(mode==="standard"){if(item!==null&&item!==void 0&&item.icon&&item.iconPlacement===side&&item.icon){return/*#__PURE__*/(0,jsx_runtime.jsx)(index_es/* FontAwesomeIcon */.g,{className:className,icon:[item.iconPrefix,item.icon]});}return null;}return null;}catch(e){return null;}};const ExternalLink=_ref4=>{let{item}=_ref4;const{t}=(0,es/* useTranslation */.Bd)();// Ensure www. links have https:// protocol
-const getFullUrl=link=>{if(/^www\./i.test(link)){return`https://${link}`;}return link;};return/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* Link */.N_,{className:FooterTemplate_module_link,href:getFullUrl(item.link),target:"_blank",rel:"noopener noreferrer",tabIndex:0,"aria-label":`${item.ariaLabel}, ${item.value||item.name}, ${t("Opens a new window")}`,children:[renderIcon(item,"left"),item.value||item.name,renderIcon(item,"right")]});};const InternalLink=_ref5=>{var _item$value2,_item$value3;let{item}=_ref5;return/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* Link */.N_,{className:FooterTemplate_module_link,onClick:e=>{var _item$link;e.preventDefault(),(0,index_modern/* navigate */.oo)((_item$link=item.link)!==null&&_item$link!==void 0?_item$link:"");},tabIndex:0,"aria-label":`${item.ariaLabel}, ${(_item$value2=item.value)!==null&&_item$value2!==void 0?_item$value2:item.name}`,href:item.link,children:[renderIcon(item,"left"),(_item$value3=item.value)!==null&&_item$value3!==void 0?_item$value3:item.name,renderIcon(item,"right")]});};const MultiRow=_ref6=>{var _item$value4;let{item}=_ref6;return/*#__PURE__*/(0,jsx_runtime.jsxs)("span",{className:multiRow,children:[renderIcon(item,"left"),/*#__PURE__*/(0,jsx_runtime.jsx)("div",{children:(_item$value4=item.value)!==null&&_item$value4!==void 0?_item$value4:item.name}),renderIcon(item,"right")]});};const NoLink=_ref7=>{var _item$value5;let{item}=_ref7;return/*#__PURE__*/(0,jsx_runtime.jsxs)("span",{children:[renderIcon(item,"left"),(_item$value5=item.value)!==null&&_item$value5!==void 0?_item$value5:item.name,renderIcon(item,"right")]});};
+if(hasRight){result.push(leftItem,centerItem,rightItem);}else if(hasCenter){result.push(leftItem,centerItem);}else if(hasLeft){result.push(leftItem);}}return result;},[sectionsToRender]);return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* PageFooter */.FM,{className:footer,children:/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:container,children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading2 */.fV,{className:visuallyHidden,children:t("About this website")}),/*#__PURE__*/(0,jsx_runtime.jsx)("div",{className:contentGrid,lang:"nl",children:orderedSections.map((content,idx)=>content?/*#__PURE__*/(0,jsx_runtime.jsx)(DynamicSection,{content},idx):/*#__PURE__*/(0,jsx_runtime.jsx)("div",{},`empty-${idx}`))}),/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:logoAndConduction,children:[window.sessionStorage.getItem("FOOTER_HIDE_LOGO")!=="true"&&/* @deprecated: setting GATSBY_FOOTER_LOGO_URL to "false" to hide the logo is deprecated, use GATSBY_FOOTER_HIDE_LOGO="true" instead */window.sessionStorage.getItem("FOOTER_LOGO_URL")!=="false"&&/*#__PURE__*/(0,jsx_runtime.jsx)(lib/* Logo */.gu,{variant:"footer",onClick:()=>{var _window$sessionStorag;return window.sessionStorage.getItem("FOOTER_LOGO_HREF")?open((_window$sessionStorag=window.sessionStorage.getItem("FOOTER_LOGO_HREF"))!==null&&_window$sessionStorag!==void 0?_window$sessionStorag:"","_blank","noopener,noreferrer"):(0,index_modern/* navigate */.oo)("/");}}),window.sessionStorage.getItem("FOOTER_HIDE_LOVE")!=="true"&&/*#__PURE__*/(0,jsx_runtime.jsx)(WithLoveByConduction,{})]})]})});};const DynamicSection=({content})=>{var _window$sessionStorag2;return/*#__PURE__*/(0,jsx_runtime.jsxs)("section",{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(DynamicSectionHeading,{heading:(_window$sessionStorag2=window.sessionStorage.getItem("FOOTER_CONTENT_HEADER"))!==null&&_window$sessionStorag2!==void 0?_window$sessionStorag2:"",content}),content.items.map((item,idx)=>{var _window$sessionStorag3,_item$value;return/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{className:dynamicSectionContent,children:[item.valueMode==="title"&&/*#__PURE__*/(0,jsx_runtime.jsx)(DynamicItemHeading,{heading:(_window$sessionStorag3=window.sessionStorage.getItem("FOOTER_CONTENT_HEADER"))!==null&&_window$sessionStorag3!==void 0?_window$sessionStorag3:"",title:(_item$value=item.value)!==null&&_item$value!==void 0?_item$value:item.name}),item.label&&/*#__PURE__*/(0,jsx_runtime.jsx)("strong",{children:item.label}),(item.linkMode==="link"||!item.linkMode&&item.link)&&item.link&&item.link!=="no-link"&&(/^https?:\/\//i.test(item.link)||/^www\./i.test(item.link))&&/*#__PURE__*/(0,jsx_runtime.jsx)(ExternalLink,{item}),(item.linkMode==="link"||!item.linkMode&&item.link)&&item.valueMode!=="multiRow"&&item.valueMode!=="title"&&item.link&&item.link!=="no-link"&&!(/^https?:\/\//i.test(item.link)||/^www\./i.test(item.link))&&/*#__PURE__*/(0,jsx_runtime.jsx)(InternalLink,{item}),item.valueMode==="multiRow"&&/*#__PURE__*/(0,jsx_runtime.jsx)(MultiRow,{item}),(!item.link||item.link==="no-link")&&item.valueMode!=="multiRow"&&/*#__PURE__*/(0,jsx_runtime.jsx)(NoLink,{item})]},idx);})]});};const DynamicSectionHeading=({content,heading})=>{switch(heading){case"heading-1":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading1 */._,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel1),children:(0,i18next.t)(content.title)});case"heading-2":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading2 */.fV,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel2),children:(0,i18next.t)(content.title)});case"heading-3":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading3 */._B,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel3),children:(0,i18next.t)(content.title)});case"heading-4":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading4 */.f_,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel4),children:(0,i18next.t)(content.title)});case"heading-5":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading5 */.mM,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel5),children:(0,i18next.t)(content.title)});default:return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading3 */._B,{className:(0,clsx/* default */.A)(dynamicSectionTitle,headingLevel3),children:(0,i18next.t)(content.title)});}};const DynamicItemHeading=({title,heading})=>{switch(heading){case"heading-1":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading1 */._,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel1),children:(0,i18next.t)(title)});case"heading-2":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading2 */.fV,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel2),children:(0,i18next.t)(title)});case"heading-3":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading3 */._B,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel3),children:(0,i18next.t)(title)});case"heading-4":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading4 */.f_,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel4),children:(0,i18next.t)(title)});case"heading-5":return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading5 */.mM,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel5),children:(0,i18next.t)(title)});default:return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Heading3 */._B,{className:(0,clsx/* default */.A)(dynamicItemHeading,headingLevel3),children:(0,i18next.t)(title)});}};const WithLoveByConduction=()=>{const{t}=(0,es/* useTranslation */.Bd)();return/*#__PURE__*/(0,jsx_runtime.jsxs)("div",{children:[/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Link */.N_,{className:withLoveLink,href:"https://github.com/ConductionNL/woo-website-template",target:"_blank",rel:"noopener noreferrer","aria-label":`${t("Link to github repository")}, ${t("Opens a new window")}`,children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Icon */.In,{children:/*#__PURE__*/(0,jsx_runtime.jsx)(index_es/* FontAwesomeIcon */.g,{icon:free_solid_svg_icons/* faCode */.jTw})})})," ","with"," ",/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Link */.N_,{className:withLoveLink,href:"https://github.com/ConductionNL/woo-website-template/graphs/contributors",target:"_blank",rel:"noopener noreferrer","aria-label":`${t("Link to github contributors page")}, ${t("Opens a new window")}`,children:/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Icon */.In,{children:/*#__PURE__*/(0,jsx_runtime.jsx)(index_es/* FontAwesomeIcon */.g,{icon:free_solid_svg_icons/* faHeart */.qcK})})})," ","by"," ",/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Link */.N_,{className:withLoveLink,href:"https://conduction.nl",target:"_blank",rel:"noopener noreferrer","aria-label":`${t("Link to conduction website")}, ${t("Opens a new window")}`,children:/*#__PURE__*/(0,jsx_runtime.jsx)("span",{className:withLoveConductionLink,children:" Conduction."})})]});};const renderIcon=(item,side)=>{try{const mode=typeof(item===null||item===void 0?void 0:item.iconMode)==="string"?item.iconMode:item!==null&&item!==void 0&&item.customIcon?"custom":item!==null&&item!==void 0&&item.icon?"standard":undefined;const className=side==="left"?iconLeft:iconRight;if(mode==="custom"){var _item$customIcon;if(typeof(item===null||item===void 0?void 0:item.customIcon)==="string"){if(item.iconPlacement===side)return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Icon */.In,{className:className,children:(0,esm/* default */.Ay)(item.customIcon)});return null;}if(item!==null&&item!==void 0&&(_item$customIcon=item.customIcon)!==null&&_item$customIcon!==void 0&&_item$customIcon.icon){var _item$customIcon$plac;const placement=(_item$customIcon$plac=item.customIcon.placement)!==null&&_item$customIcon$plac!==void 0?_item$customIcon$plac:item.iconPlacement;if(placement===side)return/*#__PURE__*/(0,jsx_runtime.jsx)(css_module/* Icon */.In,{className:className,children:(0,esm/* default */.Ay)(item.customIcon.icon)});return null;}return null;}if(mode==="standard"){if(item!==null&&item!==void 0&&item.icon&&item.iconPlacement===side&&item.icon){return/*#__PURE__*/(0,jsx_runtime.jsx)(index_es/* FontAwesomeIcon */.g,{className:className,icon:[item.iconPrefix,item.icon]});}return null;}return null;}catch(e){return null;}};const ExternalLink=({item})=>{const{t}=(0,es/* useTranslation */.Bd)();// Ensure www. links have https:// protocol
+const getFullUrl=link=>{if(/^www\./i.test(link)){return`https://${link}`;}return link;};return/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* Link */.N_,{className:FooterTemplate_module_link,href:getFullUrl(item.link),target:"_blank",rel:"noopener noreferrer",tabIndex:0,"aria-label":`${item.ariaLabel}, ${item.value||item.name}, ${t("Opens a new window")}`,children:[renderIcon(item,"left"),item.value||item.name,renderIcon(item,"right")]});};const InternalLink=({item})=>{var _item$value2,_item$value3;return/*#__PURE__*/(0,jsx_runtime.jsxs)(css_module/* Link */.N_,{className:FooterTemplate_module_link,onClick:e=>{var _item$link;e.preventDefault(),(0,index_modern/* navigate */.oo)((_item$link=item.link)!==null&&_item$link!==void 0?_item$link:"");},tabIndex:0,"aria-label":`${item.ariaLabel}, ${(_item$value2=item.value)!==null&&_item$value2!==void 0?_item$value2:item.name}`,href:item.link,children:[renderIcon(item,"left"),(_item$value3=item.value)!==null&&_item$value3!==void 0?_item$value3:item.name,renderIcon(item,"right")]});};const MultiRow=({item})=>{var _item$value4;return/*#__PURE__*/(0,jsx_runtime.jsxs)("span",{className:multiRow,children:[renderIcon(item,"left"),/*#__PURE__*/(0,jsx_runtime.jsx)("div",{children:(_item$value4=item.value)!==null&&_item$value4!==void 0?_item$value4:item.name}),renderIcon(item,"right")]});};const NoLink=({item})=>{var _item$value5;return/*#__PURE__*/(0,jsx_runtime.jsxs)("span",{children:[renderIcon(item,"left"),(_item$value5=item.value)!==null&&_item$value5!==void 0?_item$value5:item.name,renderIcon(item,"right")]});};
 
 /***/ }),
 
@@ -39544,4 +40326,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"description":"The iconic font, CSS, 
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=app-430de448c139ed56ada9.js.map
+//# sourceMappingURL=app-11e7ec46ec34e1d346af.js.map

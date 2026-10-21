@@ -1686,9 +1686,9 @@ var interpretNumericEntities = function (str) {
     });
 };
 
-var parseArrayValue = function (val, options, currentArrayLength, isFlatArrayValue) {
+var parseArrayValue = function (val, options, currentArrayLength) {
     if (val && typeof val === 'string' && options.comma && val.indexOf(',') > -1) {
-        if (isFlatArrayValue && options.throwOnLimitExceeded) {
+        if (options.throwOnLimitExceeded) {
             var commaCount = 0;
             var commaIndex = val.indexOf(',');
             while (commaIndex > -1) {
@@ -1775,8 +1775,7 @@ var parseValues = function parseQueryStringValues(str, options) {
                     parseArrayValue(
                         part.slice(pos + 1),
                         options,
-                        isArray(obj[key]) ? obj[key].length : 0,
-                        part.indexOf('[]=') === -1
+                        isArray(obj[key]) ? obj[key].length : 0
                     ),
                     function (encodedVal) {
                         return options.decoder(encodedVal, defaults.decoder, charset, 'value');
@@ -2108,6 +2107,7 @@ var defaults = {
     charsetSentinel: false,
     commaRoundTrip: false,
     delimiter: '&',
+    depth: Infinity,
     encode: true,
     encodeDotInKeys: false,
     encoder: utils.encode,
@@ -2152,9 +2152,15 @@ var stringify = function stringify(
     formatter,
     encodeValuesOnly,
     charset,
-    sideChannel
+    sideChannel,
+    depth,
+    currentDepth
 ) {
     var obj = object;
+
+    if (currentDepth > depth) {
+        throw new RangeError('Input depth exceeded depth option of ' + depth);
+    }
 
     var tmpSc = sideChannel;
     var step = 0;
@@ -2175,9 +2181,9 @@ var stringify = function stringify(
         }
     }
 
-    if (typeof filter === 'function') {
-        obj = filter(prefix, obj);
-    } else if (obj instanceof Date) {
+    obj = typeof filter === 'function' ? filter(prefix, obj) : obj;
+
+    if (obj instanceof Date) {
         obj = serializeDate(obj);
     } else if (generateArrayPrefix === 'comma' && isArray(obj)) {
         obj = utils.maybeMap(obj, function (value) {
@@ -2230,7 +2236,7 @@ var stringify = function stringify(
 
     var adjustedPrefix = commaRoundTrip && isArray(obj) && obj.length === 1 ? encodedPrefix + '[]' : encodedPrefix;
 
-    if (allowEmptyArrays && isArray(obj) && obj.length === 0) {
+    if (allowEmptyArrays && isArray(obj) && obj.length === 0 && Object.keys(obj).length === 0) {
         return adjustedPrefix + '[]';
     }
 
@@ -2270,7 +2276,9 @@ var stringify = function stringify(
             formatter,
             encodeValuesOnly,
             charset,
-            valueSideChannel
+            valueSideChannel,
+            depth,
+            currentDepth + 1
         ));
     }
 
@@ -2337,6 +2345,7 @@ var normalizeStringifyOptions = function normalizeStringifyOptions(opts) {
         charsetSentinel: typeof opts.charsetSentinel === 'boolean' ? opts.charsetSentinel : defaults.charsetSentinel,
         commaRoundTrip: !!opts.commaRoundTrip,
         delimiter: typeof opts.delimiter === 'undefined' ? defaults.delimiter : opts.delimiter,
+        depth: typeof opts.depth === 'number' ? opts.depth : defaults.depth,
         encode: typeof opts.encode === 'boolean' ? opts.encode : defaults.encode,
         encodeDotInKeys: typeof opts.encodeDotInKeys === 'boolean' ? opts.encodeDotInKeys : defaults.encodeDotInKeys,
         encoder: typeof opts.encoder === 'function' ? opts.encoder : defaults.encoder,
@@ -2396,9 +2405,12 @@ module.exports = function (object, opts) {
         if (options.skipNulls && value === null) {
             continue;
         }
+
+        var encodedKey = options.encodeDotInKeys ? String(key).replace(/\./g, '%2E') : String(key);
+
         pushToArray(keys, stringify(
             value,
-            key,
+            encodedKey,
             generateArrayPrefix,
             commaRoundTrip,
             options.allowEmptyArrays,
@@ -2414,7 +2426,9 @@ module.exports = function (object, opts) {
             options.formatter,
             options.encodeValuesOnly,
             options.charset,
-            sideChannel
+            sideChannel,
+            options.depth,
+            0
         ));
     }
 
@@ -2772,7 +2786,7 @@ var isBuffer = function isBuffer(obj) {
         return false;
     }
 
-    return !!(obj.constructor && obj.constructor.isBuffer && obj.constructor.isBuffer(obj));
+    return !!(obj.constructor && typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj));
 };
 
 var combine = function combine(a, b, arrayLimit, plainObjects, throwOnLimitExceeded) {
@@ -2781,8 +2795,15 @@ var combine = function combine(a, b, arrayLimit, plainObjects, throwOnLimitExcee
         if (throwOnLimitExceeded) {
             throw new RangeError('Array limit exceeded. Only ' + arrayLimit + ' element' + (arrayLimit === 1 ? '' : 's') + ' allowed in an array.');
         }
-        var newIndex = getMaxIndex(a) + 1;
-        a[newIndex] = b;
+        // spread `b` one level, matching the `[].concat(a, b)` used below, so a
+        // collection appended to an already-overflowed object is flattened
+        // rather than nested under a single index
+        var bValues = isArray(b) ? b : [b];
+        var newIndex = getMaxIndex(a);
+        for (var i = 0; i < bValues.length; ++i) {
+            newIndex += 1;
+            a[newIndex] = bValues[i];
+        }
         setMaxIndex(a, newIndex);
         return a;
     }
@@ -3175,4 +3196,4 @@ module.exports = function getSideChannel() {
 /***/ })
 
 }]);
-//# sourceMappingURL=0af109d4921510c6c3d65ce079f684fe1d448904-8d5ac4deaf26b3d3140e.js.map
+//# sourceMappingURL=0af109d4921510c6c3d65ce079f684fe1d448904-cabf8e6fdad9f29ccb82.js.map
