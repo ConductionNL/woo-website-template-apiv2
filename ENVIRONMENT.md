@@ -20,6 +20,9 @@ Runtime (NGINX proxy) – can change without rebuild
 |---|---|---|---|---|
 | UPSTREAM_HOST | Compose env, Helm values | NGINX template | runtime | Sets Host header for upstream |
 | UPSTREAM_BASE | Compose env, Helm values | NGINX template | runtime | Target base for proxy_pass of `/api/*` |
+| MAINTENANCE_MODE (or GATSBY_MAINTENANCE_MODE) | Compose env, Helm `pwa.env`, Nextcloud-base `tenant.frontend.env` | runtime.json → UI, entrypoint → NGINX | runtime | `true` = themed maintenance screen instead of the site, and `/api/` answers 503 `{"maintenance":true}` (proxy closed). Unprefixed name wins. Unplanned outages use the neutral static page `/maintenance.html` instead. See [docs/techniek/Onderhoud.md](docs/techniek/Onderhoud.md) |
+| MAINTENANCE_TITLE_NL / MAINTENANCE_TITLE_EN (or GATSBY_-prefixed) | Compose env, Helm `pwa.env`, Nextcloud-base `tenant.frontend.env` | runtime.json → UI | runtime | Replaces the default maintenance title in that language; plain text |
+| MAINTENANCE_MESSAGE_NL / MAINTENANCE_MESSAGE_EN (or GATSBY_-prefixed) | Compose env, Helm `pwa.env`, Nextcloud-base `tenant.frontend.env` | runtime.json → UI | runtime | Replaces the default maintenance text in that language; plain text |
 
 Helm values mapping
 

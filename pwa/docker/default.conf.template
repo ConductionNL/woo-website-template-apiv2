@@ -22,16 +22,19 @@ server {
 
     #error_page  404              /404.html;
 
-    # redirect server error pages to the static page /50x.html
-    #
-    error_page   500 502 503 504  /50x.html;
-    location = /50x.html {
+    # Server errors get the neutral static fallback page (pwa/static/maintenance.html),
+    # the same page the app shows and Cloudflare serves when the origin is down
+    error_page   500 502 503 504  /maintenance.html;
+    location = /maintenance.html {
         root   /usr/share/nginx/html;
     }
 
     location = /api { return 301 /api/; }
 
     location ^~ /api/ {
+        # Maintenance mode: a 503 with {"maintenance":true} (proxy closed), else
+        # empty — written at container start by 30-generate-runtime.sh
+        include /etc/nginx/conf.d/includes/maintenance-api.conf;
         proxy_pass ${UPSTREAM_BASE}/;
         proxy_set_header Host ${UPSTREAM_HOST};
         proxy_set_header X-Real-IP $remote_addr;

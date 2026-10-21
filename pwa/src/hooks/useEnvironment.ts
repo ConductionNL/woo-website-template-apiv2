@@ -4,7 +4,7 @@ import { uniqueId } from "lodash";
 
 // DEV ONLY: set to a theme class (e.g. "barneveld-theme") to force that theme on every refresh,
 // without editing .env or restarting the dev server. Leave "" for normal (env/domain/config) behavior.
-const DEV_THEME_OVERRIDE = "";
+const DEV_THEME_OVERRIDE = "openwoo-theme";
 
 const DEFAULT_THEME_CLASSNAME = "openwoo-theme";
 
@@ -106,6 +106,11 @@ export const useEnvironment = () => {
       set("DATE_FULL_MONTH", "GATSBY_DATE_FULL_MONTH");
       set("TABLE_SCROLL_MODE", "GATSBY_TABLE_SCROLL_MODE");
       set("HIDE_LANGUAGE_SWITCH", "GATSBY_HIDE_LANGUAGE_SWITCH");
+      set("MAINTENANCE_MODE", "GATSBY_MAINTENANCE_MODE");
+      set("MAINTENANCE_TITLE_NL", "GATSBY_MAINTENANCE_TITLE_NL");
+      set("MAINTENANCE_MESSAGE_NL", "GATSBY_MAINTENANCE_MESSAGE_NL");
+      set("MAINTENANCE_TITLE_EN", "GATSBY_MAINTENANCE_TITLE_EN");
+      set("MAINTENANCE_MESSAGE_EN", "GATSBY_MAINTENANCE_MESSAGE_EN");
       // Apply theme class immediately if provided
       applyThemeClass(window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "");
       updateSessionStorage();
@@ -141,6 +146,11 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("DATE_FULL_MONTH", process.env.GATSBY_DATE_FULL_MONTH ?? "");
     window.sessionStorage.setItem("TABLE_SCROLL_MODE", process.env.GATSBY_TABLE_SCROLL_MODE ?? "");
     window.sessionStorage.setItem("HIDE_LANGUAGE_SWITCH", process.env.GATSBY_HIDE_LANGUAGE_SWITCH ?? "");
+    window.sessionStorage.setItem("MAINTENANCE_MODE", process.env.GATSBY_MAINTENANCE_MODE ?? "");
+    window.sessionStorage.setItem("MAINTENANCE_TITLE_NL", process.env.GATSBY_MAINTENANCE_TITLE_NL ?? "");
+    window.sessionStorage.setItem("MAINTENANCE_MESSAGE_NL", process.env.GATSBY_MAINTENANCE_MESSAGE_NL ?? "");
+    window.sessionStorage.setItem("MAINTENANCE_TITLE_EN", process.env.GATSBY_MAINTENANCE_TITLE_EN ?? "");
+    window.sessionStorage.setItem("MAINTENANCE_MESSAGE_EN", process.env.GATSBY_MAINTENANCE_MESSAGE_EN ?? "");
     // CSP overrides (optional)
     window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL", process.env.GATSBY_CSP_CONNECT_SRC_FULL ?? "");
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", process.env.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");
@@ -183,6 +193,11 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("DATE_FULL_MONTH", config.GATSBY_DATE_FULL_MONTH ?? "");
     window.sessionStorage.setItem("TABLE_SCROLL_MODE", config.GATSBY_TABLE_SCROLL_MODE ?? "");
     window.sessionStorage.setItem("HIDE_LANGUAGE_SWITCH", config.GATSBY_HIDE_LANGUAGE_SWITCH ?? "");
+    window.sessionStorage.setItem("MAINTENANCE_MODE", config.GATSBY_MAINTENANCE_MODE ?? "");
+    window.sessionStorage.setItem("MAINTENANCE_TITLE_NL", config.GATSBY_MAINTENANCE_TITLE_NL ?? "");
+    window.sessionStorage.setItem("MAINTENANCE_MESSAGE_NL", config.GATSBY_MAINTENANCE_MESSAGE_NL ?? "");
+    window.sessionStorage.setItem("MAINTENANCE_TITLE_EN", config.GATSBY_MAINTENANCE_TITLE_EN ?? "");
+    window.sessionStorage.setItem("MAINTENANCE_MESSAGE_EN", config.GATSBY_MAINTENANCE_MESSAGE_EN ?? "");
     // CSP overrides (optional)
     window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL", config.GATSBY_CSP_CONNECT_SRC_FULL ?? "");
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", config.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");

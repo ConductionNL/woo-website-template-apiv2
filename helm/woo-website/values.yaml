@@ -23,6 +23,11 @@ pwa:
   #   image (embedding blocked). To embed the site in a portal iframe:
   #     env:
   #       FRAME_ANCESTORS: "'self' https://portal.gemeente.nl"
+  #   MAINTENANCE_MODE — "true" shows the maintenance screen and closes the
+  #   /api/ proxy (503); MAINTENANCE_TITLE_NL / MAINTENANCE_MESSAGE_NL and the
+  #   _EN pair replace the default texts per language. The
+  #   GATSBY_-prefixed names work too, but the unprefixed ones win.
+  #   Pods roll on sync, no image rebuild needed (see docs/techniek/Onderhoud.md).
   env: {}
 
 replicaCount: 2

@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="nl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>Tijdelijk niet beschikbaar | Temporarily unavailable</title>
+    <!--
+      Neutral fallback page, shown when the website itself cannot be served
+      (backend unreachable, nginx 5xx, or served by Cloudflare while the origin is down).
+      Fully self-contained on purpose: inline CSS only, no JavaScript, no external files,
+      so it renders without any part of the platform. Tenant-themed maintenance is the
+      React maintenance screen (MAINTENANCE_MODE), not this page.
+      Keep the texts in sync with the maintenance screen (pwa/src/translations).
+    -->
+    <style>
+      :root {
+        color-scheme: light dark;
+        --text: #1a1a1a;
+        --muted: #4a4a4a;
+        --background: #ffffff;
+        --rule: #d0d0d0;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --text: #f0f0f0;
+          --muted: #c8c8c8;
+          --background: #161616;
+          --rule: #444444;
+        }
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--background);
+        color: var(--text);
+        font-family:
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          Arial,
+          sans-serif;
+        font-size: 1.125rem;
+        line-height: 1.6;
+      }
+      main {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 6rem 2rem 2rem;
+      }
+      h1,
+      h2 {
+        margin: 0 0 1rem;
+        line-height: 1.2;
+        font-size: 2.25rem;
+      }
+      h2 {
+        font-size: 1.75rem;
+      }
+      p {
+        margin: 0 0 0.75rem;
+        color: var(--muted);
+      }
+      hr {
+        margin: 2.5rem 0;
+        border: 0;
+        border-top: 1px solid var(--rule);
+      }
+      @media (max-width: 768px) {
+        main {
+          padding: 2rem 1rem 1rem;
+        }
+        h1 {
+          font-size: 1.75rem;
+        }
+        h2 {
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <section lang="nl">
+        <h1>Deze website is tijdelijk niet beschikbaar</h1>
+        <p>
+          We werken eraan om de website zo snel mogelijk weer beschikbaar te
+          maken.
+        </p>
+        <p>Probeer het later opnieuw.</p>
+        <p>Onze excuses voor het ongemak.</p>
+      </section>
+
+      <hr />
+
+      <section lang="en">
+        <h2>This website is temporarily unavailable</h2>
+        <p>We are working to make it available again as soon as possible.</p>
+        <p>Please try again later.</p>
+        <p>We apologise for the inconvenience.</p>
+      </section>
+    </main>
+  </body>
+</html>

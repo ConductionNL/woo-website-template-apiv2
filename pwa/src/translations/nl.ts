@@ -117,4 +117,9 @@ export const nl = {
   "Over deze website": "Over deze website",
   "Clear selection": "Selectie wissen",
   "About this website": "Over deze website",
+  "This website is temporarily unavailable": "Deze website is tijdelijk niet beschikbaar",
+  "We are working to make it available again as soon as possible.":
+    "We werken eraan om de website zo snel mogelijk weer beschikbaar te maken.",
+  "Please try again later.": "Probeer het later opnieuw.",
+  "We apologise for the inconvenience.": "Onze excuses voor het ongemak.",
 };
