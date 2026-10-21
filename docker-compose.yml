@@ -51,6 +51,12 @@ services:
       - UPSTREAM_BASE=${UPSTREAM_BASE:-https://zuiddrecht-drie.accept.commonground.nu/apps/opencatalogi/api}
       # CSP frame-ancestors value; default blocks all embedding (see .env.example)
       - FRAME_ANCESTORS=${FRAME_ANCESTORS:-'none'}
+      # Maintenance screen + closed /api/ proxy; read at container start (see .env.example)
+      - GATSBY_MAINTENANCE_MODE=${GATSBY_MAINTENANCE_MODE:-}
+      - GATSBY_MAINTENANCE_TITLE_NL=${GATSBY_MAINTENANCE_TITLE_NL:-}
+      - GATSBY_MAINTENANCE_MESSAGE_NL=${GATSBY_MAINTENANCE_MESSAGE_NL:-}
+      - GATSBY_MAINTENANCE_TITLE_EN=${GATSBY_MAINTENANCE_TITLE_EN:-}
+      - GATSBY_MAINTENANCE_MESSAGE_EN=${GATSBY_MAINTENANCE_MESSAGE_EN:-}
 volumes:
   db-data: {}
   uc-data: {}

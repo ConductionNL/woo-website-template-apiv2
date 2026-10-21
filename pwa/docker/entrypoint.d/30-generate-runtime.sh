@@ -10,6 +10,13 @@ mkdir -p "$out_dir"
 THEME="${NL_DESIGN_THEME_CLASSNAME:-${GATSBY_NL_DESIGN_THEME_CLASSNAME:-}}"
 export THEME
 
+# Maintenance: the unprefixed names win. Platform deployments (react-tenants
+# ApplicationSet) ignore-diff GATSBY_* env for tenants without a branding block,
+# so a GATSBY_ value set in git would never reach those pods; MAINTENANCE_* always does.
+for name in MAINTENANCE_MODE MAINTENANCE_TITLE_NL MAINTENANCE_MESSAGE_NL MAINTENANCE_TITLE_EN MAINTENANCE_MESSAGE_EN; do
+  eval "export GATSBY_$name=\"\${$name:-\${GATSBY_$name:-}}\""
+done
+
 # Single source of truth for which variables reach runtime.json — used both
 # for JSON-escaping below and as the envsubst whitelist.
 RUNTIME_VARS="
@@ -32,6 +39,11 @@ GATSBY_ANALYTICS_URL
 GATSBY_DATE_FULL_MONTH
 GATSBY_TABLE_SCROLL_MODE
 GATSBY_HIDE_LANGUAGE_SWITCH
+GATSBY_MAINTENANCE_MODE
+GATSBY_MAINTENANCE_TITLE_NL
+GATSBY_MAINTENANCE_MESSAGE_NL
+GATSBY_MAINTENANCE_TITLE_EN
+GATSBY_MAINTENANCE_MESSAGE_EN
 "
 
 # JSON-escape every substituted value: envsubst splices values into JSON
@@ -57,3 +69,18 @@ ls -l "$out_dir" || true
 cp -f "$out_dir/runtime.json" /usr/share/nginx/html/runtime.json || true
 chmod 0644 /usr/share/nginx/html/runtime.json || true
 echo "[entrypoint] wrote /usr/share/nginx/html/runtime.json"
+
+# Maintenance mode also closes the API proxy: nginx answers /api/ itself with a
+# 503, so no request reaches the backend (e.g. while it is shut down for a
+# security incident). The JSON body marks it as maintenance, so the app keeps
+# its themed maintenance screen instead of treating it as an outage.
+# default.conf includes this file in the /api/ location, so it must always
+# exist — empty when maintenance mode is off.
+maintenance_conf=/etc/nginx/conf.d/includes/maintenance-api.conf
+mkdir -p "$(dirname "$maintenance_conf")"
+if [ "${GATSBY_MAINTENANCE_MODE:-}" = "true" ]; then
+  printf '%s\n' 'default_type application/json;' "return 503 '{\"maintenance\":true}';" > "$maintenance_conf"
+  echo "[entrypoint] maintenance mode ON: /api/ proxy closed (503)"
+else
+  : > "$maintenance_conf"
+fi
