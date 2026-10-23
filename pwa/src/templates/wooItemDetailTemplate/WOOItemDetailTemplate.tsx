@@ -42,7 +42,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const attachmentsNoLabelsQuery = useOpenWoo(queryClient).getAttachmentsNoLabels(wooItemId, 50, requestedPage);
 
   const getAttachmentName = (attachment: any): string =>
-    String(attachment.title ?? getPDFName(attachment.accessUrl) ?? "");
+    String(attachment.title ?? "") || getPDFName(attachment.accessUrl) || "";
   const sortAlphaNum = (a: any, b: any) =>
     getAttachmentName(a).localeCompare(getAttachmentName(b), i18n.language, { numeric: true });
 
@@ -160,7 +160,9 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const groupedAttachmentsWithLabels = React.useMemo(() => {
     if (!attachmentsWithLabelsQuery.isSuccess || !attachmentsWithLabelsQuery.data?.results) return [];
 
-    const attachments = attachmentsWithLabelsQuery.data.results;
+    const attachments = attachmentsWithLabelsQuery.data.results.filter((attachment: any) =>
+      getAttachmentName(attachment),
+    );
 
     const multipleLabels: any[] = [];
     const singleLabels: any[] = [];
@@ -217,7 +219,9 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
 
   const unsortedAttachments = React.useMemo(() => {
     if (!attachmentsNoLabelsQuery.isSuccess || !attachmentsNoLabelsQuery.data?.results) return [];
-    return [...attachmentsNoLabelsQuery.data.results].sort(sortAlphaNum);
+    return attachmentsNoLabelsQuery.data.results
+      .filter((attachment: any) => getAttachmentName(attachment))
+      .sort(sortAlphaNum);
   }, [attachmentsNoLabelsQuery.data, i18n.language]);
 
   const totalAttachmentPages =
@@ -444,7 +448,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                       </TableRow>
                     )}
 
-                    {attachmentsNoLabelsQuery.isSuccess && unsortedAttachments.length > 0 && (
+                    {attachmentsNoLabelsQuery.isSuccess && attachmentsNoLabelsQuery.data?.results?.length > 0 && (
                       <TableRow className={styles.tableRow} aria-labelledby="attachmentsName attachmentsData">
                         <TableCell id="attachmentsName">{t("Attachments")}</TableCell>
                         <TableCell lang={i18n.language || undefined}>
@@ -453,7 +457,6 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                               <Skeleton count={5} />
                             ) : (
                               unsortedAttachments.map((bijlage: any, idx: number) => {
-                                if (!bijlage.title) return null;
                                 const isDownloadable = bijlage.accessUrl?.length !== 0;
 
                                 return (
@@ -465,7 +468,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                       rel={isDownloadable ? "noopener noreferrer" : undefined}
                                       onKeyDown={activateLinkOnSpace}
                                     >
-                                      {bijlage.title}
+                                      {getAttachmentName(bijlage)}
                                     </Link>
                                   </div>
                                 );
