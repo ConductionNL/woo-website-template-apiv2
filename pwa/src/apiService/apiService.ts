@@ -2,6 +2,7 @@ import toast from "react-hot-toast";
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import { removeFileNameFromUrl } from "../services/FileNameFromUrl";
 import { DEFAULT_FOOTER_CONTENT_URL } from "../templates/templateParts/footer/FooterTemplate";
+import { reportApiError } from "../services/apiAvailability";
 
 // Resources
 import OpenWoo from "./resources/openWoo";
@@ -54,6 +55,16 @@ export default class APIService {
     });
     return instance;
   }
+
+  // Only the clients that talk to the Woo API: an unreachable backend replaces
+  // the site with the static fallback page (see services/apiAvailability.ts).
+  private attachAvailabilityCheck(instance: AxiosInstance): AxiosInstance {
+    instance.interceptors.response.use(undefined, (error) => {
+      reportApiError(error);
+      return Promise.reject(error);
+    });
+    return instance;
+  }
   public get BaseClient(): AxiosInstance {
     const instance = axios.create({
       baseURL: this.getApiBaseUrl(),
@@ -62,7 +73,7 @@ export default class APIService {
         "Content-Type": "application/json",
       },
     });
-    return this.attachLogging(instance);
+    return this.attachAvailabilityCheck(this.attachLogging(instance));
   }
 
   public get AvailableFiltersClient(): AxiosInstance {
@@ -73,7 +84,7 @@ export default class APIService {
         "Content-Type": "application/json",
       },
     });
-    return this.attachLogging(instance);
+    return this.attachAvailabilityCheck(this.attachLogging(instance));
   }
 
   public get FooterContentClient(): AxiosInstance {

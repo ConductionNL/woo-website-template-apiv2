@@ -15,6 +15,8 @@ import { useEnvironment } from "../hooks/useEnvironment";
 import { ToolTip } from "@conduction/components";
 import { usePages } from "../hooks/pages";
 import { ErrorBoundary } from "../components/errorBoundary/ErrorBoundary";
+import { MaintenanceScreen } from "../components/maintenanceScreen/MaintenanceScreen";
+import { useMaintenance } from "../hooks/useMaintenance";
 
 export const TOOLTIP_ID = "cb8f47c3-7151-4a46-954d-784a531b01e6";
 
@@ -63,6 +65,8 @@ const Layout: React.FC<LayoutProps> = ({ children, pageContext, location }) => {
   // Prefetch the pages query so consumers render from the warm cache.
   usePages().getAll();
 
+  const maintenance = useMaintenance();
+
   if (!globalContext.initiated || !environmentInitialized) return <></>;
 
   return (
@@ -71,17 +75,22 @@ const Layout: React.FC<LayoutProps> = ({ children, pageContext, location }) => {
         <Head />
         <APIProvider value={API}>
           <ErrorBoundary>
-            <Surface>
-              <Document>
-                <ToolTip id={TOOLTIP_ID} />
+            {/* Same place as the ErrorScreen: replaces the whole site, header and footer included */}
+            {maintenance ? (
+              <MaintenanceScreen />
+            ) : (
+              <Surface>
+                <Document>
+                  <ToolTip id={TOOLTIP_ID} />
 
-                {/* <Toaster position="bottom-right" /> Turned off for now */}
+                  {/* <Toaster position="bottom-right" /> Turned off for now */}
 
-                <div className={styles.container}>
-                  <Content {...{ children }} />
-                </div>
-              </Document>
-            </Surface>
+                  <div className={styles.container}>
+                    <Content {...{ children }} />
+                  </div>
+                </Document>
+              </Surface>
+            )}
           </ErrorBoundary>
         </APIProvider>
       </GlobalProvider>
