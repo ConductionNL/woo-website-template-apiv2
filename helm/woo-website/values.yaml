@@ -28,6 +28,8 @@ pwa:
   #   _EN pair replace the default texts per language. The
   #   GATSBY_-prefixed names work too, but the unprefixed ones win.
   #   Pods roll on sync, no image rebuild needed (see docs/techniek/Onderhoud.md).
+  #   GATSBY_NOTIFICATION_MESSAGE — site-wide warning banner above the header; empty/absent = no banner.
+  #   Pods roll on sync, no image rebuild needed (see docs/techniek/Melding.md).
   env: {}
 
 replicaCount: 2

@@ -122,4 +122,6 @@ export const en = {
     "We are working to make it available again as soon as possible.",
   "Please try again later.": "Please try again later.",
   "We apologise for the inconvenience.": "We apologise for the inconvenience.",
+  Notification: "Notification",
+  "Close notification": "Close notification",
 };

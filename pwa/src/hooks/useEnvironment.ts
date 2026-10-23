@@ -111,6 +111,7 @@ export const useEnvironment = () => {
       set("MAINTENANCE_MESSAGE_NL", "GATSBY_MAINTENANCE_MESSAGE_NL");
       set("MAINTENANCE_TITLE_EN", "GATSBY_MAINTENANCE_TITLE_EN");
       set("MAINTENANCE_MESSAGE_EN", "GATSBY_MAINTENANCE_MESSAGE_EN");
+      set("NOTIFICATION_MESSAGE", "GATSBY_NOTIFICATION_MESSAGE");
       // Apply theme class immediately if provided
       applyThemeClass(window.sessionStorage.getItem("NL_DESIGN_THEME_CLASSNAME") ?? "");
       updateSessionStorage();
@@ -151,6 +152,7 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("MAINTENANCE_MESSAGE_NL", process.env.GATSBY_MAINTENANCE_MESSAGE_NL ?? "");
     window.sessionStorage.setItem("MAINTENANCE_TITLE_EN", process.env.GATSBY_MAINTENANCE_TITLE_EN ?? "");
     window.sessionStorage.setItem("MAINTENANCE_MESSAGE_EN", process.env.GATSBY_MAINTENANCE_MESSAGE_EN ?? "");
+    window.sessionStorage.setItem("NOTIFICATION_MESSAGE", process.env.GATSBY_NOTIFICATION_MESSAGE ?? "");
     // CSP overrides (optional)
     window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL", process.env.GATSBY_CSP_CONNECT_SRC_FULL ?? "");
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", process.env.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");
@@ -198,6 +200,7 @@ export const useEnvironment = () => {
     window.sessionStorage.setItem("MAINTENANCE_MESSAGE_NL", config.GATSBY_MAINTENANCE_MESSAGE_NL ?? "");
     window.sessionStorage.setItem("MAINTENANCE_TITLE_EN", config.GATSBY_MAINTENANCE_TITLE_EN ?? "");
     window.sessionStorage.setItem("MAINTENANCE_MESSAGE_EN", config.GATSBY_MAINTENANCE_MESSAGE_EN ?? "");
+    window.sessionStorage.setItem("NOTIFICATION_MESSAGE", config.GATSBY_NOTIFICATION_MESSAGE ?? "");
     // CSP overrides (optional)
     window.sessionStorage.setItem("CSP_CONNECT_SRC_FULL", config.GATSBY_CSP_CONNECT_SRC_FULL ?? "");
     window.sessionStorage.setItem("CSP_CONNECT_SRC_EXTRA", config.GATSBY_CSP_CONNECT_SRC_EXTRA ?? "");

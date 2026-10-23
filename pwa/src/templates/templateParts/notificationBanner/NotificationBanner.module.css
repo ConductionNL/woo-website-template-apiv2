@@ -1,0 +1,59 @@
+.container {
+  margin: auto;
+  box-sizing: border-box;
+  max-inline-size: var(--utrecht-page-max-inline-size);
+  padding-inline-start: var(--utrecht-page-margin-inline-start);
+  padding-inline-end: var(--utrecht-page-margin-inline-end);
+  padding-block: 12px;
+}
+
+.alert {
+  margin-block-start: 0;
+}
+
+.alert svg {
+  fill: var(--utrecht-alert-icon-warning-color);
+}
+
+.content {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+.message {
+  margin: 0;
+  color: var(--utrecht-alert-warning-color);
+}
+
+/* Many themes render the subtle button as a filled primary button; re-point its variables to the alert's warning colour so it reads as a quiet close control and follows each theme's alert tokens. */
+.close {
+  --notification-close-color: var(
+    --utrecht-alert-warning-color,
+    var(--utrecht-alert-color)
+  );
+
+  --utrecht-button-subtle-background-color: transparent;
+  --utrecht-button-subtle-border-color: transparent;
+  --utrecht-button-subtle-color: var(--notification-close-color);
+  --utrecht-button-subtle-hover-background-color: color-mix(
+    in srgb,
+    var(--notification-close-color) 12%,
+    transparent
+  );
+  --utrecht-button-subtle-hover-border-color: transparent;
+  --utrecht-button-subtle-hover-color: var(--notification-close-color);
+  --utrecht-button-subtle-active-background-color: color-mix(
+    in srgb,
+    var(--notification-close-color) 20%,
+    transparent
+  );
+  --utrecht-button-subtle-active-border-color: transparent;
+  --utrecht-button-subtle-active-color: var(--notification-close-color);
+  --utrecht-button-subtle-focus-background-color: transparent;
+  --utrecht-button-subtle-focus-border-color: transparent;
+  --utrecht-button-subtle-focus-color: var(--notification-close-color);
+
+  flex-shrink: 0;
+}

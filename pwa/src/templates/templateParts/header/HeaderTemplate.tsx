@@ -1,10 +1,9 @@
 import * as React from "react";
 import * as styles from "./HeaderTemplate.module.css";
 import clsx from "clsx";
-import { PageHeader, SkipLink, Button } from "@utrecht/component-library-react/dist/css-module";
+import { PageHeader, Button } from "@utrecht/component-library-react/dist/css-module";
 import { useTranslation } from "react-i18next";
-import { useGatsbyContext } from "../../../context/gatsby";
-import { navigate, withPrefix } from "gatsby";
+import { navigate } from "gatsby";
 import { Logo } from "@conduction/components";
 import { useMenus } from "../../../hooks/menus";
 import { getMenuFromPosition } from "../../../services/menuUtils";
@@ -15,7 +14,6 @@ interface HeaderTemplateProps {
 
 export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName }) => {
   const { t, i18n } = useTranslation();
-  const { gatsbyContext } = useGatsbyContext();
   const menusQuery = useMenus().getAll();
 
   const allMenus: any[] = React.useMemo(() => {
@@ -28,20 +26,7 @@ export const HeaderTemplate: React.FC<HeaderTemplateProps> = ({ layoutClassName 
 
   return (
     <PageHeader className={clsx(layoutClassName && layoutClassName, "ac-header")}>
-      <div role="navigation" aria-label="skip" className={styles.container}>
-        <div>
-          {/* Only the homepage has a #filters target; rendering the link elsewhere
-              would leave a skip-link pointing at nothing (WCAG 2.4.1 / axe skip-link) */}
-          {/* withPrefix: the homepage is "/<repo>/" on path-prefixed deploys */}
-          {gatsbyContext.location.pathname === withPrefix("/") && (
-            <SkipLink href="#filters" tabIndex={0} className={styles.skipLink}>
-              {t("Skip to filters")}
-            </SkipLink>
-          )}
-          <SkipLink href="#mainContent" tabIndex={0} className={styles.skipLink}>
-            {t("Skip to main content")}
-          </SkipLink>
-        </div>
+      <div className={styles.container}>
         <div className={styles.navContainer}>
           <Logo
             onClick={() => navigate("/")}

@@ -122,4 +122,6 @@ export const nl = {
     "We werken eraan om de website zo snel mogelijk weer beschikbaar te maken.",
   "Please try again later.": "Probeer het later opnieuw.",
   "We apologise for the inconvenience.": "Onze excuses voor het ongemak.",
+  Notification: "Melding",
+  "Close notification": "Melding sluiten",
 };
