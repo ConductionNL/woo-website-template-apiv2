@@ -41,7 +41,10 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const attachmentsWithLabelsQuery = useOpenWoo(queryClient).getAttachmentsWithLabels(wooItemId);
   const attachmentsNoLabelsQuery = useOpenWoo(queryClient).getAttachmentsNoLabels(wooItemId, 50, requestedPage);
 
-  const sortAlphaNum = (a: any, b: any) => a.title.localeCompare(b.title, i18n.language, { numeric: true });
+  const getAttachmentName = (attachment: any): string =>
+    String(attachment.title ?? getPDFName(attachment.accessUrl) ?? "");
+  const sortAlphaNum = (a: any, b: any) =>
+    getAttachmentName(a).localeCompare(getAttachmentName(b), i18n.language, { numeric: true });
 
   const activateLinkOnSpace = (e: React.KeyboardEvent<HTMLAnchorElement>) => {
     if (e.key === " ") {
@@ -207,15 +210,15 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
     });
 
     return sortedLabels.map((label: any) => ({
-      attachments: attachmentsAll.filter((att: any) => att.labels.includes(label)),
+      attachments: attachmentsAll.filter((att: any) => att.labels.includes(label)).sort(sortAlphaNum),
       label,
     }));
-  }, [attachmentsWithLabelsQuery.data]);
+  }, [attachmentsWithLabelsQuery.data, i18n.language]);
 
   const unsortedAttachments = React.useMemo(() => {
     if (!attachmentsNoLabelsQuery.isSuccess || !attachmentsNoLabelsQuery.data?.results) return [];
     return [...attachmentsNoLabelsQuery.data.results].sort(sortAlphaNum);
-  }, [attachmentsNoLabelsQuery.data]);
+  }, [attachmentsNoLabelsQuery.data, i18n.language]);
 
   const totalAttachmentPages =
     attachmentsNoLabelsQuery.isSuccess && attachmentsNoLabelsQuery.data?.pages
@@ -382,16 +385,13 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                           key={idx}
                           aria-label={
                             sortedAttachments.attachments.length === 1
-                              ? `${getLabel(sortedAttachments.label)}, ${
-                                  sortedAttachments.attachments[0].title ??
-                                  getPDFName(sortedAttachments.attachments[0].accessUrl)
-                                }`
+                              ? `${getLabel(sortedAttachments.label)}, ${getAttachmentName(sortedAttachments.attachments[0])}`
                               : `${getLabel(sortedAttachments.label)}, ${t("There are")} ${
                                   sortedAttachments.attachments.length
                                 } ${t("Attachments")} ${t("With the label")} ${getLabel(
                                   sortedAttachments.label,
                                 )}, ${t("These are")} ${sortedAttachments.attachments
-                                  .map((attachment: any) => attachment.title ?? getPDFName(attachment.accessUrl))
+                                  .map((attachment: any) => getAttachmentName(attachment))
                                   .join(", ")}`
                           }
                         >
@@ -409,7 +409,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                       rel="noopener noreferrer"
                                       onKeyDown={activateLinkOnSpace}
                                     >
-                                      {`${attachment.title ?? getPDFName(attachment.accessUrl)}`}
+                                      {getAttachmentName(attachment)}
                                     </Link>
                                   </div>
                                 ))}
@@ -425,7 +425,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
                                 rel="noopener noreferrer"
                                 onKeyDown={activateLinkOnSpace}
                               >
-                                {`${sortedAttachments.attachments[0].title ?? getPDFName(sortedAttachments.attachments[0].accessUrl)}`}
+                                {getAttachmentName(sortedAttachments.attachments[0])}
                               </Link>
                             </TableCell>
                           )}
