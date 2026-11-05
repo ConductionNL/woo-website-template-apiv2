@@ -4,7 +4,7 @@ import { uniqueId } from "lodash";
 
 // DEV ONLY: set to a theme class (e.g. "barneveld-theme") to force that theme on every refresh,
 // without editing .env or restarting the dev server. Leave "" for normal (env/domain/config) behavior.
-const DEV_THEME_OVERRIDE = "openwoo-theme";
+const DEV_THEME_OVERRIDE = "";
 
 const DEFAULT_THEME_CLASSNAME = "openwoo-theme";
 
