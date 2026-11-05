@@ -19454,7 +19454,7 @@ var uniqueId_default = /*#__PURE__*/__webpack_require__.n(uniqueId);
 ;// ./src/hooks/useEnvironment.ts
 // DEV ONLY: set to a theme class (e.g. "barneveld-theme") to force that theme on every refresh,
 // without editing .env or restarting the dev server. Leave "" for normal (env/domain/config) behavior.
-const DEV_THEME_OVERRIDE="openwoo-theme";const DEFAULT_THEME_CLASSNAME="openwoo-theme";/**
+const DEV_THEME_OVERRIDE="";const DEFAULT_THEME_CLASSNAME="openwoo-theme";/**
  * The single place that writes the NL Design System theme class to the DOM.
  *
  * The class is intentionally set on BOTH <html> and <body> — each element needs it for a
@@ -40326,4 +40326,4 @@ module.exports = /*#__PURE__*/JSON.parse('{"description":"The iconic font, CSS, 
 /******/ var __webpack_exports__ = __webpack_require__.O();
 /******/ }
 ]);
-//# sourceMappingURL=app-11e7ec46ec34e1d346af.js.map
+//# sourceMappingURL=app-4436e71882bb7ac8d85a.js.map
