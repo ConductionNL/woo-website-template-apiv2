@@ -23,7 +23,6 @@ import { getPDFName } from "../../services/getPDFName";
 import { HorizontalOverflowWrapper, Pagination } from "@conduction/components";
 import { removeHTMLFromString } from "../../services/removeHTMLFromString";
 import { Helmet } from "react-helmet";
-import { usePaginationContext } from "../../context/pagination";
 
 interface WOOItemDetailTemplateProps {
   wooItemId: string;
@@ -35,8 +34,11 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const queryClient = new QueryClient();
   const getItems = useOpenWoo(queryClient).getOne(wooItemId);
 
-  const { pagination, setPagination } = usePaginationContext();
-  const [requestedPage, setRequestedPage] = React.useState<number>(pagination.currentPage);
+  /*
+   * Own page state for the unlabeled attachments: the global pagination context
+   * belongs to the landing page's results list and must not leak in or out.
+   */
+  const [requestedPage, setRequestedPage] = React.useState<number>(1);
 
   const attachmentsWithLabelsQuery = useOpenWoo(queryClient).getAttachmentsWithLabels(wooItemId);
   const attachmentsNoLabelsQuery = useOpenWoo(queryClient).getAttachmentsNoLabels(wooItemId, 50, requestedPage);
@@ -220,13 +222,7 @@ export const WOOItemDetailTemplate: React.FC<WOOItemDetailTemplateProps> = ({ wo
   const totalAttachmentPages =
     attachmentsNoLabelsQuery.isSuccess && attachmentsNoLabelsQuery.data?.pages
       ? attachmentsNoLabelsQuery.data.pages
-      : pagination.currentPage;
-
-  React.useEffect(() => {
-    if (attachmentsNoLabelsQuery.isSuccess && pagination.currentPage !== requestedPage) {
-      setPagination({ currentPage: requestedPage });
-    }
-  }, [attachmentsNoLabelsQuery.isSuccess]);
+      : 1;
 
   return (
     <>
